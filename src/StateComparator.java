@@ -18,7 +18,7 @@ public class StateComparator
 
 		if (previousState != null)
 		{
-			String previousStateDate = dateFormat.format(new Date(previousState.timestamp));
+			String previousStateDate = formatDate(previousState.timestamp);
 			System.out.println("Comparing with previous state from " + previousStateDate);
 			if (previousState.message.length() > 0)
 			{
@@ -41,7 +41,8 @@ public class StateComparator
 
 		int addedCount = 0;
 		int duplicatedCount = 0;
-		int modifiedCount = 0;
+		int dateModifiedCount = 0;
+		int contentModifiedCount = 0;
 		int deletedCount = 0;
 
 		int index;
@@ -49,10 +50,22 @@ public class StateComparator
 		{
 			if ((index = findSameFileName(fileState, differences)) != -1)
 			{
-				modifiedCount++;
-				if (verbose)
+				FileState originalState = differences.get(index);
+				if (originalState.hash.equals(fileState.hash))
 				{
-					System.out.println("Modified: \t" + fileState.fileName);
+					dateModifiedCount++;
+					if (verbose)
+					{
+						System.out.println("Date modified:\t" + fileState.fileName + " \t" + formatDate(originalState) + " -> " + formatDate(fileState));
+					}
+				}
+				else
+				{
+					contentModifiedCount++;
+					if (verbose)
+					{
+						System.out.println("Content modified:\t" + fileState.fileName);
+					}
 				}
 
 				differences.remove(index);
@@ -84,18 +97,29 @@ public class StateComparator
 			}
 		}
 
-		if ((addedCount + duplicatedCount + modifiedCount + deletedCount) > 0)
+		if ((addedCount + duplicatedCount + dateModifiedCount + contentModifiedCount + deletedCount) > 0)
 		{
 			if (verbose)
 			{
 				System.out.println("");
 			}
-			System.out.println(addedCount + " added, " + duplicatedCount + " duplicated, " + modifiedCount + " modified, " + deletedCount + " deleted");
+			System.out.println(addedCount + " added, " + duplicatedCount + " duplicated, " + dateModifiedCount + " date modified, " +
+					contentModifiedCount + " content modified, " + deletedCount + " deleted");
 		}
 		else
 		{
 			System.out.println("Nothing modified");
 		}
+	}
+
+	private String formatDate(FileState fileState)
+	{
+		return dateFormat.format(new Date(fileState.lastModified));
+	}
+
+	private String formatDate(long timestamp)
+	{
+		return dateFormat.format(new Date(timestamp));
 	}
 
 	private int findSameFileName(FileState toFind, List<FileState> differences)
