@@ -11,7 +11,6 @@ public class StateManager
 	public StateManager(File stateDir)
 	{
 		this.stateDir = stateDir;
-		this.stateDir.mkdirs();
 	}
 
 	public void createNewState(State state) throws IOException

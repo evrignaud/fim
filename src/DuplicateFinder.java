@@ -10,11 +10,12 @@ public class DuplicateFinder
 {
 	private Comparator<FileState> hashComparator = new HashComparator();
 
-	public void findDuplicates(State state)
+	public void findDuplicates(State state, boolean verbose)
 	{
 		List<FileState> fileStates = new ArrayList<>(state.fileStates);
 		Collections.sort(fileStates, hashComparator);
 
+		long duplicatesCount = 0;
 		List<FileState> duplicates = new ArrayList<>();
 		String previousHash = "";
 		for (FileState fileState : fileStates)
@@ -23,11 +24,15 @@ public class DuplicateFinder
 			{
 				if (duplicates.size() > 1)
 				{
-					for (FileState fs : duplicates)
+					if (verbose)
 					{
-						System.out.println(fs.fileName);
+						for (FileState fs : duplicates)
+						{
+							System.out.println(fs.fileName);
+						}
+						System.out.println("------------------------------");
 					}
-					System.out.println("------------------------------");
+					duplicatesCount++;
 				}
 
 				duplicates.clear();
@@ -36,6 +41,9 @@ public class DuplicateFinder
 			previousHash = fileState.hash;
 			duplicates.add(fileState);
 		}
+
+		System.out.println("");
+		System.out.println(duplicatesCount + " duplicated files");
 	}
 
 	private class HashComparator implements Comparator<FileState>

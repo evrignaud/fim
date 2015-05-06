@@ -47,6 +47,7 @@ public class Main
 	public static Options constructOptions()
 	{
 		Options options = new Options();
+		options.addOption(createOption("v", "verbose", false, "Display details", false));
 		options.addOption(createOption("m", "message", true, "Message to store with the state", false));
 		return options;
 	}
@@ -76,6 +77,7 @@ public class Main
 		Options options = constructOptions();
 		CommandLine commandLine;
 
+		boolean verbose = false;
 		String message = "";
 
 		try
@@ -89,6 +91,7 @@ public class Main
 			}
 			else
 			{
+				verbose = commandLine.hasOption('v');
 				message = commandLine.getOptionValue('m', message);
 			}
 		}
@@ -101,6 +104,23 @@ public class Main
 		File baseDirectory = new File(".");
 		File stateDir = new File(".bm/states");
 
+		if (command == Command.INIT)
+		{
+			if (stateDir.exists())
+			{
+				System.out.println("binary_manager repository already exist");
+				System.exit(0);
+			}
+		}
+		else
+		{
+			if (!stateDir.exists())
+			{
+				System.out.println("binary_manager repository does not exist. Please run 'bm init' before.");
+				System.exit(0);
+			}
+		}
+
 		State previousState;
 		State currentState;
 
@@ -112,28 +132,29 @@ public class Main
 		switch (command)
 		{
 			case INIT:
+				stateDir.mkdirs();
 				currentState = generator.generateState("Initial state", baseDirectory);
-				comparator.compare(new State(), currentState);
+				comparator.compare(null, currentState, verbose);
 				manager.createNewState(currentState);
 				break;
 
 			case COMMIT:
 				previousState = manager.loadLastState();
 				currentState = generator.generateState(message, baseDirectory);
-				comparator.compare(previousState, currentState);
+				comparator.compare(previousState, currentState, verbose);
 				manager.createNewState(currentState);
 				break;
 
 			case DIFF:
 				previousState = manager.loadLastState();
 				currentState = generator.generateState(message, baseDirectory);
-				comparator.compare(previousState, currentState);
+				comparator.compare(previousState, currentState, verbose);
 				break;
 
 			case FIND_DUPLICATES:
 				System.out.println("Searching for duplicated files");
 				currentState = generator.generateState(message, baseDirectory);
-				finder.findDuplicates(currentState);
+				finder.findDuplicates(currentState, verbose);
 				break;
 		}
 	}
