@@ -10,40 +10,55 @@ public class DuplicateFinder
 {
 	private Comparator<FileState> hashComparator = new HashComparator();
 
-	public void findDuplicates(State state, boolean verbose)
+	private final boolean verbose;
+
+	private long duplicatesCount;
+	private List<FileState> duplicates;
+
+	public DuplicateFinder(boolean verbose)
+	{
+		this.verbose = verbose;
+	}
+
+	public void findDuplicates(State state)
 	{
 		List<FileState> fileStates = new ArrayList<>(state.fileStates);
 		Collections.sort(fileStates, hashComparator);
 
-		long duplicatesCount = 0;
-		List<FileState> duplicates = new ArrayList<>();
+		duplicatesCount = 0;
+		duplicates = new ArrayList<>();
 		String previousHash = "";
 		for (FileState fileState : fileStates)
 		{
 			if (!previousHash.equals(fileState.hash))
 			{
-				if (duplicates.size() > 1)
-				{
-					if (verbose)
-					{
-						for (FileState fs : duplicates)
-						{
-							System.out.println(fs.fileName);
-						}
-						System.out.println("------------------------------");
-					}
-					duplicatesCount++;
-				}
-
+				takeInAccountDuplicates();
 				duplicates.clear();
 			}
 
 			previousHash = fileState.hash;
 			duplicates.add(fileState);
 		}
+		takeInAccountDuplicates();
 
 		System.out.println("");
 		System.out.println(duplicatesCount + " duplicated files");
+	}
+
+	private void takeInAccountDuplicates()
+	{
+		if (duplicates.size() > 1)
+		{
+			if (verbose)
+			{
+				for (FileState fs : duplicates)
+				{
+					System.out.println(fs.fileName);
+				}
+				System.out.println("------------------------------");
+			}
+			duplicatesCount += duplicates.size() - 1;
+		}
 	}
 
 	private class HashComparator implements Comparator<FileState>
