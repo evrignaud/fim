@@ -47,7 +47,7 @@ public class Main
 	public static Options constructOptions()
 	{
 		Options options = new Options();
-		options.addOption(createOption("v", "verbose", false, "Display details", false));
+		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
 		options.addOption(createOption("m", "message", true, "Message to store with the state", false));
 		return options;
 	}
@@ -77,7 +77,7 @@ public class Main
 		Options options = constructOptions();
 		CommandLine commandLine;
 
-		boolean verbose = false;
+		boolean verbose = true;
 		String message = "";
 
 		try
@@ -91,7 +91,7 @@ public class Main
 			}
 			else
 			{
-				verbose = commandLine.hasOption('v');
+				verbose = !commandLine.hasOption('q');
 				message = commandLine.getOptionValue('m', message);
 			}
 		}

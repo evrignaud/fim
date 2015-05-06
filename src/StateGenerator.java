@@ -2,12 +2,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by evrignaud on 05/05/15.
  */
 public class StateGenerator
 {
+	private Comparator<FileState> fileNameComparator = new FileNameComparator();
+
 	public State generateState(String message, File baseDirectory) throws IOException
 	{
 		State state = new State();
@@ -27,7 +31,7 @@ public class StateGenerator
 			{
 				continue;
 			}
-			
+
 			if (file.isDirectory())
 			{
 				getFileStates(state, file);
@@ -40,6 +44,8 @@ public class StateGenerator
 				state.fileStates.add(new FileState(fileName, file.lastModified(), hash));
 			}
 		}
+
+		Collections.sort(state.fileStates, fileNameComparator);
 	}
 
 	private String getRelativeFileName(String baseDirectory, String fileName)
@@ -85,6 +91,15 @@ public class StateGenerator
 		{
 			e.printStackTrace();
 			return "????";
+		}
+	}
+
+	private class FileNameComparator implements Comparator<FileState>
+	{
+		@Override
+		public int compare(FileState fs1, FileState fs2)
+		{
+			return fs1.fileName.compareTo(fs2.fileName);
 		}
 	}
 }
