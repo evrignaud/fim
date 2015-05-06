@@ -22,6 +22,7 @@ public class Main
 		options.addOption(createOption("m", "message", true, "Message to store with the state", false));
 		options.addOption(createOption("c", "commit", false, "Command: Create a new state file", false));
 		options.addOption(createOption("d", "diff", false, "Command: Compare with last state", false));
+		options.addOption(createOption("f", "find-duplicates", false, "Command: Find duplicates", false));
 		return options;
 	}
 
@@ -44,6 +45,7 @@ public class Main
 		String message = "";
 		boolean commitAction = false;
 		boolean diffAction = false;
+		boolean findDuplicatesAction = false;
 
 		try
 		{
@@ -61,6 +63,7 @@ public class Main
 
 				commitAction = commandLine.hasOption("c");
 				diffAction = commandLine.hasOption("d");
+				findDuplicatesAction = commandLine.hasOption("f");
 			}
 		}
 		catch (Exception ex)
@@ -69,30 +72,35 @@ public class Main
 			System.exit(-1);
 		}
 
+		if (!commitAction && !diffAction && !findDuplicatesAction)
+		{
+			System.out.println("You must specify the command to run");
+			printUsage();
+			System.exit(-1);
+		}
+		
+		StateGenerator generator = new StateGenerator();
+		State newState = generator.generateState(message, baseDirectory);
+
 		if (commitAction)
 		{
-			StateGenerator generator = new StateGenerator();
-			State newState = generator.generateState(message, baseDirectory);
-
 			StateManager manager = new StateManager(stateDir);
 			manager.createNewState(newState);
 		}
 		else if (diffAction)
 		{
-			StateGenerator generator = new StateGenerator();
-			State newState = generator.generateState(message, baseDirectory);
-
 			StateManager manager = new StateManager(stateDir);
 			State oldState = manager.loadLastState();
 
 			StateComparator comparator = new StateComparator();
 			comparator.compare(oldState, newState);
 		}
-		else
+		else if (findDuplicatesAction)
 		{
-			System.out.println("You must specify the command to run");
-			printUsage();
-			System.exit(-1);
+			System.out.println("Searching for duplicated files");
+
+			DuplicateFinder finder = new DuplicateFinder();
+			finder.findDuplicates(newState);
 		}
 	}
 
