@@ -1,0 +1,13 @@
+#!/bin/bash
+
+currentDir=`pwd`
+
+baseDir=`dirname "$(readlink -f "$0")"`
+
+mkdir -p ${baseDir}/classes
+
+libraries=${baseDir}/lib/gson-2.3.1.jar:${baseDir}/lib/commons-cli-1.2.jar
+
+javac -cp ${libraries} -d ${baseDir}/classes ${baseDir}/src/*.java
+
+java -cp ${baseDir}/classes:${libraries} Main $*

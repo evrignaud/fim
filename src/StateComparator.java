@@ -10,16 +10,16 @@ public class StateComparator
 {
 	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-	public void compare(State oldState, State newState)
+	public void compare(State previousState, State currentState)
 	{
-		String oldStateDate = dateFormat.format(new Date(oldState.timestamp));
-		System.out.println("Comparing with previous state from " + oldStateDate);
-		System.out.println("With message: " + oldState.message);
+		String previousStateDate = dateFormat.format(new Date(previousState.timestamp));
+		System.out.println("Comparing with previous state from " + previousStateDate);
+		System.out.println("With message: " + previousState.message);
 		System.out.println("");
 
-		List<FileState> diffState = new ArrayList<>(oldState.fileStates);
+		List<FileState> diffState = new ArrayList<>(previousState.fileStates);
 		boolean isModified = false;
-		for (FileState fileState : newState.fileStates)
+		for (FileState fileState : currentState.fileStates)
 		{
 			if (!diffState.remove(fileState))
 			{

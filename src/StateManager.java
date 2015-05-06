@@ -31,6 +31,12 @@ public class StateManager
 	{
 		int stateNumber = getLastStateNumber();
 		File stateFile = getStateFile(stateNumber);
+
+		if (!stateFile.exists())
+		{
+			throw new IllegalStateException("No state file found for this directory");
+		}
+
 		State state = new State();
 		state.loadFromFile(stateFile);
 		return state;
