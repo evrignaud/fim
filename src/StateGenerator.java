@@ -23,6 +23,11 @@ public class StateGenerator
 		File[] files = directory.listFiles();
 		for (File file : files)
 		{
+			if (file.isDirectory() && file.getName().equals(".bm"))
+			{
+				continue;
+			}
+			
 			if (file.isDirectory())
 			{
 				getFileStates(state, file);
