@@ -70,12 +70,12 @@ public class StateComparator
 				if (originalState.hash.equals(fileState.hash))
 				{
 					dateModifiedCount++;
-					verbosePrint("Date modified:\t" + fileState.fileName + " \t" + formatDate(originalState) + " -> " + formatDate(fileState));
+					verbosePrint(String.format("%-18s%s \t%s -> %s", "Date modified:", fileState.fileName, formatDate(originalState), formatDate(fileState)));
 				}
 				else
 				{
 					contentModifiedCount++;
-					verbosePrint("Content modified:\t" + fileState.fileName);
+					verbosePrint(String.format("%-18s%s", "Content modified:", fileState.fileName));
 				}
 
 				differences.remove(diffIndex);
@@ -87,7 +87,7 @@ public class StateComparator
 					FileState originalState = differences.get(diffIndex);
 
 					moveCount++;
-					verbosePrint("Moved:\t" + originalState.fileName + " -> " + fileState.fileName);
+					verbosePrint(String.format("%-18s%s -> %s", "Moved:", originalState.fileName, fileState.fileName));
 
 					differences.remove(diffIndex);
 				}
@@ -95,20 +95,20 @@ public class StateComparator
 				{
 					FileState originalState = previousFileStates.get(index);
 					duplicatedCount++;
-					verbosePrint("Duplicated:\t" + fileState.fileName + " = " + originalState.fileName);
+					verbosePrint(String.format("%-18s%s = %s", "Duplicated:", fileState.fileName, originalState.fileName));
 				}
 			}
 			else
 			{
 				addedCount++;
-				verbosePrint("Added:\t" + fileState.fileName);
+				verbosePrint(String.format("%-18s%s", "Added:", fileState.fileName));
 			}
 		}
 
 		for (FileState fileState : differences)
 		{
 			deletedCount++;
-			verbosePrint("Deleted:\t" + fileState.fileName);
+			verbosePrint(String.format("%-18s%s", "Deleted:", fileState.fileName));
 		}
 
 		displayCounts();
