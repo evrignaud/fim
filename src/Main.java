@@ -126,35 +126,36 @@ public class Main
 
 		StateGenerator generator = new StateGenerator();
 		StateManager manager = new StateManager(stateDir);
-		StateComparator comparator = new StateComparator();
-		DuplicateFinder finder = new DuplicateFinder();
+		StateComparator comparator = new StateComparator(verbose);
+		DuplicateFinder finder = new DuplicateFinder(verbose);
 
 		switch (command)
 		{
 			case INIT:
 				stateDir.mkdirs();
 				currentState = generator.generateState("Initial state", baseDirectory);
-				comparator.compare(null, currentState, verbose);
+				comparator.compare(null, currentState);
 				manager.createNewState(currentState);
 				break;
 
 			case COMMIT:
 				previousState = manager.loadLastState();
 				currentState = generator.generateState(message, baseDirectory);
-				comparator.compare(previousState, currentState, verbose);
+				comparator.compare(previousState, currentState);
 				manager.createNewState(currentState);
 				break;
 
 			case DIFF:
 				previousState = manager.loadLastState();
 				currentState = generator.generateState(message, baseDirectory);
-				comparator.compare(previousState, currentState, verbose);
+				comparator.compare(previousState, currentState);
 				break;
 
 			case FIND_DUPLICATES:
 				System.out.println("Searching for duplicated files");
+				System.out.println("");
 				currentState = generator.generateState(message, baseDirectory);
-				finder.findDuplicates(currentState, verbose);
+				finder.findDuplicates(currentState);
 				break;
 		}
 	}
