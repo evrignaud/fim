@@ -133,6 +133,10 @@ public class Main
 				previousState = manager.loadLastState();
 				manager.resetDates(previousState);
 				break;
+
+			case LOG:
+				manager.displayLog();
+				break;
 		}
 	}
 

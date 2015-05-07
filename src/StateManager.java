@@ -38,7 +38,12 @@ public class StateManager
 	public State loadLastState() throws IOException
 	{
 		findLastStateNumber();
-		File stateFile = getStateFile(lastStateNumber);
+		return loadState(lastStateNumber);
+	}
+
+	public State loadState(int stateNumber) throws IOException
+	{
+		File stateFile = getStateFile(stateNumber);
 
 		if (!stateFile.exists())
 		{
@@ -118,7 +123,7 @@ public class StateManager
 		System.out.println("Reset file modification dates based on previous state done " + FormatUtil.formatDate(state.timestamp));
 		if (state.message.length() > 0)
 		{
-			System.out.println("With message: " + state.message);
+			System.out.println("Message: " + state.message);
 		}
 		System.out.println("");
 
@@ -146,6 +151,32 @@ public class StateManager
 		else
 		{
 			System.out.printf("%d file modification dates have been reset%n", dateResetCount);
+		}
+	}
+
+	public void displayLog() throws IOException
+	{
+		readLastStateNumber();
+		if (lastStateNumber == -1)
+		{
+			System.out.println("No state created");
+			return;
+		}
+
+		for (int stateNumber = 1; stateNumber <= lastStateNumber; stateNumber++)
+		{
+			File statFile = getStateFile(stateNumber);
+			if (statFile.exists())
+			{
+				State state = loadState(stateNumber);
+				System.out.printf("State: %d - %s%n", stateNumber, FormatUtil.formatDate(state.timestamp));
+				if (state.message.length() > 0)
+				{
+					System.out.printf("\tMessage: %s%n", state.message);
+				}
+				System.out.printf("\t%d files%n", state.fileStates.size());
+				System.out.println("");
+			}
 		}
 	}
 }
