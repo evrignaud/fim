@@ -28,8 +28,7 @@ public class StateComparator
 
 		if (previousState != null)
 		{
-			String previousStateDate = FormatUtil.formatDate(previousState.timestamp);
-			System.out.println("Comparing with previous state from " + previousStateDate);
+			System.out.println("Comparing with previous state from " + FormatUtil.formatDate(previousState.timestamp));
 			if (previousState.message.length() > 0)
 			{
 				System.out.println("With message: " + previousState.message);

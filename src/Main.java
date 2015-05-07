@@ -12,35 +12,6 @@ import org.apache.commons.cli.Options;
 
 public class Main
 {
-	enum Command
-	{
-		INIT("init", "Initialize a binary_manager repository"),
-		COMMIT("ci", "Commit the current directory state"),
-		DIFF("diff", "Compare the current directory state with the previous one"),
-		FIND_DUPLICATES("fdup", "Find duplicated files");
-
-		public final String cmdName;
-		public final String description;
-
-		Command(String cmdName, String description)
-		{
-			this.cmdName = cmdName;
-			this.description = description;
-		}
-
-		public static Command fromName(final String cmdName)
-		{
-			for (final Command command : values())
-			{
-				if (command.cmdName.equals(cmdName))
-				{
-					return command;
-				}
-			}
-			return null;
-		}
-	}
-
 	/**
 	 * Construct Options.
 	 */
@@ -156,6 +127,11 @@ public class Main
 				System.out.println("");
 				currentState = generator.generateState(message, baseDirectory);
 				finder.findDuplicates(currentState);
+				break;
+
+			case RESET_DATES:
+				previousState = manager.loadLastState();
+				manager.resetDates(previousState);
 				break;
 		}
 	}

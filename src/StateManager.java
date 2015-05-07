@@ -58,4 +58,39 @@ public class StateManager
 		}
 	}
 
+	public void resetDates(State state)
+	{
+		System.out.println("Reset file modification dates based on previous state done " + FormatUtil.formatDate(state.timestamp));
+		if (state.message.length() > 0)
+		{
+			System.out.println("With message: " + state.message);
+		}
+		System.out.println("");
+
+		int dateResetCount = 0;
+		for (FileState fileState : state.fileStates)
+		{
+			File file = new File(fileState.fileName);
+			if (file.exists())
+			{
+				long lastModified = file.lastModified();
+				if (lastModified != fileState.lastModified)
+				{
+					dateResetCount++;
+					file.setLastModified(fileState.lastModified);
+					System.out.printf("Set file modification: %s\t%s -> %s%n", fileState.fileName,
+							FormatUtil.formatDate(lastModified), FormatUtil.formatDate(fileState.lastModified));
+				}
+			}
+		}
+
+		if (dateResetCount == 0)
+		{
+			System.out.printf("Nothing have been reset%n");
+		}
+		else
+		{
+			System.out.printf("%d file modification dates have been reset%n", dateResetCount);
+		}
+	}
 }
