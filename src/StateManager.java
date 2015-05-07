@@ -1,12 +1,20 @@
+import static java.nio.file.StandardOpenOption.CREATE;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.List;
 
 /**
  * Created by evrignaud on 05/05/15.
  */
 public class StateManager
 {
+	private Charset utf8 = Charset.forName("UTF-8");
+
 	private File stateDir;
+	private int lastStateNumber = -1;
 
 	public StateManager(File stateDir)
 	{
@@ -16,20 +24,21 @@ public class StateManager
 	public void createNewState(State state) throws IOException
 	{
 		state.writeToZipFile(getNextStateFile());
+		writeLastStateNumber();
 	}
 
 	public File getNextStateFile()
 	{
-		int stateNumber = getLastStateNumber();
-		stateNumber++;
-		File statFile = getStateFile(stateNumber);
+		findLastStateNumber();
+		lastStateNumber++;
+		File statFile = getStateFile(lastStateNumber);
 		return statFile;
 	}
 
 	public State loadLastState() throws IOException
 	{
-		int stateNumber = getLastStateNumber();
-		File stateFile = getStateFile(stateNumber);
+		findLastStateNumber();
+		File stateFile = getStateFile(lastStateNumber);
 
 		if (!stateFile.exists())
 		{
@@ -46,14 +55,60 @@ public class StateManager
 		return new File(stateDir, "state_" + stateNumber + ".zjson");
 	}
 
-	private int getLastStateNumber()
+	private void findLastStateNumber()
 	{
+		readLastStateNumber();
+		if (lastStateNumber != -1)
+		{
+			return;
+		}
+
 		for (int index = 1; ; index++)
 		{
 			File statFile = getStateFile(index);
 			if (!statFile.exists())
 			{
-				return index - 1;
+				lastStateNumber = index - 1;
+				return;
+			}
+		}
+	}
+
+	private void readLastStateNumber()
+	{
+		lastStateNumber = -1;
+
+		File lastStateFile = new File(stateDir, "lastState");
+		if (lastStateFile.exists())
+		{
+			try
+			{
+				List<String> strings = Files.readAllLines(lastStateFile.toPath(), utf8);
+				if (strings.size() > 0)
+				{
+					lastStateNumber = Integer.parseInt(strings.get(0));
+				}
+			}
+			catch (IOException ex)
+			{
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	private void writeLastStateNumber()
+	{
+		if (lastStateNumber != -1)
+		{
+			File lastStateFile = new File(stateDir, "lastState");
+			String content = "" + lastStateNumber;
+			try
+			{
+				Files.write(lastStateFile.toPath(), content.getBytes(), CREATE);
+			}
+			catch (IOException ex)
+			{
+				ex.printStackTrace();
 			}
 		}
 	}
@@ -86,7 +141,7 @@ public class StateManager
 
 		if (dateResetCount == 0)
 		{
-			System.out.printf("Nothing have been reset%n");
+			System.out.printf("No file modification date have been reset%n");
 		}
 		else
 		{

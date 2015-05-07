@@ -16,14 +16,12 @@ public class StateGenerator
 	{
 		State state = new State();
 		state.message = message;
-		state.baseDirectory = baseDirectory.toString();
-		getFileStates(state, baseDirectory);
+		getFileStates(state, baseDirectory.toString(), baseDirectory);
 		return state;
 	}
 
-	private void getFileStates(State state, File directory)
+	private void getFileStates(State state, String baseDirectory, File directory)
 	{
-		String baseDirectory = state.baseDirectory;
 		File[] files = directory.listFiles();
 		for (File file : files)
 		{
@@ -34,7 +32,7 @@ public class StateGenerator
 
 			if (file.isDirectory())
 			{
-				getFileStates(state, file);
+				getFileStates(state, baseDirectory, file);
 			}
 			else
 			{

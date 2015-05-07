@@ -19,7 +19,6 @@ import com.google.gson.GsonBuilder;
  */
 public class State
 {
-	public String baseDirectory;
 	public long timestamp = System.currentTimeMillis();
 	public String message = "";
 	public List<FileState> fileStates = new ArrayList<>();
@@ -40,7 +39,6 @@ public class State
 		{
 			Gson gson = new Gson();
 			State state = gson.fromJson(reader, State.class);
-			baseDirectory = state.baseDirectory;
 			timestamp = state.timestamp;
 			message = state.message;
 			fileStates = state.fileStates;
