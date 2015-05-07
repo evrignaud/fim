@@ -15,7 +15,7 @@ public class StateManager
 
 	public void createNewState(State state) throws IOException
 	{
-		state.writeToFile(getNextStateFile());
+		state.writeToZipFile(getNextStateFile());
 	}
 
 	public File getNextStateFile()
@@ -37,13 +37,13 @@ public class StateManager
 		}
 
 		State state = new State();
-		state.loadFromFile(stateFile);
+		state.loadFromZipFile(stateFile);
 		return state;
 	}
 
 	private File getStateFile(int stateNumber)
 	{
-		return new File(stateDir, "state_" + stateNumber + ".json");
+		return new File(stateDir, "state_" + stateNumber + ".zjson");
 	}
 
 	private int getLastStateNumber()

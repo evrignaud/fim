@@ -1,11 +1,15 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,22 +20,23 @@ import com.google.gson.GsonBuilder;
 public class State
 {
 	public String baseDirectory;
-	long timestamp = System.currentTimeMillis();
-	String message = "";
-	List<FileState> fileStates = new ArrayList<>();
+	public long timestamp = System.currentTimeMillis();
+	public String message = "";
+	public List<FileState> fileStates = new ArrayList<>();
 
-	public void writeToFile(File stateFile) throws IOException
+	public void writeToZipFile(File stateFile) throws IOException
 	{
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(stateFile)))
+
+		try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile))))
 		{
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			gson.toJson(this, writer);
 		}
 	}
 
-	public void loadFromFile(File stateFile) throws IOException
+	public void loadFromZipFile(File stateFile) throws IOException
 	{
-		try (BufferedReader reader = new BufferedReader(new FileReader(stateFile)))
+		try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile))))
 		{
 			Gson gson = new Gson();
 			State state = gson.fromJson(reader, State.class);
