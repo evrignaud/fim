@@ -1,6 +1,4 @@
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -8,8 +6,6 @@ import java.util.List;
  */
 public class StateComparator
 {
-	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
 	private boolean verbose;
 
 	private int addedCount;
@@ -32,7 +28,7 @@ public class StateComparator
 
 		if (previousState != null)
 		{
-			String previousStateDate = formatDate(previousState.timestamp);
+			String previousStateDate = FormatUtil.formatDate(previousState.timestamp);
 			System.out.println("Comparing with previous state from " + previousStateDate);
 			if (previousState.message.length() > 0)
 			{
@@ -70,7 +66,7 @@ public class StateComparator
 				if (originalState.hash.equals(fileState.hash))
 				{
 					dateModifiedCount++;
-					verbosePrint(String.format("%-18s%s \t%s -> %s", "Date modified:", fileState.fileName, formatDate(originalState), formatDate(fileState)));
+					verbosePrint(String.format("%-18s%s \t%s -> %s", "Date modified:", fileState.fileName, FormatUtil.formatDate(originalState), FormatUtil.formatDate(fileState)));
 				}
 				else
 				{
@@ -158,16 +154,6 @@ public class StateComparator
 		{
 			System.out.println("Nothing modified");
 		}
-	}
-
-	private String formatDate(FileState fileState)
-	{
-		return dateFormat.format(new Date(fileState.lastModified));
-	}
-
-	private String formatDate(long timestamp)
-	{
-		return dateFormat.format(new Date(timestamp));
 	}
 
 	private void verbosePrint(String message)
