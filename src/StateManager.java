@@ -14,7 +14,7 @@ public class StateManager
 	private Charset utf8 = Charset.forName("UTF-8");
 
 	private File stateDir;
-	private int lastStateNumber = -1;
+	private int previousStateNumber = -1;
 
 	public StateManager(File stateDir)
 	{
@@ -24,21 +24,21 @@ public class StateManager
 	public void createNewState(State state) throws IOException
 	{
 		state.writeToZipFile(getNextStateFile());
-		writeLastStateNumber();
+		writePreviousStateNumber();
 	}
 
 	public File getNextStateFile()
 	{
-		findLastStateNumber();
-		lastStateNumber++;
-		File statFile = getStateFile(lastStateNumber);
+		findPreviousStateNumber();
+		previousStateNumber++;
+		File statFile = getStateFile(previousStateNumber);
 		return statFile;
 	}
 
-	public State loadLastState() throws IOException
+	public State loadPreviousState() throws IOException
 	{
-		findLastStateNumber();
-		return loadState(lastStateNumber);
+		findPreviousStateNumber();
+		return loadState(previousStateNumber);
 	}
 
 	public State loadState(int stateNumber) throws IOException
@@ -60,10 +60,10 @@ public class StateManager
 		return new File(stateDir, "state_" + stateNumber + ".zjson");
 	}
 
-	private void findLastStateNumber()
+	private void findPreviousStateNumber()
 	{
-		readLastStateNumber();
-		if (lastStateNumber != -1)
+		readPreviousStateNumber();
+		if (previousStateNumber != -1)
 		{
 			return;
 		}
@@ -73,25 +73,25 @@ public class StateManager
 			File statFile = getStateFile(index);
 			if (!statFile.exists())
 			{
-				lastStateNumber = index - 1;
+				previousStateNumber = index - 1;
 				return;
 			}
 		}
 	}
 
-	private void readLastStateNumber()
+	private void readPreviousStateNumber()
 	{
-		lastStateNumber = -1;
+		previousStateNumber = -1;
 
-		File lastStateFile = new File(stateDir, "lastState");
-		if (lastStateFile.exists())
+		File previousStateFile = new File(stateDir, "previousState");
+		if (previousStateFile.exists())
 		{
 			try
 			{
-				List<String> strings = Files.readAllLines(lastStateFile.toPath(), utf8);
+				List<String> strings = Files.readAllLines(previousStateFile.toPath(), utf8);
 				if (strings.size() > 0)
 				{
-					lastStateNumber = Integer.parseInt(strings.get(0));
+					previousStateNumber = Integer.parseInt(strings.get(0));
 				}
 			}
 			catch (IOException ex)
@@ -101,12 +101,12 @@ public class StateManager
 		}
 	}
 
-	private void writeLastStateNumber()
+	private void writePreviousStateNumber()
 	{
-		if (lastStateNumber != -1)
+		if (previousStateNumber != -1)
 		{
 			File lastStateFile = new File(stateDir, "lastState");
-			String content = "" + lastStateNumber;
+			String content = "" + previousStateNumber;
 			try
 			{
 				Files.write(lastStateFile.toPath(), content.getBytes(), CREATE);
@@ -156,14 +156,14 @@ public class StateManager
 
 	public void displayLog() throws IOException
 	{
-		readLastStateNumber();
-		if (lastStateNumber == -1)
+		readPreviousStateNumber();
+		if (previousStateNumber == -1)
 		{
 			System.out.println("No state created");
 			return;
 		}
 
-		for (int stateNumber = 1; stateNumber <= lastStateNumber; stateNumber++)
+		for (int stateNumber = 1; stateNumber <= previousStateNumber; stateNumber++)
 		{
 			File statFile = getStateFile(stateNumber);
 			if (statFile.exists())

@@ -119,7 +119,7 @@ public class Main
 				break;
 
 			case COMMIT:
-				previousState = manager.loadLastState();
+				previousState = manager.loadPreviousState();
 				currentState = generator.generateState(message, baseDirectory);
 				comparator.compare(previousState, currentState);
 				if (comparator.somethingModified())
@@ -137,18 +137,18 @@ public class Main
 				break;
 
 			case DIFF:
-				previousState = manager.loadLastState();
+				previousState = manager.loadPreviousState();
 				currentState = generator.generateState(message, baseDirectory);
 				comparator.compare(previousState, currentState);
 				break;
 
 			case FIND_DUPLICATES:
-				System.out.println("Searching for duplicated files");
+				System.out.println("Searching for duplicated files" + (useLastState ? " from the previous state" : ""));
 				System.out.println("");
 				State state;
 				if (useLastState)
 				{
-					state = manager.loadLastState();
+					state = manager.loadPreviousState();
 				}
 				else
 				{
@@ -158,7 +158,7 @@ public class Main
 				break;
 
 			case RESET_DATES:
-				previousState = manager.loadLastState();
+				previousState = manager.loadPreviousState();
 				manager.resetDates(previousState);
 				break;
 
