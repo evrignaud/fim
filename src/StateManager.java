@@ -174,7 +174,7 @@ public class StateManager
 				{
 					System.out.printf("\tMessage: %s%n", state.message);
 				}
-				System.out.printf("\tContain %d files%n", state.fileStates.size());
+				System.out.printf("\tContains %d files%n", state.fileStates.size());
 				System.out.println("");
 			}
 		}
