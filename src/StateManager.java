@@ -169,12 +169,12 @@ public class StateManager
 			if (statFile.exists())
 			{
 				State state = loadState(stateNumber);
-				System.out.printf("State: %d - %s%n", stateNumber, FormatUtil.formatDate(state.timestamp));
+				System.out.printf("State #%d: %s%n", stateNumber, FormatUtil.formatDate(state.timestamp));
 				if (state.message.length() > 0)
 				{
 					System.out.printf("\tMessage: %s%n", state.message);
 				}
-				System.out.printf("\t%d files%n", state.fileStates.size());
+				System.out.printf("\tContain %d files%n", state.fileStates.size());
 				System.out.println("");
 			}
 		}
