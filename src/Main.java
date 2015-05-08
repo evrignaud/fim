@@ -26,6 +26,7 @@ public class Main
 		Options options = new Options();
 		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
 		options.addOption(createOption("m", "message", true, "Message to store with the state", false));
+		options.addOption(createOption("l", "useLastState", false, "Use last state", false));
 		return options;
 	}
 
@@ -56,6 +57,7 @@ public class Main
 
 		boolean verbose = true;
 		String message = "";
+		boolean useLastState = false;
 
 		try
 		{
@@ -70,6 +72,7 @@ public class Main
 			{
 				verbose = !commandLine.hasOption('q');
 				message = commandLine.getOptionValue('m', message);
+				useLastState = commandLine.hasOption('l');
 			}
 		}
 		catch (Exception ex)
@@ -142,8 +145,16 @@ public class Main
 			case FIND_DUPLICATES:
 				System.out.println("Searching for duplicated files");
 				System.out.println("");
-				currentState = generator.generateState(message, baseDirectory);
-				finder.findDuplicates(currentState);
+				State state;
+				if (useLastState)
+				{
+					state = manager.loadLastState();
+				}
+				else
+				{
+					state = generator.generateState(message, baseDirectory);
+				}
+				finder.findDuplicates(state);
 				break;
 
 			case RESET_DATES:

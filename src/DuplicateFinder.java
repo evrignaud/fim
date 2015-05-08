@@ -53,9 +53,9 @@ public class DuplicateFinder
 			{
 				for (FileState fs : duplicates)
 				{
-					System.out.println(fs.fileName);
+					System.out.println("  " + fs.fileName);
 				}
-				System.out.println("------------------------------");
+				System.out.println("------------------------------------------------------------");
 			}
 			duplicatesCount += duplicates.size() - 1;
 		}
