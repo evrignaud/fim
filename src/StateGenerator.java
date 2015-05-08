@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by evrignaud on 05/05/15.
@@ -18,9 +19,15 @@ public class StateGenerator
 		State state = new State();
 		state.message = message;
 
+		long start = System.currentTimeMillis();
 		progressBarInit();
 		getFileStates(state, baseDirectory.toString(), baseDirectory);
 		progressBarDone();
+		long duration = System.currentTimeMillis() - start;
+
+		long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+		long seconds = TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(minutes);
+		System.out.printf("File scan took %d min, %d sec%n%n", minutes, seconds);
 
 		return state;
 	}
@@ -74,7 +81,10 @@ public class StateGenerator
 
 	private void progressBarDone()
 	{
-		System.out.println("");
+		if (count > 10)
+		{
+			System.out.println("");
+		}
 	}
 
 	private String getRelativeFileName(String baseDirectory, String fileName)
