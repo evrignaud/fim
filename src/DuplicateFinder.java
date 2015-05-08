@@ -9,6 +9,7 @@ import java.util.List;
 public class DuplicateFinder
 {
 	public long duplicatesCount;
+	public long duplicatedFilesCount;
 	public List<FileState> duplicates;
 
 	private final boolean verbose;
@@ -26,6 +27,7 @@ public class DuplicateFinder
 		Collections.sort(fileStates, hashComparator);
 
 		duplicatesCount = 0;
+		duplicatedFilesCount = 0;
 		duplicates = new ArrayList<>();
 		String previousHash = "";
 		for (FileState fileState : fileStates)
@@ -41,23 +43,26 @@ public class DuplicateFinder
 		}
 		takeInAccountDuplicates();
 
-		System.out.println("");
-		System.out.println(duplicatesCount + " duplicated files");
+		System.out.println(duplicatedFilesCount + " duplicated files");
 	}
 
 	private void takeInAccountDuplicates()
 	{
 		if (duplicates.size() > 1)
 		{
+			duplicatesCount++;
+			duplicatedFilesCount += duplicates.size() - 1;
+
 			if (verbose)
 			{
+				System.out.println("Duplicate #" + duplicatesCount);
 				for (FileState fs : duplicates)
 				{
 					System.out.println("  " + fs.fileName);
 				}
-				System.out.println("------------------------------------------------------------");
+				System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
+				System.out.println("");
 			}
-			duplicatesCount += duplicates.size() - 1;
 		}
 	}
 
