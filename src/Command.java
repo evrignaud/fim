@@ -7,8 +7,8 @@ public enum Command
 	COMMIT("ci", "Commit the current directory state"),
 	DIFF("diff", "Compare the current directory state with the previous one"),
 	FIND_DUPLICATES("fdup", "Find duplicated files"),
-	RESET_DATES("rdates", "Reset the file modification dates like in the current directory state"),
-	LOG("log", "Display states log");
+	LOG("log", "Display states log"),
+	RESET_DATES("rdates", "Reset the file modification dates like in the current directory state");
 
 	public final String cmdName;
 	public final String description;

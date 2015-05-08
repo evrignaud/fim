@@ -10,8 +10,15 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
+/**
+ * File Integrity Checker (FIC).
+ */
 public class Main
 {
+	// TODO: Rename to (FIC) File Integrity Checker (FIC)
+	// TODO : Before commit ask y/n
+	// TODO : Before commit check if it's necessary. Do nothing if there is no change
+
 	/**
 	 * Construct Options.
 	 */
@@ -73,13 +80,13 @@ public class Main
 		}
 
 		File baseDirectory = new File(".");
-		File stateDir = new File(".bm/states");
+		File stateDir = new File(".fic/states");
 
 		if (command == Command.INIT)
 		{
 			if (stateDir.exists())
 			{
-				System.out.println("binary_manager repository already exist");
+				System.out.println("fic repository already exist");
 				System.exit(0);
 			}
 		}
@@ -87,7 +94,7 @@ public class Main
 		{
 			if (!stateDir.exists())
 			{
-				System.out.println("binary_manager repository does not exist. Please run 'bm init' before.");
+				System.out.println("fic repository does not exist. Please run 'fic init' before.");
 				System.exit(0);
 			}
 		}
@@ -160,7 +167,7 @@ public class Main
 			usage += "- " + command.cmdName + ": " + command.description + "\n";
 		}
 
-		helpFormatter.printHelp(writer, 110, "binary_manager <command>", "\nManages binary files\n", options, 5, 3, usage, true);
+		helpFormatter.printHelp(writer, 110, "fic <command>", "\nFile Integrity Checker\n", options, 5, 3, usage, true);
 		writer.flush();
 		System.out.println("");
 	}

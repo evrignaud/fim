@@ -25,7 +25,7 @@ public class StateGenerator
 		File[] files = directory.listFiles();
 		for (File file : files)
 		{
-			if (file.isDirectory() && file.getName().equals(".bm"))
+			if (file.isDirectory() && file.getName().equals(".fic"))
 			{
 				continue;
 			}
