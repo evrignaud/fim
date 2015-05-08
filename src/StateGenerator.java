@@ -11,12 +11,17 @@ import java.util.Comparator;
 public class StateGenerator
 {
 	private Comparator<FileState> fileNameComparator = new FileNameComparator();
+	private int count;
 
 	public State generateState(String message, File baseDirectory) throws IOException
 	{
 		State state = new State();
 		state.message = message;
+
+		progressBarInit();
 		getFileStates(state, baseDirectory.toString(), baseDirectory);
+		progressBarDone();
+
 		return state;
 	}
 
@@ -36,6 +41,8 @@ public class StateGenerator
 			}
 			else
 			{
+				updateProgressBar();
+
 				String hash = hashFile(file);
 				String fileName = file.toString();
 				fileName = getRelativeFileName(baseDirectory, fileName);
@@ -44,6 +51,30 @@ public class StateGenerator
 		}
 
 		Collections.sort(state.fileStates, fileNameComparator);
+	}
+
+	private void progressBarInit()
+	{
+		count = 0;
+	}
+
+	private void updateProgressBar()
+	{
+		count++;
+		if (count % 10 == 0)
+		{
+			System.out.print(".");
+		}
+
+		if (count % 1000 == 0)
+		{
+			System.out.println("");
+		}
+	}
+
+	private void progressBarDone()
+	{
+		System.out.println("");
 	}
 
 	private String getRelativeFileName(String baseDirectory, String fileName)
