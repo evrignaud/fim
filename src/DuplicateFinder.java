@@ -8,16 +8,16 @@ import java.util.List;
  */
 public class DuplicateFinder
 {
-	private Comparator<FileState> hashComparator = new HashComparator();
+	public long duplicatesCount;
+	public List<FileState> duplicates;
 
 	private final boolean verbose;
-
-	private long duplicatesCount;
-	private List<FileState> duplicates;
+	private Comparator<FileState> hashComparator;
 
 	public DuplicateFinder(boolean verbose)
 	{
 		this.verbose = verbose;
+		this.hashComparator = new HashComparator();
 	}
 
 	public void findDuplicates(State state)

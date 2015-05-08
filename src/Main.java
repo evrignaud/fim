@@ -13,6 +13,8 @@ import org.apache.commons.cli.Options;
 
 /**
  * File Integrity Checker (FIC).
+ *
+ * Created by evrignaud on 05/05/15.
  */
 public class Main
 {

@@ -6,14 +6,14 @@ import java.util.List;
  */
 public class StateComparator
 {
-	private boolean verbose;
-
 	public int addedCount;
 	public int duplicatedCount;
 	public int dateModifiedCount;
 	public int contentModifiedCount;
 	public int moveCount;
 	public int deletedCount;
+
+	private boolean verbose;
 
 	public StateComparator(boolean verbose)
 	{
