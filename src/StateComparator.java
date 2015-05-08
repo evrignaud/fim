@@ -8,12 +8,12 @@ public class StateComparator
 {
 	private boolean verbose;
 
-	private int addedCount;
-	private int duplicatedCount;
-	private int dateModifiedCount;
-	private int contentModifiedCount;
-	private int moveCount;
-	private int deletedCount;
+	public int addedCount;
+	public int duplicatedCount;
+	public int dateModifiedCount;
+	public int contentModifiedCount;
+	public int moveCount;
+	public int deletedCount;
 
 	public StateComparator(boolean verbose)
 	{
@@ -109,9 +109,9 @@ public class StateComparator
 		displayCounts();
 	}
 
-	private void displayCounts()
+	public void displayCounts()
 	{
-		if ((addedCount + duplicatedCount + dateModifiedCount + contentModifiedCount + moveCount + deletedCount) > 0)
+		if (somethingModified())
 		{
 			verbosePrint("");
 
@@ -153,6 +153,11 @@ public class StateComparator
 		{
 			System.out.println("Nothing modified");
 		}
+	}
+
+	public boolean somethingModified()
+	{
+		return (addedCount + duplicatedCount + dateModifiedCount + contentModifiedCount + moveCount + deletedCount) > 0;
 	}
 
 	private void verbosePrint(String message)

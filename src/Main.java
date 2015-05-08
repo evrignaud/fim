@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Scanner;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -15,10 +16,6 @@ import org.apache.commons.cli.Options;
  */
 public class Main
 {
-	// TODO: Rename to (FIC) File Integrity Checker (FIC)
-	// TODO : Before commit ask y/n
-	// TODO : Before commit check if it's necessary. Do nothing if there is no change
-
 	/**
 	 * Construct Options.
 	 */
@@ -120,7 +117,18 @@ public class Main
 				previousState = manager.loadLastState();
 				currentState = generator.generateState(message, baseDirectory);
 				comparator.compare(previousState, currentState);
-				manager.createNewState(currentState);
+				if (comparator.somethingModified())
+				{
+					System.out.println("");
+					if (confirmCommand("commit"))
+					{
+						manager.createNewState(currentState);
+					}
+					else
+					{
+						System.out.println("Nothing committed");
+					}
+				}
 				break;
 
 			case DIFF:
@@ -145,6 +153,18 @@ public class Main
 				manager.displayLog();
 				break;
 		}
+	}
+
+	private static boolean confirmCommand(String command)
+	{
+		Scanner scanner = new Scanner(System.in);
+		System.out.printf("Do you really want to %s (y/n)? ", command);
+		String str = scanner.next();
+		if (str.equalsIgnoreCase("y"))
+		{
+			return true;
+		}
+		return false;
 	}
 
 	private static void youMustSpecifyACommandToRun()
