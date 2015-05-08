@@ -184,7 +184,14 @@ public class Main
 		String usage = "\n  Available commands:\n";
 		for (final Command command : Command.values())
 		{
-			usage += "- " + command.cmdName + ": " + command.description + "\n";
+			if (command.shortCmdName != null && command.shortCmdName.length() > 0)
+			{
+				usage += String.format("- %s / %s: %s\n", command.cmdName, command.shortCmdName, command.description);
+			}
+			else
+			{
+				usage += String.format("- %s: %s\n", command.cmdName, command.description);
+			}
 		}
 
 		helpFormatter.printHelp(writer, 110, "fic <command>", "\nFile Integrity Checker\n", options, 5, 3, usage, true);
