@@ -23,13 +23,24 @@ public class StateGenerator
 		progressBarInit();
 		getFileStates(state, baseDirectory.toString(), baseDirectory);
 		progressBarDone();
-		long duration = System.currentTimeMillis() - start;
-
-		long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
-		long seconds = TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(minutes);
-		System.out.printf("File scan took %d min, %d sec%n%n", minutes, seconds);
+		displayTimeElapsed(start);
 
 		return state;
+	}
+
+	private void displayTimeElapsed(long start)
+	{
+		long duration = System.currentTimeMillis() - start;
+		long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+		long seconds = TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(minutes);
+		if (minutes == 0)
+		{
+			System.out.printf("File scan took %d sec%n%n", seconds);
+		}
+		else
+		{
+			System.out.printf("File scan took %d min, %d sec%n%n", minutes, seconds);
+		}
 	}
 
 	private void getFileStates(State state, String baseDirectory, File directory)
