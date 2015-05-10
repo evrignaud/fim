@@ -2,8 +2,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -12,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class StateGenerator
 {
 	private Comparator<FileState> fileNameComparator = new FileNameComparator();
+	private ExecutorService executorService;
 	private int count;
 
 	public State generateState(String message, File baseDirectory) throws IOException
@@ -21,7 +27,24 @@ public class StateGenerator
 
 		long start = System.currentTimeMillis();
 		progressBarInit();
-		getFileStates(state, baseDirectory.toString(), baseDirectory);
+
+		executorService = Executors.newFixedThreadPool(8);
+		List<FileState> fileStates = new CopyOnWriteArrayList<>();
+		getFileStates(fileStates, baseDirectory.toString(), baseDirectory);
+
+		try
+		{
+			executorService.shutdown();
+			executorService.awaitTermination(42, TimeUnit.DAYS);
+		}
+		catch (InterruptedException ex)
+		{
+			ex.printStackTrace();
+		}
+
+		state.fileStates = new ArrayList<>(fileStates);
+		Collections.sort(state.fileStates, fileNameComparator);
+
 		progressBarDone();
 		displayTimeElapsed(start);
 
@@ -43,7 +66,7 @@ public class StateGenerator
 		}
 	}
 
-	private void getFileStates(State state, String baseDirectory, File directory)
+	private void getFileStates(List<FileState> fileStates, String baseDirectory, File directory)
 	{
 		File[] files = directory.listFiles();
 		for (File file : files)
@@ -55,20 +78,38 @@ public class StateGenerator
 
 			if (file.isDirectory())
 			{
-				getFileStates(state, baseDirectory, file);
+				getFileStates(fileStates, baseDirectory, file);
 			}
 			else
 			{
-				updateProgressBar();
-
-				String hash = hashFile(file);
-				String fileName = file.toString();
-				fileName = getRelativeFileName(baseDirectory, fileName);
-				state.fileStates.add(new FileState(fileName, file.lastModified(), hash));
+				executorService.submit(new FileHasher(fileStates, baseDirectory, file));
 			}
 		}
+	}
 
-		Collections.sort(state.fileStates, fileNameComparator);
+	private class FileHasher implements Runnable
+	{
+		private List<FileState> fileStates;
+		private final String baseDirectory;
+		private File file;
+
+		public FileHasher(List<FileState> fileStates, String baseDirectory, File file)
+		{
+			this.fileStates = fileStates;
+			this.baseDirectory = baseDirectory;
+			this.file = file;
+		}
+
+		@Override
+		public void run()
+		{
+			String hash = hashFile(file);
+			String fileName = file.toString();
+			fileName = getRelativeFileName(baseDirectory, fileName);
+			fileStates.add(new FileState(fileName, file.lastModified(), hash));
+
+			updateProgressBar();
+		}
 	}
 
 	private void progressBarInit()

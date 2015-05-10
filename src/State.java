@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -21,7 +20,7 @@ public class State
 {
 	public long timestamp = System.currentTimeMillis();
 	public String message = "";
-	public List<FileState> fileStates = new ArrayList<>();
+	public List<FileState> fileStates = null;
 
 	public void writeToZipFile(File stateFile) throws IOException
 	{
