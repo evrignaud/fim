@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +30,9 @@ public class StateGenerator
 		long start = System.currentTimeMillis();
 		progressBarInit();
 
-		executorService = Executors.newFixedThreadPool(8);
+		int availableProcessors = ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors();
+		System.out.printf("Using the %d processors to compute file hashes%n", availableProcessors);
+		executorService = Executors.newFixedThreadPool(availableProcessors);
 		List<FileState> fileStates = new CopyOnWriteArrayList<>();
 		getFileStates(fileStates, baseDirectory.toString(), baseDirectory);
 
