@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by evrignaud on 05/05/15.
@@ -18,7 +19,7 @@ public class StateGenerator
 {
 	private Comparator<FileState> fileNameComparator = new FileNameComparator();
 	private ExecutorService executorService;
-	private int count;
+	private AtomicInteger count;
 
 	public State generateState(String message, File baseDirectory) throws IOException
 	{
@@ -103,29 +104,41 @@ public class StateGenerator
 		@Override
 		public void run()
 		{
+			updateProgressBar(file);
+
 			String hash = hashFile(file);
 			String fileName = file.toString();
 			fileName = getRelativeFileName(baseDirectory, fileName);
 			fileStates.add(new FileState(fileName, file.lastModified(), hash));
-
-			updateProgressBar();
 		}
 	}
 
 	private void progressBarInit()
 	{
-		count = 0;
+		count = new AtomicInteger(0);
 	}
 
-	private void updateProgressBar()
+	private void updateProgressBar(File file)
 	{
-		count++;
-		if (count % 10 == 0)
+		int i = count.addAndGet(1);
+		if (i % 10 == 0)
 		{
-			System.out.print(".");
+			long fileMb = file.length() / 1024 / 1024;
+			if (fileMb > 100)
+			{
+				System.out.print("O");
+			}
+			else if (fileMb > 20)
+			{
+				System.out.print("o");
+			}
+			else
+			{
+				System.out.print(".");
+			}
 		}
 
-		if (count % 1000 == 0)
+		if (i % 1000 == 0)
 		{
 			System.out.println("");
 		}
@@ -133,7 +146,7 @@ public class StateGenerator
 
 	private void progressBarDone()
 	{
-		if (count > 10)
+		if (count.get() > 10)
 		{
 			System.out.println("");
 		}
