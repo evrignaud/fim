@@ -26,6 +26,7 @@ public class Main
 		Options options = new Options();
 		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
 		options.addOption(createOption("m", "message", true, "Message to store with the state", false));
+		options.addOption(createOption("t", "threadCount", true, "Number of thread to use for state generation", false));
 		options.addOption(createOption("l", "useLastState", false, "Use last state", false));
 		return options;
 	}
@@ -59,6 +60,7 @@ public class Main
 		String message = "";
 		boolean useLastState = false;
 
+		int threadCount = 1;
 		try
 		{
 			String[] actionArgs = Arrays.copyOfRange(args, 1, args.length);
@@ -72,6 +74,7 @@ public class Main
 			{
 				verbose = !commandLine.hasOption('q');
 				message = commandLine.getOptionValue('m', message);
+				threadCount = Integer.parseInt(commandLine.getOptionValue('t', "" + threadCount));
 				useLastState = commandLine.hasOption('l');
 			}
 		}
@@ -79,6 +82,12 @@ public class Main
 		{
 			printUsage();
 			System.exit(-1);
+		}
+
+		if (threadCount < 1)
+		{
+			System.out.println("Thread count must be at least one");
+			System.exit(0);
 		}
 
 		File baseDirectory = new File(".");
@@ -104,7 +113,7 @@ public class Main
 		State previousState;
 		State currentState;
 
-		StateGenerator generator = new StateGenerator();
+		StateGenerator generator = new StateGenerator(threadCount);
 		StateManager manager = new StateManager(stateDir);
 		StateComparator comparator = new StateComparator(verbose);
 		DuplicateFinder finder = new DuplicateFinder(verbose);

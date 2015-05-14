@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -13,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by evrignaud on 05/05/15.
@@ -26,9 +26,18 @@ public class StateGenerator
 	public static final int SIZE_100_MO = 100 * MEGA;
 	public static final int SIZE_200_MO = 200 * MEGA;
 
+	private int threadCount;
+
 	private Comparator<FileState> fileNameComparator = new FileNameComparator();
 	private ExecutorService executorService;
+
+	private AtomicLong countFileSize;
 	private AtomicInteger count;
+
+	public StateGenerator(int threadCount)
+	{
+		this.threadCount = threadCount;
+	}
 
 	public State generateState(String message, File baseDirectory) throws IOException
 	{
@@ -38,29 +47,39 @@ public class StateGenerator
 		long start = System.currentTimeMillis();
 		progressBarInit();
 
-		int availableProcessors = ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors();
-		System.out.printf("Using the %d processors to compute file hashes%n", availableProcessors);
-		executorService = Executors.newFixedThreadPool(availableProcessors);
-		List<FileState> fileStates = new CopyOnWriteArrayList<>();
-		getFileStates(fileStates, baseDirectory.toString(), baseDirectory);
-
-		try
+		if (threadCount == 1)
 		{
-			executorService.shutdown();
-			executorService.awaitTermination(42, TimeUnit.DAYS);
+			state.fileStates = new ArrayList<>();
+			getFileStates(state.fileStates, baseDirectory.toString(), baseDirectory);
 		}
-		catch (InterruptedException ex)
+		else
 		{
-			ex.printStackTrace();
+			executorService = Executors.newFixedThreadPool(threadCount);
+			List<FileState> fileStates = new CopyOnWriteArrayList<>();
+			getFileStates(fileStates, baseDirectory.toString(), baseDirectory);
+			waitAllFileHasherDone();
+			state.fileStates = new ArrayList<>(fileStates);
 		}
 
-		state.fileStates = new ArrayList<>(fileStates);
 		Collections.sort(state.fileStates, fileNameComparator);
 
 		progressBarDone();
 		displayTimeElapsed(start);
 
 		return state;
+	}
+
+	private void waitAllFileHasherDone()
+	{
+		try
+		{
+			executorService.shutdown();
+			executorService.awaitTermination(100, TimeUnit.DAYS);
+		}
+		catch (InterruptedException ex)
+		{
+			ex.printStackTrace();
+		}
 	}
 
 	private void displayTimeElapsed(long start)
@@ -94,7 +113,15 @@ public class StateGenerator
 			}
 			else
 			{
-				executorService.submit(new FileHasher(fileStates, baseDirectory, file));
+				FileHasher hasher = new FileHasher(fileStates, baseDirectory, file);
+				if (threadCount == 1)
+				{
+					hasher.run();
+				}
+				else
+				{
+					executorService.submit(hasher);
+				}
 			}
 		}
 	}
@@ -126,15 +153,17 @@ public class StateGenerator
 
 	private void progressBarInit()
 	{
+		countFileSize = new AtomicLong(0);
 		count = new AtomicInteger(0);
 	}
 
 	private void updateProgressBar(File file)
 	{
+		long fileLength = countFileSize.addAndGet(file.length());
 		int i = count.addAndGet(1);
 		if (i % 10 == 0)
 		{
-			long fileLength = file.length();
+			countFileSize.set(0);
 			if (fileLength > SIZE_200_MO)
 			{
 				System.out.print("x");
