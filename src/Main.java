@@ -91,7 +91,7 @@ public class Main
 		}
 
 		File baseDirectory = new File(".");
-		File stateDir = new File(".fic/states");
+		File stateDir = new File(StateGenerator.FIC_DIR, "states");
 
 		if (command == Command.INIT)
 		{

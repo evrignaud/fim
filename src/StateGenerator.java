@@ -26,6 +26,8 @@ public class StateGenerator
 	public static final int SIZE_100_MO = 100 * MEGA;
 	public static final int SIZE_200_MO = 200 * MEGA;
 
+	public static final String FIC_DIR = ".fic";
+
 	private int threadCount;
 
 	private Comparator<FileState> fileNameComparator = new FileNameComparator();
@@ -102,7 +104,7 @@ public class StateGenerator
 		File[] files = directory.listFiles();
 		for (File file : files)
 		{
-			if (file.isDirectory() && file.getName().equals(".fic"))
+			if (file.isDirectory() && file.getName().equals(FIC_DIR))
 			{
 				continue;
 			}
