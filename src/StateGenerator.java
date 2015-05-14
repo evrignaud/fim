@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class StateGenerator
 {
+	public static final int MEGA = 1024 * 1024;
+	public static final int SIZE_10_MO = 10 * MEGA;
+	public static final int SIZE_20_MO = 20 * MEGA;
+	public static final int SIZE_50_MO = 50 * MEGA;
+	public static final int SIZE_100_MO = 100 * MEGA;
+	public static final int SIZE_200_MO = 200 * MEGA;
+
 	private Comparator<FileState> fileNameComparator = new FileNameComparator();
 	private ExecutorService executorService;
 	private AtomicInteger count;
@@ -126,14 +134,26 @@ public class StateGenerator
 		int i = count.addAndGet(1);
 		if (i % 10 == 0)
 		{
-			long fileMb = file.length() / 1024 / 1024;
-			if (fileMb > 100)
+			long fileLength = file.length();
+			if (fileLength > SIZE_200_MO)
 			{
-				System.out.print("O");
+				System.out.print("x");
 			}
-			else if (fileMb > 20)
+			if (fileLength > SIZE_100_MO)
 			{
-				System.out.print("o");
+				System.out.print("l");
+			}
+			else if (fileLength > SIZE_50_MO)
+			{
+				System.out.print("m");
+			}
+			else if (fileLength > SIZE_20_MO)
+			{
+				System.out.print("s");
+			}
+			else if (fileLength > SIZE_10_MO)
+			{
+				System.out.print(":");
 			}
 			else
 			{
@@ -175,12 +195,21 @@ public class StateGenerator
 			MessageDigest md = MessageDigest.getInstance("SHA-512");
 			FileInputStream fis = new FileInputStream(file);
 
-			byte[] dataBytes = new byte[1024];
+			byte[] dataBytes;
 
-			int nread;
-			while ((nread = fis.read(dataBytes)) != -1)
+			if (file.length() < SIZE_50_MO)
 			{
-				md.update(dataBytes, 0, nread);
+				dataBytes = Files.readAllBytes(file.toPath());
+				md.update(dataBytes, 0, dataBytes.length);
+			}
+			else
+			{
+				dataBytes = new byte[1024];
+				int nread;
+				while ((nread = fis.read(dataBytes)) != -1)
+				{
+					md.update(dataBytes, 0, nread);
+				}
 			}
 
 			byte[] mdbytes = md.digest();
