@@ -1,7 +1,7 @@
 /**
  * Created by evrignaud on 05/05/15.
  */
-public class FileState
+public class FileState implements Comparable<FileState>
 {
 	public String fileName;
 	public long lastModified;
@@ -69,5 +69,11 @@ public class FileState
 				append(", lastModified=").append(lastModified).
 				append(", hash='").append(hash).append('\'').
 				append('}').toString();
+	}
+
+	@Override
+	public int compareTo(FileState other)
+	{
+		return fileName.compareTo(other.fileName);
 	}
 }

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -6,12 +7,12 @@ import java.util.List;
  */
 public class StateComparator
 {
-	public int addedCount;
-	public int duplicatedCount;
-	public int dateModifiedCount;
-	public int contentModifiedCount;
-	public int moveCount;
-	public int deletedCount;
+	public List<FileState> added;
+	public List<Difference> duplicated;
+	public List<Difference> dateModified;
+	public List<Difference> contentModified;
+	public List<Difference> moved;
+	public List<FileState> deleted;
 
 	private final boolean verbose;
 	private final boolean fastCompare;
@@ -22,7 +23,7 @@ public class StateComparator
 		this.fastCompare = fastCompare;
 	}
 
-	public void compare(State previousState, State currentState)
+	public StateComparator compare(State previousState, State currentState)
 	{
 		List<FileState> previousFileStates = new ArrayList<>();
 		List<FileState> differences = new ArrayList<>();
@@ -50,12 +51,12 @@ public class StateComparator
 			}
 		}
 
-		addedCount = 0;
-		duplicatedCount = 0;
-		dateModifiedCount = 0;
-		contentModifiedCount = 0;
-		moveCount = 0;
-		deletedCount = 0;
+		added = new ArrayList<>();
+		duplicated = new ArrayList<>();
+		dateModified = new ArrayList<>();
+		contentModified = new ArrayList<>();
+		moved = new ArrayList<>();
+		deleted = new ArrayList<>();
 
 		int index;
 		int diffIndex;
@@ -66,13 +67,11 @@ public class StateComparator
 				FileState originalState = differences.get(diffIndex);
 				if (originalState.hash.equals(fileState.hash))
 				{
-					dateModifiedCount++;
-					verbosePrint(String.format("%-18s%s \t%s -> %s", "Date modified:", fileState.fileName, FormatUtil.formatDate(originalState), FormatUtil.formatDate(fileState)));
+					dateModified.add(new Difference(originalState, fileState));
 				}
 				else
 				{
-					contentModifiedCount++;
-					verbosePrint(String.format("%-18s%s", "Content modified:", fileState.fileName));
+					contentModified.add(new Difference(originalState, fileState));
 				}
 
 				differences.remove(diffIndex);
@@ -81,31 +80,78 @@ public class StateComparator
 			{
 				if ((diffIndex = findSameHash(fileState, differences)) != -1)
 				{
-					FileState originalState = differences.get(diffIndex);
-
-					moveCount++;
-					verbosePrint(String.format("%-18s%s -> %s", "Moved:", originalState.fileName, fileState.fileName));
-
-					differences.remove(diffIndex);
+					FileState originalState = differences.remove(diffIndex);
+					moved.add(new Difference(originalState, fileState));
 				}
 				else
 				{
 					FileState originalState = previousFileStates.get(index);
-					duplicatedCount++;
-					verbosePrint(String.format("%-18s%s = %s", "Duplicated:", fileState.fileName, originalState.fileName));
+					duplicated.add(new Difference(originalState, fileState));
 				}
 			}
 			else
 			{
-				addedCount++;
-				verbosePrint(String.format("%-18s%s", "Added:", fileState.fileName));
+				added.add(fileState);
 			}
 		}
 
 		for (FileState fileState : differences)
 		{
-			deletedCount++;
-			verbosePrint(String.format("%-18s%s", "Deleted:", fileState.fileName));
+			deleted.add(fileState);
+		}
+
+		return this;
+	}
+
+	public void displayChanges()
+	{
+		if (!verbose)
+		{
+			displayCounts();
+			return;
+		}
+
+		String changeTypeFormat = "%-17s ";
+
+		Collections.sort(dateModified);
+		for (Difference diff : dateModified)
+		{
+			System.out.format(changeTypeFormat + "%s \t%s -> %s%n", "Date modified:", diff.fileState.fileName, FormatUtil.formatDate(diff.originalState), FormatUtil.formatDate(diff.fileState));
+		}
+
+		Collections.sort(contentModified);
+		for (Difference diff : contentModified)
+		{
+			System.out.format(changeTypeFormat + "%s \t%s -> %s%n", "Content modified:", diff.fileState.fileName, FormatUtil.formatDate(diff.originalState), FormatUtil.formatDate(diff.fileState));
+		}
+
+		Collections.sort(moved);
+		for (Difference diff : moved)
+		{
+			System.out.format(String.format(changeTypeFormat + "%s -> %s%n", "Moved:", diff.originalState.fileName, diff.fileState.fileName));
+		}
+
+		Collections.sort(duplicated);
+		for (Difference diff : duplicated)
+		{
+			System.out.format(String.format(changeTypeFormat + "%s = %s%n", "Duplicated:", diff.fileState.fileName, diff.originalState.fileName));
+		}
+
+		Collections.sort(added);
+		for (FileState fileState : added)
+		{
+			System.out.format(String.format(changeTypeFormat + "%s%n", "Added:", fileState.fileName));
+		}
+
+		Collections.sort(deleted);
+		for (FileState fileState : deleted)
+		{
+			System.out.format(String.format(changeTypeFormat + "%s%n", "Deleted:", fileState.fileName));
+		}
+
+		if (somethingModified())
+		{
+			System.out.println("");
 		}
 
 		displayCounts();
@@ -115,37 +161,35 @@ public class StateComparator
 	{
 		if (somethingModified())
 		{
-			verbosePrint("");
-
 			String message = "";
-			if (addedCount > 0)
+			if (!added.isEmpty())
 			{
-				message += "" + addedCount + " added, ";
+				message += "" + added.size() + " added, ";
 			}
 
-			if (duplicatedCount > 0)
+			if (!duplicated.isEmpty())
 			{
-				message += "" + duplicatedCount + " duplicated, ";
+				message += "" + duplicated.size() + " duplicated, ";
 			}
 
-			if (dateModifiedCount > 0)
+			if (!dateModified.isEmpty())
 			{
-				message += "" + dateModifiedCount + " date modified, ";
+				message += "" + dateModified.size() + " date modified, ";
 			}
 
-			if (contentModifiedCount > 0)
+			if (!contentModified.isEmpty())
 			{
-				message += "" + contentModifiedCount + " content modified, ";
+				message += "" + contentModified.size() + " content modified, ";
 			}
 
-			if (moveCount > 0)
+			if (!moved.isEmpty())
 			{
-				message += "" + moveCount + " moved, ";
+				message += "" + moved.size() + " moved, ";
 			}
 
-			if (deletedCount > 0)
+			if (!deleted.isEmpty())
 			{
-				message += "" + deletedCount + " deleted, ";
+				message += "" + deleted.size() + " deleted, ";
 			}
 
 			message = message.replaceAll(", $", "");
@@ -159,15 +203,7 @@ public class StateComparator
 
 	public boolean somethingModified()
 	{
-		return (addedCount + duplicatedCount + dateModifiedCount + contentModifiedCount + moveCount + deletedCount) > 0;
-	}
-
-	private void verbosePrint(String message)
-	{
-		if (verbose)
-		{
-			System.out.println(message);
-		}
+		return (added.size() + duplicated.size() + dateModified.size() + contentModified.size() + moved.size() + deleted.size()) > 0;
 	}
 
 	private int findSameFileName(FileState toFind, List<FileState> differences)

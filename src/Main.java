@@ -137,7 +137,7 @@ public class Main
 
 				stateDir.mkdirs();
 				currentState = generator.generateState("Initial state", baseDirectory);
-				comparator.compare(null, currentState);
+				comparator.compare(null, currentState).displayChanges();
 				manager.createNewState(currentState);
 				break;
 
@@ -146,7 +146,7 @@ public class Main
 
 				previousState = manager.loadPreviousState();
 				currentState = generator.generateState(message, baseDirectory);
-				comparator.compare(previousState, currentState);
+				comparator.compare(previousState, currentState).displayChanges();
 				if (comparator.somethingModified())
 				{
 					System.out.println("");
@@ -164,7 +164,7 @@ public class Main
 			case DIFF:
 				previousState = manager.loadPreviousState();
 				currentState = generator.generateState(message, baseDirectory);
-				comparator.compare(previousState, currentState);
+				comparator.compare(previousState, currentState).displayChanges();
 				break;
 
 			case FIND_DUPLICATES:
