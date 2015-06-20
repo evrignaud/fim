@@ -70,7 +70,7 @@ public class StateGenerator
 		Collections.sort(state.fileStates, fileNameComparator);
 
 		progressOutputDone();
-		displayTimeElapsed(start);
+		displayTimeElapsed(start, state);
 
 		return state;
 	}
@@ -88,18 +88,18 @@ public class StateGenerator
 		}
 	}
 
-	private void displayTimeElapsed(long start)
+	private void displayTimeElapsed(long start, State state)
 	{
 		long duration = System.currentTimeMillis() - start;
 		long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(minutes);
 		if (minutes == 0)
 		{
-			System.out.printf("File scan took %d sec%n%n", seconds);
+			System.out.printf("Scanned %d files in %d sec%n%n", state.fileStates.size(), seconds);
 		}
 		else
 		{
-			System.out.printf("File scan took %d min, %d sec%n%n", minutes, seconds);
+			System.out.printf("Scanned %d files in %d min, %d sec%n%n", state.fileStates.size(), minutes, seconds);
 		}
 	}
 
