@@ -13,11 +13,13 @@ public class StateComparator
 	public int moveCount;
 	public int deletedCount;
 
-	private boolean verbose;
+	private final boolean verbose;
+	private final boolean fastCompare;
 
-	public StateComparator(boolean verbose)
+	public StateComparator(boolean verbose, Boolean fastCompare)
 	{
 		this.verbose = verbose;
+		this.fastCompare = fastCompare;
 	}
 
 	public void compare(State previousState, State currentState)
@@ -75,7 +77,7 @@ public class StateComparator
 
 				differences.remove(diffIndex);
 			}
-			else if ((index = findSameHash(fileState, previousFileStates)) != -1)
+			else if (!fastCompare && (index = findSameHash(fileState, previousFileStates)) != -1)
 			{
 				if ((diffIndex = findSameHash(fileState, differences)) != -1)
 				{

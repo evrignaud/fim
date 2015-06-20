@@ -27,8 +27,10 @@ public class StateGenerator
 	public static final int SIZE_200_MO = 200 * MEGA;
 
 	public static final String FIC_DIR = ".fic";
+	public static final String NO_HASH = "no_hash";
 
-	private int threadCount;
+	private final int threadCount;
+	private final boolean fastCompare;
 
 	private Comparator<FileState> fileNameComparator = new FileNameComparator();
 	private ExecutorService executorService;
@@ -36,9 +38,10 @@ public class StateGenerator
 	private AtomicLong countFileSize;
 	private AtomicInteger count;
 
-	public StateGenerator(int threadCount)
+	public StateGenerator(int threadCount, boolean fastCompare)
 	{
 		this.threadCount = threadCount;
+		this.fastCompare = fastCompare;
 	}
 
 	public State generateState(String message, File baseDirectory) throws IOException
@@ -221,6 +224,11 @@ public class StateGenerator
 
 	private String hashFile(File file)
 	{
+		if (fastCompare)
+		{
+			return NO_HASH;
+		}
+
 		try
 		{
 			MessageDigest md = MessageDigest.getInstance("SHA-512");

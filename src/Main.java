@@ -1,7 +1,9 @@
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.cli.CommandLine;
@@ -25,6 +27,7 @@ public class Main
 	{
 		Options options = new Options();
 		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
+		options.addOption(createOption("f", "fastCompare", false, "Compare only filenames and modification dates", false));
 		options.addOption(createOption("m", "message", true, "Message to store with the state", false));
 		options.addOption(createOption("t", "threadCount", true, "Number of thread to use for state generation", false));
 		options.addOption(createOption("l", "useLastState", false, "Use last state", false));
@@ -40,12 +43,13 @@ public class Main
 
 	public static void main(String[] args) throws IOException
 	{
-		if (args.length < 1)
+		String[] filteredArgs = filterEmptyArgs(args);
+		if (filteredArgs.length < 1)
 		{
 			youMustSpecifyACommandToRun();
 		}
 
-		Command command = Command.fromName(args[0]);
+		Command command = Command.fromName(filteredArgs[0]);
 		if (command == null)
 		{
 			youMustSpecifyACommandToRun();
@@ -57,13 +61,14 @@ public class Main
 		CommandLine commandLine;
 
 		boolean verbose = true;
+		boolean fastCompare = false;
 		String message = "";
 		boolean useLastState = false;
 
 		int threadCount = 1;
 		try
 		{
-			String[] actionArgs = Arrays.copyOfRange(args, 1, args.length);
+			String[] actionArgs = Arrays.copyOfRange(filteredArgs, 1, filteredArgs.length);
 			commandLine = cmdLineGnuParser.parse(options, actionArgs);
 			if (commandLine.hasOption("h"))
 			{
@@ -73,6 +78,7 @@ public class Main
 			else
 			{
 				verbose = !commandLine.hasOption('q');
+				fastCompare = commandLine.hasOption('f');
 				message = commandLine.getOptionValue('m', message);
 				threadCount = Integer.parseInt(commandLine.getOptionValue('t', "" + threadCount));
 				useLastState = commandLine.hasOption('l');
@@ -82,6 +88,12 @@ public class Main
 		{
 			printUsage();
 			System.exit(-1);
+		}
+
+		if (fastCompare)
+		{
+			threadCount = 1;
+			System.out.println("Using fast compare mode. Thread count forced to 1");
 		}
 
 		if (threadCount < 1)
@@ -106,21 +118,23 @@ public class Main
 			if (!stateDir.exists())
 			{
 				System.out.println("fic repository does not exist. Please run 'fic init' before.");
-				System.exit(0);
+				System.exit(-1);
 			}
 		}
 
 		State previousState;
 		State currentState;
 
-		StateGenerator generator = new StateGenerator(threadCount);
-		StateManager manager = new StateManager(stateDir);
-		StateComparator comparator = new StateComparator(verbose);
+		StateGenerator generator = new StateGenerator(threadCount, fastCompare);
+		StateManager manager = new StateManager(stateDir, fastCompare);
+		StateComparator comparator = new StateComparator(verbose, fastCompare);
 		DuplicateFinder finder = new DuplicateFinder(verbose);
 
 		switch (command)
 		{
 			case INIT:
+				fastCompareNotSupported(fastCompare);
+
 				stateDir.mkdirs();
 				currentState = generator.generateState("Initial state", baseDirectory);
 				comparator.compare(null, currentState);
@@ -128,6 +142,8 @@ public class Main
 				break;
 
 			case COMMIT:
+				fastCompareNotSupported(fastCompare);
+
 				previousState = manager.loadPreviousState();
 				currentState = generator.generateState(message, baseDirectory);
 				comparator.compare(previousState, currentState);
@@ -152,6 +168,8 @@ public class Main
 				break;
 
 			case FIND_DUPLICATES:
+				fastCompareNotSupported(fastCompare);
+
 				System.out.println("Searching for duplicated files" + (useLastState ? " from the previous state" : ""));
 				System.out.println("");
 				State state;
@@ -167,6 +185,8 @@ public class Main
 				break;
 
 			case RESET_DATES:
+				fastCompareNotSupported(fastCompare);
+
 				previousState = manager.loadPreviousState();
 				manager.resetDates(previousState);
 				break;
@@ -174,6 +194,28 @@ public class Main
 			case LOG:
 				manager.displayLog();
 				break;
+		}
+	}
+
+	private static String[] filterEmptyArgs(String[] args)
+	{
+		List<String> filteredArgs = new ArrayList<>();
+		for (String arg : args)
+		{
+			if (arg.length() > 0)
+			{
+				filteredArgs.add(arg);
+			}
+		}
+		return filteredArgs.toArray(new String[0]);
+	}
+
+	private static void fastCompareNotSupported(boolean fastCompare)
+	{
+		if (fastCompare)
+		{
+			System.out.println("fastCompare option not supported by this command.");
+			System.exit(-1);
 		}
 	}
 
