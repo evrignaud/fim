@@ -11,8 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by evrignaud on 05/05/15.
@@ -35,8 +34,9 @@ public class StateGenerator
 	private Comparator<FileState> fileNameComparator = new FileNameComparator();
 	private ExecutorService executorService;
 
-	private AtomicLong countFileSize;
-	private AtomicInteger count;
+	private ReentrantLock countLock = new ReentrantLock();
+	private long summedFileLength;
+	private int fileCount;
 
 	public StateGenerator(int threadCount, boolean fastCompare)
 	{
@@ -50,7 +50,7 @@ public class StateGenerator
 		state.message = message;
 
 		long start = System.currentTimeMillis();
-		progressBarInit();
+		progressOutputInit();
 
 		if (threadCount == 1)
 		{
@@ -68,7 +68,7 @@ public class StateGenerator
 
 		Collections.sort(state.fileStates, fileNameComparator);
 
-		progressBarDone();
+		progressOutputDone();
 		displayTimeElapsed(start);
 
 		return state;
@@ -147,7 +147,7 @@ public class StateGenerator
 		@Override
 		public void run()
 		{
-			updateProgressBar(file);
+			updateProgressOutput(file);
 
 			String hash = hashFile(file);
 			String fileName = file.toString();
@@ -156,56 +156,81 @@ public class StateGenerator
 		}
 	}
 
-	private void progressBarInit()
+	private void progressOutputInit()
 	{
-		countFileSize = new AtomicLong(0);
-		count = new AtomicInteger(0);
-	}
-
-	private void updateProgressBar(File file)
-	{
-		long fileLength = countFileSize.addAndGet(file.length());
-		int i = count.addAndGet(1);
-		if (i % 10 == 0)
+		countLock.lock();
+		try
 		{
-			countFileSize.set(0);
-			if (fileLength > SIZE_200_MO)
-			{
-				System.out.print("x");
-			}
-			if (fileLength > SIZE_100_MO)
-			{
-				System.out.print("l");
-			}
-			else if (fileLength > SIZE_50_MO)
-			{
-				System.out.print("m");
-			}
-			else if (fileLength > SIZE_20_MO)
-			{
-				System.out.print("s");
-			}
-			else if (fileLength > SIZE_10_MO)
-			{
-				System.out.print(":");
-			}
-			else
-			{
-				System.out.print(".");
-			}
+			summedFileLength = 0;
+			fileCount = 0;
 		}
-
-		if (i % 1000 == 0)
+		finally
 		{
-			System.out.println("");
+			countLock.unlock();
 		}
 	}
 
-	private void progressBarDone()
+	private void updateProgressOutput(File file)
 	{
-		if (count.get() > 10)
+		countLock.lock();
+		try
 		{
-			System.out.println("");
+			summedFileLength += file.length();
+			fileCount++;
+
+			if (fileCount % 10 == 0)
+			{
+				if (summedFileLength > SIZE_200_MO)
+				{
+					System.out.print("x");
+				}
+				else if (summedFileLength > SIZE_100_MO)
+				{
+					System.out.print("l");
+				}
+				else if (summedFileLength > SIZE_50_MO)
+				{
+					System.out.print("m");
+				}
+				else if (summedFileLength > SIZE_20_MO)
+				{
+					System.out.print("s");
+				}
+				else if (summedFileLength > SIZE_10_MO)
+				{
+					System.out.print(":");
+				}
+				else
+				{
+					System.out.print(".");
+				}
+				summedFileLength = 0;
+			}
+
+			if (fileCount % 1000 == 0)
+			{
+				System.out.println("");
+			}
+		}
+		finally
+		{
+			countLock.unlock();
+		}
+	}
+
+	private void progressOutputDone()
+	{
+		countLock.lock();
+		try
+		{
+			if (fileCount > 10)
+			{
+				System.out.println("");
+			}
+		}
+		finally
+		{
+			countLock.unlock();
 		}
 	}
 
