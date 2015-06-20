@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -104,7 +105,9 @@ public class StateGenerator
 
 	private void getFileStates(List<FileState> fileStates, String baseDirectory, File directory)
 	{
-		File[] files = directory.listFiles();
+		List<File> files = Arrays.asList(directory.listFiles());
+		Collections.sort(files);
+
 		for (File file : files)
 		{
 			if (file.isDirectory() && file.getName().equals(FIC_DIR))
