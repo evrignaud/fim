@@ -22,16 +22,8 @@ public class State
 {
 	private long timestamp = System.currentTimeMillis();
 	private String message = "";
+	private int fileCount = 0;
 	private List<FileState> fileStates = null;
-
-	public void writeToZipFile(File stateFile) throws IOException
-	{
-		try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile))))
-		{
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			gson.toJson(this, writer);
-		}
-	}
 
 	public void loadFromZipFile(File stateFile) throws IOException
 	{
@@ -41,7 +33,19 @@ public class State
 			State state = gson.fromJson(reader, State.class);
 			timestamp = state.timestamp;
 			message = state.message;
+			fileCount = state.fileStates.size();
 			fileStates = state.fileStates;
+		}
+	}
+
+	public void saveToZipFile(File stateFile) throws IOException
+	{
+		fileCount = fileStates.size();
+
+		try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile))))
+		{
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			gson.toJson(this, writer);
 		}
 	}
 
@@ -63,6 +67,11 @@ public class State
 	public List<FileState> getFileStates()
 	{
 		return fileStates;
+	}
+
+	public int getFileCount()
+	{
+		return fileCount;
 	}
 
 	public void setFileStates(List<FileState> fileStates)

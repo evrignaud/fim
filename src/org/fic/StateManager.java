@@ -30,7 +30,7 @@ public class StateManager
 
 	public void createNewState(State state) throws IOException
 	{
-		state.writeToZipFile(getNextStateFile());
+		state.saveToZipFile(getNextStateFile());
 		writePreviousStateNumber();
 	}
 
@@ -191,7 +191,7 @@ public class StateManager
 				{
 					System.out.printf("\tMessage: %s%n", state.getMessage());
 				}
-				System.out.printf("\tContains %d files%n", state.getFileStates().size());
+				System.out.printf("\tContains %d files%n", state.getFileCount());
 				System.out.println("");
 			}
 		}
