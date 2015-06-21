@@ -13,19 +13,17 @@ import org.fim.model.State;
  */
 public class DuplicateFinder
 {
-	private final boolean verbose;
 	private long duplicatesCount;
 	private long duplicatedFilesCount;
 	private List<FileState> duplicates;
 	private Comparator<FileState> hashComparator;
 
-	public DuplicateFinder(boolean verbose)
+	public DuplicateFinder()
 	{
-		this.verbose = verbose;
 		this.hashComparator = new HashComparator();
 	}
 
-	public void findDuplicates(State state)
+	public void findDuplicates(State state, boolean verbose)
 	{
 		List<FileState> fileStates = new ArrayList<>(state.getFileStates());
 		Collections.sort(fileStates, hashComparator);
@@ -38,19 +36,19 @@ public class DuplicateFinder
 		{
 			if (!previousHash.equals(fileState.getHash()))
 			{
-				takeInAccountDuplicates();
+				takeInAccountDuplicates(verbose);
 				duplicates.clear();
 			}
 
 			previousHash = fileState.getHash();
 			duplicates.add(fileState);
 		}
-		takeInAccountDuplicates();
+		takeInAccountDuplicates(verbose);
 
 		System.out.println(duplicatedFilesCount + " duplicated files");
 	}
 
-	private void takeInAccountDuplicates()
+	private void takeInAccountDuplicates(boolean verbose)
 	{
 		if (duplicates.size() > 1)
 		{

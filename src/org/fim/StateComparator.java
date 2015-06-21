@@ -15,7 +15,6 @@ import org.fim.model.State;
  */
 public class StateComparator
 {
-	private final boolean verbose;
 	private final CompareMode compareMode;
 	private List<FileState> added;
 	private List<Difference> duplicated;
@@ -24,9 +23,8 @@ public class StateComparator
 	private List<Difference> moved;
 	private List<FileState> deleted;
 
-	public StateComparator(boolean verbose, CompareMode compareMode)
+	public StateComparator(CompareMode compareMode)
 	{
-		this.verbose = verbose;
 		this.compareMode = compareMode;
 	}
 
@@ -110,7 +108,7 @@ public class StateComparator
 		return this;
 	}
 
-	public void displayChanges()
+	public void displayChanges(boolean verbose)
 	{
 		if (!verbose)
 		{

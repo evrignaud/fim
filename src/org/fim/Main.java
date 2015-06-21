@@ -147,8 +147,8 @@ public class Main
 
 		StateGenerator generator = new StateGenerator(threadCount, compareMode);
 		StateManager manager = new StateManager(stateDir, compareMode);
-		StateComparator comparator = new StateComparator(verbose, compareMode);
-		DuplicateFinder finder = new DuplicateFinder(verbose);
+		StateComparator comparator = new StateComparator(compareMode);
+		DuplicateFinder finder = new DuplicateFinder();
 
 		switch (command)
 		{
@@ -157,7 +157,7 @@ public class Main
 
 				stateDir.mkdirs();
 				currentState = generator.generateState("Initial state", baseDirectory);
-				comparator.compare(null, currentState).displayChanges();
+				comparator.compare(null, currentState).displayChanges(verbose);
 				manager.createNewState(currentState);
 				break;
 
@@ -166,7 +166,7 @@ public class Main
 
 				previousState = manager.loadPreviousState();
 				currentState = generator.generateState(message, baseDirectory);
-				comparator.compare(previousState, currentState).displayChanges();
+				comparator.compare(previousState, currentState).displayChanges(verbose);
 				if (comparator.somethingModified())
 				{
 					System.out.println("");
@@ -184,7 +184,7 @@ public class Main
 			case DIFF:
 				previousState = manager.loadPreviousState();
 				currentState = generator.generateState(message, baseDirectory);
-				comparator.compare(previousState, currentState).displayChanges();
+				comparator.compare(previousState, currentState).displayChanges(verbose);
 				break;
 
 			case FIND_DUPLICATES:
@@ -201,7 +201,7 @@ public class Main
 				{
 					state = generator.generateState(message, baseDirectory);
 				}
-				finder.findDuplicates(state);
+				finder.findDuplicates(state, verbose);
 				break;
 
 			case RESET_DATES:
@@ -260,7 +260,7 @@ public class Main
 
 	public static void printUsage()
 	{
-		System.out.println(
+		System.out.println("" +
 				"______ _ _         _____      _                  _ _           ___  ___                                  \n" +
 				"|  ___(_) |       |_   _|    | |                (_) |          |  \\/  |                                  \n" +
 				"| |_   _| | ___     | | _ __ | |_ ___  __ _ _ __ _| |_ _   _   | .  . | __ _ _ __   __ _  __ _  ___ _ __ \n" +
