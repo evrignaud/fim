@@ -59,9 +59,9 @@ public class StateManager
 		if (fastCompare)
 		{
 			// Replace the real file hash by 'no_hash' to be able to compare the FileState entry
-			for (FileState fileState : state.fileStates)
+			for (FileState fileState : state.getFileStates())
 			{
-				fileState.hash = StateGenerator.NO_HASH;
+				fileState.setHash(StateGenerator.NO_HASH);
 			}
 		}
 
@@ -133,26 +133,26 @@ public class StateManager
 
 	public void resetDates(State state)
 	{
-		System.out.println("Reset file modification dates based on previous state done " + FormatUtil.formatDate(state.timestamp));
-		if (state.message.length() > 0)
+		System.out.println("Reset file modification dates based on previous state done " + FormatUtil.formatDate(state.getTimestamp()));
+		if (state.getMessage().length() > 0)
 		{
-			System.out.println("Message: " + state.message);
+			System.out.println("Message: " + state.getMessage());
 		}
 		System.out.println("");
 
 		int dateResetCount = 0;
-		for (FileState fileState : state.fileStates)
+		for (FileState fileState : state.getFileStates())
 		{
-			File file = new File(fileState.fileName);
+			File file = new File(fileState.getFileName());
 			if (file.exists())
 			{
 				long lastModified = file.lastModified();
-				if (lastModified != fileState.lastModified)
+				if (lastModified != fileState.getLastModified())
 				{
 					dateResetCount++;
-					file.setLastModified(fileState.lastModified);
-					System.out.printf("Set file modification: %s\t%s -> %s%n", fileState.fileName,
-							FormatUtil.formatDate(lastModified), FormatUtil.formatDate(fileState.lastModified));
+					file.setLastModified(fileState.getLastModified());
+					System.out.printf("Set file modification: %s\t%s -> %s%n", fileState.getFileName(),
+							FormatUtil.formatDate(lastModified), FormatUtil.formatDate(fileState.getLastModified()));
 				}
 			}
 		}
@@ -182,12 +182,12 @@ public class StateManager
 			if (statFile.exists())
 			{
 				State state = loadState(stateNumber);
-				System.out.printf("State #%d: %s%n", stateNumber, FormatUtil.formatDate(state.timestamp));
-				if (state.message.length() > 0)
+				System.out.printf("State #%d: %s%n", stateNumber, FormatUtil.formatDate(state.getTimestamp()));
+				if (state.getMessage().length() > 0)
 				{
-					System.out.printf("\tMessage: %s%n", state.message);
+					System.out.printf("\tMessage: %s%n", state.getMessage());
 				}
-				System.out.printf("\tContains %d files%n", state.fileStates.size());
+				System.out.printf("\tContains %d files%n", state.getFileStates().size());
 				System.out.println("");
 			}
 		}

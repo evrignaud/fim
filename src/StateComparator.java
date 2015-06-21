@@ -7,12 +7,12 @@ import java.util.List;
  */
 public class StateComparator
 {
-	public List<FileState> added;
-	public List<Difference> duplicated;
-	public List<Difference> dateModified;
-	public List<Difference> contentModified;
-	public List<Difference> moved;
-	public List<FileState> deleted;
+	private List<FileState> added;
+	private List<Difference> duplicated;
+	private List<Difference> dateModified;
+	private List<Difference> contentModified;
+	private List<Difference> moved;
+	private List<FileState> deleted;
 
 	private final boolean verbose;
 	private final boolean fastCompare;
@@ -31,19 +31,19 @@ public class StateComparator
 
 		if (previousState != null)
 		{
-			System.out.println("Comparing with previous state from " + FormatUtil.formatDate(previousState.timestamp));
-			if (previousState.message.length() > 0)
+			System.out.println("Comparing with previous state from " + FormatUtil.formatDate(previousState.getTimestamp()));
+			if (previousState.getMessage().length() > 0)
 			{
-				System.out.println("Message: " + previousState.message);
+				System.out.println("Message: " + previousState.getMessage());
 			}
 			System.out.println("");
 
-			previousFileStates.addAll(previousState.fileStates);
+			previousFileStates.addAll(previousState.getFileStates());
 		}
 
 		differences.addAll(previousFileStates);
 
-		for (FileState fileState : currentState.fileStates)
+		for (FileState fileState : currentState.getFileStates())
 		{
 			if (!differences.remove(fileState))
 			{
@@ -65,7 +65,7 @@ public class StateComparator
 			if ((diffIndex = findSameFileName(fileState, differences)) != -1)
 			{
 				FileState originalState = differences.get(diffIndex);
-				if (originalState.hash.equals(fileState.hash))
+				if (originalState.getHash().equals(fileState.getHash()))
 				{
 					dateModified.add(new Difference(originalState, fileState));
 				}
@@ -116,37 +116,37 @@ public class StateComparator
 		Collections.sort(dateModified);
 		for (Difference diff : dateModified)
 		{
-			System.out.format(changeTypeFormat + "%s \t%s -> %s%n", "Date modified:", diff.fileState.fileName, FormatUtil.formatDate(diff.originalState), FormatUtil.formatDate(diff.fileState));
+			System.out.format(changeTypeFormat + "%s \t%s -> %s%n", "Date modified:", diff.getFileState().getFileName(), FormatUtil.formatDate(diff.getOriginalState()), FormatUtil.formatDate(diff.getFileState()));
 		}
 
 		Collections.sort(contentModified);
 		for (Difference diff : contentModified)
 		{
-			System.out.format(changeTypeFormat + "%s \t%s -> %s%n", "Content modified:", diff.fileState.fileName, FormatUtil.formatDate(diff.originalState), FormatUtil.formatDate(diff.fileState));
+			System.out.format(changeTypeFormat + "%s \t%s -> %s%n", "Content modified:", diff.getFileState().getFileName(), FormatUtil.formatDate(diff.getOriginalState()), FormatUtil.formatDate(diff.getFileState()));
 		}
 
 		Collections.sort(moved);
 		for (Difference diff : moved)
 		{
-			System.out.format(String.format(changeTypeFormat + "%s -> %s%n", "Moved:", diff.originalState.fileName, diff.fileState.fileName));
+			System.out.format(String.format(changeTypeFormat + "%s -> %s%n", "Moved:", diff.getOriginalState().getFileName(), diff.getFileState().getFileName()));
 		}
 
 		Collections.sort(duplicated);
 		for (Difference diff : duplicated)
 		{
-			System.out.format(String.format(changeTypeFormat + "%s = %s%n", "Duplicated:", diff.fileState.fileName, diff.originalState.fileName));
+			System.out.format(String.format(changeTypeFormat + "%s = %s%n", "Duplicated:", diff.getFileState().getFileName(), diff.getOriginalState().getFileName()));
 		}
 
 		Collections.sort(added);
 		for (FileState fileState : added)
 		{
-			System.out.format(String.format(changeTypeFormat + "%s%n", "Added:", fileState.fileName));
+			System.out.format(String.format(changeTypeFormat + "%s%n", "Added:", fileState.getFileName()));
 		}
 
 		Collections.sort(deleted);
 		for (FileState fileState : deleted)
 		{
-			System.out.format(String.format(changeTypeFormat + "%s%n", "Deleted:", fileState.fileName));
+			System.out.format(String.format(changeTypeFormat + "%s%n", "Deleted:", fileState.getFileName()));
 		}
 
 		if (somethingModified())
@@ -211,7 +211,7 @@ public class StateComparator
 		int index = 0;
 		for (FileState fileState : differences)
 		{
-			if (fileState.fileName.equals(toFind.fileName))
+			if (fileState.getFileName().equals(toFind.getFileName()))
 			{
 				return index;
 			}
@@ -226,7 +226,7 @@ public class StateComparator
 		int index = 0;
 		for (FileState fileState : differences)
 		{
-			if (fileState.hash.equals(toFind.hash))
+			if (fileState.getHash().equals(toFind.getHash()))
 			{
 				return index;
 			}
@@ -234,5 +234,35 @@ public class StateComparator
 		}
 
 		return -1;
+	}
+
+	public List<FileState> getAdded()
+	{
+		return added;
+	}
+
+	public List<Difference> getDuplicated()
+	{
+		return duplicated;
+	}
+
+	public List<Difference> getDateModified()
+	{
+		return dateModified;
+	}
+
+	public List<Difference> getContentModified()
+	{
+		return contentModified;
+	}
+
+	public List<Difference> getMoved()
+	{
+		return moved;
+	}
+
+	public List<FileState> getDeleted()
+	{
+		return deleted;
 	}
 }

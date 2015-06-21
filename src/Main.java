@@ -248,13 +248,13 @@ public class Main
 		String usage = "\n  Available commands:\n";
 		for (final Command command : Command.values())
 		{
-			if (command.shortCmdName != null && command.shortCmdName.length() > 0)
+			if (command.getShortCmdName() != null && command.getShortCmdName().length() > 0)
 			{
-				usage += String.format("- %s / %s: %s\n", command.cmdName, command.shortCmdName, command.description);
+				usage += String.format("- %s / %s: %s\n", command.getCmdName(), command.getShortCmdName(), command.getDescription());
 			}
 			else
 			{
-				usage += String.format("- %s: %s\n", command.cmdName, command.description);
+				usage += String.format("- %s: %s\n", command.getCmdName(), command.getDescription());
 			}
 		}
 

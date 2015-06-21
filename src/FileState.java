@@ -3,9 +3,9 @@
  */
 public class FileState implements Comparable<FileState>
 {
-	public String fileName;
-	public long lastModified;
-	public String hash;
+	private String fileName;
+	private long lastModified;
+	private String hash;
 
 	public FileState(String fileName, long lastModified, String hash)
 	{
@@ -18,9 +18,9 @@ public class FileState implements Comparable<FileState>
 			throw new IllegalArgumentException("Invalid null hash");
 		}
 
-		this.fileName = fileName;
-		this.lastModified = lastModified;
-		this.hash = hash;
+		this.setFileName(fileName);
+		this.setLastModified(lastModified);
+		this.setHash(hash);
 	}
 
 	@Override
@@ -37,15 +37,15 @@ public class FileState implements Comparable<FileState>
 
 		FileState fileState = (FileState) o;
 
-		if (lastModified != fileState.lastModified)
+		if (getLastModified() != fileState.getLastModified())
 		{
 			return false;
 		}
-		if (!fileName.equals(fileState.fileName))
+		if (!getFileName().equals(fileState.getFileName()))
 		{
 			return false;
 		}
-		if (!hash.equals(fileState.hash))
+		if (!getHash().equals(fileState.getHash()))
 		{
 			return false;
 		}
@@ -56,24 +56,54 @@ public class FileState implements Comparable<FileState>
 	@Override
 	public int hashCode()
 	{
-		int result = fileName.hashCode();
-		result = 31 * result + (int) (lastModified ^ (lastModified >>> 32));
-		result = 31 * result + hash.hashCode();
+		int result = getFileName().hashCode();
+		result = 31 * result + (int) (getLastModified() ^ (getLastModified() >>> 32));
+		result = 31 * result + getHash().hashCode();
 		return result;
 	}
 
 	@Override
 	public String toString()
 	{
-		return new StringBuilder().append("FileState{").append("fileName='").append(fileName).append('\'').
-				append(", lastModified=").append(lastModified).
-				append(", hash='").append(hash).append('\'').
+		return new StringBuilder().append("FileState{").append("fileName='").append(getFileName()).append('\'').
+				append(", lastModified=").append(getLastModified()).
+				append(", hash='").append(getHash()).append('\'').
 				append('}').toString();
 	}
 
 	@Override
 	public int compareTo(FileState other)
 	{
-		return fileName.compareTo(other.fileName);
+		return getFileName().compareTo(other.getFileName());
+	}
+
+	public String getFileName()
+	{
+		return fileName;
+	}
+
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+
+	public long getLastModified()
+	{
+		return lastModified;
+	}
+
+	public void setLastModified(long lastModified)
+	{
+		this.lastModified = lastModified;
+	}
+
+	public String getHash()
+	{
+		return hash;
+	}
+
+	public void setHash(String hash)
+	{
+		this.hash = hash;
 	}
 }

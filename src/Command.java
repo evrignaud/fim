@@ -10,9 +10,9 @@ public enum Command
 	LOG("log", "", "Display states log"),
 	RESET_DATES("reset-dates", "rdates", "Reset the file modification dates like in the current directory state");
 
-	public final String cmdName;
-	public final String shortCmdName;
-	public final String description;
+	private final String cmdName;
+	private final String shortCmdName;
+	private final String description;
 
 	Command(String cmdName, String shortCmdName, String description)
 	{
@@ -25,16 +25,31 @@ public enum Command
 	{
 		for (final Command command : values())
 		{
-			if (command.cmdName.equals(cmdName))
+			if (command.getCmdName().equals(cmdName))
 			{
 				return command;
 			}
 
-			if (command.shortCmdName.equals(cmdName))
+			if (command.getShortCmdName().equals(cmdName))
 			{
 				return command;
 			}
 		}
 		return null;
+	}
+
+	public String getCmdName()
+	{
+		return cmdName;
+	}
+
+	public String getShortCmdName()
+	{
+		return shortCmdName;
+	}
+
+	public String getDescription()
+	{
+		return description;
 	}
 }

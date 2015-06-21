@@ -18,9 +18,9 @@ import com.google.gson.GsonBuilder;
  */
 public class State
 {
-	public long timestamp = System.currentTimeMillis();
-	public String message = "";
-	public List<FileState> fileStates = null;
+	private long timestamp = System.currentTimeMillis();
+	private String message = "";
+	private List<FileState> fileStates = null;
 
 	public void writeToZipFile(File stateFile) throws IOException
 	{
@@ -42,5 +42,35 @@ public class State
 			message = state.message;
 			fileStates = state.fileStates;
 		}
+	}
+
+	public long getTimestamp()
+	{
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp)
+	{
+		this.timestamp = timestamp;
+	}
+
+	public String getMessage()
+	{
+		return message;
+	}
+
+	public void setMessage(String message)
+	{
+		this.message = message;
+	}
+
+	public List<FileState> getFileStates()
+	{
+		return fileStates;
+	}
+
+	public void setFileStates(List<FileState> fileStates)
+	{
+		this.fileStates = fileStates;
 	}
 }

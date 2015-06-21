@@ -48,15 +48,15 @@ public class StateGenerator
 	public State generateState(String message, File baseDirectory) throws IOException
 	{
 		State state = new State();
-		state.message = message;
+		state.setMessage(message);
 
 		long start = System.currentTimeMillis();
 		progressOutputInit();
 
 		if (threadCount == 1)
 		{
-			state.fileStates = new ArrayList<>();
-			getFileStates(state.fileStates, baseDirectory.toString(), baseDirectory);
+			state.setFileStates(new ArrayList<FileState>());
+			getFileStates(state.getFileStates(), baseDirectory.toString(), baseDirectory);
 		}
 		else
 		{
@@ -64,10 +64,10 @@ public class StateGenerator
 			List<FileState> fileStates = new CopyOnWriteArrayList<>();
 			getFileStates(fileStates, baseDirectory.toString(), baseDirectory);
 			waitAllFileHasherDone();
-			state.fileStates = new ArrayList<>(fileStates);
+			state.setFileStates(new ArrayList<>(fileStates));
 		}
 
-		Collections.sort(state.fileStates, fileNameComparator);
+		Collections.sort(state.getFileStates(), fileNameComparator);
 
 		progressOutputDone();
 		displayTimeElapsed(start, state);
@@ -95,11 +95,11 @@ public class StateGenerator
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(minutes);
 		if (minutes == 0)
 		{
-			System.out.printf("Scanned %d files in %d sec%n%n", state.fileStates.size(), seconds);
+			System.out.printf("Scanned %d files in %d sec%n%n", state.getFileStates().size(), seconds);
 		}
 		else
 		{
-			System.out.printf("Scanned %d files in %d min, %d sec%n%n", state.fileStates.size(), minutes, seconds);
+			System.out.printf("Scanned %d files in %d min, %d sec%n%n", state.getFileStates().size(), minutes, seconds);
 		}
 	}
 
@@ -302,7 +302,7 @@ public class StateGenerator
 		@Override
 		public int compare(FileState fs1, FileState fs2)
 		{
-			return fs1.fileName.compareTo(fs2.fileName);
+			return fs1.getFileName().compareTo(fs2.getFileName());
 		}
 	}
 }

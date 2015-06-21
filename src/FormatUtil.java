@@ -10,7 +10,7 @@ public class FormatUtil
 
 	public static String formatDate(FileState fileState)
 	{
-		return dateFormat.format(new Date(fileState.lastModified));
+		return dateFormat.format(new Date(fileState.getLastModified()));
 	}
 
 	public static String formatDate(long timestamp)

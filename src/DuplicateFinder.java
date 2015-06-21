@@ -8,9 +8,9 @@ import java.util.List;
  */
 public class DuplicateFinder
 {
-	public long duplicatesCount;
-	public long duplicatedFilesCount;
-	public List<FileState> duplicates;
+	private long duplicatesCount;
+	private long duplicatedFilesCount;
+	private List<FileState> duplicates;
 
 	private final boolean verbose;
 	private Comparator<FileState> hashComparator;
@@ -23,7 +23,7 @@ public class DuplicateFinder
 
 	public void findDuplicates(State state)
 	{
-		List<FileState> fileStates = new ArrayList<>(state.fileStates);
+		List<FileState> fileStates = new ArrayList<>(state.getFileStates());
 		Collections.sort(fileStates, hashComparator);
 
 		duplicatesCount = 0;
@@ -32,13 +32,13 @@ public class DuplicateFinder
 		String previousHash = "";
 		for (FileState fileState : fileStates)
 		{
-			if (!previousHash.equals(fileState.hash))
+			if (!previousHash.equals(fileState.getHash()))
 			{
 				takeInAccountDuplicates();
 				duplicates.clear();
 			}
 
-			previousHash = fileState.hash;
+			previousHash = fileState.getHash();
 			duplicates.add(fileState);
 		}
 		takeInAccountDuplicates();
@@ -58,7 +58,7 @@ public class DuplicateFinder
 				System.out.println("Duplicate #" + duplicatesCount);
 				for (FileState fs : duplicates)
 				{
-					System.out.println("  " + fs.fileName);
+					System.out.println("  " + fs.getFileName());
 				}
 				System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
 				System.out.println("");
@@ -66,12 +66,42 @@ public class DuplicateFinder
 		}
 	}
 
+	public long getDuplicatesCount()
+	{
+		return duplicatesCount;
+	}
+
+	public void setDuplicatesCount(long duplicatesCount)
+	{
+		this.duplicatesCount = duplicatesCount;
+	}
+
+	public long getDuplicatedFilesCount()
+	{
+		return duplicatedFilesCount;
+	}
+
+	public void setDuplicatedFilesCount(long duplicatedFilesCount)
+	{
+		this.duplicatedFilesCount = duplicatedFilesCount;
+	}
+
+	public List<FileState> getDuplicates()
+	{
+		return duplicates;
+	}
+
+	public void setDuplicates(List<FileState> duplicates)
+	{
+		this.duplicates = duplicates;
+	}
+
 	private class HashComparator implements Comparator<FileState>
 	{
 		@Override
 		public int compare(FileState fs1, FileState fs2)
 		{
-			return fs1.hash.compareTo(fs2.hash);
+			return fs1.getHash().compareTo(fs2.getHash());
 		}
 	}
 }
