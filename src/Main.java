@@ -61,7 +61,7 @@ public class Main
 		CommandLine commandLine;
 
 		boolean verbose = true;
-		boolean fastCompare = false;
+		CompareMode compareMode = CompareMode.FULL;
 		String message = "";
 		boolean useLastState = false;
 
@@ -78,7 +78,7 @@ public class Main
 			else
 			{
 				verbose = !commandLine.hasOption('q');
-				fastCompare = commandLine.hasOption('f');
+				compareMode = commandLine.hasOption('f') ? CompareMode.FAST : CompareMode.FULL;
 				message = commandLine.getOptionValue('m', message);
 				threadCount = Integer.parseInt(commandLine.getOptionValue('t', "" + threadCount));
 				useLastState = commandLine.hasOption('l');
@@ -90,7 +90,7 @@ public class Main
 			System.exit(-1);
 		}
 
-		if (fastCompare)
+		if (compareMode == CompareMode.FAST)
 		{
 			threadCount = 1;
 			System.out.println("Using fast compare mode. Thread count forced to 1");
@@ -125,15 +125,15 @@ public class Main
 		State previousState;
 		State currentState;
 
-		StateGenerator generator = new StateGenerator(threadCount, fastCompare);
-		StateManager manager = new StateManager(stateDir, fastCompare);
-		StateComparator comparator = new StateComparator(verbose, fastCompare);
+		StateGenerator generator = new StateGenerator(threadCount, compareMode);
+		StateManager manager = new StateManager(stateDir, compareMode);
+		StateComparator comparator = new StateComparator(verbose, compareMode);
 		DuplicateFinder finder = new DuplicateFinder(verbose);
 
 		switch (command)
 		{
 			case INIT:
-				fastCompareNotSupported(fastCompare);
+				fastCompareNotSupported(compareMode);
 
 				stateDir.mkdirs();
 				currentState = generator.generateState("Initial state", baseDirectory);
@@ -142,7 +142,7 @@ public class Main
 				break;
 
 			case COMMIT:
-				fastCompareNotSupported(fastCompare);
+				fastCompareNotSupported(compareMode);
 
 				previousState = manager.loadPreviousState();
 				currentState = generator.generateState(message, baseDirectory);
@@ -168,7 +168,7 @@ public class Main
 				break;
 
 			case FIND_DUPLICATES:
-				fastCompareNotSupported(fastCompare);
+				fastCompareNotSupported(compareMode);
 
 				System.out.println("Searching for duplicated files" + (useLastState ? " from the previous state" : ""));
 				System.out.println("");
@@ -185,7 +185,7 @@ public class Main
 				break;
 
 			case RESET_DATES:
-				fastCompareNotSupported(fastCompare);
+				fastCompareNotSupported(compareMode);
 
 				previousState = manager.loadPreviousState();
 				manager.resetDates(previousState);
@@ -210,9 +210,9 @@ public class Main
 		return filteredArgs.toArray(new String[0]);
 	}
 
-	private static void fastCompareNotSupported(boolean fastCompare)
+	private static void fastCompareNotSupported(CompareMode compareMode)
 	{
-		if (fastCompare)
+		if (compareMode == CompareMode.FAST)
 		{
 			System.out.println("fastCompare option not supported by this command.");
 			System.exit(-1);

@@ -11,17 +11,15 @@ import java.util.List;
  */
 public class StateManager
 {
-	private Charset utf8 = Charset.forName("UTF-8");
-
 	private final File stateDir;
-	private final boolean fastCompare;
-
+	private final CompareMode compareMode;
+	private Charset utf8 = Charset.forName("UTF-8");
 	private int previousStateNumber = -1;
 
-	public StateManager(File stateDir, boolean fastCompare)
+	public StateManager(File stateDir, CompareMode compareMode)
 	{
 		this.stateDir = stateDir;
-		this.fastCompare = fastCompare;
+		this.compareMode = compareMode;
 	}
 
 	public void createNewState(State state) throws IOException
@@ -56,7 +54,7 @@ public class StateManager
 		State state = new State();
 		state.loadFromZipFile(stateFile);
 
-		if (fastCompare)
+		if (compareMode == CompareMode.FAST)
 		{
 			// Replace the real file hash by 'no_hash' to be able to compare the FileState entry
 			for (FileState fileState : state.getFileStates())

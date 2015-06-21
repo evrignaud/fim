@@ -8,11 +8,10 @@ import java.util.List;
  */
 public class DuplicateFinder
 {
+	private final boolean verbose;
 	private long duplicatesCount;
 	private long duplicatedFilesCount;
 	private List<FileState> duplicates;
-
-	private final boolean verbose;
 	private Comparator<FileState> hashComparator;
 
 	public DuplicateFinder(boolean verbose)

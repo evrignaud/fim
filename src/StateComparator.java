@@ -7,6 +7,8 @@ import java.util.List;
  */
 public class StateComparator
 {
+	private final boolean verbose;
+	private final CompareMode compareMode;
 	private List<FileState> added;
 	private List<Difference> duplicated;
 	private List<Difference> dateModified;
@@ -14,13 +16,10 @@ public class StateComparator
 	private List<Difference> moved;
 	private List<FileState> deleted;
 
-	private final boolean verbose;
-	private final boolean fastCompare;
-
-	public StateComparator(boolean verbose, Boolean fastCompare)
+	public StateComparator(boolean verbose, CompareMode compareMode)
 	{
 		this.verbose = verbose;
-		this.fastCompare = fastCompare;
+		this.compareMode = compareMode;
 	}
 
 	public StateComparator compare(State previousState, State currentState)
@@ -76,7 +75,7 @@ public class StateComparator
 
 				differences.remove(diffIndex);
 			}
-			else if (!fastCompare && (index = findSameHash(fileState, previousFileStates)) != -1)
+			else if (compareMode != CompareMode.FAST && (index = findSameHash(fileState, previousFileStates)) != -1)
 			{
 				if ((diffIndex = findSameHash(fileState, differences)) != -1)
 				{

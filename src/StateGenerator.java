@@ -30,7 +30,7 @@ public class StateGenerator
 	public static final String NO_HASH = "no_hash";
 
 	private final int threadCount;
-	private final boolean fastCompare;
+	private final CompareMode compareMode;
 
 	private Comparator<FileState> fileNameComparator = new FileNameComparator();
 	private ExecutorService executorService;
@@ -39,10 +39,10 @@ public class StateGenerator
 	private long summedFileLength;
 	private int fileCount;
 
-	public StateGenerator(int threadCount, boolean fastCompare)
+	public StateGenerator(int threadCount, CompareMode compareMode)
 	{
 		this.threadCount = threadCount;
-		this.fastCompare = fastCompare;
+		this.compareMode = compareMode;
 	}
 
 	public State generateState(String message, File baseDirectory) throws IOException
@@ -131,31 +131,6 @@ public class StateGenerator
 					executorService.submit(hasher);
 				}
 			}
-		}
-	}
-
-	private class FileHasher implements Runnable
-	{
-		private List<FileState> fileStates;
-		private final String baseDirectory;
-		private File file;
-
-		public FileHasher(List<FileState> fileStates, String baseDirectory, File file)
-		{
-			this.fileStates = fileStates;
-			this.baseDirectory = baseDirectory;
-			this.file = file;
-		}
-
-		@Override
-		public void run()
-		{
-			updateProgressOutput(file);
-
-			String hash = hashFile(file);
-			String fileName = file.toString();
-			fileName = getRelativeFileName(baseDirectory, fileName);
-			fileStates.add(new FileState(fileName, file.lastModified(), hash));
 		}
 	}
 
@@ -252,7 +227,7 @@ public class StateGenerator
 
 	private String hashFile(File file)
 	{
-		if (fastCompare)
+		if (compareMode == CompareMode.FAST)
 		{
 			return NO_HASH;
 		}
@@ -294,6 +269,31 @@ public class StateGenerator
 		{
 			e.printStackTrace();
 			return "????";
+		}
+	}
+
+	private class FileHasher implements Runnable
+	{
+		private final String baseDirectory;
+		private List<FileState> fileStates;
+		private File file;
+
+		public FileHasher(List<FileState> fileStates, String baseDirectory, File file)
+		{
+			this.fileStates = fileStates;
+			this.baseDirectory = baseDirectory;
+			this.file = file;
+		}
+
+		@Override
+		public void run()
+		{
+			updateProgressOutput(file);
+
+			String hash = hashFile(file);
+			String fileName = file.toString();
+			fileName = getRelativeFileName(baseDirectory, fileName);
+			fileStates.add(new FileState(fileName, file.lastModified(), hash));
 		}
 	}
 
