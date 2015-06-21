@@ -1,8 +1,5 @@
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -64,7 +61,7 @@ public class StateGenerator
 			List<FileState> fileStates = new CopyOnWriteArrayList<>();
 			getFileStates(fileStates, baseDirectory.toString(), baseDirectory);
 			waitAllFileHasherDone();
-			state.setFileStates(new ArrayList<>(fileStates));
+			state.setFileStates(new ArrayList<>(fileStates)); // Use an ArrayList at the end, because CopyOnWriteArrayList does not support Sort.
 		}
 
 		Collections.sort(state.getFileStates(), fileNameComparator);
@@ -121,7 +118,7 @@ public class StateGenerator
 			}
 			else
 			{
-				FileHasher hasher = new FileHasher(fileStates, baseDirectory, file);
+				FileHasher hasher = new FileHasher(this, fileStates, baseDirectory, file);
 				if (threadCount == 1)
 				{
 					hasher.run();
@@ -148,7 +145,7 @@ public class StateGenerator
 		}
 	}
 
-	private void updateProgressOutput(File file)
+	public void updateProgressOutput(File file)
 	{
 		countLock.lock();
 		try
@@ -212,91 +209,6 @@ public class StateGenerator
 		}
 	}
 
-	private String getRelativeFileName(String baseDirectory, String fileName)
-	{
-		if (fileName.startsWith(baseDirectory))
-		{
-			fileName = fileName.substring(baseDirectory.length());
-		}
-		if (fileName.startsWith("/"))
-		{
-			fileName = fileName.substring(1);
-		}
-		return fileName;
-	}
-
-	private String hashFile(File file)
-	{
-		if (compareMode == CompareMode.FAST)
-		{
-			return NO_HASH;
-		}
-
-		try
-		{
-			MessageDigest md = MessageDigest.getInstance("SHA-512");
-			FileInputStream fis = new FileInputStream(file);
-
-			byte[] dataBytes;
-
-			if (file.length() < SIZE_50_MO)
-			{
-				dataBytes = Files.readAllBytes(file.toPath());
-				md.update(dataBytes, 0, dataBytes.length);
-			}
-			else
-			{
-				dataBytes = new byte[1024];
-				int nread;
-				while ((nread = fis.read(dataBytes)) != -1)
-				{
-					md.update(dataBytes, 0, nread);
-				}
-			}
-
-			byte[] mdbytes = md.digest();
-
-			StringBuffer hexString = new StringBuffer();
-			for (byte b : mdbytes)
-			{
-				hexString.append(String.format("%x", b));
-			}
-
-			return hexString.toString();
-
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return "????";
-		}
-	}
-
-	private class FileHasher implements Runnable
-	{
-		private final String baseDirectory;
-		private List<FileState> fileStates;
-		private File file;
-
-		public FileHasher(List<FileState> fileStates, String baseDirectory, File file)
-		{
-			this.fileStates = fileStates;
-			this.baseDirectory = baseDirectory;
-			this.file = file;
-		}
-
-		@Override
-		public void run()
-		{
-			updateProgressOutput(file);
-
-			String hash = hashFile(file);
-			String fileName = file.toString();
-			fileName = getRelativeFileName(baseDirectory, fileName);
-			fileStates.add(new FileState(fileName, file.lastModified(), hash));
-		}
-	}
-
 	private class FileNameComparator implements Comparator<FileState>
 	{
 		@Override
@@ -304,5 +216,10 @@ public class StateGenerator
 		{
 			return fs1.getFileName().compareTo(fs2.getFileName());
 		}
+	}
+
+	public CompareMode getCompareMode()
+	{
+		return compareMode;
 	}
 }
