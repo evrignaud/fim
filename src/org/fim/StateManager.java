@@ -1,7 +1,7 @@
-package org.fic;
+package org.fim;
 
 import static java.nio.file.StandardOpenOption.CREATE;
-import static org.fic.util.FormatUtil.formatDate;
+import static org.fim.util.FormatUtil.formatDate;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,8 +9,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
 
-import org.fic.model.FileState;
-import org.fic.model.State;
+import org.fim.model.FileState;
+import org.fim.model.State;
 
 /**
  * Created by evrignaud on 05/05/15.

@@ -1,4 +1,4 @@
-package org.fic.model;
+package org.fim.model;
 
 /**
  * Created by evrignaud on 20/06/15.

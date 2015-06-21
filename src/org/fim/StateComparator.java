@@ -1,14 +1,14 @@
-package org.fic;
+package org.fim;
 
-import static org.fic.util.FormatUtil.formatDate;
+import static org.fim.util.FormatUtil.formatDate;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.fic.model.Difference;
-import org.fic.model.FileState;
-import org.fic.model.State;
+import org.fim.model.Difference;
+import org.fim.model.FileState;
+import org.fim.model.State;
 
 /**
  * Created by evrignaud on 05/05/15.

@@ -1,4 +1,4 @@
-package org.fic;
+package org.fim;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +13,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.fic.model.FileState;
-import org.fic.model.State;
+import org.fim.model.FileState;
+import org.fim.model.State;
 
 /**
  * Created by evrignaud on 05/05/15.
@@ -28,7 +28,7 @@ public class StateGenerator
 	public static final int SIZE_100_MO = 100 * MEGA;
 	public static final int SIZE_200_MO = 200 * MEGA;
 
-	public static final String FIC_DIR = ".fic";
+	public static final String FIC_DIR = ".fim";
 	public static final String NO_HASH = "no_hash";
 
 	private final int threadCount;

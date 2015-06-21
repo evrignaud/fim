@@ -1,4 +1,4 @@
-package org.fic;
+package org.fim;
 
 /**
  * Created by evrignaud on 21/06/15.

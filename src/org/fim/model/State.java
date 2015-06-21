@@ -1,4 +1,4 @@
-package org.fic.model;
+package org.fim.model;
 
 import java.io.File;
 import java.io.FileInputStream;

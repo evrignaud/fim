@@ -1,4 +1,4 @@
-package org.fic;
+package org.fim;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.util.List;
 
-import org.fic.model.FileState;
+import org.fim.model.FileState;
 
 /**
  * Created by evrignaud on 21/06/15.

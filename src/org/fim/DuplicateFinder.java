@@ -1,12 +1,12 @@
-package org.fic;
+package org.fim;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.fic.model.FileState;
-import org.fic.model.State;
+import org.fim.model.FileState;
+import org.fim.model.State;
 
 /**
  * Created by evrignaud on 05/05/15.

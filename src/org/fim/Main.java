@@ -1,4 +1,4 @@
-package org.fic;
+package org.fim;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +14,24 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.fic.model.State;
+import org.fim.model.State;
 
 /**
- * File Integrity Checker (FIC).
+ * File Integrity Manager (FIM).
+ *   ______ _ _         _____       _                  _ _            __  __
+ *  |  ____(_) |       |_   _|     | |                (_) |          |  \/  |
+ *  | |__   _| | ___     | |  _ __ | |_ ___  __ _ _ __ _| |_ _   _   | \  / | __ _ _ __   __ _  __ _  ___ _ __
+ *  |  __| | | |/ _ \    | | | '_ \| __/ _ \/ _` | '__| | __| | | |  | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '__|
+ *  | |    | | |  __/   _| |_| | | | ||  __/ (_| | |  | | |_| |_| |  | |  | | (_| | | | | (_| | (_| |  __/ |
+ *  |_|    |_|_|\___|  |_____|_| |_|\__\___|\__, |_|  |_|\__|\__, |  |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_|
+ *                                           __/ |            __/ |                             __/ |
+ *                                           |___/            |___/                             |___/
+ *
+ * This tool manage the integrity of a complete file tree.
+ * It manages States that acts like the Central Directory does for a Zip file.
+ *
+ * With FIM you can ensure the integrity of a big amount of data files that you cannot put into an archive.
+ * For example videos and photos can be managed by this tool.
  *
  * Created by evrignaud on 05/05/15.
  */
@@ -112,7 +126,7 @@ public class Main
 		{
 			if (stateDir.exists())
 			{
-				System.out.println("fic repository already exist");
+				System.out.println("fim repository already exist");
 				System.exit(0);
 			}
 		}
@@ -120,7 +134,7 @@ public class Main
 		{
 			if (!stateDir.exists())
 			{
-				System.out.println("fic repository does not exist. Please run 'fic init' before.");
+				System.out.println("fim repository does not exist. Please run 'fim init' before.");
 				System.exit(-1);
 			}
 		}
@@ -243,7 +257,14 @@ public class Main
 
 	public static void printUsage()
 	{
-		System.out.println("");
+		System.out.println("  ______ _ _        _____       _                  _ _           __  __                                   \n" +
+				" |  ____(_) |      |_   _|     | |                (_) |         |  \\/  |                                  \n" +
+				" | |__   _| | ___    | |  _ __ | |_ ___  __ _ _ __ _| |_ _   _  | \\  / | __ _ _ __   __ _  __ _  ___ _ __ \n" +
+				" |  __| | | |/ _ \\   | | | '_ \\| __/ _ \\/ _` | '__| | __| | | | | |\\/| |/ _` | '_ \\ / _` |/ _` |/ _ \\ '__|\n" +
+				" | |    | | |  __/  _| |_| | | | ||  __/ (_| | |  | | |_| |_| | | |  | | (_| | | | | (_| | (_| |  __/ |   \n" +
+				" |_|    |_|_|\\___| |_____|_| |_|\\__\\___|\\__, |_|  |_|\\__|\\__, | |_|  |_|\\__,_|_| |_|\\__,_|\\__, |\\___|_|   \n" +
+				"                                         __/ |            __/ |                            __/ |          \n" +
+				"                                        |___/            |___/                            |___/    \n");
 		Options options = constructOptions();
 		PrintWriter writer = new PrintWriter(System.out);
 		HelpFormatter helpFormatter = new HelpFormatter();
@@ -261,7 +282,7 @@ public class Main
 			}
 		}
 
-		helpFormatter.printHelp(writer, 110, "fic <command>", "\nFile Integrity Checker\n", options, 5, 3, usage, true);
+		helpFormatter.printHelp(writer, 110, "fim <command>", "\nFile Integrity Checker\n", options, 5, 3, usage, true);
 		writer.flush();
 		System.out.println("");
 	}
