@@ -234,7 +234,7 @@ public class Main
 	{
 		if (compareMode == CompareMode.FAST)
 		{
-			System.out.println("fastCompare option not supported by this command.");
+			System.out.println("Fast compare mode not supported by this command.");
 			System.exit(-1);
 		}
 	}
