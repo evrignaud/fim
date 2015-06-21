@@ -1,6 +1,14 @@
+package org.fic;
+
+import static org.fic.util.FormatUtil.formatDate;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.fic.model.Difference;
+import org.fic.model.FileState;
+import org.fic.model.State;
 
 /**
  * Created by evrignaud on 05/05/15.
@@ -30,7 +38,7 @@ public class StateComparator
 
 		if (previousState != null)
 		{
-			System.out.println("Comparing with previous state from " + FormatUtil.formatDate(previousState.getTimestamp()));
+			System.out.println("Comparing with previous state from " + formatDate(previousState.getTimestamp()));
 			if (previousState.getMessage().length() > 0)
 			{
 				System.out.println("Message: " + previousState.getMessage());
@@ -115,13 +123,13 @@ public class StateComparator
 		Collections.sort(dateModified);
 		for (Difference diff : dateModified)
 		{
-			System.out.format(changeTypeFormat + "%s \t%s -> %s%n", "Date modified:", diff.getFileState().getFileName(), FormatUtil.formatDate(diff.getOriginalState()), FormatUtil.formatDate(diff.getFileState()));
+			System.out.format(changeTypeFormat + "%s \t%s -> %s%n", "Date modified:", diff.getFileState().getFileName(), formatDate(diff.getOriginalState()), formatDate(diff.getFileState()));
 		}
 
 		Collections.sort(contentModified);
 		for (Difference diff : contentModified)
 		{
-			System.out.format(changeTypeFormat + "%s \t%s -> %s%n", "Content modified:", diff.getFileState().getFileName(), FormatUtil.formatDate(diff.getOriginalState()), FormatUtil.formatDate(diff.getFileState()));
+			System.out.format(changeTypeFormat + "%s \t%s -> %s%n", "Content modified:", diff.getFileState().getFileName(), formatDate(diff.getOriginalState()), formatDate(diff.getFileState()));
 		}
 
 		Collections.sort(moved);

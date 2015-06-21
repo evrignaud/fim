@@ -1,10 +1,16 @@
+package org.fic;
+
 import static java.nio.file.StandardOpenOption.CREATE;
+import static org.fic.util.FormatUtil.formatDate;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
+
+import org.fic.model.FileState;
+import org.fic.model.State;
 
 /**
  * Created by evrignaud on 05/05/15.
@@ -131,7 +137,7 @@ public class StateManager
 
 	public void resetDates(State state)
 	{
-		System.out.println("Reset file modification dates based on previous state done " + FormatUtil.formatDate(state.getTimestamp()));
+		System.out.println("Reset file modification dates based on previous state done " + formatDate(state.getTimestamp()));
 		if (state.getMessage().length() > 0)
 		{
 			System.out.println("Message: " + state.getMessage());
@@ -150,7 +156,7 @@ public class StateManager
 					dateResetCount++;
 					file.setLastModified(fileState.getLastModified());
 					System.out.printf("Set file modification: %s\t%s -> %s%n", fileState.getFileName(),
-							FormatUtil.formatDate(lastModified), FormatUtil.formatDate(fileState.getLastModified()));
+							formatDate(lastModified), formatDate(fileState.getLastModified()));
 				}
 			}
 		}
@@ -180,7 +186,7 @@ public class StateManager
 			if (statFile.exists())
 			{
 				State state = loadState(stateNumber);
-				System.out.printf("State #%d: %s%n", stateNumber, FormatUtil.formatDate(state.getTimestamp()));
+				System.out.printf("State #%d: %s%n", stateNumber, formatDate(state.getTimestamp()));
 				if (state.getMessage().length() > 0)
 				{
 					System.out.printf("\tMessage: %s%n", state.getMessage());

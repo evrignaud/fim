@@ -1,3 +1,5 @@
+package org.fic;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +12,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.fic.model.FileState;
+import org.fic.model.State;
 
 /**
  * Created by evrignaud on 05/05/15.
@@ -209,6 +214,11 @@ public class StateGenerator
 		}
 	}
 
+	public CompareMode getCompareMode()
+	{
+		return compareMode;
+	}
+
 	private class FileNameComparator implements Comparator<FileState>
 	{
 		@Override
@@ -216,10 +226,5 @@ public class StateGenerator
 		{
 			return fs1.getFileName().compareTo(fs2.getFileName());
 		}
-	}
-
-	public CompareMode getCompareMode()
-	{
-		return compareMode;
 	}
 }

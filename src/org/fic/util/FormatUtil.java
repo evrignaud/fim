@@ -1,5 +1,9 @@
+package org.fic.util;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.fic.model.FileState;
 
 /**
  * Created by evrignaud on 07/05/15.

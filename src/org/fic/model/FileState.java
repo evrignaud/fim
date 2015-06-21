@@ -1,3 +1,5 @@
+package org.fic.model;
+
 /**
  * Created by evrignaud on 05/05/15.
  */
@@ -41,10 +43,12 @@ public class FileState implements Comparable<FileState>
 		{
 			return false;
 		}
+
 		if (!getFileName().equals(fileState.getFileName()))
 		{
 			return false;
 		}
+
 		if (!getHash().equals(fileState.getHash()))
 		{
 			return false;

@@ -1,3 +1,5 @@
+package org.fic;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,6 +14,7 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.fic.model.State;
 
 /**
  * File Integrity Checker (FIC).

@@ -1,3 +1,5 @@
+package org.fic.model;
+
 /**
  * Created by evrignaud on 20/06/15.
  */

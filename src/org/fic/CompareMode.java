@@ -1,3 +1,5 @@
+package org.fic;
+
 /**
  * Created by evrignaud on 21/06/15.
  */
