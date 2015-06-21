@@ -24,7 +24,6 @@ public class State
 
 	public void writeToZipFile(File stateFile) throws IOException
 	{
-
 		try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile))))
 		{
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -47,11 +46,6 @@ public class State
 	public long getTimestamp()
 	{
 		return timestamp;
-	}
-
-	public void setTimestamp(long timestamp)
-	{
-		this.timestamp = timestamp;
 	}
 
 	public String getMessage()

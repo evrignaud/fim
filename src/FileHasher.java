@@ -5,14 +5,14 @@ import java.security.MessageDigest;
 import java.util.List;
 
 /**
-* Created by evrignaud on 21/06/15.
-*/
+ * Created by evrignaud on 21/06/15.
+ */
 class FileHasher implements Runnable
 {
-	private StateGenerator stateGenerator;
+	private final StateGenerator stateGenerator;
+	private final List<FileState> fileStates;
 	private final String baseDirectory;
-	private List<FileState> fileStates;
-	private File file;
+	private final File file;
 
 	public FileHasher(StateGenerator stateGenerator, List<FileState> fileStates, String baseDirectory, File file)
 	{
@@ -55,30 +55,31 @@ class FileHasher implements Runnable
 
 		try
 		{
-			MessageDigest md = MessageDigest.getInstance("SHA-512");
-			FileInputStream fis = new FileInputStream(file);
-
+			MessageDigest digest = MessageDigest.getInstance("SHA-512");
 			byte[] dataBytes;
 
 			if (file.length() < StateGenerator.SIZE_50_MO)
 			{
 				dataBytes = Files.readAllBytes(file.toPath());
-				md.update(dataBytes, 0, dataBytes.length);
+				digest.update(dataBytes, 0, dataBytes.length);
 			}
 			else
 			{
-				dataBytes = new byte[1024];
-				int nread;
-				while ((nread = fis.read(dataBytes)) != -1)
+				try (FileInputStream fis = new FileInputStream(file))
 				{
-					md.update(dataBytes, 0, nread);
+					dataBytes = new byte[1024];
+					int nread;
+					while ((nread = fis.read(dataBytes)) != -1)
+					{
+						digest.update(dataBytes, 0, nread);
+					}
 				}
 			}
 
-			byte[] mdbytes = md.digest();
+			byte[] digestBytes = digest.digest();
 
 			StringBuffer hexString = new StringBuffer();
-			for (byte b : mdbytes)
+			for (byte b : digestBytes)
 			{
 				hexString.append(String.format("%x", b));
 			}
