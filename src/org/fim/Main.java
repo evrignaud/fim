@@ -18,20 +18,23 @@ import org.fim.model.State;
 
 /**
  * File Integrity Manager (FIM).
- *   ______ _ _         _____       _                  _ _            __  __
- *  |  ____(_) |       |_   _|     | |                (_) |          |  \/  |
- *  | |__   _| | ___     | |  _ __ | |_ ___  __ _ _ __ _| |_ _   _   | \  / | __ _ _ __   __ _  __ _  ___ _ __
- *  |  __| | | |/ _ \    | | | '_ \| __/ _ \/ _` | '__| | __| | | |  | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '__|
- *  | |    | | |  __/   _| |_| | | | ||  __/ (_| | |  | | |_| |_| |  | |  | | (_| | | | | (_| | (_| |  __/ |
- *  |_|    |_|_|\___|  |_____|_| |_|\__\___|\__, |_|  |_|\__|\__, |  |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_|
- *                                           __/ |            __/ |                             __/ |
- *                                           |___/            |___/                             |___/
+ * ______ _ _         _____      _                  _ _           ___  ___
+ * |  ___(_) |       |_   _|    | |                (_) |          |  \/  |
+ * | |_   _| | ___     | | _ __ | |_ ___  __ _ _ __ _| |_ _   _   | .  . | __ _ _ __   __ _  __ _  ___ _ __
+ * |  _| | | |/ _ \    | || '_ \| __/ _ \/ _` | '__| | __| | | |  | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '__|
+ * | |   | | |  __/   _| || | | | ||  __/ (_| | |  | | |_| |_| |  | |  | | (_| | | | | (_| | (_| |  __/ |
+ * \_|   |_|_|\___|   \___/_| |_|\__\___|\__, |_|  |_|\__|\__, |  \_|  |_/\__,_|_| |_|\__,_|\__, |\___|_|
+ *                                        __/ |            __/ |                             __/ |
+ *                                       |___/            |___/                             |___/
  *
- * This tool manage the integrity of a complete file tree.
- * It manages States that acts like the Central Directory does for a Zip file.
- *
- * With FIM you can ensure the integrity of a big amount of data files that you cannot put into an archive.
+ * FIM manage the integrity of a complete file tree.
+ * With FIM you can manage the integrity of a big amount of data files that you could not put into an archive.
  * For example videos and photos can be managed by this tool.
+ * Using it you can ensure the integrity of a whole videos / photos directory tree.
+ * To do so FIM manages States that acts like the Central Directory does for a Zip file.
+ * One State is an index that holds one entry per file that contains the file name,
+ * a hash of the file content and the file modification date.
+ * Only the States are kept into an history. There is no history for the file content.
  *
  * Created by evrignaud on 05/05/15.
  */
@@ -257,14 +260,24 @@ public class Main
 
 	public static void printUsage()
 	{
-		System.out.println("  ______ _ _        _____       _                  _ _           __  __                                   \n" +
-				" |  ____(_) |      |_   _|     | |                (_) |         |  \\/  |                                  \n" +
-				" | |__   _| | ___    | |  _ __ | |_ ___  __ _ _ __ _| |_ _   _  | \\  / | __ _ _ __   __ _  __ _  ___ _ __ \n" +
-				" |  __| | | |/ _ \\   | | | '_ \\| __/ _ \\/ _` | '__| | __| | | | | |\\/| |/ _` | '_ \\ / _` |/ _` |/ _ \\ '__|\n" +
-				" | |    | | |  __/  _| |_| | | | ||  __/ (_| | |  | | |_| |_| | | |  | | (_| | | | | (_| | (_| |  __/ |   \n" +
-				" |_|    |_|_|\\___| |_____|_| |_|\\__\\___|\\__, |_|  |_|\\__|\\__, | |_|  |_|\\__,_|_| |_|\\__,_|\\__, |\\___|_|   \n" +
-				"                                         __/ |            __/ |                            __/ |          \n" +
-				"                                        |___/            |___/                            |___/    \n");
+		System.out.println(
+				"______ _ _         _____      _                  _ _           ___  ___                                  \n" +
+				"|  ___(_) |       |_   _|    | |                (_) |          |  \\/  |                                  \n" +
+				"| |_   _| | ___     | | _ __ | |_ ___  __ _ _ __ _| |_ _   _   | .  . | __ _ _ __   __ _  __ _  ___ _ __ \n" +
+				"|  _| | | |/ _ \\    | || '_ \\| __/ _ \\/ _` | '__| | __| | | |  | |\\/| |/ _` | '_ \\ / _` |/ _` |/ _ \\ '__|\n" +
+				"| |   | | |  __/   _| || | | | ||  __/ (_| | |  | | |_| |_| |  | |  | | (_| | | | | (_| | (_| |  __/ |   \n" +
+				"\\_|   |_|_|\\___|   \\___/_| |_|\\__\\___|\\__, |_|  |_|\\__|\\__, |  \\_|  |_/\\__,_|_| |_|\\__,_|\\__, |\\___|_|   \n" +
+				"                                       __/ |            __/ |                             __/ |          \n" +
+				"                                      |___/            |___/                             |___/           \n" +
+				"\n" +
+				"FIM manage the integrity of a complete file tree.\n" +
+				"With FIM you can manage the integrity of a big amount of data files that you could not put into an archive.\n" +
+				"For example videos and photos can be managed by this tool.\n" +
+				"Using it you can ensure the integrity of a whole videos / photos directory tree.\n" +
+				"To do so FIM manages States that acts like the Central Directory does for a Zip file.\n" +
+				"One State is an index that holds one entry per file that contains the file name,\n" +
+				"a hash of the file content and the file modification date.\n" +
+				"Only the States are kept into an history. There is no history for the file content.\n");
 		Options options = constructOptions();
 		PrintWriter writer = new PrintWriter(System.out);
 		HelpFormatter helpFormatter = new HelpFormatter();
