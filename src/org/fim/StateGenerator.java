@@ -2,6 +2,7 @@ package org.fim;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -113,6 +114,11 @@ public class StateGenerator
 		for (File file : files)
 		{
 			if (file.isDirectory() && file.getName().equals(FIC_DIR))
+			{
+				continue;
+			}
+
+			if (Files.isSymbolicLink(file.toPath()))
 			{
 				continue;
 			}
