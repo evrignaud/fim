@@ -16,12 +16,13 @@ import org.fim.model.State;
 public class StateComparator
 {
 	private final CompareMode compareMode;
-	private List<FileState> added;
+
+	private List<Difference> added;
 	private List<Difference> duplicated;
 	private List<Difference> dateModified;
 	private List<Difference> contentModified;
-	private List<Difference> moved;
-	private List<FileState> deleted;
+	private List<Difference> renamed;
+	private List<Difference> deleted;
 
 	public StateComparator(CompareMode compareMode)
 	{
@@ -60,7 +61,7 @@ public class StateComparator
 		duplicated = new ArrayList<>();
 		dateModified = new ArrayList<>();
 		contentModified = new ArrayList<>();
-		moved = new ArrayList<>();
+		renamed = new ArrayList<>();
 		deleted = new ArrayList<>();
 
 		int index;
@@ -86,7 +87,7 @@ public class StateComparator
 				if ((diffIndex = findSameHash(fileState, differences)) != -1)
 				{
 					FileState originalState = differences.remove(diffIndex);
-					moved.add(new Difference(originalState, fileState));
+					renamed.add(new Difference(originalState, fileState));
 				}
 				else
 				{
@@ -96,13 +97,13 @@ public class StateComparator
 			}
 			else
 			{
-				added.add(fileState);
+				added.add(new Difference(null, fileState));
 			}
 		}
 
 		for (FileState fileState : differences)
 		{
-			deleted.add(fileState);
+			deleted.add(new Difference(null, fileState));
 		}
 
 		return this;
@@ -130,10 +131,10 @@ public class StateComparator
 			System.out.format(changeTypeFormat + "%s \t%s -> %s%n", "Content modified:", diff.getFileState().getFileName(), formatDate(diff.getOriginalState()), formatDate(diff.getFileState()));
 		}
 
-		Collections.sort(moved);
-		for (Difference diff : moved)
+		Collections.sort(renamed);
+		for (Difference diff : renamed)
 		{
-			System.out.format(String.format(changeTypeFormat + "%s -> %s%n", "Moved:", diff.getOriginalState().getFileName(), diff.getFileState().getFileName()));
+			System.out.format(String.format(changeTypeFormat + "%s -> %s%n", "Renamed:", diff.getOriginalState().getFileName(), diff.getFileState().getFileName()));
 		}
 
 		Collections.sort(duplicated);
@@ -143,15 +144,15 @@ public class StateComparator
 		}
 
 		Collections.sort(added);
-		for (FileState fileState : added)
+		for (Difference diff : added)
 		{
-			System.out.format(String.format(changeTypeFormat + "%s%n", "Added:", fileState.getFileName()));
+			System.out.format(String.format(changeTypeFormat + "%s%n", "Added:", diff.getFileState().getFileName()));
 		}
 
 		Collections.sort(deleted);
-		for (FileState fileState : deleted)
+		for (Difference diff : deleted)
 		{
-			System.out.format(String.format(changeTypeFormat + "%s%n", "Deleted:", fileState.getFileName()));
+			System.out.format(String.format(changeTypeFormat + "%s%n", "Deleted:", diff.getFileState().getFileName()));
 		}
 
 		if (somethingModified())
@@ -187,9 +188,9 @@ public class StateComparator
 				message += "" + contentModified.size() + " content modified, ";
 			}
 
-			if (!moved.isEmpty())
+			if (!renamed.isEmpty())
 			{
-				message += "" + moved.size() + " moved, ";
+				message += "" + renamed.size() + " renamed, ";
 			}
 
 			if (!deleted.isEmpty())
@@ -208,7 +209,7 @@ public class StateComparator
 
 	public boolean somethingModified()
 	{
-		return (added.size() + duplicated.size() + dateModified.size() + contentModified.size() + moved.size() + deleted.size()) > 0;
+		return (added.size() + duplicated.size() + dateModified.size() + contentModified.size() + renamed.size() + deleted.size()) > 0;
 	}
 
 	private int findSameFileName(FileState toFind, List<FileState> differences)
@@ -241,7 +242,7 @@ public class StateComparator
 		return -1;
 	}
 
-	public List<FileState> getAdded()
+	public List<Difference> getAdded()
 	{
 		return added;
 	}
@@ -261,12 +262,12 @@ public class StateComparator
 		return contentModified;
 	}
 
-	public List<Difference> getMoved()
+	public List<Difference> getRenamed()
 	{
-		return moved;
+		return renamed;
 	}
 
-	public List<FileState> getDeleted()
+	public List<Difference> getDeleted()
 	{
 		return deleted;
 	}
