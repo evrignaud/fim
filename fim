@@ -18,6 +18,7 @@
 # One State is an index that holds one entry per file that contains the file name,
 # a hash of the file content and the file modification date.
 # Only the States are kept into an history. There is no history for the file content.
+# This tool is an unversioned control system (uvcs).
 #
 # Created by evrignaud on 05/05/15.
 #-----------------------------------------------------------------------------------------------------------------------

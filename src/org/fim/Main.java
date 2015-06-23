@@ -35,6 +35,7 @@ import org.fim.model.State;
  * One State is an index that holds one entry per file that contains the file name,
  * a hash of the file content and the file modification date.
  * Only the States are kept into an history. There is no history for the file content.
+ * This tool is an unversioned control system (uvcs).
  *
  * Created by evrignaud on 05/05/15.
  */
@@ -260,15 +261,16 @@ public class Main
 
 	public static void printUsage()
 	{
-		System.out.println("" +
-				"______ _ _         _____      _                  _ _           ___  ___                                  \n" +
-				"|  ___(_) |       |_   _|    | |                (_) |          |  \\/  |                                  \n" +
-				"| |_   _| | ___     | | _ __ | |_ ___  __ _ _ __ _| |_ _   _   | .  . | __ _ _ __   __ _  __ _  ___ _ __ \n" +
-				"|  _| | | |/ _ \\    | || '_ \\| __/ _ \\/ _` | '__| | __| | | |  | |\\/| |/ _` | '_ \\ / _` |/ _` |/ _ \\ '__|\n" +
-				"| |   | | |  __/   _| || | | | ||  __/ (_| | |  | | |_| |_| |  | |  | | (_| | | | | (_| | (_| |  __/ |   \n" +
-				"\\_|   |_|_|\\___|   \\___/_| |_|\\__\\___|\\__, |_|  |_|\\__|\\__, |  \\_|  |_/\\__,_|_| |_|\\__,_|\\__, |\\___|_|   \n" +
-				"                                       __/ |            __/ |                             __/ |          \n" +
-				"                                      |___/            |___/                             |___/           \n" +
+		System.out.println("\n" +
+				"File Integrity Manager (FIM).\n" +
+				"______ _ _         _____      _                  _ _           ___  ___                                            \n" +
+				"|  ___(_) |       |_   _|    | |                (_) |          |  \\/  |                                           \n" +
+				"| |_   _| | ___     | | _ __ | |_ ___  __ _ _ __ _| |_ _   _   | .  . | __ _ _ __   __ _  __ _  ___ _ __           \n" +
+				"|  _| | | |/ _ \\    | || '_ \\| __/ _ \\/ _` | '__| | __| | | |  | |\\/| |/ _` | '_ \\ / _` |/ _` |/ _ \\ '__|    \n" +
+				"| |   | | |  __/   _| || | | | ||  __/ (_| | |  | | |_| |_| |  | |  | | (_| | | | | (_| | (_| |  __/ |             \n" +
+				"\\_|   |_|_|\\___|   \\___/_| |_|\\__\\___|\\__, |_|  |_|\\__|\\__, |  \\_|  |_/\\__,_|_| |_|\\__,_|\\__, |\\___|_|\n" +
+				"                                       __/ |            __/ |                             __/ |                    \n" +
+				"                                      |___/            |___/                             |___/                     \n" +
 				"\n" +
 				"FIM manage the integrity of a complete file tree.\n" +
 				"With FIM you can manage the integrity of a big amount of data files that you could not put into an archive.\n" +
@@ -277,7 +279,8 @@ public class Main
 				"To do so FIM manages States that acts like the Central Directory does for a Zip file.\n" +
 				"One State is an index that holds one entry per file that contains the file name,\n" +
 				"a hash of the file content and the file modification date.\n" +
-				"Only the States are kept into an history. There is no history for the file content.\n");
+				"Only the States are kept into an history. There is no history for the file content.\n" +
+				"This tool is an unversioned control system (uvcs).\n");
 		Options options = constructOptions();
 		PrintWriter writer = new PrintWriter(System.out);
 		HelpFormatter helpFormatter = new HelpFormatter();
