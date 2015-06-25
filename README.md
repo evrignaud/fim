@@ -21,10 +21,24 @@ You can also easily detect duplicates to be able to remove them.
 
 Fim does not keep track of the different contents of the files that are managed,
 this is why we can call it an Unversioned Control System (UVCS).
-Fim keeps only the different State versions.
+Fim keeps only each version of the different State that have been committed.
 You cannot use them to retrieve the content of one file that you may have lost.
-So using Fim does not prevent you to use a backup.
+Using Fim does not prevent you to do a backup.
 You can also easily detect duplicates to be able to remove them.
+
+## Fim Workflow
+
+First you need to initialize the Fim repository using the init command.
+This will record the first State of your file tree.
+
+Then you can compare the differences between the recorded State and the current file tree using the diff command
+You can either to a full diff that will compare the hash of all the files. It can be very slow as all the files content will be read.
+
+Otherwise you can run a fast compare using the -f option. It will compare only the filenames and modification dates.
+Using the fast compare you will not be able to detect files that have been renamed or duplicated.
+
+Each time you want to record the State of the current file tree you can use the commit command.
+It's a time consuming operation that will hash of the files content.
 
 ## Usage
 
@@ -41,10 +55,10 @@ You can also easily detect duplicates to be able to remove them.
 >      -t,--threadCount <arg>   Number of thread to use for state generation
 >
 > Available commands:
-> - init: Initialize a Fim repository
-> - commit / ci: Commit the current directory state
-> - diff: Compare the current directory state with the previous one
-> - find-duplicates / fdup: Find duplicated files
-> - log: Display states log
-> - reset-dates / rdates: Reset the file modification dates like in the current directory state
+>     - init: Initialize a Fim repository
+>     - commit / ci: Commit the current directory state
+>     - diff: Compare the current directory state with the previous one
+>     - find-duplicates / fdup: Find duplicated files
+>     - log: Display states log
+>     - reset-dates / rdates: Reset the file modification dates like in the current directory state
 
