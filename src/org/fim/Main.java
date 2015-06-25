@@ -1,3 +1,17 @@
+/**
+ * Fim is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Fim is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fim;
 
 import java.io.File;
@@ -17,27 +31,7 @@ import org.apache.commons.cli.Options;
 import org.fim.model.State;
 
 /**
- * File Integrity Manager (FIM).
- * ______ _ _         _____      _                  _ _           ___  ___
- * |  ___(_) |       |_   _|    | |                (_) |          |  \/  |
- * | |_   _| | ___     | | _ __ | |_ ___  __ _ _ __ _| |_ _   _   | .  . | __ _ _ __   __ _  __ _  ___ _ __
- * |  _| | | |/ _ \    | || '_ \| __/ _ \/ _` | '__| | __| | | |  | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '__|
- * | |   | | |  __/   _| || | | | ||  __/ (_| | |  | | |_| |_| |  | |  | | (_| | | | | (_| | (_| |  __/ |
- * \_|   |_|_|\___|   \___/_| |_|\__\___|\__, |_|  |_|\__|\__, |  \_|  |_/\__,_|_| |_|\__,_|\__, |\___|_|
- *                                        __/ |            __/ |                             __/ |
- *                                       |___/            |___/                             |___/
- *
- * FIM manage the integrity of a complete file tree.
- * With FIM you can manage the integrity of a big amount of data files that you could not put into an archive.
- * For example videos and photos can be managed by this tool.
- * Using it you can ensure the integrity of a whole videos / photos directory tree.
- * To do so FIM manages States that acts like the Central Directory does for a Zip file.
- * One State is an index that holds one entry per file that contains the file name,
- * a hash of the file content and the file modification date.
- * Only the States are kept into an history. There is no history for the file content.
- * This tool is an unversioned control system (uvcs).
- *
- * Created by evrignaud on 05/05/15.
+ * @author evrignaud
  */
 public class Main
 {
@@ -261,26 +255,7 @@ public class Main
 
 	public static void printUsage()
 	{
-		System.out.println("\n" +
-				"File Integrity Manager (FIM).\n" +
-				"______ _ _         _____      _                  _ _           ___  ___                                            \n" +
-				"|  ___(_) |       |_   _|    | |                (_) |          |  \\/  |                                           \n" +
-				"| |_   _| | ___     | | _ __ | |_ ___  __ _ _ __ _| |_ _   _   | .  . | __ _ _ __   __ _  __ _  ___ _ __           \n" +
-				"|  _| | | |/ _ \\    | || '_ \\| __/ _ \\/ _` | '__| | __| | | |  | |\\/| |/ _` | '_ \\ / _` |/ _` |/ _ \\ '__|    \n" +
-				"| |   | | |  __/   _| || | | | ||  __/ (_| | |  | | |_| |_| |  | |  | | (_| | | | | (_| | (_| |  __/ |             \n" +
-				"\\_|   |_|_|\\___|   \\___/_| |_|\\__\\___|\\__, |_|  |_|\\__|\\__, |  \\_|  |_/\\__,_|_| |_|\\__,_|\\__, |\\___|_|\n" +
-				"                                       __/ |            __/ |                             __/ |                    \n" +
-				"                                      |___/            |___/                             |___/                     \n" +
-				"\n" +
-				"FIM manage the integrity of a complete file tree.\n" +
-				"With FIM you can manage the integrity of a big amount of data files that you could not put into an archive.\n" +
-				"For example videos and photos can be managed by this tool.\n" +
-				"Using it you can ensure the integrity of a whole videos / photos directory tree.\n" +
-				"To do so FIM manages States that acts like the Central Directory does for a Zip file.\n" +
-				"One State is an index that holds one entry per file that contains the file name,\n" +
-				"a hash of the file content and the file modification date.\n" +
-				"Only the States are kept into an history. There is no history for the file content.\n" +
-				"This tool is an unversioned control system (uvcs).\n");
+		System.out.println("");
 		Options options = constructOptions();
 		PrintWriter writer = new PrintWriter(System.out);
 		HelpFormatter helpFormatter = new HelpFormatter();

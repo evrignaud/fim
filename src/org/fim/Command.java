@@ -1,11 +1,25 @@
+/**
+ * Fim is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Fim is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fim;
 
 /**
- * Created by evrignaud on 07/05/15.
+ * @author evrignaud
  */
 public enum Command
 {
-	INIT("init", "", "Initialize a binary_manager repository"),
+	INIT("init", "", "Initialize a Fim repository"),
 	COMMIT("commit", "ci", "Commit the current directory state"),
 	DIFF("diff", "", "Compare the current directory state with the previous one"),
 	FIND_DUPLICATES("find-duplicates", "fdup", "Find duplicated files"),
