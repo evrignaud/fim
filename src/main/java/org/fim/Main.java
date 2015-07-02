@@ -260,12 +260,12 @@ public class Main
 		PrintWriter writer = new PrintWriter(System.out);
 		HelpFormatter helpFormatter = new HelpFormatter();
 
-		String usage = "\n  Available commands:\n";
+		String usage = "\nAvailable commands:\n";
 		for (final Command command : Command.values())
 		{
 			if (command.getShortCmdName() != null && command.getShortCmdName().length() > 0)
 			{
-				usage += String.format("- %s / %s: %s\n", command.getCmdName(), command.getShortCmdName(), command.getDescription());
+				usage += String.format("- %s / %s: %s\n", command.getShortCmdName(), command.getCmdName(), command.getDescription());
 			}
 			else
 			{

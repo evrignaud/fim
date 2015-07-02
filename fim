@@ -7,10 +7,4 @@ currentDir=`pwd`
 
 baseDir=`dirname "$(readlink -f "$0")"`
 
-mkdir -p ${baseDir}/classes
-
-libraries=${baseDir}/lib/gson-2.3.1.jar:${baseDir}/lib/commons-cli-1.2.jar
-
-javac -cp ${libraries} -d ${baseDir}/classes `find ${baseDir}/src -name "*.java"`
-
-java -cp ${baseDir}/classes:${libraries} org.fim.Main "${1}" "${2}" "${3}" "${4}" "${5}" "${6}"
+java -jar ${baseDir}/target/fim-*.jar "${1}" "${2}" "${3}" "${4}" "${5}" "${6}"
