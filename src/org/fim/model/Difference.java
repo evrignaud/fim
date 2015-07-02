@@ -19,12 +19,12 @@ package org.fim.model;
  */
 public class Difference implements Comparable<Difference>
 {
-	private FileState originalState;
+	private FileState previousFileState;
 	private FileState fileState;
 
-	public Difference(FileState originalState, FileState fileState)
+	public Difference(FileState previousFileState, FileState fileState)
 	{
-		this.setOriginalState(originalState);
+		this.setPreviousFileState(previousFileState);
 		this.setFileState(fileState);
 	}
 
@@ -34,14 +34,14 @@ public class Difference implements Comparable<Difference>
 		return getFileState().compareTo(other.getFileState());
 	}
 
-	public FileState getOriginalState()
+	public FileState getPreviousFileState()
 	{
-		return originalState;
+		return previousFileState;
 	}
 
-	public void setOriginalState(FileState originalState)
+	public void setPreviousFileState(FileState previousFileState)
 	{
-		this.originalState = originalState;
+		this.previousFileState = previousFileState;
 	}
 
 	public FileState getFileState()
