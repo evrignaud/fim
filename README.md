@@ -6,7 +6,7 @@ File Integrity Manager
 
 Fim manage the integrity of a complete file tree.
 
-Ensuring the integrity of a files can be done in several ways. The two classic way are:
+Ensuring the integrity of a files can be done in several ways. The two classical ways are:
 
 -  manage your files using a VCS or a DVCS.
 -  put all your file into an archive that will ensure the integrity of all the files.
