@@ -1,4 +1,8 @@
 /*
+ * This file is part of Fim - File Integrity Manager
+ *
+ * Copyright (C) 2015  Etienne Vrignaud
+ *
  * Fim is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.fim.util;
 
@@ -19,9 +23,6 @@ import java.util.Date;
 
 import org.fim.model.FileState;
 
-/**
- * @author evrignaud
- */
 public class FormatUtil
 {
 	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

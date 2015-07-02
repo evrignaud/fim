@@ -1,4 +1,8 @@
 /*
+ * This file is part of Fim - File Integrity Manager
+ *
+ * Copyright (C) 2015  Etienne Vrignaud
+ *
  * Fim is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.fim.model;
 
@@ -29,9 +33,6 @@ import java.util.zip.GZIPOutputStream;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-/**
- * @author evrignaud
- */
 public class State
 {
 	private long timestamp = System.currentTimeMillis();
@@ -83,13 +84,13 @@ public class State
 		return fileStates;
 	}
 
-	public int getFileCount()
-	{
-		return fileCount;
-	}
-
 	public void setFileStates(List<FileState> fileStates)
 	{
 		this.fileStates = fileStates;
+	}
+
+	public int getFileCount()
+	{
+		return fileCount;
 	}
 }

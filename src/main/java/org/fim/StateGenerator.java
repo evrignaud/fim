@@ -1,4 +1,8 @@
 /*
+ * This file is part of Fim - File Integrity Manager
+ *
+ * Copyright (C) 2015  Etienne Vrignaud
+ *
  * Fim is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.fim;
 
@@ -31,9 +35,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.fim.model.FileState;
 import org.fim.model.State;
 
-/**
- * @author evrignaud
- */
 public class StateGenerator
 {
 	public static final int MEGA = 1024 * 1024;

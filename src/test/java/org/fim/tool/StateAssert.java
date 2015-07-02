@@ -1,4 +1,8 @@
 /*
+ * This file is part of Fim - File Integrity Manager
+ *
+ * Copyright (C) 2015  Etienne Vrignaud
+ *
  * Fim is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,20 +14,18 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim;
+package org.fim.tool;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.fim.StateComparator;
 import org.fim.model.Difference;
 
-/**
- * @author evrignaud
- */
 public class StateAssert
 {
 	protected void assertNothingModified(StateComparator cmp)
