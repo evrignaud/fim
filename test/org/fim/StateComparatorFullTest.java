@@ -45,13 +45,13 @@ public class StateComparatorFullTest extends StateAssert
 		cut.compare(s1, s2);
 		assertOnlyContentModified(cut, "file_1");
 
-		s2 = s1.rename("file_1", "file_1_1");
+		s2 = s1.rename("file_1", "file_6");
 		cut.compare(s1, s2);
-		assertOnlyFileRenamed(cut, new FileNameDiff("file_1", "file_1_1"));
+		assertOnlyFileRenamed(cut, new FileNameDiff("file_1", "file_6"));
 
-		s2 = s1.copy("file_1", "file_1_1");
+		s2 = s1.copy("file_1", "file_6");
 		cut.compare(s1, s2);
-		assertOnlyFileDuplicated(cut, new FileNameDiff("file_1", "file_1_1"));
+		assertOnlyFileDuplicated(cut, new FileNameDiff("file_1", "file_6"));
 
 		s2 = s1.delete("file_1");
 		cut.compare(s1, s2);
@@ -59,13 +59,26 @@ public class StateComparatorFullTest extends StateAssert
 	}
 
 	@Test
-	public void weCanCopyAFileAndModifyIt()
+	public void weCanCopyAFileAndChangeDate()
 	{
-		s2 = s1.copy("file_1", "file_1_1")
+		s2 = s1.copy("file_1", "file_0")
+				.copy("file_1", "file_6")
+				.touch("file_1");
+		cut.compare(s1, s2);
+		assertGotOnlyModifications(cut, Modification.DUPLICATED, Modification.DATE_MODIFIED);
+		assertFilesModified(cut, Modification.DUPLICATED, new FileNameDiff("file_1", "file_0"), new FileNameDiff("file_1", "file_6"));
+		assertFilesModified(cut, Modification.DATE_MODIFIED, "file_1");
+	}
+
+	@Test
+	public void weCanCopyAFileAndChangeContent()
+	{
+		s2 = s1.copy("file_1", "file_0")
+				.copy("file_1", "file_6")
 				.appendContent("file_1", "append 1");
 		cut.compare(s1, s2);
-		assertGotOnlyModifications(cut, Modification.CONTENT_MODIFIED, Modification.DUPLICATED);
+		assertGotOnlyModifications(cut, Modification.COPIED, Modification.CONTENT_MODIFIED);
+		assertFilesModified(cut, Modification.COPIED, new FileNameDiff("file_1", "file_0"), new FileNameDiff("file_1", "file_6"));
 		assertFilesModified(cut, Modification.CONTENT_MODIFIED, "file_1");
-		assertFilesModified(cut, Modification.DUPLICATED, new FileNameDiff("file_1", "file_1_1"));
 	}
 }

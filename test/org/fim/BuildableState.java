@@ -15,6 +15,7 @@
 package org.fim;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import org.fim.model.FileState;
@@ -44,6 +45,7 @@ public class BuildableState extends State
 			FileState fileState = new FileState(fileName, getNow(), fileName);
 			newState.getFileStates().add(fileState);
 		}
+		Collections.sort(newState.getFileStates());
 		return newState;
 	}
 
@@ -58,6 +60,7 @@ public class BuildableState extends State
 		FileState sourceFileState = findFileState(newState, sourceFileName, true);
 		FileState targetFileState = new FileState(targetFileName, sourceFileState.getLastModified(), sourceFileState.getHash());
 		newState.getFileStates().add(targetFileState);
+		Collections.sort(newState.getFileStates());
 		return newState;
 	}
 
@@ -71,6 +74,7 @@ public class BuildableState extends State
 
 		FileState fileState = findFileState(newState, sourceFileName, true);
 		fileState.setFileName(targetFileName);
+		Collections.sort(newState.getFileStates());
 		return newState;
 	}
 

@@ -37,6 +37,18 @@ public class StateAssert
 		assertFilesModified(cmp, Modification.ADDED, fileNames);
 	}
 
+	protected void assertOnlyFileCopied(StateComparator cmp, FileNameDiff... fileNameDiffs)
+	{
+		assertGotOnlyModifications(cmp, Modification.COPIED);
+		assertFilesModified(cmp, Modification.COPIED, fileNameDiffs);
+	}
+
+	protected void assertOnlyFileDuplicated(StateComparator cmp, FileNameDiff... fileNameDiffs)
+	{
+		assertGotOnlyModifications(cmp, Modification.DUPLICATED);
+		assertFilesModified(cmp, Modification.DUPLICATED, fileNameDiffs);
+	}
+
 	protected void assertOnlyDatesModified(StateComparator cmp, String... fileNames)
 	{
 		assertGotOnlyModifications(cmp, Modification.DATE_MODIFIED);
@@ -53,12 +65,6 @@ public class StateAssert
 	{
 		assertGotOnlyModifications(cmp, Modification.RENAMED);
 		assertFilesModified(cmp, Modification.RENAMED, fileNameDiffs);
-	}
-
-	protected void assertOnlyFileDuplicated(StateComparator cmp, FileNameDiff... fileNameDiffs)
-	{
-		assertGotOnlyModifications(cmp, Modification.DUPLICATED);
-		assertFilesModified(cmp, Modification.DUPLICATED, fileNameDiffs);
 	}
 
 	protected void assertOnlyFileDeleted(StateComparator cmp, String... fileNames)
@@ -114,8 +120,11 @@ public class StateAssert
 			case ADDED:
 				return cmp.getAdded();
 
-			case DELETED:
-				return cmp.getDeleted();
+			case COPIED:
+				return cmp.getCopied();
+
+			case DUPLICATED:
+				return cmp.getDuplicated();
 
 			case DATE_MODIFIED:
 				return cmp.getDateModified();
@@ -123,14 +132,14 @@ public class StateAssert
 			case CONTENT_MODIFIED:
 				return cmp.getContentModified();
 
-			case DUPLICATED:
-				return cmp.getDuplicated();
-
 			case RENAMED:
 				return cmp.getRenamed();
+
+			case DELETED:
+				return cmp.getDeleted();
 		}
 
-		throw new IllegalArgumentException("Invalid diffKind " + modification);
+		throw new IllegalArgumentException("Invalid Modification " + modification);
 	}
 
 }

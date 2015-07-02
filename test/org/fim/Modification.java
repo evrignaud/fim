@@ -20,9 +20,10 @@ package org.fim;
 public enum Modification
 {
 	ADDED,
-	DELETED,
+	COPIED,
+	DUPLICATED,
 	DATE_MODIFIED,
 	CONTENT_MODIFIED,
-	DUPLICATED,
-	RENAMED
+	RENAMED,
+	DELETED
 }

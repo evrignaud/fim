@@ -22,6 +22,7 @@ public class FileState implements Comparable<FileState>
 	private String fileName;
 	private long lastModified;
 	private String hash;
+	private String newHash;
 
 	public FileState(String fileName, long lastModified, String hash)
 	{
@@ -37,6 +38,11 @@ public class FileState implements Comparable<FileState>
 		this.setFileName(fileName);
 		this.setLastModified(lastModified);
 		this.setHash(hash);
+	}
+
+	public boolean contentChanged()
+	{
+		return !hash.equals(newHash);
 	}
 
 	@Override
@@ -123,5 +129,15 @@ public class FileState implements Comparable<FileState>
 	public void setHash(String hash)
 	{
 		this.hash = hash;
+	}
+
+	public void setNewHash(String newHash)
+	{
+		this.newHash = newHash;
+	}
+
+	public void resetNewHash()
+	{
+		newHash = hash;
 	}
 }

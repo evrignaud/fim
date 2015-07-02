@@ -33,6 +33,7 @@ public class StateComparator
 	private final CompareMode compareMode;
 
 	private List<Difference> added;
+	private List<Difference> copied;
 	private List<Difference> duplicated;
 	private List<Difference> dateModified;
 	private List<Difference> contentModified;
@@ -62,6 +63,8 @@ public class StateComparator
 			previousFileStates.addAll(previousState.getFileStates());
 		}
 
+		resetNewHash(previousFileStates);
+
 		differences.addAll(previousFileStates);
 
 		for (FileState fileState : currentState.getFileStates())
@@ -73,22 +76,23 @@ public class StateComparator
 		}
 
 		added = new ArrayList<>();
+		copied = new ArrayList<>();
 		duplicated = new ArrayList<>();
 		dateModified = new ArrayList<>();
 		contentModified = new ArrayList<>();
 		renamed = new ArrayList<>();
 		deleted = new ArrayList<>();
 
-		int sameFileNameIndex;
+		FileState previousFileState;
 		List<FileState> samePreviousHash;
 
 		Iterator<FileState> iterator = addedOrModified.iterator();
 		while (iterator.hasNext())
 		{
 			FileState fileState = iterator.next();
-			if ((sameFileNameIndex = findSameFileName(fileState, differences)) != -1)
+			if ((previousFileState = findFileWithSameFileName(fileState, differences)) != null)
 			{
-				FileState previousFileState = differences.remove(sameFileNameIndex);
+				differences.remove(previousFileState);
 				if (previousFileState.getHash().equals(fileState.getHash()) && previousFileState.getLastModified() != fileState.getLastModified())
 				{
 					dateModified.add(new Difference(previousFileState, fileState));
@@ -98,6 +102,9 @@ public class StateComparator
 				{
 					contentModified.add(new Difference(previousFileState, fileState));
 					iterator.remove();
+
+					// File has been modified so set the new hash for accurate duplicate detection
+					previousFileState.setNewHash(fileState.getHash());
 				}
 			}
 		}
@@ -106,7 +113,7 @@ public class StateComparator
 		while (iterator.hasNext())
 		{
 			FileState fileState = iterator.next();
-			if (compareMode != CompareMode.FAST && (samePreviousHash = findSameHash(fileState, previousFileStates)).size() > 0)
+			if (compareMode != CompareMode.FAST && (samePreviousHash = findFilesWithSameHash(fileState, previousFileStates)).size() > 0)
 			{
 				FileState originalFileState = samePreviousHash.get(0);
 				if (differences.contains(originalFileState))
@@ -116,8 +123,16 @@ public class StateComparator
 				}
 				else
 				{
-					duplicated.add(new Difference(originalFileState, fileState));
-					iterator.remove();
+					if (originalFileState.contentChanged())
+					{
+						copied.add(new Difference(originalFileState, fileState));
+						iterator.remove();
+					}
+					else
+					{
+						duplicated.add(new Difference(originalFileState, fileState));
+						iterator.remove();
+					}
 				}
 				differences.remove(originalFileState);
 			}
@@ -138,14 +153,23 @@ public class StateComparator
 			deleted.add(new Difference(null, fileState));
 		}
 
+		Collections.sort(added);
+		Collections.sort(copied);
+		Collections.sort(duplicated);
 		Collections.sort(dateModified);
 		Collections.sort(contentModified);
 		Collections.sort(renamed);
-		Collections.sort(duplicated);
-		Collections.sort(added);
 		Collections.sort(deleted);
 
 		return this;
+	}
+
+	private void resetNewHash(List<FileState> fileStates)
+	{
+		for(FileState fileState : fileStates)
+		{
+			fileState.resetNewHash();
+		}
 	}
 
 	public void displayChanges(boolean verbose)
@@ -157,6 +181,21 @@ public class StateComparator
 		}
 
 		String stateFormat = "%-17s ";
+
+		for (Difference diff : added)
+		{
+			System.out.format(String.format(stateFormat + "%s%n", "Added:", diff.getFileState().getFileName()));
+		}
+
+		for (Difference diff : copied)
+		{
+			System.out.format(String.format(stateFormat + "%s \t(was %s)%n", "Copied:", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName()));
+		}
+
+		for (Difference diff : duplicated)
+		{
+			System.out.format(String.format(stateFormat + "%s = %s%n", "Duplicated:", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName()));
+		}
 
 		for (Difference diff : dateModified)
 		{
@@ -171,16 +210,6 @@ public class StateComparator
 		for (Difference diff : renamed)
 		{
 			System.out.format(String.format(stateFormat + "%s -> %s%n", "Renamed:", diff.getPreviousFileState().getFileName(), diff.getFileState().getFileName()));
-		}
-
-		for (Difference diff : duplicated)
-		{
-			System.out.format(String.format(stateFormat + "%s = %s%n", "Duplicated:", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName()));
-		}
-
-		for (Difference diff : added)
-		{
-			System.out.format(String.format(stateFormat + "%s%n", "Added:", diff.getFileState().getFileName()));
 		}
 
 		for (Difference diff : deleted)
@@ -204,6 +233,11 @@ public class StateComparator
 			if (!added.isEmpty())
 			{
 				message += "" + added.size() + " added, ";
+			}
+
+			if (!copied.isEmpty())
+			{
+				message += "" + copied.size() + " copied, ";
 			}
 
 			if (!duplicated.isEmpty())
@@ -242,25 +276,25 @@ public class StateComparator
 
 	public boolean somethingModified()
 	{
-		return (added.size() + duplicated.size() + dateModified.size() + contentModified.size() + renamed.size() + deleted.size()) > 0;
+		return (added.size() + copied.size() + duplicated.size() + dateModified.size() + contentModified.size() + renamed.size() + deleted.size()) > 0;
 	}
 
-	private int findSameFileName(FileState search, List<FileState> fileStates)
+	private FileState findFileWithSameFileName(FileState search, List<FileState> fileStates)
 	{
 		int index = 0;
 		for (FileState fileState : fileStates)
 		{
 			if (fileState.getFileName().equals(search.getFileName()))
 			{
-				return index;
+				return fileStates.get(index);
 			}
 			index++;
 		}
 
-		return -1;
+		return null;
 	}
 
-	private List<FileState> findSameHash(FileState search, List<FileState> fileStates)
+	private List<FileState> findFilesWithSameHash(FileState search, List<FileState> fileStates)
 	{
 		List<FileState> sameHash = new ArrayList<>();
 		for (FileState fileState : fileStates)
@@ -277,6 +311,11 @@ public class StateComparator
 	public List<Difference> getAdded()
 	{
 		return added;
+	}
+
+	public List<Difference> getCopied()
+	{
+		return copied;
 	}
 
 	public List<Difference> getDuplicated()
