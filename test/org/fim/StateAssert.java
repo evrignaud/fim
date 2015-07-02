@@ -49,16 +49,16 @@ public class StateAssert
 		assertFilesModified(cmp, Modification.CONTENT_MODIFIED, fileNames);
 	}
 
-	protected void assertOnlyFileRenamed(StateComparator cmp, String... fileNames)
+	protected void assertOnlyFileRenamed(StateComparator cmp, FileNameDiff... fileNameDiffs)
 	{
 		assertGotOnlyModifications(cmp, Modification.RENAMED);
-		assertFilesModified(cmp, Modification.RENAMED, fileNames);
+		assertFilesModified(cmp, Modification.RENAMED, fileNameDiffs);
 	}
 
-	protected void assertOnlyFileDuplicated(StateComparator cmp, String... fileNames)
+	protected void assertOnlyFileDuplicated(StateComparator cmp, FileNameDiff... fileNameDiffs)
 	{
 		assertGotOnlyModifications(cmp, Modification.DUPLICATED);
-		assertFilesModified(cmp, Modification.DUPLICATED, fileNames);
+		assertFilesModified(cmp, Modification.DUPLICATED, fileNameDiffs);
 	}
 
 	protected void assertOnlyFileDeleted(StateComparator cmp, String... fileNames)
@@ -91,6 +91,19 @@ public class StateAssert
 		for (Difference difference : differences)
 		{
 			assertThat(fileNamesList.contains(difference.getFileState().getFileName())).isTrue();
+		}
+	}
+
+	protected void assertFilesModified(StateComparator cmp, Modification modification, FileNameDiff... fileNameDiffs)
+	{
+		List<FileNameDiff> fileNameDiffsList = Arrays.asList(fileNameDiffs);
+
+		List<Difference> differences = getDifferences(cmp, modification);
+		assertThat(fileNameDiffsList.size()).isEqualTo(differences.size());
+
+		for (Difference difference : differences)
+		{
+			assertThat(fileNameDiffsList.contains(new FileNameDiff(difference))).isTrue();
 		}
 	}
 

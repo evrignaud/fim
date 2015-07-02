@@ -14,7 +14,6 @@
  */
 package org.fim;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -48,11 +47,11 @@ public class StateComparatorFullTest extends StateAssert
 
 		s2 = s1.rename("file_1", "file_1_1");
 		cut.compare(s1, s2);
-		assertOnlyFileRenamed(cut, "file_1_1");
+		assertOnlyFileRenamed(cut, new FileNameDiff("file_1", "file_1_1"));
 
 		s2 = s1.copy("file_1", "file_1_1");
 		cut.compare(s1, s2);
-		assertOnlyFileDuplicated(cut, "file_1_1");
+		assertOnlyFileDuplicated(cut, new FileNameDiff("file_1", "file_1_1"));
 
 		s2 = s1.delete("file_1");
 		cut.compare(s1, s2);
@@ -60,14 +59,13 @@ public class StateComparatorFullTest extends StateAssert
 	}
 
 	@Test
-	@Ignore
 	public void weCanCopyAFileAndModifyIt()
 	{
 		s2 = s1.copy("file_1", "file_1_1")
 				.appendContent("file_1", "append 1");
 		cut.compare(s1, s2);
-		assertGotOnlyModifications(cut, Modification.ADDED, Modification.RENAMED);
-		assertFilesModified(cut, Modification.ADDED, "file_1");
-		assertFilesModified(cut, Modification.RENAMED, "file_1_1");
+		assertGotOnlyModifications(cut, Modification.CONTENT_MODIFIED, Modification.DUPLICATED);
+		assertFilesModified(cut, Modification.CONTENT_MODIFIED, "file_1");
+		assertFilesModified(cut, Modification.DUPLICATED, new FileNameDiff("file_1", "file_1_1"));
 	}
 }

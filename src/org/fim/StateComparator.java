@@ -18,6 +18,7 @@ import static org.fim.util.FormatUtil.formatDate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.fim.model.Difference;
@@ -80,37 +81,56 @@ public class StateComparator
 
 		int sameFileNameIndex;
 		List<FileState> samePreviousHash;
-		for (FileState fileState : addedOrModified)
+
+		Iterator<FileState> iterator = addedOrModified.iterator();
+		while (iterator.hasNext())
 		{
+			FileState fileState = iterator.next();
 			if ((sameFileNameIndex = findSameFileName(fileState, differences)) != -1)
 			{
 				FileState previousFileState = differences.remove(sameFileNameIndex);
 				if (previousFileState.getHash().equals(fileState.getHash()) && previousFileState.getLastModified() != fileState.getLastModified())
 				{
 					dateModified.add(new Difference(previousFileState, fileState));
+					iterator.remove();
 				}
 				else
 				{
 					contentModified.add(new Difference(previousFileState, fileState));
+					iterator.remove();
 				}
 			}
-			else if (compareMode != CompareMode.FAST && (samePreviousHash = findSameHash(fileState, previousFileStates)).size() > 0)
+		}
+
+		iterator = addedOrModified.iterator();
+		while (iterator.hasNext())
+		{
+			FileState fileState = iterator.next();
+			if (compareMode != CompareMode.FAST && (samePreviousHash = findSameHash(fileState, previousFileStates)).size() > 0)
 			{
 				FileState originalFileState = samePreviousHash.get(0);
 				if (differences.contains(originalFileState))
 				{
 					renamed.add(new Difference(originalFileState, fileState));
+					iterator.remove();
 				}
 				else
 				{
 					duplicated.add(new Difference(originalFileState, fileState));
+					iterator.remove();
 				}
 				differences.remove(originalFileState);
 			}
 			else
 			{
 				added.add(new Difference(null, fileState));
+				iterator.remove();
 			}
+		}
+
+		if (addedOrModified.size() != 0)
+		{
+			throw new IllegalStateException("Comparison algorithm error");
 		}
 
 		for (FileState fileState : differences)
