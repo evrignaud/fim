@@ -23,7 +23,8 @@ public class FileState implements Comparable<FileState>
 	private String fileName;
 	private long lastModified;
 	private String hash;
-	private String newHash;
+
+	private transient String newHash; // Used by StateComparator to detect accurately duplicates
 
 	public FileState(String fileName, long lastModified, String hash)
 	{
