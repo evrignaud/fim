@@ -50,10 +50,14 @@ public class StateComparator
 
 	public StateComparator compare(State previousState, State currentState)
 	{
+		debug("---------------------------------------------------------------------");
+		debug(fileStatesToString("previousState", previousState.getFileStates()));
+		debug(fileStatesToString("currentState", currentState.getFileStates()));
+
 		this.previousState = previousState;
 
 		List<FileState> previousFileStates = new ArrayList<>();
-		List<FileState> differences = new ArrayList<>();
+		List<FileState> notFoundInCurrentFileState = new ArrayList<>();
 		List<FileState> addedOrModified = new ArrayList<>();
 
 		if (previousState != null)
@@ -61,17 +65,25 @@ public class StateComparator
 			previousFileStates.addAll(previousState.getFileStates());
 		}
 
+		debug("\n-- Begin");
+		debug(fileStatesToString("notFoundInCurrentState", notFoundInCurrentFileState));
+		debug(fileStatesToString("addedOrModified", addedOrModified));
+
 		resetNewHash(previousFileStates);
 
-		differences.addAll(previousFileStates);
+		notFoundInCurrentFileState.addAll(previousFileStates);
 
 		for (FileState fileState : currentState.getFileStates())
 		{
-			if (!differences.remove(fileState))
+			if (!notFoundInCurrentFileState.remove(fileState))
 			{
 				addedOrModified.add(fileState);
 			}
 		}
+
+		debug("\n-- addedOrModified built");
+		debug(fileStatesToString("notFoundInCurrentState", notFoundInCurrentFileState));
+		debug(fileStatesToString("addedOrModified", addedOrModified));
 
 		added = new ArrayList<>();
 		copied = new ArrayList<>();
@@ -88,9 +100,9 @@ public class StateComparator
 		while (iterator.hasNext())
 		{
 			FileState fileState = iterator.next();
-			if ((previousFileState = findFileWithSameFileName(fileState, differences)) != null)
+			if ((previousFileState = findFileWithSameFileName(fileState, notFoundInCurrentFileState)) != null)
 			{
-				differences.remove(previousFileState);
+				notFoundInCurrentFileState.remove(previousFileState);
 				if (previousFileState.getHash().equals(fileState.getHash()) && previousFileState.getLastModified() != fileState.getLastModified())
 				{
 					dateModified.add(new Difference(previousFileState, fileState));
@@ -107,6 +119,10 @@ public class StateComparator
 			}
 		}
 
+		debug("\n-- SameFileNames search done");
+		debug(fileStatesToString("notFoundInCurrentState", notFoundInCurrentFileState));
+		debug(fileStatesToString("addedOrModified", addedOrModified));
+
 		iterator = addedOrModified.iterator();
 		while (iterator.hasNext())
 		{
@@ -114,7 +130,7 @@ public class StateComparator
 			if (compareMode != CompareMode.FAST && (samePreviousHash = findFilesWithSameHash(fileState, previousFileStates)).size() > 0)
 			{
 				FileState originalFileState = samePreviousHash.get(0);
-				if (differences.contains(originalFileState))
+				if (notFoundInCurrentFileState.contains(originalFileState))
 				{
 					renamed.add(new Difference(originalFileState, fileState));
 					iterator.remove();
@@ -132,7 +148,7 @@ public class StateComparator
 						iterator.remove();
 					}
 				}
-				differences.remove(originalFileState);
+				notFoundInCurrentFileState.remove(originalFileState);
 			}
 			else
 			{
@@ -146,7 +162,7 @@ public class StateComparator
 			throw new IllegalStateException("Comparison algorithm error");
 		}
 
-		for (FileState fileState : differences)
+		for (FileState fileState : notFoundInCurrentFileState)
 		{
 			deleted.add(new Difference(null, fileState));
 		}
@@ -160,6 +176,22 @@ public class StateComparator
 		Collections.sort(deleted);
 
 		return this;
+	}
+
+	private void debug(String message)
+	{
+		// System.out.println(message);
+	}
+
+	private String fileStatesToString(String message, List<FileState> fileStates)
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("  ").append(message).append("=\n");
+		for (FileState fileState : fileStates)
+		{
+			builder.append("    ").append(fileState).append("\n");
+		}
+		return builder.toString();
 	}
 
 	private void resetNewHash(List<FileState> fileStates)
