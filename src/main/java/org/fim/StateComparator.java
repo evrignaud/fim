@@ -41,6 +41,8 @@ public class StateComparator
 	private List<Difference> renamed;
 	private List<Difference> deleted;
 
+	private State previousState;
+
 	public StateComparator(CompareMode compareMode)
 	{
 		this.compareMode = compareMode;
@@ -48,19 +50,14 @@ public class StateComparator
 
 	public StateComparator compare(State previousState, State currentState)
 	{
+		this.previousState = previousState;
+
 		List<FileState> previousFileStates = new ArrayList<>();
 		List<FileState> differences = new ArrayList<>();
 		List<FileState> addedOrModified = new ArrayList<>();
 
 		if (previousState != null)
 		{
-			System.out.println("Comparing with previous state from " + formatDate(previousState.getTimestamp()));
-			if (previousState.getMessage().length() > 0)
-			{
-				System.out.println("Message: " + previousState.getMessage());
-			}
-			System.out.println("");
-
 			previousFileStates.addAll(previousState.getFileStates());
 		}
 
@@ -175,6 +172,13 @@ public class StateComparator
 
 	public void displayChanges(boolean verbose)
 	{
+		System.out.println("Comparing with previous state from " + formatDate(previousState.getTimestamp()));
+		if (previousState.getMessage().length() > 0)
+		{
+			System.out.println("Message: " + previousState.getMessage());
+		}
+		System.out.println("");
+
 		if (!verbose)
 		{
 			displayCounts();
