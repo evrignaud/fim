@@ -162,8 +162,8 @@ public class Main
 
 				previousState = manager.loadPreviousState();
 				currentState = generator.generateState(message, baseDirectory);
-				comparator.compare(previousState, currentState).displayChanges(verbose);
-				if (comparator.somethingModified())
+				CompareResult result = comparator.compare(previousState, currentState).displayChanges(verbose);
+				if (result.somethingModified())
 				{
 					System.out.println("");
 					if (confirmCommand("commit"))

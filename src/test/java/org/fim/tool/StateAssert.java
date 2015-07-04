@@ -23,59 +23,59 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.List;
 
-import org.fim.StateComparator;
+import org.fim.CompareResult;
 import org.fim.model.Difference;
 
 public class StateAssert
 {
-	protected void assertNothingModified(StateComparator cmp)
+	protected void assertNothingModified(CompareResult result)
 	{
-		assertThat(cmp.somethingModified()).isFalse();
+		assertThat(result.somethingModified()).isFalse();
 	}
 
-	protected void assertOnlyFilesAdded(StateComparator cmp, String... fileNames)
+	protected void assertOnlyFilesAdded(CompareResult result, String... fileNames)
 	{
-		assertGotOnlyModifications(cmp, Modification.ADDED);
-		assertFilesModified(cmp, Modification.ADDED, fileNames);
+		assertGotOnlyModifications(result, Modification.ADDED);
+		assertFilesModified(result, Modification.ADDED, fileNames);
 	}
 
-	protected void assertOnlyFileCopied(StateComparator cmp, FileNameDiff... fileNameDiffs)
+	protected void assertOnlyFileCopied(CompareResult result, FileNameDiff... fileNameDiffs)
 	{
-		assertGotOnlyModifications(cmp, Modification.COPIED);
-		assertFilesModified(cmp, Modification.COPIED, fileNameDiffs);
+		assertGotOnlyModifications(result, Modification.COPIED);
+		assertFilesModified(result, Modification.COPIED, fileNameDiffs);
 	}
 
-	protected void assertOnlyFileDuplicated(StateComparator cmp, FileNameDiff... fileNameDiffs)
+	protected void assertOnlyFileDuplicated(CompareResult result, FileNameDiff... fileNameDiffs)
 	{
-		assertGotOnlyModifications(cmp, Modification.DUPLICATED);
-		assertFilesModified(cmp, Modification.DUPLICATED, fileNameDiffs);
+		assertGotOnlyModifications(result, Modification.DUPLICATED);
+		assertFilesModified(result, Modification.DUPLICATED, fileNameDiffs);
 	}
 
-	protected void assertOnlyDatesModified(StateComparator cmp, String... fileNames)
+	protected void assertOnlyDatesModified(CompareResult result, String... fileNames)
 	{
-		assertGotOnlyModifications(cmp, Modification.DATE_MODIFIED);
-		assertFilesModified(cmp, Modification.DATE_MODIFIED, fileNames);
+		assertGotOnlyModifications(result, Modification.DATE_MODIFIED);
+		assertFilesModified(result, Modification.DATE_MODIFIED, fileNames);
 	}
 
-	protected void assertOnlyContentModified(StateComparator cmp, String... fileNames)
+	protected void assertOnlyContentModified(CompareResult result, String... fileNames)
 	{
-		assertGotOnlyModifications(cmp, Modification.CONTENT_MODIFIED);
-		assertFilesModified(cmp, Modification.CONTENT_MODIFIED, fileNames);
+		assertGotOnlyModifications(result, Modification.CONTENT_MODIFIED);
+		assertFilesModified(result, Modification.CONTENT_MODIFIED, fileNames);
 	}
 
-	protected void assertOnlyFileRenamed(StateComparator cmp, FileNameDiff... fileNameDiffs)
+	protected void assertOnlyFileRenamed(CompareResult result, FileNameDiff... fileNameDiffs)
 	{
-		assertGotOnlyModifications(cmp, Modification.RENAMED);
-		assertFilesModified(cmp, Modification.RENAMED, fileNameDiffs);
+		assertGotOnlyModifications(result, Modification.RENAMED);
+		assertFilesModified(result, Modification.RENAMED, fileNameDiffs);
 	}
 
-	protected void assertOnlyFileDeleted(StateComparator cmp, String... fileNames)
+	protected void assertOnlyFileDeleted(CompareResult result, String... fileNames)
 	{
-		assertGotOnlyModifications(cmp, Modification.DELETED);
-		assertFilesModified(cmp, Modification.DELETED, fileNames);
+		assertGotOnlyModifications(result, Modification.DELETED);
+		assertFilesModified(result, Modification.DELETED, fileNames);
 	}
 
-	protected void assertGotOnlyModifications(StateComparator cmp, Modification... modifications)
+	protected void assertGotOnlyModifications(CompareResult result, Modification... modifications)
 	{
 		List<Modification> modificationsList = Arrays.asList(modifications);
 
@@ -83,17 +83,17 @@ public class StateAssert
 		{
 			if (modificationsList.contains(modification) == false)
 			{
-				List<Difference> differences = getDifferences(cmp, modification);
+				List<Difference> differences = getDifferences(result, modification);
 				assertThat(differences.isEmpty()).isTrue();
 			}
 		}
 	}
 
-	protected void assertFilesModified(StateComparator cmp, Modification modification, String... fileNames)
+	protected void assertFilesModified(CompareResult result, Modification modification, String... fileNames)
 	{
 		List<String> fileNamesList = Arrays.asList(fileNames);
 
-		List<Difference> differences = getDifferences(cmp, modification);
+		List<Difference> differences = getDifferences(result, modification);
 		assertThat(fileNamesList.size()).isEqualTo(differences.size());
 
 		for (Difference difference : differences)
@@ -102,11 +102,11 @@ public class StateAssert
 		}
 	}
 
-	protected void assertFilesModified(StateComparator cmp, Modification modification, FileNameDiff... fileNameDiffs)
+	protected void assertFilesModified(CompareResult result, Modification modification, FileNameDiff... fileNameDiffs)
 	{
 		List<FileNameDiff> fileNameDiffsList = Arrays.asList(fileNameDiffs);
 
-		List<Difference> differences = getDifferences(cmp, modification);
+		List<Difference> differences = getDifferences(result, modification);
 		assertThat(fileNameDiffsList.size()).isEqualTo(differences.size());
 
 		for (Difference difference : differences)
@@ -115,30 +115,30 @@ public class StateAssert
 		}
 	}
 
-	private List<Difference> getDifferences(StateComparator cmp, Modification modification)
+	private List<Difference> getDifferences(CompareResult result, Modification modification)
 	{
 		switch (modification)
 		{
 			case ADDED:
-				return cmp.getAdded();
+				return result.getAdded();
 
 			case COPIED:
-				return cmp.getCopied();
+				return result.getCopied();
 
 			case DUPLICATED:
-				return cmp.getDuplicated();
+				return result.getDuplicated();
 
 			case DATE_MODIFIED:
-				return cmp.getDateModified();
+				return result.getDateModified();
 
 			case CONTENT_MODIFIED:
-				return cmp.getContentModified();
+				return result.getContentModified();
 
 			case RENAMED:
-				return cmp.getRenamed();
+				return result.getRenamed();
 
 			case DELETED:
-				return cmp.getDeleted();
+				return result.getDeleted();
 		}
 
 		throw new IllegalArgumentException("Invalid Modification " + modification);
