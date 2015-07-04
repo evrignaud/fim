@@ -39,7 +39,7 @@ public class DuplicateFinder
 		hashComparator = new HashComparator();
 	}
 
-	public DuplicateResult findDuplicates(State state, boolean verbose)
+	public DuplicateResult findDuplicates(State state)
 	{
 		DuplicateResult result = new DuplicateResult();
 
