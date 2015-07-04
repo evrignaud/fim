@@ -82,19 +82,19 @@ public class StateGenerator
 			executorService = Executors.newFixedThreadPool(threadCount);
 			List<FileState> fileStates = new CopyOnWriteArrayList<>();
 			getFileStates(fileStates, baseDirectory.toString(), baseDirectory);
-			waitAllFileHasherDone();
+			waitAllFileHashed();
 			state.setFileStates(new ArrayList<>(fileStates)); // Use an ArrayList at the end, because CopyOnWriteArrayList does not support Sort.
 		}
 
 		Collections.sort(state.getFileStates(), fileNameComparator);
 
-		progressOutputDone();
+		progressOutputStop();
 		displayTimeElapsed(start, state);
 
 		return state;
 	}
 
-	private void waitAllFileHasherDone()
+	private void waitAllFileHashed()
 	{
 		try
 		{
@@ -114,11 +114,11 @@ public class StateGenerator
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(minutes);
 		if (minutes == 0)
 		{
-			System.out.printf("Scanned %d files in %d sec%n%n", state.getFileStates().size(), seconds);
+			System.out.printf("Scanned %d files in %d sec using %d thread%n%n", state.getFileStates().size(), seconds, threadCount);
 		}
 		else
 		{
-			System.out.printf("Scanned %d files in %d min, %d sec%n%n", state.getFileStates().size(), minutes, seconds);
+			System.out.printf("Scanned %d files in %d min, %d sec using %d thread%n%n", state.getFileStates().size(), minutes, seconds, threadCount);
 		}
 	}
 
@@ -220,7 +220,7 @@ public class StateGenerator
 		}
 	}
 
-	private void progressOutputDone()
+	private void progressOutputStop()
 	{
 		countLock.lock();
 		try

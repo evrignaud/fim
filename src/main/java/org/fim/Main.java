@@ -82,8 +82,8 @@ public class Main
 		CompareMode compareMode = CompareMode.FULL;
 		String message = "";
 		boolean useLastState = false;
+		int threadCount = Runtime.getRuntime().availableProcessors();
 
-		int threadCount = 1;
 		try
 		{
 			String[] actionArgs = Arrays.copyOfRange(filteredArgs, 1, filteredArgs.length);
@@ -210,7 +210,7 @@ public class Main
 				break;
 
 			case LOG:
-				manager.displayLog();
+				manager.displayStatesLog();
 				break;
 		}
 	}

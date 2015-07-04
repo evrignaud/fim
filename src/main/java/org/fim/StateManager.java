@@ -187,7 +187,7 @@ public class StateManager
 		}
 	}
 
-	public void displayLog() throws IOException
+	public void displayStatesLog() throws IOException
 	{
 		readPreviousStateNumber();
 		if (previousStateNumber == -1)

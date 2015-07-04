@@ -58,11 +58,11 @@ public class DuplicateResult
 				{
 					if (duplicatedFiles.indexOf(fileState) == 0)
 					{
-						System.out.println("  " + fileState.getFileName());
+						System.out.printf("  %s duplicated %d times%n", fileState.getFileName(), duplicatedFiles.size() - 1);
 					}
 					else
 					{
-						System.out.println("      " + fileState.getFileName());
+						System.out.printf("      %s%n", fileState.getFileName());
 					}
 				}
 				System.out.println("");
