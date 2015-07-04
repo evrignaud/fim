@@ -199,7 +199,7 @@ public class Main
 				{
 					state = generator.generateState(message, baseDirectory);
 				}
-				finder.findDuplicates(state, verbose);
+				finder.findDuplicates(state, verbose).displayDuplicates(verbose);
 				break;
 
 			case RESET_DATES:
