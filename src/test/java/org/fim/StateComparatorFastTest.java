@@ -18,6 +18,8 @@
  */
 package org.fim;
 
+import org.fim.model.CompareMode;
+import org.fim.model.CompareResult;
 import org.fim.tool.BuildableState;
 import org.fim.tool.Modification;
 import org.fim.tool.StateAssert;

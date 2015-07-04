@@ -32,6 +32,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.fim.model.CompareMode;
 import org.fim.model.FileState;
 import org.fim.model.State;
 

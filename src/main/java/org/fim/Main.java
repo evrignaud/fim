@@ -32,6 +32,8 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.fim.model.CompareMode;
+import org.fim.model.CompareResult;
 import org.fim.model.State;
 
 public class Main

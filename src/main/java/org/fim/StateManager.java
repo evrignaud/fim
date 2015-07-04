@@ -27,6 +27,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
 
+import org.fim.model.CompareMode;
 import org.fim.model.FileState;
 import org.fim.model.State;
 

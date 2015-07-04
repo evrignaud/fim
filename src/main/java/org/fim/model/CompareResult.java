@@ -16,16 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim;
+package org.fim.model;
 
 import static org.fim.util.FormatUtil.formatDate;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.fim.model.Difference;
-import org.fim.model.State;
 
 public class CompareResult
 {

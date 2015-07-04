@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.util.List;
 
+import org.fim.model.CompareMode;
 import org.fim.model.FileState;
 
 class FileHasher implements Runnable

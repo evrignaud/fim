@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.fim.model.CompareMode;
+import org.fim.model.CompareResult;
 import org.fim.model.Difference;
 import org.fim.model.FileState;
 import org.fim.model.State;
