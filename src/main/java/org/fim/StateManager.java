@@ -33,9 +33,11 @@ import org.fim.model.State;
 
 public class StateManager
 {
+	public static final String PREVIOUS_STATE_FILE_NAME = "previousState";
+	
 	private final File stateDir;
 	private final CompareMode compareMode;
-	private Charset utf8 = Charset.forName("UTF-8");
+	private final Charset utf8 = Charset.forName("UTF-8");
 	private int previousStateNumber = -1;
 
 	public StateManager(File stateDir, CompareMode compareMode)
@@ -67,10 +69,9 @@ public class StateManager
 	public State loadState(int stateNumber) throws IOException
 	{
 		File stateFile = getStateFile(stateNumber);
-
 		if (!stateFile.exists())
 		{
-			throw new IllegalStateException("No state file found for this directory");
+			throw new IllegalStateException(String.format("Unable to load State file %d from directory %s", stateNumber, stateDir));
 		}
 
 		State state = new State();
@@ -116,7 +117,7 @@ public class StateManager
 	{
 		previousStateNumber = -1;
 
-		File previousStateFile = new File(stateDir, "previousState");
+		File previousStateFile = new File(stateDir, PREVIOUS_STATE_FILE_NAME);
 		if (previousStateFile.exists())
 		{
 			try
@@ -138,7 +139,7 @@ public class StateManager
 	{
 		if (previousStateNumber != -1)
 		{
-			File lastStateFile = new File(stateDir, "lastState");
+			File lastStateFile = new File(stateDir, PREVIOUS_STATE_FILE_NAME);
 			String content = "" + previousStateNumber;
 			try
 			{
