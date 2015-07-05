@@ -28,65 +28,65 @@ import org.junit.Test;
 public class StateComparatorFastTest extends StateAssert
 {
 	private StateComparator cut = new StateComparator(CompareMode.FAST);
-	private BuildableState s1 = new BuildableState().addFiles("file_1", "file_2", "file_3", "file_4");
+	private BuildableState s1 = new BuildableState().addFiles("file_01", "file_02", "file_03", "file_04");
 	private BuildableState s2;
 
 	@Test
 	public void weCanDoCompareOnSimpleOperations()
 	{
 		// Set the same file content
-		s2 = s1.setContent("file_1", "file_1");
+		s2 = s1.setContent("file_01", "file_01");
 		CompareResult result = cut.compare(s1, s2);
 		assertNothingModified(result);
 
-		s2 = s1.addFiles("file_5");
+		s2 = s1.addFiles("file_05");
 		result = cut.compare(s1, s2);
-		assertOnlyFilesAdded(result, "file_5");
+		assertOnlyFilesAdded(result, "file_05");
 
-		s2 = s1.touch("file_1");
+		s2 = s1.touch("file_01");
 		result = cut.compare(s1, s2);
-		assertOnlyDatesModified(result, "file_1");
+		assertOnlyDatesModified(result, "file_01");
 
-		s2 = s1.appendContent("file_1", "append 1");
+		s2 = s1.appendContent("file_01", "append 1");
 		result = cut.compare(s1, s2);
-		assertOnlyContentModified(result, "file_1");
+		assertOnlyContentModified(result, "file_01");
 
-		s2 = s1.rename("file_1", "file_6");
+		s2 = s1.rename("file_01", "file_06");
 		result = cut.compare(s1, s2);
 		assertGotOnlyModifications(result, Modification.ADDED, Modification.DELETED);
-		assertFilesModified(result, Modification.DELETED, "file_1");
-		assertFilesModified(result, Modification.ADDED, "file_6");
+		assertFilesModified(result, Modification.DELETED, "file_01");
+		assertFilesModified(result, Modification.ADDED, "file_06");
 
-		s2 = s1.copy("file_1", "file_6");
+		s2 = s1.copy("file_01", "file_06");
 		result = cut.compare(s1, s2);
-		assertOnlyFilesAdded(result, "file_6");
+		assertOnlyFilesAdded(result, "file_06");
 
-		s2 = s1.delete("file_1");
+		s2 = s1.delete("file_01");
 		result = cut.compare(s1, s2);
-		assertOnlyFileDeleted(result, "file_1");
+		assertOnlyFileDeleted(result, "file_01");
 	}
 
 	@Test
 	public void weCanCopyAFileAndChangeDate()
 	{
-		s2 = s1.copy("file_1", "file_0")
-				.copy("file_1", "file_6")
-				.touch("file_1");
+		s2 = s1.copy("file_01", "file_00")
+				.copy("file_01", "file_06")
+				.touch("file_01");
 		CompareResult result = cut.compare(s1, s2);
 		assertGotOnlyModifications(result, Modification.ADDED, Modification.DATE_MODIFIED);
-		assertFilesModified(result, Modification.ADDED, "file_0", "file_6");
-		assertFilesModified(result, Modification.DATE_MODIFIED, "file_1");
+		assertFilesModified(result, Modification.ADDED, "file_00", "file_06");
+		assertFilesModified(result, Modification.DATE_MODIFIED, "file_01");
 	}
 
 	@Test
 	public void weCanCopyAFileAndChangeContent()
 	{
-		s2 = s1.copy("file_1", "file_0")
-				.copy("file_1", "file_6")
-				.appendContent("file_1", "append 1");
+		s2 = s1.copy("file_01", "file_00")
+				.copy("file_01", "file_06")
+				.appendContent("file_01", "append 1");
 		CompareResult result = cut.compare(s1, s2);
 		assertGotOnlyModifications(result, Modification.ADDED, Modification.CONTENT_MODIFIED);
-		assertFilesModified(result, Modification.ADDED, "file_0", "file_6");
-		assertFilesModified(result, Modification.CONTENT_MODIFIED, "file_1");
+		assertFilesModified(result, Modification.ADDED, "file_00", "file_06");
+		assertFilesModified(result, Modification.CONTENT_MODIFIED, "file_01");
 	}
 }
