@@ -64,16 +64,16 @@ It's a time consuming operation that will compute the files content hash.
 	
 	File Integrity Checker
 		 -f,--fastCompare         Compare only filenames and modification dates
-		 -l,--useLastState        Use last state
-		 -m,--message <arg>       Message to store with the state
+		 -l,--useLastState        Use the last committed State
+		 -m,--message <arg>       Message to store with the State
 		 -q,--quiet               Do not display details
-		 -t,--threadCount <arg>   Number of thread to use for state generation
+		 -t,--threadCount <arg>   Number of thread to use to hash files content in parallel
 	
 	Available commands:
 		 - init: Initialize a Fim repository
-		 - ci / commit: Commit the current directory state
-		 - diff: Compare the current directory state with the previous one
+		 - ci / commit: Commit the current directory State
+		 - diff: Compare the current directory State with the previous one
 		 - fdup / find-duplicates: Find duplicated files
-		 - log: Display states log
-		 - rdates / reset-dates: Reset the file modification dates like in the current directory state
+		 - log: Display States log
+		 - rdates / reset-dates: Reset the file modification dates like it's stored in the last committed State
 

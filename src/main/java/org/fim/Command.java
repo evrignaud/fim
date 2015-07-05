@@ -21,11 +21,11 @@ package org.fim;
 public enum Command
 {
 	INIT("init", "", "Initialize a Fim repository"),
-	COMMIT("commit", "ci", "Commit the current directory state"),
-	DIFF("diff", "", "Compare the current directory state with the previous one"),
+	COMMIT("commit", "ci", "Commit the current directory State"),
+	DIFF("diff", "", "Compare the current directory State with the previous one"),
 	FIND_DUPLICATES("find-duplicates", "fdup", "Find duplicated files"),
-	LOG("log", "", "Display states log"),
-	RESET_DATES("reset-dates", "rdates", "Reset the file modification dates like in the current directory state");
+	LOG("log", "", "Display States log"),
+	RESET_DATES("reset-dates", "rdates", "Reset the file modification dates like it's stored in the last committed State");
 
 	private final String cmdName;
 	private final String shortCmdName;

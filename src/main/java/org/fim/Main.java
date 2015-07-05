@@ -46,9 +46,9 @@ public class Main
 		Options options = new Options();
 		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
 		options.addOption(createOption("f", "fastCompare", false, "Compare only filenames and modification dates", false));
-		options.addOption(createOption("m", "message", true, "Message to store with the state", false));
-		options.addOption(createOption("t", "threadCount", true, "Number of thread to use for state generation", false));
-		options.addOption(createOption("l", "useLastState", false, "Use last state", false));
+		options.addOption(createOption("m", "message", true, "Message to store with the State", false));
+		options.addOption(createOption("t", "threadCount", true, "Number of thread to use to hash files content in parallel", false));
+		options.addOption(createOption("l", "useLastState", false, "Use the last committed State", false));
 		return options;
 	}
 
@@ -154,7 +154,7 @@ public class Main
 				fastCompareNotSupported(compareMode);
 
 				stateDir.mkdirs();
-				currentState = generator.generateState("Initial state", baseDirectory);
+				currentState = generator.generateState("Initial State", baseDirectory);
 				comparator.compare(null, currentState).displayChanges(verbose);
 				manager.createNewState(currentState);
 				break;
@@ -188,7 +188,7 @@ public class Main
 			case FIND_DUPLICATES:
 				fastCompareNotSupported(compareMode);
 
-				System.out.println("Searching for duplicated files" + (useLastState ? " from the previous state" : ""));
+				System.out.println("Searching for duplicated files" + (useLastState ? " from the last committed State" : ""));
 				System.out.println("");
 				State state;
 				if (useLastState)
