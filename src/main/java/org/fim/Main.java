@@ -140,7 +140,7 @@ public class Main
 			}
 		}
 
-		State previousState;
+		State lastState;
 		State currentState;
 
 		StateGenerator generator = new StateGenerator(threadCount, compareMode);
@@ -162,9 +162,9 @@ public class Main
 			case COMMIT:
 				fastCompareNotSupported(compareMode);
 
-				previousState = manager.loadPreviousState();
+				lastState = manager.loadLastState();
 				currentState = generator.generateState(message, baseDirectory);
-				CompareResult result = comparator.compare(previousState, currentState).displayChanges(verbose);
+				CompareResult result = comparator.compare(lastState, currentState).displayChanges(verbose);
 				if (result.somethingModified())
 				{
 					System.out.println("");
@@ -180,9 +180,9 @@ public class Main
 				break;
 
 			case DIFF:
-				previousState = manager.loadPreviousState();
+				lastState = manager.loadLastState();
 				currentState = generator.generateState(message, baseDirectory);
-				comparator.compare(previousState, currentState).displayChanges(verbose);
+				comparator.compare(lastState, currentState).displayChanges(verbose);
 				break;
 
 			case FIND_DUPLICATES:
@@ -193,7 +193,7 @@ public class Main
 				State state;
 				if (useLastState)
 				{
-					state = manager.loadPreviousState();
+					state = manager.loadLastState();
 				}
 				else
 				{
@@ -205,8 +205,8 @@ public class Main
 			case RESET_DATES:
 				fastCompareNotSupported(compareMode);
 
-				previousState = manager.loadPreviousState();
-				manager.resetDates(previousState);
+				lastState = manager.loadLastState();
+				manager.resetDates(lastState);
 				break;
 
 			case LOG:

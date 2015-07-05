@@ -34,11 +34,11 @@ public class CompareResult
 	private List<Difference> renamed;
 	private List<Difference> deleted;
 
-	private State previousState;
+	private State lastState;
 
-	public CompareResult(State previousState)
+	public CompareResult(State lastState)
 	{
-		this.previousState = previousState;
+		this.lastState = lastState;
 
 		added = new ArrayList<>();
 		copied = new ArrayList<>();
@@ -62,10 +62,10 @@ public class CompareResult
 
 	public CompareResult displayChanges(boolean verbose)
 	{
-		System.out.println("Comparing with previous state from " + formatDate(previousState.getTimestamp()));
-		if (previousState.getMessage().length() > 0)
+		System.out.println("Comparing with last committed state from " + formatDate(lastState.getTimestamp()));
+		if (lastState.getMessage().length() > 0)
 		{
-			System.out.println("Message: " + previousState.getMessage());
+			System.out.println("Message: " + lastState.getMessage());
 		}
 		System.out.println("");
 

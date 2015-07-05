@@ -37,20 +37,20 @@ public class StateComparator
 		this.compareMode = compareMode;
 	}
 
-	public CompareResult compare(State previousState, State currentState)
+	public CompareResult compare(State lastState, State currentState)
 	{
-		CompareResult result = new CompareResult(previousState);
+		CompareResult result = new CompareResult(lastState);
 
 		logDebug("---------------------------------------------------------------------",
-				"previousState", previousState.getFileStates(), "currentState", currentState.getFileStates());
+				"lastState", lastState.getFileStates(), "currentState", currentState.getFileStates());
 
 		List<FileState> previousFileStates = new ArrayList<>();
 		List<FileState> notFoundInCurrentFileState = new ArrayList<>();
 		List<FileState> addedOrModified = new ArrayList<>();
 
-		if (previousState != null)
+		if (lastState != null)
 		{
-			previousFileStates.addAll(previousState.getFileStates());
+			previousFileStates.addAll(lastState.getFileStates());
 		}
 
 		resetNewHash(previousFileStates);

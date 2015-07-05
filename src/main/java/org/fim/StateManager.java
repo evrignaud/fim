@@ -33,12 +33,12 @@ import org.fim.model.State;
 
 public class StateManager
 {
-	public static final String PREVIOUS_STATE_FILE_NAME = "previousState";
-	
+	public static final String LAST_STATE_FILE_NAME = "lastState";
+
 	private final File stateDir;
 	private final CompareMode compareMode;
 	private final Charset utf8 = Charset.forName("UTF-8");
-	private int previousStateNumber = -1;
+	private int lastStateNumber = -1;
 
 	public StateManager(File stateDir, CompareMode compareMode)
 	{
@@ -49,21 +49,21 @@ public class StateManager
 	public void createNewState(State state) throws IOException
 	{
 		state.saveToZipFile(getNextStateFile());
-		writePreviousStateNumber();
+		writeLastStateNumber();
 	}
 
 	public File getNextStateFile()
 	{
-		findPreviousStateNumber();
-		previousStateNumber++;
-		File statFile = getStateFile(previousStateNumber);
+		findLastStateNumber();
+		lastStateNumber++;
+		File statFile = getStateFile(lastStateNumber);
 		return statFile;
 	}
 
-	public State loadPreviousState() throws IOException
+	public State loadLastState() throws IOException
 	{
-		findPreviousStateNumber();
-		return loadState(previousStateNumber);
+		findLastStateNumber();
+		return loadState(lastStateNumber);
 	}
 
 	public State loadState(int stateNumber) throws IOException
@@ -94,10 +94,10 @@ public class StateManager
 		return new File(stateDir, "state_" + stateNumber + ".zjson");
 	}
 
-	private void findPreviousStateNumber()
+	private void findLastStateNumber()
 	{
-		readPreviousStateNumber();
-		if (previousStateNumber != -1)
+		readLastStateNumber();
+		if (lastStateNumber != -1)
 		{
 			return;
 		}
@@ -107,25 +107,25 @@ public class StateManager
 			File statFile = getStateFile(index);
 			if (!statFile.exists())
 			{
-				previousStateNumber = index - 1;
+				lastStateNumber = index - 1;
 				return;
 			}
 		}
 	}
 
-	private void readPreviousStateNumber()
+	private void readLastStateNumber()
 	{
-		previousStateNumber = -1;
+		lastStateNumber = -1;
 
-		File previousStateFile = new File(stateDir, PREVIOUS_STATE_FILE_NAME);
-		if (previousStateFile.exists())
+		File lastStateFile = new File(stateDir, LAST_STATE_FILE_NAME);
+		if (lastStateFile.exists())
 		{
 			try
 			{
-				List<String> strings = Files.readAllLines(previousStateFile.toPath(), utf8);
+				List<String> strings = Files.readAllLines(lastStateFile.toPath(), utf8);
 				if (strings.size() > 0)
 				{
-					previousStateNumber = Integer.parseInt(strings.get(0));
+					lastStateNumber = Integer.parseInt(strings.get(0));
 				}
 			}
 			catch (IOException ex)
@@ -135,12 +135,12 @@ public class StateManager
 		}
 	}
 
-	private void writePreviousStateNumber()
+	private void writeLastStateNumber()
 	{
-		if (previousStateNumber != -1)
+		if (lastStateNumber != -1)
 		{
-			File lastStateFile = new File(stateDir, PREVIOUS_STATE_FILE_NAME);
-			String content = "" + previousStateNumber;
+			File lastStateFile = new File(stateDir, LAST_STATE_FILE_NAME);
+			String content = "" + lastStateNumber;
 			try
 			{
 				Files.write(lastStateFile.toPath(), content.getBytes(), CREATE);
@@ -154,7 +154,7 @@ public class StateManager
 
 	public void resetDates(State state)
 	{
-		System.out.println("Reset file modification dates based on previous state done " + formatDate(state.getTimestamp()));
+		System.out.println("Reset file modification dates based on the last committed State done " + formatDate(state.getTimestamp()));
 		if (state.getMessage().length() > 0)
 		{
 			System.out.println("Message: " + state.getMessage());
@@ -190,14 +190,14 @@ public class StateManager
 
 	public void displayStatesLog() throws IOException
 	{
-		readPreviousStateNumber();
-		if (previousStateNumber == -1)
+		readLastStateNumber();
+		if (lastStateNumber == -1)
 		{
-			System.out.println("No state created");
+			System.out.println("No State found");
 			return;
 		}
 
-		for (int stateNumber = 1; stateNumber <= previousStateNumber; stateNumber++)
+		for (int stateNumber = 1; stateNumber <= lastStateNumber; stateNumber++)
 		{
 			File statFile = getStateFile(stateNumber);
 			if (statFile.exists())
