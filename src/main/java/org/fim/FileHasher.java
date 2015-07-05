@@ -53,12 +53,13 @@ class FileHasher implements Runnable
 		fileStates.add(new FileState(fileName, file.lastModified(), hash));
 	}
 
-	private String getRelativeFileName(String baseDirectory, String fileName)
+	protected String getRelativeFileName(String baseDirectory, String fileName)
 	{
 		if (fileName.startsWith(baseDirectory))
 		{
 			fileName = fileName.substring(baseDirectory.length());
 		}
+
 		if (fileName.startsWith("/"))
 		{
 			fileName = fileName.substring(1);
@@ -66,7 +67,7 @@ class FileHasher implements Runnable
 		return fileName;
 	}
 
-	private String hashFile(File file)
+	protected String hashFile(File file)
 	{
 		if (stateGenerator.getCompareMode() == CompareMode.FAST)
 		{
@@ -75,13 +76,13 @@ class FileHasher implements Runnable
 
 		try
 		{
-			MessageDigest digest = MessageDigest.getInstance("SHA-512");
+			MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
 			byte[] dataBytes;
 
 			if (file.length() < StateGenerator.SIZE_50_MO)
 			{
 				dataBytes = Files.readAllBytes(file.toPath());
-				digest.update(dataBytes, 0, dataBytes.length);
+				messageDigest.update(dataBytes, 0, dataBytes.length);
 			}
 			else
 			{
@@ -91,26 +92,29 @@ class FileHasher implements Runnable
 					int nread;
 					while ((nread = fis.read(dataBytes)) != -1)
 					{
-						digest.update(dataBytes, 0, nread);
+						messageDigest.update(dataBytes, 0, nread);
 					}
 				}
 			}
 
-			byte[] digestBytes = digest.digest();
-
-			StringBuffer hexString = new StringBuffer();
-			for (byte b : digestBytes)
-			{
-				hexString.append(String.format("%x", b));
-			}
-
-			return hexString.toString();
+			byte[] digestBytes = messageDigest.digest();
+			return toHexString(digestBytes);
 
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
-			e.printStackTrace();
-			return "????";
+			throw new RuntimeException("Exception occurred during file hashing", ex);
 		}
+	}
+
+	protected String toHexString(byte[] digestBytes)
+	{
+		StringBuffer hexString = new StringBuffer();
+		for (byte b : digestBytes)
+		{
+			hexString.append(String.format("%x", b));
+		}
+
+		return hexString.toString();
 	}
 }
