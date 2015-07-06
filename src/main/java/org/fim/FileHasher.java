@@ -82,7 +82,7 @@ class FileHasher implements Runnable
 			if (file.length() < StateGenerator.SIZE_50_MO)
 			{
 				dataBytes = Files.readAllBytes(file.toPath());
-				messageDigest.update(dataBytes, 0, dataBytes.length);
+				messageDigest.update(dataBytes);
 			}
 			else
 			{
@@ -99,7 +99,6 @@ class FileHasher implements Runnable
 
 			byte[] digestBytes = messageDigest.digest();
 			return toHexString(digestBytes);
-
 		}
 		catch (Exception ex)
 		{
@@ -112,7 +111,8 @@ class FileHasher implements Runnable
 		StringBuffer hexString = new StringBuffer();
 		for (byte b : digestBytes)
 		{
-			hexString.append(String.format("%x", b));
+			hexString.append(Character.forDigit((b >> 4) & 0xF, 16));
+			hexString.append(Character.forDigit((b & 0xF), 16));
 		}
 
 		return hexString.toString();
