@@ -62,7 +62,7 @@ public class CompareResult
 
 	public CompareResult displayChanges(boolean verbose)
 	{
-		System.out.println("Comparing with last committed state from " + formatDate(lastState.getTimestamp()));
+		System.out.println("Comparing with the last committed state from " + formatDate(lastState.getTimestamp()));
 		if (lastState.getMessage().length() > 0)
 		{
 			System.out.println("Message: " + lastState.getMessage());
