@@ -21,6 +21,7 @@ package org.fim;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +60,7 @@ public class Main
 		return option;
 	}
 
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws IOException, NoSuchAlgorithmException
 	{
 		String[] filteredArgs = filterEmptyArgs(args);
 		if (filteredArgs.length < 1)

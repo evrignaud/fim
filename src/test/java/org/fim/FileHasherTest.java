@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class FileHasherTest
 	private FileHasher cut;
 
 	@Before
-	public void setup()
+	public void setup() throws NoSuchAlgorithmException
 	{
 		fileStates = new ArrayList<>();
 		baseDir = "target/tmp";

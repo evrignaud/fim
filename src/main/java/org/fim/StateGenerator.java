@@ -21,6 +21,7 @@ package org.fim;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -64,7 +65,7 @@ public class StateGenerator
 		this.compareMode = compareMode;
 	}
 
-	public State generateState(String message, File baseDirectory) throws IOException
+	public State generateState(String message, File baseDirectory) throws IOException, NoSuchAlgorithmException
 	{
 		State state = new State();
 		state.setMessage(message);
@@ -122,7 +123,7 @@ public class StateGenerator
 		}
 	}
 
-	private void getFileStates(List<FileState> fileStates, String baseDirectory, File directory)
+	private void getFileStates(List<FileState> fileStates, String baseDirectory, File directory) throws NoSuchAlgorithmException
 	{
 		List<File> files = Arrays.asList(directory.listFiles());
 		Collections.sort(files);

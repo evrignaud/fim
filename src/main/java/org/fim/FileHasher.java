@@ -20,8 +20,10 @@ package org.fim;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import org.fim.model.CompareMode;
@@ -29,17 +31,21 @@ import org.fim.model.FileState;
 
 class FileHasher implements Runnable
 {
+	public static final String HASH_ALGORITHM = "SHA-512";
+
 	private final StateGenerator stateGenerator;
 	private final List<FileState> fileStates;
 	private final String baseDirectory;
 	private final File file;
+	private final MessageDigest messageDigest;
 
-	public FileHasher(StateGenerator stateGenerator, List<FileState> fileStates, String baseDirectory, File file)
+	public FileHasher(StateGenerator stateGenerator, List<FileState> fileStates, String baseDirectory, File file) throws NoSuchAlgorithmException
 	{
 		this.stateGenerator = stateGenerator;
 		this.fileStates = fileStates;
 		this.baseDirectory = baseDirectory;
 		this.file = file;
+		this.messageDigest = MessageDigest.getInstance(HASH_ALGORITHM);
 	}
 
 	@Override
@@ -76,29 +82,14 @@ class FileHasher implements Runnable
 
 		try
 		{
-			MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
-			byte[] dataBytes;
-
 			if (file.length() < StateGenerator.SIZE_50_MO)
 			{
-				dataBytes = Files.readAllBytes(file.toPath());
-				messageDigest.update(dataBytes);
+				return hashOnceTheCompleteFileContent(file);
 			}
 			else
 			{
-				try (FileInputStream fis = new FileInputStream(file))
-				{
-					dataBytes = new byte[1024];
-					int nread;
-					while ((nread = fis.read(dataBytes)) != -1)
-					{
-						messageDigest.update(dataBytes, 0, nread);
-					}
-				}
+				return hashFileChunkByChunk(file);
 			}
-
-			byte[] digestBytes = messageDigest.digest();
-			return toHexString(digestBytes);
 		}
 		catch (Exception ex)
 		{
@@ -106,9 +97,38 @@ class FileHasher implements Runnable
 		}
 	}
 
+	protected String hashOnceTheCompleteFileContent(File file) throws IOException
+	{
+		messageDigest.reset();
+
+		byte[] dataBytes = Files.readAllBytes(file.toPath());
+		messageDigest.update(dataBytes);
+
+		byte[] digestBytes = messageDigest.digest();
+		return toHexString(digestBytes);
+	}
+
+	protected String hashFileChunkByChunk(File file) throws IOException
+	{
+		messageDigest.reset();
+
+		try (FileInputStream fis = new FileInputStream(file))
+		{
+			byte[] dataBytes = new byte[1024];
+			int nread;
+			while ((nread = fis.read(dataBytes)) != -1)
+			{
+				messageDigest.update(dataBytes, 0, nread);
+			}
+		}
+
+		byte[] digestBytes = messageDigest.digest();
+		return toHexString(digestBytes);
+	}
+
 	protected String toHexString(byte[] digestBytes)
 	{
-		StringBuffer hexString = new StringBuffer();
+		StringBuilder hexString = new StringBuilder();
 		for (byte b : digestBytes)
 		{
 			hexString.append(Character.forDigit((b >> 4) & 0xF, 16));
