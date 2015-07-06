@@ -63,9 +63,9 @@ public class CompareResult
 		sortDifferences(deleted);
 	}
 
-	private void sortDifferences(List<Difference> deleted)
+	private void sortDifferences(List<Difference> differences)
 	{
-		Collections.sort(deleted, fileNameComparator);
+		Collections.sort(differences, fileNameComparator);
 	}
 
 	public CompareResult displayChanges(boolean verbose)
