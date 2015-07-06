@@ -18,7 +18,11 @@
  */
 package org.fim.model;
 
-public class FileState implements Comparable<FileState>
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+public class FileState
 {
 	private String fileName;
 	private long lastModified;
@@ -48,59 +52,45 @@ public class FileState implements Comparable<FileState>
 	}
 
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(Object other)
 	{
-		if (this == o)
+		if (this == other)
 		{
 			return true;
 		}
-		if (o == null || getClass() != o.getClass())
+
+		if (other == null || !(other instanceof FileState))
 		{
 			return false;
 		}
 
-		FileState fileState = (FileState) o;
+		FileState fileState = (FileState) other;
 
-		if (getLastModified() != fileState.getLastModified())
-		{
-			return false;
-		}
-
-		if (!getFileName().equals(fileState.getFileName()))
-		{
-			return false;
-		}
-
-		if (!getHash().equals(fileState.getHash()))
-		{
-			return false;
-		}
-
-		return true;
+		return new EqualsBuilder()
+				.append(lastModified, fileState.lastModified)
+				.append(fileName, fileState.fileName)
+				.append(hash, fileState.hash)
+				.isEquals();
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int result = getFileName().hashCode();
-		result = 31 * result + (int) (getLastModified() ^ (getLastModified() >>> 32));
-		result = 31 * result + getHash().hashCode();
-		return result;
+		return new HashCodeBuilder(17, 37)
+				.append(fileName)
+				.append(lastModified)
+				.append(hash)
+				.toHashCode();
 	}
 
 	@Override
 	public String toString()
 	{
-		return new StringBuilder().append("FileState{").append("fileName='").append(getFileName()).append('\'').
-				append(", lastModified=").append(getLastModified()).
-				append(", hash='").append(getHash()).append('\'').
-				append('}').toString();
-	}
-
-	@Override
-	public int compareTo(FileState other)
-	{
-		return getFileName().compareTo(other.getFileName());
+		return new ToStringBuilder(this)
+				.append("fileName", fileName)
+				.append("lastModified", lastModified)
+				.append("hash", hash)
+				.toString();
 	}
 
 	public String getFileName()

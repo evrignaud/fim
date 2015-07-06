@@ -18,7 +18,7 @@
  */
 package org.fim.model;
 
-public class Difference implements Comparable<Difference>
+public class Difference
 {
 	private FileState previousFileState;
 	private FileState fileState;
@@ -27,12 +27,6 @@ public class Difference implements Comparable<Difference>
 	{
 		this.setPreviousFileState(previousFileState);
 		this.setFileState(fileState);
-	}
-
-	@Override
-	public int compareTo(Difference other)
-	{
-		return getFileState().compareTo(other.getFileState());
 	}
 
 	public FileState getPreviousFileState()

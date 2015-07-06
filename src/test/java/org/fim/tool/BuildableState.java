@@ -20,6 +20,7 @@ package org.fim.tool;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 import org.fim.model.FileState;
@@ -27,6 +28,8 @@ import org.fim.model.State;
 
 public class BuildableState extends State
 {
+	private static Comparator<FileState> fileNameComparator = new FileNameComparator();
+
 	public BuildableState()
 	{
 		setFileStates(new ArrayList<FileState>());
@@ -46,7 +49,7 @@ public class BuildableState extends State
 			FileState fileState = new FileState(fileName, getNow(), fileName);
 			newState.getFileStates().add(fileState);
 		}
-		Collections.sort(newState.getFileStates());
+		sortFileStates(newState);
 		return newState;
 	}
 
@@ -61,7 +64,7 @@ public class BuildableState extends State
 		FileState sourceFileState = findFileState(newState, sourceFileName, true);
 		FileState targetFileState = new FileState(targetFileName, sourceFileState.getLastModified(), sourceFileState.getHash());
 		newState.getFileStates().add(targetFileState);
-		Collections.sort(newState.getFileStates());
+		sortFileStates(newState);
 		return newState;
 	}
 
@@ -75,7 +78,7 @@ public class BuildableState extends State
 
 		FileState fileState = findFileState(newState, sourceFileName, true);
 		fileState.setFileName(targetFileName);
-		Collections.sort(newState.getFileStates());
+		sortFileStates(newState);
 		return newState;
 	}
 
@@ -116,6 +119,11 @@ public class BuildableState extends State
 		return newState;
 	}
 
+	private void sortFileStates(BuildableState state)
+	{
+		Collections.sort(state.getFileStates(), fileNameComparator);
+	}
+
 	private FileState findFileState(BuildableState state, String fileName, boolean throwEx)
 	{
 		for (FileState fileState : state.getFileStates())
@@ -154,4 +162,12 @@ public class BuildableState extends State
 		return newState;
 	}
 
+	private static class FileNameComparator implements Comparator<FileState>
+	{
+		@Override
+		public int compare(FileState fs1, FileState fs2)
+		{
+			return fs1.getFileName().compareTo(fs2.getFileName());
+		}
+	}
 }

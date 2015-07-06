@@ -63,7 +63,7 @@ public class DuplicateFinder
 		return result;
 	}
 
-	private class HashComparator implements Comparator<FileState>
+	private static class HashComparator implements Comparator<FileState>
 	{
 		@Override
 		public int compare(FileState fs1, FileState fs2)

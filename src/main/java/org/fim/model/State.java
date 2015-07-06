@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class State
 {
@@ -128,5 +129,16 @@ public class State
 				.append(fileCount)
 				.append(fileStates)
 				.toHashCode();
+	}
+
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this)
+				.append("timestamp", timestamp)
+				.append("message", message)
+				.append("fileCount", fileCount)
+				.append("fileStates", fileStates)
+				.toString();
 	}
 }

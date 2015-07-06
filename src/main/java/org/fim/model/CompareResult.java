@@ -22,10 +22,13 @@ import static org.fim.util.FormatUtil.formatDate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class CompareResult
 {
+	private static Comparator<Difference> fileNameComparator = new FileNameComparator();
+
 	private List<Difference> added;
 	private List<Difference> copied;
 	private List<Difference> duplicated;
@@ -51,13 +54,18 @@ public class CompareResult
 
 	public void sortResults()
 	{
-		Collections.sort(added);
-		Collections.sort(copied);
-		Collections.sort(duplicated);
-		Collections.sort(dateModified);
-		Collections.sort(contentModified);
-		Collections.sort(renamed);
-		Collections.sort(deleted);
+		sortDifferences(added);
+		sortDifferences(copied);
+		sortDifferences(duplicated);
+		sortDifferences(dateModified);
+		sortDifferences(contentModified);
+		sortDifferences(renamed);
+		sortDifferences(deleted);
+	}
+
+	private void sortDifferences(List<Difference> deleted)
+	{
+		Collections.sort(deleted, fileNameComparator);
 	}
 
 	public CompareResult displayChanges(boolean verbose)
@@ -212,4 +220,14 @@ public class CompareResult
 	{
 		return deleted;
 	}
+
+	private static class FileNameComparator implements Comparator<Difference>
+	{
+		@Override
+		public int compare(Difference diff1, Difference diff2)
+		{
+			return diff1.getFileState().getFileName().compareTo(diff2.getFileState().getFileName());
+		}
+	}
 }
+
