@@ -52,7 +52,7 @@ public class FileHasherTest
 	public void setup() throws NoSuchAlgorithmException
 	{
 		fileStates = new ArrayList<>();
-		baseDir = "target/tmp";
+		baseDir = "target/" + this.getClass().getSimpleName();
 		fileToHash = new File("file_01");
 		cut = new FileHasher(stateGenerator, fileStates, baseDir, fileToHash);
 	}

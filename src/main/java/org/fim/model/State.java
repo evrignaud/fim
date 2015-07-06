@@ -32,6 +32,8 @@ import java.util.zip.GZIPOutputStream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class State
 {
@@ -92,5 +94,39 @@ public class State
 	public int getFileCount()
 	{
 		return fileCount;
+	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		if (this == other)
+		{
+			return true;
+		}
+
+		if (other == null || !(other instanceof State))
+		{
+			return false;
+		}
+
+		State state = (State) other;
+
+		return new EqualsBuilder()
+				.append(timestamp, state.timestamp)
+				.append(fileCount, state.fileCount)
+				.append(message, state.message)
+				.append(fileStates, state.fileStates)
+				.isEquals();
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(17, 37)
+				.append(timestamp)
+				.append(message)
+				.append(fileCount)
+				.append(fileStates)
+				.toHashCode();
 	}
 }

@@ -38,7 +38,7 @@ public class StateManager
 	private final File stateDir;
 	private final CompareMode compareMode;
 	private final Charset utf8 = Charset.forName("UTF-8");
-	private int lastStateNumber = -1;
+	protected int lastStateNumber = -1;
 
 	public StateManager(File stateDir, CompareMode compareMode)
 	{
@@ -94,7 +94,7 @@ public class StateManager
 		return new File(stateDir, "state_" + stateNumber + ".zjson");
 	}
 
-	private void findLastStateNumber()
+	protected void findLastStateNumber()
 	{
 		readLastStateNumber();
 		if (lastStateNumber != -1)
