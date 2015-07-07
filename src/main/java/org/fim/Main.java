@@ -38,6 +38,7 @@ import org.apache.commons.cli.Options;
 import org.fim.model.CompareMode;
 import org.fim.model.CompareResult;
 import org.fim.model.FileState;
+import org.fim.model.FimOptions;
 import org.fim.model.State;
 
 public class Main
@@ -84,13 +85,7 @@ public class Main
 		Options options = constructOptions();
 		CommandLine commandLine;
 
-		boolean verbose = true;
-		CompareMode compareMode = CompareMode.FULL;
-		String message = "";
-		boolean useLastState = false;
-		int threadCount = Runtime.getRuntime().availableProcessors();
-		String fimRepositoryDirectory = null;
-		boolean alwaysYes = false;
+		FimOptions fimOptions = new FimOptions();
 
 		try
 		{
@@ -103,15 +98,15 @@ public class Main
 			}
 			else
 			{
-				verbose = !commandLine.hasOption('q');
-				compareMode = commandLine.hasOption('f') ? CompareMode.FAST : CompareMode.FULL;
-				message = commandLine.getOptionValue('m', message);
-				threadCount = Integer.parseInt(commandLine.getOptionValue('t', "" + threadCount));
-				useLastState = commandLine.hasOption('l');
-				fimRepositoryDirectory = commandLine.getOptionValue('d');
-				alwaysYes = commandLine.hasOption('y');
+				fimOptions.setVerbose(!commandLine.hasOption('q'));
+				fimOptions.setCompareMode(commandLine.hasOption('f') ? CompareMode.FAST : CompareMode.FULL);
+				fimOptions.setMessage(commandLine.getOptionValue('m', fimOptions.getMessage()));
+				fimOptions.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "" + fimOptions.getThreadCount())));
+				fimOptions.setUseLastState(commandLine.hasOption('l'));
+				fimOptions.setFimRepositoryDirectory(commandLine.getOptionValue('d'));
+				fimOptions.setAlwaysYes(commandLine.hasOption('y'));
 
-				if (command == Command.REMOVE_DUPLICATES && fimRepositoryDirectory == null)
+				if (command == Command.REMOVE_DUPLICATES && fimOptions.getFimRepositoryDirectory() == null)
 				{
 					System.out.println("The Fim repository directory must be provided");
 					printUsage();
@@ -125,13 +120,13 @@ public class Main
 			System.exit(-1);
 		}
 
-		if (compareMode == CompareMode.FAST)
+		if (fimOptions.getCompareMode() == CompareMode.FAST)
 		{
-			threadCount = 1;
+			fimOptions.setThreadCount(1);
 			System.out.println("Using fast compare mode. Thread count forced to 1");
 		}
 
-		if (threadCount < 1)
+		if (fimOptions.getThreadCount() < 1)
 		{
 			System.out.println("Thread count must be at least one");
 			System.exit(-1);
@@ -161,32 +156,32 @@ public class Main
 		State lastState;
 		State currentState;
 
-		StateGenerator generator = new StateGenerator(threadCount, compareMode);
-		StateManager manager = new StateManager(stateDir, compareMode);
-		StateComparator comparator = new StateComparator(compareMode);
+		StateGenerator generator = new StateGenerator(fimOptions.getThreadCount(), fimOptions.getCompareMode());
+		StateManager manager = new StateManager(stateDir, fimOptions.getCompareMode());
+		StateComparator comparator = new StateComparator(fimOptions.getCompareMode());
 		DuplicateFinder finder = new DuplicateFinder();
 
 		switch (command)
 		{
 			case INIT:
-				fastCompareNotSupported(compareMode);
+				fastCompareNotSupported(fimOptions.getCompareMode());
 
 				stateDir.mkdirs();
 				currentState = generator.generateState("Initial State", baseDirectory);
-				comparator.compare(null, currentState).displayChanges(verbose);
+				comparator.compare(null, currentState).displayChanges(fimOptions.isVerbose());
 				manager.createNewState(currentState);
 				break;
 
 			case COMMIT:
-				fastCompareNotSupported(compareMode);
+				fastCompareNotSupported(fimOptions.getCompareMode());
 
 				lastState = manager.loadLastState();
-				currentState = generator.generateState(message, baseDirectory);
-				CompareResult result = comparator.compare(lastState, currentState).displayChanges(verbose);
+				currentState = generator.generateState(fimOptions.getMessage(), baseDirectory);
+				CompareResult result = comparator.compare(lastState, currentState).displayChanges(fimOptions.isVerbose());
 				if (result.somethingModified())
 				{
 					System.out.println("");
-					if (alwaysYes || confirmCommand("commit"))
+					if (fimOptions.isAlwaysYes() || confirmCommand("commit"))
 					{
 						manager.createNewState(currentState);
 					}
@@ -199,33 +194,33 @@ public class Main
 
 			case DIFF:
 				lastState = manager.loadLastState();
-				currentState = generator.generateState(message, baseDirectory);
-				comparator.compare(lastState, currentState).displayChanges(verbose);
+				currentState = generator.generateState(fimOptions.getMessage(), baseDirectory);
+				comparator.compare(lastState, currentState).displayChanges(fimOptions.isVerbose());
 				break;
 
 			case FIND_DUPLICATES:
-				fastCompareNotSupported(compareMode);
+				fastCompareNotSupported(fimOptions.getCompareMode());
 
-				System.out.println("Searching for duplicated files" + (useLastState ? " from the last committed State" : ""));
+				System.out.println("Searching for duplicated files" + (fimOptions.isUseLastState() ? " from the last committed State" : ""));
 				System.out.println("");
-				if (useLastState)
+				if (fimOptions.isUseLastState())
 				{
 					state = manager.loadLastState();
 				}
 				else
 				{
-					state = generator.generateState(message, baseDirectory);
+					state = generator.generateState(fimOptions.getMessage(), baseDirectory);
 				}
-				finder.findDuplicates(state).displayDuplicates(verbose);
+				finder.findDuplicates(state).displayDuplicates(fimOptions.isVerbose());
 				break;
 
 			case REMOVE_DUPLICATES:
-				fastCompareNotSupported(compareMode);
+				fastCompareNotSupported(fimOptions.getCompareMode());
 
-				File repository = new File(fimRepositoryDirectory);
+				File repository = new File(fimOptions.getFimRepositoryDirectory());
 				if (!repository.exists())
 				{
-					System.out.printf("Directory %s does not exist%n", fimRepositoryDirectory);
+					System.out.printf("Directory %s does not exist%n", fimOptions.getFimRepositoryDirectory());
 					System.exit(-1);
 				}
 
@@ -238,11 +233,11 @@ public class Main
 				File fimDir = new File(repository, StateGenerator.FIM_DIR);
 				if (!fimDir.exists())
 				{
-					System.out.printf("Directory %s is not a Fim repository%n", fimRepositoryDirectory);
+					System.out.printf("Directory %s is not a Fim repository%n", fimOptions.getFimRepositoryDirectory());
 					System.exit(-1);
 				}
 
-				System.out.println("Searching for duplicated files using the " + fimRepositoryDirectory + " directory as master");
+				System.out.println("Searching for duplicated files using the " + fimOptions.getFimRepositoryDirectory() + " directory as master");
 				System.out.println("");
 
 				File otherStateDir = new File(fimDir, "states");
@@ -254,14 +249,14 @@ public class Main
 					otherHashes.put(otherFileState.getHash(), otherFileState);
 				}
 
-				State localState = generator.generateState(message, baseDirectory);
+				State localState = generator.generateState(fimOptions.getMessage(), baseDirectory);
 				for (FileState localFileState : localState.getFileStates())
 				{
 					FileState otherFileState = otherHashes.get(localFileState.getHash());
 					if (otherFileState != null)
 					{
-						System.out.printf("%s is a duplicate of %s/%s%n", localFileState.getFileName(), fimRepositoryDirectory, otherFileState.getFileName());
-						if (alwaysYes || confirmCommand("remove it"))
+						System.out.printf("%s is a duplicate of %s/%s%n", localFileState.getFileName(), fimOptions.getFimRepositoryDirectory(), otherFileState.getFileName());
+						if (fimOptions.isAlwaysYes() || confirmCommand("remove it"))
 						{
 							System.out.printf("  %s removed%n", localFileState.getFileName());
 							File localFile = new File(localFileState.getFileName());
@@ -272,7 +267,7 @@ public class Main
 				break;
 
 			case RESET_DATES:
-				fastCompareNotSupported(compareMode);
+				fastCompareNotSupported(fimOptions.getCompareMode());
 
 				lastState = manager.loadLastState();
 				manager.resetDates(lastState);
