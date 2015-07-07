@@ -18,8 +18,9 @@
  */
 package org.fim.tool;
 
-import java.util.Objects;
-
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.fim.model.Difference;
 
 public class FileNameDiff
@@ -52,22 +53,18 @@ public class FileNameDiff
 	@Override
 	public boolean equals(Object other)
 	{
-		if (this == other)
-		{
-			return true;
-		}
-		if (other == null || getClass() != other.getClass())
-		{
-			return false;
-		}
-		FileNameDiff fileNameDiff = (FileNameDiff) other;
-		return Objects.equals(before, fileNameDiff.before) &&
-				Objects.equals(after, fileNameDiff.after);
+		return new EqualsBuilder().reflectionEquals(this, other);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(before, after);
+		return new HashCodeBuilder().reflectionHashCode(this);
+	}
+
+	@Override
+	public String toString()
+	{
+		return ToStringBuilder.reflectionToString(this);
 	}
 }

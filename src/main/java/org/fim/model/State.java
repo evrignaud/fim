@@ -100,45 +100,18 @@ public class State
 	@Override
 	public boolean equals(Object other)
 	{
-		if (this == other)
-		{
-			return true;
-		}
-
-		if (other == null || !(other instanceof State))
-		{
-			return false;
-		}
-
-		State state = (State) other;
-
-		return new EqualsBuilder()
-				.append(timestamp, state.timestamp)
-				.append(fileCount, state.fileCount)
-				.append(message, state.message)
-				.append(fileStates, state.fileStates)
-				.isEquals();
+		return new EqualsBuilder().reflectionEquals(this, other);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(17, 37)
-				.append(timestamp)
-				.append(message)
-				.append(fileCount)
-				.append(fileStates)
-				.toHashCode();
+		return new HashCodeBuilder().reflectionHashCode(this);
 	}
 
 	@Override
 	public String toString()
 	{
-		return new ToStringBuilder(this)
-				.append("timestamp", timestamp)
-				.append("message", message)
-				.append("fileCount", fileCount)
-				.append("fileStates", fileStates)
-				.toString();
+		return ToStringBuilder.reflectionToString(this);
 	}
 }

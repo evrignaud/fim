@@ -56,43 +56,19 @@ public class FileState
 	@Override
 	public boolean equals(Object other)
 	{
-		if (this == other)
-		{
-			return true;
-		}
-
-		if (other == null || !(other instanceof FileState))
-		{
-			return false;
-		}
-
-		FileState fileState = (FileState) other;
-
-		return new EqualsBuilder()
-				.append(lastModified, fileState.lastModified)
-				.append(fileName, fileState.fileName)
-				.append(hash, fileState.hash)
-				.isEquals();
+		return new EqualsBuilder().reflectionEquals(this, other);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(17, 37)
-				.append(fileName)
-				.append(lastModified)
-				.append(hash)
-				.toHashCode();
+		return new HashCodeBuilder().reflectionHashCode(this);
 	}
 
 	@Override
 	public String toString()
 	{
-		return new ToStringBuilder(this)
-				.append("fileName", fileName)
-				.append("lastModified", lastModified)
-				.append("hash", hash)
-				.toString();
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 	public String getFileName()

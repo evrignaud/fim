@@ -21,6 +21,10 @@ package org.fim.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class DuplicateSet
 {
 	private List<FileState> duplicatedFiles;
@@ -33,5 +37,23 @@ public class DuplicateSet
 	public List<FileState> getDuplicatedFiles()
 	{
 		return duplicatedFiles;
+	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		return new EqualsBuilder().reflectionEquals(this, other);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder().reflectionHashCode(this);
+	}
+
+	@Override
+	public String toString()
+	{
+		return ToStringBuilder.reflectionToString(this);
 	}
 }
