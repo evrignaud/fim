@@ -18,6 +18,8 @@
  */
 package org.fim.model;
 
+import java.util.Comparator;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -131,5 +133,23 @@ public class FileState
 	public void resetNewHash()
 	{
 		newHash = hash;
+	}
+
+	public static class FileNameComparator implements Comparator<FileState>
+	{
+		@Override
+		public int compare(FileState fs1, FileState fs2)
+		{
+			return fs1.getFileName().compareTo(fs2.getFileName());
+		}
+	}
+
+	public static class HashComparator implements Comparator<FileState>
+	{
+		@Override
+		public int compare(FileState fs1, FileState fs2)
+		{
+			return fs1.getHash().compareTo(fs2.getHash());
+		}
 	}
 }

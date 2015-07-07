@@ -36,7 +36,7 @@ public class DuplicateFinder
 	public DuplicateFinder()
 	{
 		duplicatedFiles = new ArrayList<>();
-		hashComparator = new HashComparator();
+		hashComparator = new FileState.HashComparator();
 	}
 
 	public DuplicateResult findDuplicates(State state)
@@ -61,14 +61,5 @@ public class DuplicateFinder
 		result.addDuplicatedFiles(duplicatedFiles);
 
 		return result;
-	}
-
-	private static class HashComparator implements Comparator<FileState>
-	{
-		@Override
-		public int compare(FileState fs1, FileState fs2)
-		{
-			return fs1.getHash().compareTo(fs2.getHash());
-		}
 	}
 }

@@ -18,6 +18,8 @@
  */
 package org.fim.model;
 
+import java.util.Comparator;
+
 public class Difference
 {
 	private FileState previousFileState;
@@ -47,5 +49,14 @@ public class Difference
 	public void setFileState(FileState fileState)
 	{
 		this.fileState = fileState;
+	}
+
+	public static class FileNameComparator implements Comparator<Difference>
+	{
+		@Override
+		public int compare(Difference diff1, Difference diff2)
+		{
+			return diff1.getFileState().getFileName().compareTo(diff2.getFileState().getFileName());
+		}
 	}
 }

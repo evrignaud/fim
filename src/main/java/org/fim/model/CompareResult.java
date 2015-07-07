@@ -27,7 +27,7 @@ import java.util.List;
 
 public class CompareResult
 {
-	private static Comparator<Difference> fileNameComparator = new FileNameComparator();
+	private static Comparator<Difference> fileNameComparator = new Difference.FileNameComparator();
 
 	private List<Difference> added;
 	private List<Difference> copied;
@@ -219,15 +219,6 @@ public class CompareResult
 	public List<Difference> getDeleted()
 	{
 		return deleted;
-	}
-
-	private static class FileNameComparator implements Comparator<Difference>
-	{
-		@Override
-		public int compare(Difference diff1, Difference diff2)
-		{
-			return diff1.getFileState().getFileName().compareTo(diff2.getFileState().getFileName());
-		}
 	}
 }
 

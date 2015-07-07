@@ -28,7 +28,7 @@ import org.fim.model.State;
 
 public class BuildableState extends State
 {
-	private static Comparator<FileState> fileNameComparator = new FileNameComparator();
+	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
 	public BuildableState()
 	{
@@ -160,14 +160,5 @@ public class BuildableState extends State
 		newState.setFileStates(newFileStates);
 
 		return newState;
-	}
-
-	private static class FileNameComparator implements Comparator<FileState>
-	{
-		@Override
-		public int compare(FileState fs1, FileState fs2)
-		{
-			return fs1.getFileName().compareTo(fs2.getFileName());
-		}
 	}
 }

@@ -49,7 +49,7 @@ public class StateGenerator
 	public static final String FIC_DIR = ".fim";
 	public static final String NO_HASH = "no_hash";
 
-	private static Comparator<FileState> fileNameComparator = new FileNameComparator();
+	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
 	private final int threadCount;
 	private final CompareMode compareMode;
@@ -240,14 +240,5 @@ public class StateGenerator
 	public CompareMode getCompareMode()
 	{
 		return compareMode;
-	}
-
-	private static class FileNameComparator implements Comparator<FileState>
-	{
-		@Override
-		public int compare(FileState fs1, FileState fs2)
-		{
-			return fs1.getFileName().compareTo(fs2.getFileName());
-		}
 	}
 }
