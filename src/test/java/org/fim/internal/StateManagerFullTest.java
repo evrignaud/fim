@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim;
+package org.fim.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,8 +26,8 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.fim.model.CompareMode;
 import org.fim.model.State;
-import org.fim.tool.BuildableState;
-import org.fim.tool.StateAssert;
+import org.fim.tooling.BuildableState;
+import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.Test;
 

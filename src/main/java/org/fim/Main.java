@@ -19,15 +19,10 @@
 package org.fim;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -35,18 +30,39 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.fim.command.AbstractCommand;
+import org.fim.command.CommitCommand;
+import org.fim.command.DiffCommand;
+import org.fim.command.FindDuplicatesCommand;
+import org.fim.command.HelpCommand;
+import org.fim.command.InitCommand;
+import org.fim.command.LogCommand;
+import org.fim.command.RemoveDuplicatesCommand;
+import org.fim.command.ResetDatesCommand;
+import org.fim.internal.StateGenerator;
+import org.fim.model.Command;
 import org.fim.model.CompareMode;
-import org.fim.model.CompareResult;
-import org.fim.model.FileState;
 import org.fim.model.FimOptions;
-import org.fim.model.State;
 
 public class Main
 {
-	/**
-	 * Construct Options.
-	 */
-	public static Options constructOptions()
+	private static List<AbstractCommand> commands;
+	private static Options options;
+
+	private static List<AbstractCommand> getCommands()
+	{
+		return Arrays.asList(
+				new InitCommand(),
+				new CommitCommand(),
+				new DiffCommand(),
+				new FindDuplicatesCommand(),
+				new RemoveDuplicatesCommand(),
+				new LogCommand(),
+				new ResetDatesCommand(),
+				new HelpCommand());
+	}
+
+	private static Options getOptions()
 	{
 		Options options = new Options();
 		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
@@ -59,22 +75,18 @@ public class Main
 		return options;
 	}
 
-	public static Option createOption(String opt, String longOpt, boolean hasArg, String description, boolean required)
+	public static void main(String[] args) throws Exception
 	{
-		Option option = new Option(opt, longOpt, hasArg, description);
-		option.setRequired(required);
-		return option;
-	}
+		commands = getCommands();
+		options = getOptions();
 
-	public static void main(String[] args) throws IOException, NoSuchAlgorithmException
-	{
 		String[] filteredArgs = filterEmptyArgs(args);
 		if (filteredArgs.length < 1)
 		{
 			youMustSpecifyACommandToRun();
 		}
 
-		Command command = Command.fromName(filteredArgs[0]);
+		Command command = findCommand(filteredArgs[0]);
 		if (command == null)
 		{
 			youMustSpecifyACommandToRun();
@@ -82,7 +94,6 @@ public class Main
 
 		CommandLineParser cmdLineGnuParser = new DefaultParser();
 
-		Options options = constructOptions();
 		CommandLine commandLine;
 
 		FimOptions fimOptions = new FimOptions();
@@ -91,28 +102,14 @@ public class Main
 		{
 			String[] actionArgs = Arrays.copyOfRange(filteredArgs, 1, filteredArgs.length);
 			commandLine = cmdLineGnuParser.parse(options, actionArgs);
-			if (commandLine.hasOption("h"))
-			{
-				printUsage();
-				System.exit(0);
-			}
-			else
-			{
-				fimOptions.setVerbose(!commandLine.hasOption('q'));
-				fimOptions.setCompareMode(commandLine.hasOption('f') ? CompareMode.FAST : CompareMode.FULL);
-				fimOptions.setMessage(commandLine.getOptionValue('m', fimOptions.getMessage()));
-				fimOptions.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "" + fimOptions.getThreadCount())));
-				fimOptions.setUseLastState(commandLine.hasOption('l'));
-				fimOptions.setFimRepositoryDirectory(commandLine.getOptionValue('d'));
-				fimOptions.setAlwaysYes(commandLine.hasOption('y'));
 
-				if (command == Command.REMOVE_DUPLICATES && fimOptions.getFimRepositoryDirectory() == null)
-				{
-					System.out.println("The Fim repository directory must be provided");
-					printUsage();
-					System.exit(-1);
-				}
-			}
+			fimOptions.setVerbose(!commandLine.hasOption('q'));
+			fimOptions.setCompareMode(commandLine.hasOption('f') ? CompareMode.FAST : CompareMode.FULL);
+			fimOptions.setMessage(commandLine.getOptionValue('m', fimOptions.getMessage()));
+			fimOptions.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "" + fimOptions.getThreadCount())));
+			fimOptions.setUseLastState(commandLine.hasOption('l'));
+			fimOptions.setFimRepositoryDirectory(commandLine.getOptionValue('d'));
+			fimOptions.setAlwaysYes(commandLine.hasOption('y'));
 		}
 		catch (Exception ex)
 		{
@@ -132,12 +129,12 @@ public class Main
 			System.exit(-1);
 		}
 
-		File baseDirectory = new File(".");
-		File stateDir = new File(StateGenerator.FIM_DIR, "states");
+		fimOptions.setBaseDirectory(new File("."));
+		fimOptions.setStateDir(new File(StateGenerator.FIM_DIR, "states"));
 
-		if (command == Command.INIT)
+		if (command.getCmdName().equals("init"))
 		{
-			if (stateDir.exists())
+			if (fimOptions.getStateDir().exists())
 			{
 				System.out.println("fim repository already exist");
 				System.exit(0);
@@ -145,138 +142,38 @@ public class Main
 		}
 		else
 		{
-			if (!stateDir.exists())
+			if (!fimOptions.getStateDir().exists())
 			{
 				System.out.println("fim repository does not exist. Please run 'fim init' before.");
 				System.exit(-1);
 			}
 		}
 
-		State state;
-		State lastState;
-		State currentState;
+		command.execute(fimOptions);
+	}
 
-		StateGenerator generator = new StateGenerator(fimOptions.getThreadCount(), fimOptions.getCompareMode());
-		StateManager manager = new StateManager(stateDir, fimOptions.getCompareMode());
-		StateComparator comparator = new StateComparator(fimOptions.getCompareMode());
-		DuplicateFinder finder = new DuplicateFinder();
-
-		switch (command)
+	private static Command findCommand(final String cmdName)
+	{
+		for (final Command command : commands)
 		{
-			case INIT:
-				fastCompareNotSupported(fimOptions.getCompareMode());
+			if (command.getCmdName().equals(cmdName))
+			{
+				return command;
+			}
 
-				stateDir.mkdirs();
-				currentState = generator.generateState("Initial State", baseDirectory);
-				comparator.compare(null, currentState).displayChanges(fimOptions.isVerbose());
-				manager.createNewState(currentState);
-				break;
-
-			case COMMIT:
-				fastCompareNotSupported(fimOptions.getCompareMode());
-
-				lastState = manager.loadLastState();
-				currentState = generator.generateState(fimOptions.getMessage(), baseDirectory);
-				CompareResult result = comparator.compare(lastState, currentState).displayChanges(fimOptions.isVerbose());
-				if (result.somethingModified())
-				{
-					System.out.println("");
-					if (fimOptions.isAlwaysYes() || confirmCommand("commit"))
-					{
-						manager.createNewState(currentState);
-					}
-					else
-					{
-						System.out.println("Nothing committed");
-					}
-				}
-				break;
-
-			case DIFF:
-				lastState = manager.loadLastState();
-				currentState = generator.generateState(fimOptions.getMessage(), baseDirectory);
-				comparator.compare(lastState, currentState).displayChanges(fimOptions.isVerbose());
-				break;
-
-			case FIND_DUPLICATES:
-				fastCompareNotSupported(fimOptions.getCompareMode());
-
-				System.out.println("Searching for duplicated files" + (fimOptions.isUseLastState() ? " from the last committed State" : ""));
-				System.out.println("");
-				if (fimOptions.isUseLastState())
-				{
-					state = manager.loadLastState();
-				}
-				else
-				{
-					state = generator.generateState(fimOptions.getMessage(), baseDirectory);
-				}
-				finder.findDuplicates(state).displayDuplicates(fimOptions.isVerbose());
-				break;
-
-			case REMOVE_DUPLICATES:
-				fastCompareNotSupported(fimOptions.getCompareMode());
-
-				File repository = new File(fimOptions.getFimRepositoryDirectory());
-				if (!repository.exists())
-				{
-					System.out.printf("Directory %s does not exist%n", fimOptions.getFimRepositoryDirectory());
-					System.exit(-1);
-				}
-
-				if (repository.getCanonicalPath().equals(baseDirectory.getCanonicalPath()))
-				{
-					System.out.printf("Cannot remove duplicates from the current directory%n");
-					System.exit(-1);
-				}
-
-				File fimDir = new File(repository, StateGenerator.FIM_DIR);
-				if (!fimDir.exists())
-				{
-					System.out.printf("Directory %s is not a Fim repository%n", fimOptions.getFimRepositoryDirectory());
-					System.exit(-1);
-				}
-
-				System.out.println("Searching for duplicated files using the " + fimOptions.getFimRepositoryDirectory() + " directory as master");
-				System.out.println("");
-
-				File otherStateDir = new File(fimDir, "states");
-				StateManager otherManager = new StateManager(otherStateDir, CompareMode.FULL);
-				State otherState = otherManager.loadLastState();
-				Map<String, FileState> otherHashes = new HashMap<>();
-				for (FileState otherFileState : otherState.getFileStates())
-				{
-					otherHashes.put(otherFileState.getHash(), otherFileState);
-				}
-
-				State localState = generator.generateState(fimOptions.getMessage(), baseDirectory);
-				for (FileState localFileState : localState.getFileStates())
-				{
-					FileState otherFileState = otherHashes.get(localFileState.getHash());
-					if (otherFileState != null)
-					{
-						System.out.printf("%s is a duplicate of %s/%s%n", localFileState.getFileName(), fimOptions.getFimRepositoryDirectory(), otherFileState.getFileName());
-						if (fimOptions.isAlwaysYes() || confirmCommand("remove it"))
-						{
-							System.out.printf("  %s removed%n", localFileState.getFileName());
-							File localFile = new File(localFileState.getFileName());
-							localFile.delete();
-						}
-					}
-				}
-				break;
-
-			case RESET_DATES:
-				fastCompareNotSupported(fimOptions.getCompareMode());
-
-				lastState = manager.loadLastState();
-				manager.resetDates(lastState);
-				break;
-
-			case LOG:
-				manager.displayStatesLog();
-				break;
+			if (command.getShortCmdName().equals(cmdName))
+			{
+				return command;
+			}
 		}
+		return null;
+	}
+
+	private static Option createOption(String opt, String longOpt, boolean hasArg, String description, boolean required)
+	{
+		Option option = new Option(opt, longOpt, hasArg, description);
+		option.setRequired(required);
+		return option;
 	}
 
 	private static String[] filterEmptyArgs(String[] args)
@@ -292,27 +189,6 @@ public class Main
 		return filteredArgs.toArray(new String[0]);
 	}
 
-	private static void fastCompareNotSupported(CompareMode compareMode)
-	{
-		if (compareMode == CompareMode.FAST)
-		{
-			System.out.println("Fast compare mode not supported by this command.");
-			System.exit(-1);
-		}
-	}
-
-	private static boolean confirmCommand(String action)
-	{
-		Scanner scanner = new Scanner(System.in);
-		System.out.printf("Do you really want to %s (y/n)? ", action);
-		String str = scanner.next();
-		if (str.equalsIgnoreCase("y"))
-		{
-			return true;
-		}
-		return false;
-	}
-
 	private static void youMustSpecifyACommandToRun()
 	{
 		System.out.println("You must specify the command to run");
@@ -323,12 +199,11 @@ public class Main
 	public static void printUsage()
 	{
 		System.out.println("");
-		Options options = constructOptions();
 		PrintWriter writer = new PrintWriter(System.out);
 		HelpFormatter helpFormatter = new HelpFormatter();
 
 		String usage = "\nAvailable commands:\n";
-		for (final Command command : Command.values())
+		for (final Command command : commands)
 		{
 			if (command.getShortCmdName() != null && command.getShortCmdName().length() > 0)
 			{

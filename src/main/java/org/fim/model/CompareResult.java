@@ -79,7 +79,7 @@ public class CompareResult
 			}
 			System.out.println("");
 		}
-		
+
 		if (!verbose)
 		{
 			displayCounts();

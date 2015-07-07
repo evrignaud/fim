@@ -16,10 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim;
+package org.fim.internal;
 
 import static java.nio.file.StandardOpenOption.CREATE;
-import static org.fim.util.FormatUtil.formatDate;
 
 import java.io.File;
 import java.io.IOException;
@@ -89,7 +88,7 @@ public class StateManager
 		return state;
 	}
 
-	private File getStateFile(int stateNumber)
+	public File getStateFile(int stateNumber)
 	{
 		return new File(stateDir, "state_" + stateNumber + ".zjson");
 	}
@@ -113,7 +112,7 @@ public class StateManager
 		}
 	}
 
-	private void readLastStateNumber()
+	public void readLastStateNumber()
 	{
 		lastStateNumber = -1;
 
@@ -152,65 +151,8 @@ public class StateManager
 		}
 	}
 
-	public void resetDates(State state)
+	public int getLastStateNumber()
 	{
-		System.out.println("Reset file modification dates based on the last committed State done " + formatDate(state.getTimestamp()));
-		if (state.getMessage().length() > 0)
-		{
-			System.out.println("Message: " + state.getMessage());
-		}
-		System.out.println("");
-
-		int dateResetCount = 0;
-		for (FileState fileState : state.getFileStates())
-		{
-			File file = new File(fileState.getFileName());
-			if (file.exists())
-			{
-				long lastModified = file.lastModified();
-				if (lastModified != fileState.getLastModified())
-				{
-					dateResetCount++;
-					file.setLastModified(fileState.getLastModified());
-					System.out.printf("Set file modification: %s\t%s -> %s%n", fileState.getFileName(),
-							formatDate(lastModified), formatDate(fileState.getLastModified()));
-				}
-			}
-		}
-
-		if (dateResetCount == 0)
-		{
-			System.out.printf("No file modification date have been reset%n");
-		}
-		else
-		{
-			System.out.printf("%d file modification dates have been reset%n", dateResetCount);
-		}
-	}
-
-	public void displayStatesLog() throws IOException
-	{
-		readLastStateNumber();
-		if (lastStateNumber == -1)
-		{
-			System.out.println("No State found");
-			return;
-		}
-
-		for (int stateNumber = 1; stateNumber <= lastStateNumber; stateNumber++)
-		{
-			File statFile = getStateFile(stateNumber);
-			if (statFile.exists())
-			{
-				State state = loadState(stateNumber);
-				System.out.printf("State #%d: %s%n", stateNumber, formatDate(state.getTimestamp()));
-				if (state.getMessage().length() > 0)
-				{
-					System.out.printf("\tMessage: %s%n", state.getMessage());
-				}
-				System.out.printf("\tContains %d files%n", state.getFileCount());
-				System.out.println("");
-			}
-		}
+		return lastStateNumber;
 	}
 }

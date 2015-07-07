@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim;
+package org.fim.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;

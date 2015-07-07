@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim;
+package org.fim.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.fim.model.DuplicateResult;
-import org.fim.tool.BuildableState;
-import org.fim.tool.DuplicateAssert;
+import org.fim.tooling.BuildableState;
+import org.fim.tooling.DuplicateAssert;
 import org.junit.Test;
 
 public class DuplicateFinderTest extends DuplicateAssert

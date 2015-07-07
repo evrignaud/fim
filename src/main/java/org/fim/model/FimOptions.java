@@ -18,8 +18,12 @@
  */
 package org.fim.model;
 
+import java.io.File;
+
 public class FimOptions
 {
+	private File baseDirectory;
+	private File stateDir;
 	private boolean verbose = true;
 	private CompareMode compareMode = CompareMode.FULL;
 	private String message = "";
@@ -27,6 +31,26 @@ public class FimOptions
 	private int threadCount = Runtime.getRuntime().availableProcessors();
 	private String fimRepositoryDirectory = null;
 	private boolean alwaysYes = false;
+
+	public File getBaseDirectory()
+	{
+		return baseDirectory;
+	}
+
+	public void setBaseDirectory(File baseDirectory)
+	{
+		this.baseDirectory = baseDirectory;
+	}
+
+	public File getStateDir()
+	{
+		return stateDir;
+	}
+
+	public void setStateDir(File stateDir)
+	{
+		this.stateDir = stateDir;
+	}
 
 	public boolean isVerbose()
 	{
