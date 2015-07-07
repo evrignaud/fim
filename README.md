@@ -60,20 +60,26 @@ It's a time consuming operation that will compute the files content hash.
 	$ fim
 	You must specify the command to run
 	
-	usage: fim <command> [-f] [-l] [-m <arg>] [-q] [-t <arg>]
+	usage: fim <command> [-d <arg>] [-f] [-l] [-m <arg>] [-q] [-t <arg>] [-y]
 	
 	File Integrity Checker
-		 -f,--fastCompare         Compare only filenames and modification dates
-		 -l,--useLastState        Use the last committed State
-		 -m,--message <arg>       Message to store with the State
-		 -q,--quiet               Do not display details
-		 -t,--threadCount <arg>   Number of thread to use to hash files content in parallel
+		 -d,--fimRepositoryDirectory <arg>   Directory of a Fim repository that you want to use as master. Only
+		                                     for the remove duplicates command
+		 -f,--fastCompare                    Compare only filenames and modification dates
+		 -l,--useLastState                   Use the last committed State
+		 -m,--message <arg>                  Message to store with the State
+		 -q,--quiet                          Do not display details
+		 -t,--threadCount <arg>              Number of thread to use to hash files content in parallel
+		 -y,--alwaysYes                      Always yes to every questions
 	
 	Available commands:
 		 - init: Initialize a Fim repository
 		 - ci / commit: Commit the current directory State
 		 - diff: Compare the current directory State with the previous one
 		 - fdup / find-duplicates: Find duplicated files
+		 - rdup / remove-duplicates: Remove duplicated files from local directory based on a master Fim repository
 		 - log: Display States log
 		 - rdates / reset-dates: Reset the file modification dates like it's stored in the last committed State
+		 - help: Display help
+
 
