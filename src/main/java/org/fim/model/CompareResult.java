@@ -70,13 +70,16 @@ public class CompareResult
 
 	public CompareResult displayChanges(boolean verbose)
 	{
-		System.out.println("Comparing with the last committed state from " + formatDate(lastState.getTimestamp()));
-		if (lastState.getMessage().length() > 0)
+		if (lastState != null)
 		{
-			System.out.println("Message: " + lastState.getMessage());
+			System.out.println("Comparing with the last committed state from " + formatDate(lastState.getTimestamp()));
+			if (lastState.getMessage().length() > 0)
+			{
+				System.out.println("Message: " + lastState.getMessage());
+			}
+			System.out.println("");
 		}
-		System.out.println("");
-
+		
 		if (!verbose)
 		{
 			displayCounts();

@@ -46,7 +46,7 @@ public class StateGenerator
 	public static final int SIZE_100_MO = 100 * MEGA;
 	public static final int SIZE_200_MO = 200 * MEGA;
 
-	public static final String FIC_DIR = ".fim";
+	public static final String FIM_DIR = ".fim";
 	public static final String NO_HASH = "no_hash";
 
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
@@ -130,7 +130,7 @@ public class StateGenerator
 
 		for (File file : files)
 		{
-			if (file.isDirectory() && file.getName().equals(FIC_DIR))
+			if (file.isDirectory() && file.getName().equals(FIM_DIR))
 			{
 				continue;
 			}

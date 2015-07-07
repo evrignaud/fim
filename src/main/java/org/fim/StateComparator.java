@@ -41,16 +41,21 @@ public class StateComparator
 	{
 		CompareResult result = new CompareResult(lastState);
 
-		logDebug("---------------------------------------------------------------------",
-				"lastState", lastState.getFileStates(), "currentState", currentState.getFileStates());
-
 		List<FileState> previousFileStates = new ArrayList<>();
 		List<FileState> notFoundInCurrentFileState = new ArrayList<>();
 		List<FileState> addedOrModified = new ArrayList<>();
 
 		if (lastState != null)
 		{
+			logDebug("---------------------------------------------------------------------",
+					"lastState", lastState.getFileStates(), "currentState", currentState.getFileStates());
+
 			previousFileStates.addAll(lastState.getFileStates());
+		}
+		else
+		{
+			logDebug("---------------------------------------------------------------------",
+					"currentState", currentState.getFileStates());
 		}
 
 		resetNewHash(previousFileStates);
@@ -142,6 +147,12 @@ public class StateComparator
 		result.sortResults();
 
 		return result;
+	}
+
+	private void logDebug(String message, String desc, List<FileState> fileStates)
+	{
+		logDebug("\n-- " + message);
+		logDebug(fileStatesToString(desc, fileStates));
 	}
 
 	private void logDebug(String message, String desc_1, List<FileState> fileStates_1, String desc_2, List<FileState> fileStates_2)

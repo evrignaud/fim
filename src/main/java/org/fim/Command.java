@@ -24,6 +24,7 @@ public enum Command
 	COMMIT("commit", "ci", "Commit the current directory State"),
 	DIFF("diff", "", "Compare the current directory State with the previous one"),
 	FIND_DUPLICATES("find-duplicates", "fdup", "Find duplicated files"),
+	REMOVE_DUPLICATES("remove-duplicates", "rdup", "Remove duplicated files from local directory based on a master Fim repository"),
 	LOG("log", "", "Display States log"),
 	RESET_DATES("reset-dates", "rdates", "Reset the file modification dates like it's stored in the last committed State");
 

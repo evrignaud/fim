@@ -24,7 +24,9 @@ import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.commons.cli.CommandLine;
@@ -35,6 +37,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.fim.model.CompareMode;
 import org.fim.model.CompareResult;
+import org.fim.model.FileState;
 import org.fim.model.State;
 
 public class Main
@@ -50,6 +53,8 @@ public class Main
 		options.addOption(createOption("m", "message", true, "Message to store with the State", false));
 		options.addOption(createOption("t", "threadCount", true, "Number of thread to use to hash files content in parallel", false));
 		options.addOption(createOption("l", "useLastState", false, "Use the last committed State", false));
+		options.addOption(createOption("d", "fimRepositoryDirectory", true, "Directory of a Fim repository that you want to use as master. Only for the remove duplicates command", false));
+		options.addOption(createOption("y", "alwaysYes", false, "Always yes to every questions", false));
 		return options;
 	}
 
@@ -84,6 +89,8 @@ public class Main
 		String message = "";
 		boolean useLastState = false;
 		int threadCount = Runtime.getRuntime().availableProcessors();
+		String fimRepositoryDirectory = null;
+		boolean alwaysYes = false;
 
 		try
 		{
@@ -101,6 +108,15 @@ public class Main
 				message = commandLine.getOptionValue('m', message);
 				threadCount = Integer.parseInt(commandLine.getOptionValue('t', "" + threadCount));
 				useLastState = commandLine.hasOption('l');
+				fimRepositoryDirectory = commandLine.getOptionValue('d');
+				alwaysYes = commandLine.hasOption('y');
+
+				if (command == Command.REMOVE_DUPLICATES && fimRepositoryDirectory == null)
+				{
+					System.out.println("The Fim repository directory must be provided");
+					printUsage();
+					System.exit(-1);
+				}
 			}
 		}
 		catch (Exception ex)
@@ -118,11 +134,11 @@ public class Main
 		if (threadCount < 1)
 		{
 			System.out.println("Thread count must be at least one");
-			System.exit(0);
+			System.exit(-1);
 		}
 
 		File baseDirectory = new File(".");
-		File stateDir = new File(StateGenerator.FIC_DIR, "states");
+		File stateDir = new File(StateGenerator.FIM_DIR, "states");
 
 		if (command == Command.INIT)
 		{
@@ -141,6 +157,7 @@ public class Main
 			}
 		}
 
+		State state;
 		State lastState;
 		State currentState;
 
@@ -169,7 +186,7 @@ public class Main
 				if (result.somethingModified())
 				{
 					System.out.println("");
-					if (confirmCommand("commit"))
+					if (alwaysYes || confirmCommand("commit"))
 					{
 						manager.createNewState(currentState);
 					}
@@ -191,7 +208,6 @@ public class Main
 
 				System.out.println("Searching for duplicated files" + (useLastState ? " from the last committed State" : ""));
 				System.out.println("");
-				State state;
 				if (useLastState)
 				{
 					state = manager.loadLastState();
@@ -201,6 +217,58 @@ public class Main
 					state = generator.generateState(message, baseDirectory);
 				}
 				finder.findDuplicates(state).displayDuplicates(verbose);
+				break;
+
+			case REMOVE_DUPLICATES:
+				fastCompareNotSupported(compareMode);
+
+				File repository = new File(fimRepositoryDirectory);
+				if (!repository.exists())
+				{
+					System.out.printf("Directory %s does not exist%n", fimRepositoryDirectory);
+					System.exit(-1);
+				}
+
+				if (repository.getCanonicalPath().equals(baseDirectory.getCanonicalPath()))
+				{
+					System.out.printf("Cannot remove duplicates from the current directory%n");
+					System.exit(-1);
+				}
+
+				File fimDir = new File(repository, StateGenerator.FIM_DIR);
+				if (!fimDir.exists())
+				{
+					System.out.printf("Directory %s is not a Fim repository%n", fimRepositoryDirectory);
+					System.exit(-1);
+				}
+
+				System.out.println("Searching for duplicated files using the " + fimRepositoryDirectory + " directory as master");
+				System.out.println("");
+
+				File otherStateDir = new File(fimDir, "states");
+				StateManager otherManager = new StateManager(otherStateDir, CompareMode.FULL);
+				State otherState = otherManager.loadLastState();
+				Map<String, FileState> otherHashes = new HashMap<>();
+				for (FileState otherFileState : otherState.getFileStates())
+				{
+					otherHashes.put(otherFileState.getHash(), otherFileState);
+				}
+
+				State localState = generator.generateState(message, baseDirectory);
+				for (FileState localFileState : localState.getFileStates())
+				{
+					FileState otherFileState = otherHashes.get(localFileState.getHash());
+					if (otherFileState != null)
+					{
+						System.out.printf("%s is a duplicate of %s/%s%n", localFileState.getFileName(), fimRepositoryDirectory, otherFileState.getFileName());
+						if (alwaysYes || confirmCommand("remove it"))
+						{
+							System.out.printf("  %s removed%n", localFileState.getFileName());
+							File localFile = new File(localFileState.getFileName());
+							localFile.delete();
+						}
+					}
+				}
 				break;
 
 			case RESET_DATES:
@@ -238,10 +306,10 @@ public class Main
 		}
 	}
 
-	private static boolean confirmCommand(String command)
+	private static boolean confirmCommand(String action)
 	{
 		Scanner scanner = new Scanner(System.in);
-		System.out.printf("Do you really want to %s (y/n)? ", command);
+		System.out.printf("Do you really want to %s (y/n)? ", action);
 		String str = scanner.next();
 		if (str.equalsIgnoreCase("y"))
 		{
