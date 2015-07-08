@@ -50,11 +50,17 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 	}
 
 	@Override
+	public FimReposConstraint getFimReposConstraint()
+	{
+		return FimReposConstraint.DONT_CARE;
+	}
+
+	@Override
 	public void execute(Parameters parameters) throws Exception
 	{
 		if (parameters.getMasterFimRepositoryDir() == null)
 		{
-			System.out.println("The master Fim directory must be provided");
+			System.err.println("The master Fim directory must be provided");
 			Main.printUsage();
 			System.exit(-1);
 		}
@@ -64,20 +70,20 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		File fimRepository = new File(parameters.getMasterFimRepositoryDir());
 		if (!fimRepository.exists())
 		{
-			System.out.printf("Directory %s does not exist%n", parameters.getMasterFimRepositoryDir());
+			System.err.printf("Directory %s does not exist%n", parameters.getMasterFimRepositoryDir());
 			System.exit(-1);
 		}
 
 		if (fimRepository.getCanonicalPath().equals(CURRENT_DIRECTORY.getCanonicalPath()))
 		{
-			System.out.printf("Cannot remove duplicates from the current directory%n");
+			System.err.printf("Cannot remove duplicates from the current directory%n");
 			System.exit(-1);
 		}
 
 		File dotFimDir = new File(fimRepository, StateGenerator.DOT_FIM_DIR);
 		if (!dotFimDir.exists())
 		{
-			System.out.printf("Directory %s is not a Fim repository%n", parameters.getMasterFimRepositoryDir());
+			System.err.printf("Directory %s is not a Fim repository%n", parameters.getMasterFimRepositoryDir());
 			System.exit(-1);
 		}
 
@@ -96,7 +102,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			{
 				System.out.printf("%s is a duplicate of %s/%s%n", localFileState.getFileName(),
 						parameters.getMasterFimRepositoryDir(), masterFileState.getFileName());
-				if (parameters.isAlwaysYes() || confirmCommand("remove it"))
+				if (confirmAction(parameters, "remove it"))
 				{
 					System.out.printf("  %s removed%n", localFileState.getFileName());
 					File localFile = new File(localFileState.getFileName());

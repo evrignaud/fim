@@ -45,6 +45,12 @@ public class InitCommand extends AbstractCommand
 	}
 
 	@Override
+	public FimReposConstraint getFimReposConstraint()
+	{
+		return FimReposConstraint.MUST_NOT_EXIST;
+	}
+
+	@Override
 	public void execute(Parameters parameters) throws Exception
 	{
 		fastCompareNotSupported(parameters);

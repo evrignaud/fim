@@ -59,29 +59,30 @@ It's a time consuming operation that will compute the files content hash.
 
 	$ fim help
 
-	usage: fim <command> [-a <arg>] [-f] [-l] [-m <arg>] [-q] [-t <arg>] [-y]
+	usage: fim <command> [-a <arg>] [-f] [-h] [-l] [-m <arg>] [-q] [-t <arg>] [-v] [-y]
 
 	File Integrity Checker
 
 	Available commands:
-		 . init                      Initialize a Fim repository
-		 . ci / commit               Commit the current directory State
-		 . diff                      Compare the current directory State with the previous one
-		 . fdup / find-duplicates    Find duplicated files
-		 . rdup / remove-duplicates  Remove duplicated files from local directory based on a master Fim repository
-		 . log                       Display States log
-		 . rdates / reset-dates      Reset the file modification dates like it's stored in the last committed State
-		 . help                      Display help
+		 init                      Initialize a Fim repository
+		 ci / commit               Commit the current directory State
+		 diff                      Compare the current directory State with the previous one
+		 rdates / reset-dates      Reset the file modification dates like it's stored in the last committed State
+		 fdup / find-duplicates    Find duplicated files
+		 rdup / remove-duplicates  Remove duplicated files from local directory based on a master Fim repository
+		 log                       Display States log
+		 help                      Prints the Fim help
+		 version                   Prints the Fim version
 
 	Available options:
 		 -a,--master-fim-repository <arg>   Fim repository directory that you want to use as master. Only for the remove
 											duplicates command
 		 -f,--fast-compare                  Compare only filenames and modification dates
+		 -h,--help                          Prints the Fim help
 		 -l,--use-last-state                Use the last committed State
 		 -m,--message <arg>                 Message to store with the State
 		 -q,--quiet                         Do not display details
 		 -t,--thread-count <arg>            Number of thread to use to hash files content in parallel
+		 -v,--version                       Prints the Fim version
 		 -y,--always-yes                    Always yes to every questions
-
-
 

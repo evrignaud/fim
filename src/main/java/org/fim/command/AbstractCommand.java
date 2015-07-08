@@ -29,22 +29,38 @@ public abstract class AbstractCommand implements Command
 {
 	protected static final File CURRENT_DIRECTORY = new File(".");
 
+	@Override
+	public FimReposConstraint getFimReposConstraint()
+	{
+		return FimReposConstraint.MUST_EXIST;
+	}
+
 	protected void fastCompareNotSupported(Parameters parameters)
 	{
 		if (parameters.getCompareMode() == CompareMode.FAST)
 		{
-			System.out.println("Fast compare mode not supported by this command.");
+			System.err.println("Fast compare mode not supported by this command.");
 			System.exit(-1);
 		}
 	}
 
-	protected boolean confirmCommand(String action)
+	protected boolean confirmAction(Parameters parameters, String action)
 	{
+		if (parameters.isAlwaysYes())
+		{
+			return true;
+		}
+
 		Scanner scanner = new Scanner(System.in);
-		System.out.printf("Do you really want to %s (y/n)? ", action);
+		System.out.printf("Do you really want to %s (y/n/A)? ", action);
 		String str = scanner.next();
 		if (str.equalsIgnoreCase("y"))
 		{
+			return true;
+		}
+		else if (str.equals("A"))
+		{
+			parameters.setAlwaysYes(true);
 			return true;
 		}
 		return false;

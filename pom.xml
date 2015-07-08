@@ -144,6 +144,7 @@
 					<archive>
 						<manifest>
 							<mainClass>org.fim.Main</mainClass>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 						</manifest>
 					</archive>
 				</configuration>

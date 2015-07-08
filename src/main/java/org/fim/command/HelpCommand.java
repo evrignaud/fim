@@ -38,7 +38,13 @@ public class HelpCommand extends AbstractCommand
 	@Override
 	public String getDescription()
 	{
-		return "Display help";
+		return "Prints the Fim help";
+	}
+
+	@Override
+	public FimReposConstraint getFimReposConstraint()
+	{
+		return FimReposConstraint.DONT_CARE;
 	}
 
 	@Override

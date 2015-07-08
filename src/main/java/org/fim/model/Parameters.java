@@ -20,7 +20,7 @@ package org.fim.model;
 
 import java.io.File;
 
-public class Parameters
+public class Parameters implements Cloneable
 {
 	private File defaultStateDir;
 	private boolean verbose = true;
@@ -109,5 +109,10 @@ public class Parameters
 	public void setThreadCount(int threadCount)
 	{
 		this.threadCount = threadCount;
+	}
+
+	public Object clone() throws CloneNotSupportedException
+	{
+		return super.clone();
 	}
 }

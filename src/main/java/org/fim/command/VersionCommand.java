@@ -16,24 +16,40 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim.model;
+package org.fim.command;
 
-public interface Command
+import org.fim.model.Parameters;
+
+public class VersionCommand extends AbstractCommand
 {
-	String getCmdName();
-
-	String getShortCmdName();
-
-	String getDescription();
-
-	FimReposConstraint getFimReposConstraint();
-
-	void execute(Parameters parameters) throws Exception;
-
-	enum FimReposConstraint
+	@Override
+	public String getCmdName()
 	{
-		MUST_NOT_EXIST,
-		MUST_EXIST,
-		DONT_CARE
+		return "version";
+	}
+
+	@Override
+	public String getShortCmdName()
+	{
+		return "";
+	}
+
+	@Override
+	public String getDescription()
+	{
+		return "Prints the Fim version";
+	}
+
+	@Override
+	public FimReposConstraint getFimReposConstraint()
+	{
+		return FimReposConstraint.DONT_CARE;
+	}
+
+	@Override
+	public void execute(Parameters parameters) throws Exception
+	{
+		String implementationVersion = this.getClass().getPackage().getImplementationVersion();
+		System.out.println("Fim version " + implementationVersion);
 	}
 }

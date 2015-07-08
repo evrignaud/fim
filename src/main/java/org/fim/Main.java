@@ -39,8 +39,10 @@ import org.fim.command.InitCommand;
 import org.fim.command.LogCommand;
 import org.fim.command.RemoveDuplicatesCommand;
 import org.fim.command.ResetDatesCommand;
+import org.fim.command.VersionCommand;
 import org.fim.internal.StateGenerator;
 import org.fim.model.Command;
+import org.fim.model.Command.FimReposConstraint;
 import org.fim.model.CompareMode;
 import org.fim.model.Parameters;
 
@@ -49,36 +51,39 @@ public class Main
 	private static List<AbstractCommand> commands;
 	private static Options options;
 
-	private static List<AbstractCommand> getCommands()
+	private static List<AbstractCommand> buildCommands()
 	{
 		return Arrays.asList(
 				new InitCommand(),
 				new CommitCommand(),
 				new DiffCommand(),
+				new ResetDatesCommand(),
 				new FindDuplicatesCommand(),
 				new RemoveDuplicatesCommand(),
 				new LogCommand(),
-				new ResetDatesCommand(),
-				new HelpCommand());
+				new HelpCommand(),
+				new VersionCommand());
 	}
 
-	private static Options getOptions()
+	private static Options buildOptions()
 	{
 		Options options = new Options();
-		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
-		options.addOption(createOption("f", "fast-compare", false, "Compare only filenames and modification dates", false));
-		options.addOption(createOption("m", "message", true, "Message to store with the State", false));
-		options.addOption(createOption("t", "thread-count", true, "Number of thread to use to hash files content in parallel", false));
-		options.addOption(createOption("l", "use-last-state", false, "Use the last committed State", false));
 		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as master. Only for the remove duplicates command", false));
+		options.addOption(createOption("f", "fast-compare", false, "Compare only filenames and modification dates", false));
+		options.addOption(createOption("h", "help", false, "Prints the Fim help", false));
+		options.addOption(createOption("l", "use-last-state", false, "Use the last committed State", false));
+		options.addOption(createOption("m", "message", true, "Message to store with the State", false));
+		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
+		options.addOption(createOption("t", "thread-count", true, "Number of thread to use to hash files content in parallel", false));
+		options.addOption(createOption("v", "version", false, "Prints the Fim version", false));
 		options.addOption(createOption("y", "always-yes", false, "Always yes to every questions", false));
 		return options;
 	}
 
 	public static void main(String[] args) throws Exception
 	{
-		commands = getCommands();
-		options = getOptions();
+		commands = buildCommands();
+		options = buildOptions();
 
 		String[] filteredArgs = filterEmptyArgs(args);
 		if (filteredArgs.length < 1)
@@ -86,10 +91,13 @@ public class Main
 			youMustSpecifyACommandToRun();
 		}
 
-		Command command = findCommand(filteredArgs[0]);
-		if (command == null)
+		Command command = null;
+		String[] optionArgs = filteredArgs;
+		String firstArg = filteredArgs[0];
+		if (!firstArg.startsWith("-"))
 		{
-			youMustSpecifyACommandToRun();
+			optionArgs = Arrays.copyOfRange(filteredArgs, 1, filteredArgs.length);
+			command = findCommand(firstArg);
 		}
 
 		CommandLineParser cmdLineGnuParser = new DefaultParser();
@@ -97,21 +105,36 @@ public class Main
 
 		try
 		{
-			String[] actionArgs = Arrays.copyOfRange(filteredArgs, 1, filteredArgs.length);
-			CommandLine commandLine = cmdLineGnuParser.parse(options, actionArgs);
+			CommandLine commandLine = cmdLineGnuParser.parse(options, optionArgs);
 
 			parameters.setVerbose(!commandLine.hasOption('q'));
 			parameters.setCompareMode(commandLine.hasOption('f') ? CompareMode.FAST : CompareMode.FULL);
 			parameters.setMessage(commandLine.getOptionValue('m', parameters.getMessage()));
 			parameters.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "" + parameters.getThreadCount())));
 			parameters.setUseLastState(commandLine.hasOption('l'));
-			parameters.setMasterFimRepositoryDir(commandLine.getOptionValue('d'));
+			parameters.setMasterFimRepositoryDir(commandLine.getOptionValue('a'));
 			parameters.setAlwaysYes(commandLine.hasOption('y'));
+
+			if (commandLine.hasOption('h'))
+			{
+				command = new HelpCommand();
+			}
+			else if (commandLine.hasOption('v'))
+			{
+				command = new VersionCommand();
+			}
+
 		}
 		catch (Exception ex)
 		{
+			System.err.println(ex.getMessage());
 			printUsage();
 			System.exit(-1);
+		}
+
+		if (command == null)
+		{
+			youMustSpecifyACommandToRun();
 		}
 
 		if (parameters.getCompareMode() == CompareMode.FAST)
@@ -122,30 +145,31 @@ public class Main
 
 		if (parameters.getThreadCount() < 1)
 		{
-			System.out.println("Thread count must be at least one");
+			System.err.println("Thread count must be at least one");
 			System.exit(-1);
 		}
 
 		parameters.setDefaultStateDir(new File(StateGenerator.DOT_FIM_DIR, "states"));
 
-		if (command.getCmdName().equals("init"))
+		FimReposConstraint constraint = command.getFimReposConstraint();
+		if (constraint == FimReposConstraint.MUST_NOT_EXIST)
 		{
 			if (parameters.getDefaultStateDir().exists())
 			{
-				System.out.println("fim repository already exist");
+				System.err.println("Fim repository already exist");
 				System.exit(0);
 			}
 		}
-		else
+		else if (constraint == FimReposConstraint.MUST_EXIST)
 		{
 			if (!parameters.getDefaultStateDir().exists())
 			{
-				System.out.println("fim repository does not exist. Please run 'fim init' before.");
+				System.err.println("Fim repository does not exist. Please run 'fim init' before.");
 				System.exit(-1);
 			}
 		}
 
-		command.execute(parameters);
+		command.execute((Parameters) parameters.clone());
 	}
 
 	private static Command findCommand(final String cmdName)
@@ -187,7 +211,7 @@ public class Main
 
 	private static void youMustSpecifyACommandToRun()
 	{
-		System.out.println("You must specify the command to run");
+		System.err.println("You must specify the command to run");
 		printUsage();
 		System.exit(-1);
 	}
@@ -214,7 +238,7 @@ public class Main
 			{
 				cmdName = command.getCmdName();
 			}
-			usage.append(String.format("     . %-25s %s\n", cmdName, command.getDescription()));
+			usage.append(String.format("     %-25s %s\n", cmdName, command.getDescription()));
 		}
 
 		usage.append("\n");

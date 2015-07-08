@@ -58,7 +58,7 @@ public class CommitCommand extends AbstractCommand
 		if (result.somethingModified())
 		{
 			System.out.println("");
-			if (parameters.isAlwaysYes() || confirmCommand("commit"))
+			if (confirmAction(parameters, "commit"))
 			{
 				manager.createNewState(currentState);
 			}
