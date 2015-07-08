@@ -25,23 +25,25 @@ import java.util.List;
 
 import org.fim.model.DuplicateResult;
 import org.fim.model.FileState;
+import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class DuplicateFinder
 {
-	private List<FileState> duplicatedFiles;
+	private final Parameters parameters;
+	private final List<FileState> duplicatedFiles;
+	private final Comparator<FileState> hashComparator;
 
-	private Comparator<FileState> hashComparator;
-
-	public DuplicateFinder()
+	public DuplicateFinder(Parameters parameters)
 	{
-		duplicatedFiles = new ArrayList<>();
-		hashComparator = new FileState.HashComparator();
+		this.parameters = parameters;
+		this.duplicatedFiles = new ArrayList<>();
+		this.hashComparator = new FileState.HashComparator();
 	}
 
 	public DuplicateResult findDuplicates(State state)
 	{
-		DuplicateResult result = new DuplicateResult();
+		DuplicateResult result = new DuplicateResult(parameters);
 
 		List<FileState> fileStates = new ArrayList<>(state.getFileStates());
 		Collections.sort(fileStates, hashComparator);

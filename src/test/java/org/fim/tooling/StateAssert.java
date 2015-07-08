@@ -28,6 +28,11 @@ import org.fim.model.Difference;
 
 public class StateAssert
 {
+	protected BuildableParameters defaultParameters()
+	{
+		return new BuildableParameters();
+	}
+
 	protected void assertNothingModified(CompareResult result)
 	{
 		assertThat(result.somethingModified()).isFalse();

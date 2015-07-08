@@ -23,7 +23,7 @@ import static org.fim.util.FormatUtil.formatDate;
 import java.io.File;
 
 import org.fim.internal.StateManager;
-import org.fim.model.FimOptions;
+import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class LogCommand extends AbstractCommand
@@ -47,9 +47,9 @@ public class LogCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(FimOptions fimOptions) throws Exception
+	public void execute(Parameters parameters) throws Exception
 	{
-		StateManager manager = new StateManager(fimOptions.getStateDir(), fimOptions.getCompareMode());
+		StateManager manager = new StateManager(parameters);
 
 		manager.readLastStateNumber();
 		if (manager.getLastStateNumber() == -1)

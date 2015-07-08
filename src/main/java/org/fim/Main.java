@@ -42,7 +42,7 @@ import org.fim.command.ResetDatesCommand;
 import org.fim.internal.StateGenerator;
 import org.fim.model.Command;
 import org.fim.model.CompareMode;
-import org.fim.model.FimOptions;
+import org.fim.model.Parameters;
 
 public class Main
 {
@@ -66,12 +66,12 @@ public class Main
 	{
 		Options options = new Options();
 		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
-		options.addOption(createOption("f", "fastCompare", false, "Compare only filenames and modification dates", false));
+		options.addOption(createOption("f", "fast-compare", false, "Compare only filenames and modification dates", false));
 		options.addOption(createOption("m", "message", true, "Message to store with the State", false));
-		options.addOption(createOption("t", "threadCount", true, "Number of thread to use to hash files content in parallel", false));
-		options.addOption(createOption("l", "useLastState", false, "Use the last committed State", false));
-		options.addOption(createOption("d", "fimRepositoryDirectory", true, "Directory of a Fim repository that you want to use as master. Only for the remove duplicates command", false));
-		options.addOption(createOption("y", "alwaysYes", false, "Always yes to every questions", false));
+		options.addOption(createOption("t", "thread-count", true, "Number of thread to use to hash files content in parallel", false));
+		options.addOption(createOption("l", "use-last-state", false, "Use the last committed State", false));
+		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as master. Only for the remove duplicates command", false));
+		options.addOption(createOption("y", "always-yes", false, "Always yes to every questions", false));
 		return options;
 	}
 
@@ -93,23 +93,20 @@ public class Main
 		}
 
 		CommandLineParser cmdLineGnuParser = new DefaultParser();
-
-		CommandLine commandLine;
-
-		FimOptions fimOptions = new FimOptions();
+		Parameters parameters = new Parameters();
 
 		try
 		{
 			String[] actionArgs = Arrays.copyOfRange(filteredArgs, 1, filteredArgs.length);
-			commandLine = cmdLineGnuParser.parse(options, actionArgs);
+			CommandLine commandLine = cmdLineGnuParser.parse(options, actionArgs);
 
-			fimOptions.setVerbose(!commandLine.hasOption('q'));
-			fimOptions.setCompareMode(commandLine.hasOption('f') ? CompareMode.FAST : CompareMode.FULL);
-			fimOptions.setMessage(commandLine.getOptionValue('m', fimOptions.getMessage()));
-			fimOptions.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "" + fimOptions.getThreadCount())));
-			fimOptions.setUseLastState(commandLine.hasOption('l'));
-			fimOptions.setFimRepositoryDirectory(commandLine.getOptionValue('d'));
-			fimOptions.setAlwaysYes(commandLine.hasOption('y'));
+			parameters.setVerbose(!commandLine.hasOption('q'));
+			parameters.setCompareMode(commandLine.hasOption('f') ? CompareMode.FAST : CompareMode.FULL);
+			parameters.setMessage(commandLine.getOptionValue('m', parameters.getMessage()));
+			parameters.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "" + parameters.getThreadCount())));
+			parameters.setUseLastState(commandLine.hasOption('l'));
+			parameters.setMasterFimRepositoryDir(commandLine.getOptionValue('d'));
+			parameters.setAlwaysYes(commandLine.hasOption('y'));
 		}
 		catch (Exception ex)
 		{
@@ -117,24 +114,23 @@ public class Main
 			System.exit(-1);
 		}
 
-		if (fimOptions.getCompareMode() == CompareMode.FAST)
+		if (parameters.getCompareMode() == CompareMode.FAST)
 		{
-			fimOptions.setThreadCount(1);
+			parameters.setThreadCount(1);
 			System.out.println("Using fast compare mode. Thread count forced to 1");
 		}
 
-		if (fimOptions.getThreadCount() < 1)
+		if (parameters.getThreadCount() < 1)
 		{
 			System.out.println("Thread count must be at least one");
 			System.exit(-1);
 		}
 
-		fimOptions.setBaseDirectory(new File("."));
-		fimOptions.setStateDir(new File(StateGenerator.FIM_DIR, "states"));
+		parameters.setDefaultStateDir(new File(StateGenerator.DOT_FIM_DIR, "states"));
 
 		if (command.getCmdName().equals("init"))
 		{
-			if (fimOptions.getStateDir().exists())
+			if (parameters.getDefaultStateDir().exists())
 			{
 				System.out.println("fim repository already exist");
 				System.exit(0);
@@ -142,14 +138,14 @@ public class Main
 		}
 		else
 		{
-			if (!fimOptions.getStateDir().exists())
+			if (!parameters.getDefaultStateDir().exists())
 			{
 				System.out.println("fim repository does not exist. Please run 'fim init' before.");
 				System.exit(-1);
 			}
 		}
 
-		command.execute(fimOptions);
+		command.execute(parameters);
 	}
 
 	private static Command findCommand(final String cmdName)
@@ -161,7 +157,7 @@ public class Main
 				return command;
 			}
 
-			if (command.getShortCmdName().equals(cmdName))
+			if (command.getShortCmdName().length() > 0 && command.getShortCmdName().equals(cmdName))
 			{
 				return command;
 			}
@@ -202,20 +198,29 @@ public class Main
 		PrintWriter writer = new PrintWriter(System.out);
 		HelpFormatter helpFormatter = new HelpFormatter();
 
-		String usage = "\nAvailable commands:\n";
+		StringBuilder usage = new StringBuilder();
+		usage.append("\n");
+		usage.append("File Integrity Checker\n");
+		usage.append("\n");
+		usage.append("Available commands:\n");
 		for (final Command command : commands)
 		{
+			String cmdName;
 			if (command.getShortCmdName() != null && command.getShortCmdName().length() > 0)
 			{
-				usage += String.format("- %s / %s: %s\n", command.getShortCmdName(), command.getCmdName(), command.getDescription());
+				cmdName = command.getShortCmdName() + " / " + command.getCmdName();
 			}
 			else
 			{
-				usage += String.format("- %s: %s\n", command.getCmdName(), command.getDescription());
+				cmdName = command.getCmdName();
 			}
+			usage.append(String.format("     . %-25s %s\n", cmdName, command.getDescription()));
 		}
 
-		helpFormatter.printHelp(writer, 110, "fim <command>", "\nFile Integrity Checker\n", options, 5, 3, usage, true);
+		usage.append("\n");
+		usage.append("Available options:\n");
+
+		helpFormatter.printHelp(writer, 120, "fim <command>", usage.toString(), options, 5, 3, "", true);
 		writer.flush();
 		System.out.println("");
 	}

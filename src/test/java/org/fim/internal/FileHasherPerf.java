@@ -44,7 +44,7 @@ public class FileHasherPerf
 	private StateGenerator stateGenerator;
 
 	private List<FileState> fileStates;
-	private String baseDir;
+	private String rootDir;
 	private File fileToHash;
 	private FileHasher cut;
 
@@ -52,9 +52,9 @@ public class FileHasherPerf
 	public void setup() throws NoSuchAlgorithmException
 	{
 		fileStates = new ArrayList<>();
-		baseDir = "target/tmp";
+		rootDir = "target/" + this.getClass().getSimpleName();
 		fileToHash = new File("file_01");
-		cut = new FileHasher(stateGenerator, fileStates, baseDir, fileToHash);
+		cut = new FileHasher(stateGenerator, fileStates, rootDir, fileToHash);
 	}
 
 	@Test
@@ -62,14 +62,14 @@ public class FileHasherPerf
 	{
 		for (int index = 0; index < 10; index++)
 		{
-			File file = new File(baseDir, "file_" + index);
+			File file = new File(rootDir, "file_" + index);
 			createBigFile(file, 60 * 1024 * 1024);
 		}
 
 		long start = System.currentTimeMillis();
 		for (int index = 0; index < 200000; index++)
 		{
-			File file = new File(baseDir, "file_" + (index % 10));
+			File file = new File(rootDir, "file_" + (index % 10));
 			cut.hashOnceTheCompleteFileContent(file);
 		}
 		System.out.println("hashOnceTheCompleteFileContent took: " + (System.currentTimeMillis() - start) + " ms");
@@ -77,7 +77,7 @@ public class FileHasherPerf
 		start = System.currentTimeMillis();
 		for (int index = 0; index < 200000; index++)
 		{
-			File file = new File(baseDir, "file_" + (index % 10));
+			File file = new File(rootDir, "file_" + (index % 10));
 			cut.hashFileChunkByChunk(file);
 		}
 		System.out.println("hashFileChunkByChunk took: " + (System.currentTimeMillis() - start) + " ms");

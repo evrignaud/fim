@@ -25,9 +25,8 @@ import java.util.Map;
 import org.fim.Main;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
-import org.fim.model.CompareMode;
 import org.fim.model.FileState;
-import org.fim.model.FimOptions;
+import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class RemoveDuplicatesCommand extends AbstractCommand
@@ -51,59 +50,53 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(FimOptions fimOptions) throws Exception
+	public void execute(Parameters parameters) throws Exception
 	{
-		if (fimOptions.getFimRepositoryDirectory() == null)
+		if (parameters.getMasterFimRepositoryDir() == null)
 		{
-			System.out.println("The Fim repository directory must be provided");
+			System.out.println("The master Fim directory must be provided");
 			Main.printUsage();
 			System.exit(-1);
 		}
 
-		StateGenerator generator = new StateGenerator(fimOptions.getThreadCount(), fimOptions.getCompareMode());
+		fastCompareNotSupported(parameters);
 
-		fastCompareNotSupported(fimOptions.getCompareMode());
-
-		File repository = new File(fimOptions.getFimRepositoryDirectory());
-		if (!repository.exists())
+		File fimRepository = new File(parameters.getMasterFimRepositoryDir());
+		if (!fimRepository.exists())
 		{
-			System.out.printf("Directory %s does not exist%n", fimOptions.getFimRepositoryDirectory());
+			System.out.printf("Directory %s does not exist%n", parameters.getMasterFimRepositoryDir());
 			System.exit(-1);
 		}
 
-		if (repository.getCanonicalPath().equals(fimOptions.getBaseDirectory().getCanonicalPath()))
+		if (fimRepository.getCanonicalPath().equals(CURRENT_DIRECTORY.getCanonicalPath()))
 		{
 			System.out.printf("Cannot remove duplicates from the current directory%n");
 			System.exit(-1);
 		}
 
-		File fimDir = new File(repository, StateGenerator.FIM_DIR);
-		if (!fimDir.exists())
+		File dotFimDir = new File(fimRepository, StateGenerator.DOT_FIM_DIR);
+		if (!dotFimDir.exists())
 		{
-			System.out.printf("Directory %s is not a Fim repository%n", fimOptions.getFimRepositoryDirectory());
+			System.out.printf("Directory %s is not a Fim repository%n", parameters.getMasterFimRepositoryDir());
 			System.exit(-1);
 		}
 
-		System.out.println("Searching for duplicated files using the " + fimOptions.getFimRepositoryDirectory() + " directory as master");
+		System.out.println("Searching for duplicated files using the " + parameters.getMasterFimRepositoryDir() + " directory as master");
 		System.out.println("");
 
-		File otherStateDir = new File(fimDir, "states");
-		StateManager otherManager = new StateManager(otherStateDir, CompareMode.FULL);
-		State otherState = otherManager.loadLastState();
-		Map<String, FileState> otherHashes = new HashMap<>();
-		for (FileState otherFileState : otherState.getFileStates())
-		{
-			otherHashes.put(otherFileState.getHash(), otherFileState);
-		}
+		File masterStateDir = new File(dotFimDir, "states");
+		State masterState = new StateManager(parameters, masterStateDir).loadLastState();
+		Map<String, FileState> masterFilesHash = buildFileHashMap(masterState);
 
-		State localState = generator.generateState(fimOptions.getMessage(), fimOptions.getBaseDirectory());
+		State localState = new StateGenerator(parameters).generateState(parameters.getMessage(), CURRENT_DIRECTORY);
 		for (FileState localFileState : localState.getFileStates())
 		{
-			FileState otherFileState = otherHashes.get(localFileState.getHash());
-			if (otherFileState != null)
+			FileState masterFileState = masterFilesHash.get(localFileState.getHash());
+			if (masterFileState != null)
 			{
-				System.out.printf("%s is a duplicate of %s/%s%n", localFileState.getFileName(), fimOptions.getFimRepositoryDirectory(), otherFileState.getFileName());
-				if (fimOptions.isAlwaysYes() || confirmCommand("remove it"))
+				System.out.printf("%s is a duplicate of %s/%s%n", localFileState.getFileName(),
+						parameters.getMasterFimRepositoryDir(), masterFileState.getFileName());
+				if (parameters.isAlwaysYes() || confirmCommand("remove it"))
 				{
 					System.out.printf("  %s removed%n", localFileState.getFileName());
 					File localFile = new File(localFileState.getFileName());
@@ -111,5 +104,15 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 				}
 			}
 		}
+	}
+
+	private Map<String, FileState> buildFileHashMap(State state)
+	{
+		Map<String, FileState> hashMap = new HashMap<>();
+		for (FileState fileState : state.getFileStates())
+		{
+			hashMap.put(fileState.getHash(), fileState);
+		}
+		return hashMap;
 	}
 }

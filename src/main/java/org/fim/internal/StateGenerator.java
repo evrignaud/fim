@@ -33,8 +33,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.fim.model.CompareMode;
 import org.fim.model.FileState;
+import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class StateGenerator
@@ -46,26 +46,25 @@ public class StateGenerator
 	public static final int SIZE_100_MO = 100 * MEGA;
 	public static final int SIZE_200_MO = 200 * MEGA;
 
-	public static final String FIM_DIR = ".fim";
+	public static final String DOT_FIM_DIR = ".fim";
 	public static final String NO_HASH = "no_hash";
 
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
-	private final int threadCount;
-	private final CompareMode compareMode;
+	private final Parameters parameters;
+
 	private ExecutorService executorService;
 
 	private ReentrantLock countLock = new ReentrantLock();
 	private long summedFileLength;
 	private int fileCount;
 
-	public StateGenerator(int threadCount, CompareMode compareMode)
+	public StateGenerator(Parameters parameters)
 	{
-		this.threadCount = threadCount;
-		this.compareMode = compareMode;
+		this.parameters = parameters;
 	}
 
-	public State generateState(String message, File baseDirectory) throws IOException, NoSuchAlgorithmException
+	public State generateState(String message, File fileTreeRootDir) throws IOException, NoSuchAlgorithmException
 	{
 		State state = new State();
 		state.setMessage(message);
@@ -73,16 +72,16 @@ public class StateGenerator
 		long start = System.currentTimeMillis();
 		progressOutputInit();
 
-		if (threadCount == 1)
+		if (parameters.getThreadCount() == 1)
 		{
 			state.setFileStates(new ArrayList<FileState>());
-			getFileStates(state.getFileStates(), baseDirectory.toString(), baseDirectory);
+			getFileStates(state.getFileStates(), fileTreeRootDir.toString(), fileTreeRootDir);
 		}
 		else
 		{
-			executorService = Executors.newFixedThreadPool(threadCount);
+			executorService = Executors.newFixedThreadPool(parameters.getThreadCount());
 			List<FileState> fileStates = new CopyOnWriteArrayList<>();
-			getFileStates(fileStates, baseDirectory.toString(), baseDirectory);
+			getFileStates(fileStates, fileTreeRootDir.toString(), fileTreeRootDir);
 			waitAllFileHashed();
 			state.setFileStates(new ArrayList<>(fileStates)); // Use an ArrayList at the end, because CopyOnWriteArrayList does not support Sort.
 		}
@@ -115,22 +114,22 @@ public class StateGenerator
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(minutes);
 		if (minutes == 0)
 		{
-			System.out.printf("Scanned %d files in %d sec using %d thread%n%n", state.getFileStates().size(), seconds, threadCount);
+			System.out.printf("Scanned %d files in %d sec using %d thread%n%n", state.getFileStates().size(), seconds, parameters.getThreadCount());
 		}
 		else
 		{
-			System.out.printf("Scanned %d files in %d min, %d sec using %d thread%n%n", state.getFileStates().size(), minutes, seconds, threadCount);
+			System.out.printf("Scanned %d files in %d min, %d sec using %d thread%n%n", state.getFileStates().size(), minutes, seconds, parameters.getThreadCount());
 		}
 	}
 
-	private void getFileStates(List<FileState> fileStates, String baseDirectory, File directory) throws NoSuchAlgorithmException
+	private void getFileStates(List<FileState> fileStates, String fileTreeRootDir, File directory) throws NoSuchAlgorithmException
 	{
 		List<File> files = Arrays.asList(directory.listFiles());
 		Collections.sort(files);
 
 		for (File file : files)
 		{
-			if (file.isDirectory() && file.getName().equals(FIM_DIR))
+			if (file.isDirectory() && file.getName().equals(DOT_FIM_DIR))
 			{
 				continue;
 			}
@@ -142,12 +141,12 @@ public class StateGenerator
 
 			if (file.isDirectory())
 			{
-				getFileStates(fileStates, baseDirectory, file);
+				getFileStates(fileStates, fileTreeRootDir, file);
 			}
 			else
 			{
-				FileHasher hasher = new FileHasher(this, fileStates, baseDirectory, file);
-				if (threadCount == 1)
+				FileHasher hasher = new FileHasher(this, fileStates, fileTreeRootDir, file);
+				if (parameters.getThreadCount() == 1)
 				{
 					hasher.run();
 				}
@@ -237,8 +236,8 @@ public class StateGenerator
 		}
 	}
 
-	public CompareMode getCompareMode()
+	public Parameters getParameters()
 	{
-		return compareMode;
+		return parameters;
 	}
 }

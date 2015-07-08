@@ -27,7 +27,7 @@ import org.junit.Test;
 
 public class DuplicateFinderTest extends DuplicateAssert
 {
-	private DuplicateFinder cut = new DuplicateFinder();
+	private DuplicateFinder cut = new DuplicateFinder(defaultParameters());
 	private BuildableState s = new BuildableState().addFiles("file_01", "file_02", "file_03", "file_04");
 
 	@Test

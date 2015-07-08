@@ -29,14 +29,16 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.fim.model.FileState;
+import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FileHasherTest
+public class FileHasherTest extends StateAssert
 {
 	private final Charset utf8 = Charset.forName("UTF-8");
 
@@ -44,17 +46,19 @@ public class FileHasherTest
 	private StateGenerator stateGenerator;
 
 	private List<FileState> fileStates;
-	private String baseDir;
+	private String rootDir;
 	private File fileToHash;
 	private FileHasher cut;
 
 	@Before
 	public void setup() throws NoSuchAlgorithmException
 	{
+		Mockito.when(stateGenerator.getParameters()).thenReturn(defaultParameters());
+
 		fileStates = new ArrayList<>();
-		baseDir = "target/" + this.getClass().getSimpleName();
+		rootDir = "target/" + this.getClass().getSimpleName();
 		fileToHash = new File("file_01");
-		cut = new FileHasher(stateGenerator, fileStates, baseDir, fileToHash);
+		cut = new FileHasher(stateGenerator, fileStates, rootDir, fileToHash);
 	}
 
 	@Test
@@ -109,7 +113,7 @@ public class FileHasherTest
 		File license = new File("LICENSE");
 		String content = FileUtils.readFileToString(license, utf8);
 
-		File bigLicense = new File(baseDir, "BIG_LICENSE");
+		File bigLicense = new File(rootDir, "BIG_LICENSE");
 		if (bigLicense.exists())
 		{
 			bigLicense.delete();

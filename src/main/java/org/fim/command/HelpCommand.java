@@ -19,7 +19,7 @@
 package org.fim.command;
 
 import org.fim.Main;
-import org.fim.model.FimOptions;
+import org.fim.model.Parameters;
 
 public class HelpCommand extends AbstractCommand
 {
@@ -42,7 +42,7 @@ public class HelpCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(FimOptions fimOptions) throws Exception
+	public void execute(Parameters parameters) throws Exception
 	{
 		Main.printUsage();
 	}

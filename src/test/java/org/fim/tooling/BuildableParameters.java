@@ -16,37 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim.command;
+package org.fim.tooling;
 
-import java.io.File;
-import java.util.Scanner;
-
-import org.fim.model.Command;
 import org.fim.model.CompareMode;
 import org.fim.model.Parameters;
 
-public abstract class AbstractCommand implements Command
+public class BuildableParameters extends Parameters
 {
-	protected static final File CURRENT_DIRECTORY = new File(".");
-
-	protected void fastCompareNotSupported(Parameters parameters)
+	public BuildableParameters compareModeFull()
 	{
-		if (parameters.getCompareMode() == CompareMode.FAST)
-		{
-			System.out.println("Fast compare mode not supported by this command.");
-			System.exit(-1);
-		}
+		setCompareMode(CompareMode.FULL);
+		return this;
 	}
 
-	protected boolean confirmCommand(String action)
+	public BuildableParameters compareModeFast()
 	{
-		Scanner scanner = new Scanner(System.in);
-		System.out.printf("Do you really want to %s (y/n)? ", action);
-		String str = scanner.next();
-		if (str.equalsIgnoreCase("y"))
-		{
-			return true;
-		}
-		return false;
+		setCompareMode(CompareMode.FAST);
+		return this;
 	}
 }

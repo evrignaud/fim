@@ -20,36 +20,25 @@ package org.fim.model;
 
 import java.io.File;
 
-public class FimOptions
+public class Parameters
 {
-	private File baseDirectory;
-	private File stateDir;
+	private File defaultStateDir;
 	private boolean verbose = true;
 	private CompareMode compareMode = CompareMode.FULL;
 	private String message = "";
 	private boolean useLastState = false;
 	private int threadCount = Runtime.getRuntime().availableProcessors();
-	private String fimRepositoryDirectory = null;
+	private String masterFimRepositoryDir = null;
 	private boolean alwaysYes = false;
 
-	public File getBaseDirectory()
+	public File getDefaultStateDir()
 	{
-		return baseDirectory;
+		return defaultStateDir;
 	}
 
-	public void setBaseDirectory(File baseDirectory)
+	public void setDefaultStateDir(File defaultStateDir)
 	{
-		this.baseDirectory = baseDirectory;
-	}
-
-	public File getStateDir()
-	{
-		return stateDir;
-	}
-
-	public void setStateDir(File stateDir)
-	{
-		this.stateDir = stateDir;
+		this.defaultStateDir = defaultStateDir;
 	}
 
 	public boolean isVerbose()
@@ -92,14 +81,14 @@ public class FimOptions
 		this.useLastState = useLastState;
 	}
 
-	public String getFimRepositoryDirectory()
+	public String getMasterFimRepositoryDir()
 	{
-		return fimRepositoryDirectory;
+		return masterFimRepositoryDir;
 	}
 
-	public void setFimRepositoryDirectory(String fimRepositoryDirectory)
+	public void setMasterFimRepositoryDir(String masterFimRepositoryDir)
 	{
-		this.fimRepositoryDirectory = fimRepositoryDirectory;
+		this.masterFimRepositoryDir = masterFimRepositoryDir;
 	}
 
 	public boolean isAlwaysYes()

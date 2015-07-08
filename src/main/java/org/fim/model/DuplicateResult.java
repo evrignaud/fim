@@ -23,13 +23,15 @@ import java.util.List;
 
 public class DuplicateResult
 {
+	private final Parameters parameters;
+	private final List<DuplicateSet> duplicateSets;
 	private long duplicatedFilesCount;
-	private List<DuplicateSet> duplicateSets;
 
-	public DuplicateResult()
+	public DuplicateResult(Parameters parameters)
 	{
-		duplicatedFilesCount = 0;
-		duplicateSets = new ArrayList<>();
+		this.parameters = parameters;
+		this.duplicateSets = new ArrayList<>();
+		this.duplicatedFilesCount = 0;
 	}
 
 	public void addDuplicatedFiles(List<FileState> duplicatedFiles)
@@ -43,11 +45,11 @@ public class DuplicateResult
 		}
 	}
 
-	public DuplicateResult displayDuplicates(boolean verbose)
+	public DuplicateResult displayDuplicates()
 	{
 		System.out.println(duplicatedFilesCount + " duplicated files\n");
 
-		if (verbose)
+		if (parameters.isVerbose())
 		{
 			for (DuplicateSet duplicateSet : duplicateSets)
 			{

@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.fim.model.CompareMode;
 import org.fim.model.State;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.StateAssert;
@@ -46,7 +45,7 @@ public class StateManagerFullTest extends StateAssert
 		FileUtils.deleteDirectory(stateDir);
 		stateDir.mkdirs();
 
-		cut = new StateManager(stateDir, CompareMode.FULL);
+		cut = new StateManager(defaultParameters().compareModeFull(), stateDir);
 	}
 
 	@Test

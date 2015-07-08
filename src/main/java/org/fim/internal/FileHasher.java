@@ -35,15 +35,15 @@ class FileHasher implements Runnable
 
 	private final StateGenerator stateGenerator;
 	private final List<FileState> fileStates;
-	private final String baseDirectory;
+	private final String fileTreeRootDir;
 	private final File file;
 	private final MessageDigest messageDigest;
 
-	public FileHasher(StateGenerator stateGenerator, List<FileState> fileStates, String baseDirectory, File file) throws NoSuchAlgorithmException
+	public FileHasher(StateGenerator stateGenerator, List<FileState> fileStates, String fileTreeRootDir, File file) throws NoSuchAlgorithmException
 	{
 		this.stateGenerator = stateGenerator;
 		this.fileStates = fileStates;
-		this.baseDirectory = baseDirectory;
+		this.fileTreeRootDir = fileTreeRootDir;
 		this.file = file;
 		this.messageDigest = MessageDigest.getInstance(HASH_ALGORITHM);
 	}
@@ -55,15 +55,15 @@ class FileHasher implements Runnable
 
 		String hash = hashFile(file);
 		String fileName = file.toString();
-		fileName = getRelativeFileName(baseDirectory, fileName);
+		fileName = getRelativeFileName(fileTreeRootDir, fileName);
 		fileStates.add(new FileState(fileName, file.lastModified(), hash));
 	}
 
-	protected String getRelativeFileName(String baseDirectory, String fileName)
+	protected String getRelativeFileName(String directory, String fileName)
 	{
-		if (fileName.startsWith(baseDirectory))
+		if (fileName.startsWith(directory))
 		{
-			fileName = fileName.substring(baseDirectory.length());
+			fileName = fileName.substring(directory.length());
 		}
 
 		if (fileName.startsWith("/"))
@@ -75,7 +75,7 @@ class FileHasher implements Runnable
 
 	protected String hashFile(File file)
 	{
-		if (stateGenerator.getCompareMode() == CompareMode.FAST)
+		if (stateGenerator.getParameters().getCompareMode() == CompareMode.FAST)
 		{
 			return StateGenerator.NO_HASH;
 		}

@@ -24,7 +24,7 @@ import java.io.File;
 
 import org.fim.internal.StateManager;
 import org.fim.model.FileState;
-import org.fim.model.FimOptions;
+import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class ResetDatesCommand extends AbstractCommand
@@ -48,12 +48,11 @@ public class ResetDatesCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(FimOptions fimOptions) throws Exception
+	public void execute(Parameters parameters) throws Exception
 	{
-		StateManager manager = new StateManager(fimOptions.getStateDir(), fimOptions.getCompareMode());
+		fastCompareNotSupported(parameters);
 
-		fastCompareNotSupported(fimOptions.getCompareMode());
-
+		StateManager manager = new StateManager(parameters);
 		State lastState = manager.loadLastState();
 
 		System.out.println("Reset file modification dates based on the last committed State done " + formatDate(lastState.getTimestamp()));

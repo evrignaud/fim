@@ -28,21 +28,27 @@ import java.util.List;
 
 import org.fim.model.CompareMode;
 import org.fim.model.FileState;
+import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class StateManager
 {
 	public static final String LAST_STATE_FILE_NAME = "lastState";
 
-	private final File stateDir;
-	private final CompareMode compareMode;
+	private final Parameters parameters;
 	private final Charset utf8 = Charset.forName("UTF-8");
+	private final File stateDir;
 	protected int lastStateNumber = -1;
 
-	public StateManager(File stateDir, CompareMode compareMode)
+	public StateManager(Parameters parameters)
 	{
+		this(parameters, parameters.getDefaultStateDir());
+	}
+
+	public StateManager(Parameters parameters, File stateDir)
+	{
+		this.parameters = parameters;
 		this.stateDir = stateDir;
-		this.compareMode = compareMode;
 	}
 
 	public void createNewState(State state) throws IOException
@@ -76,7 +82,7 @@ public class StateManager
 		State state = new State();
 		state.loadFromZipFile(stateFile);
 
-		if (compareMode == CompareMode.FAST)
+		if (parameters.getCompareMode() == CompareMode.FAST)
 		{
 			// Replace the real file hash by 'no_hash' to be able to compare the FileState entry
 			for (FileState fileState : state.getFileStates())

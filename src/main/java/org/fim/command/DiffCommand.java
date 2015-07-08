@@ -21,7 +21,7 @@ package org.fim.command;
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
-import org.fim.model.FimOptions;
+import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class DiffCommand extends AbstractCommand
@@ -45,14 +45,11 @@ public class DiffCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(FimOptions fimOptions) throws Exception
+	public void execute(Parameters parameters) throws Exception
 	{
-		StateGenerator generator = new StateGenerator(fimOptions.getThreadCount(), fimOptions.getCompareMode());
-		StateManager manager = new StateManager(fimOptions.getStateDir(), fimOptions.getCompareMode());
-		StateComparator comparator = new StateComparator(fimOptions.getCompareMode());
+		State lastState = new StateManager(parameters).loadLastState();
+		State currentState = new StateGenerator(parameters).generateState(parameters.getMessage(), CURRENT_DIRECTORY);
 
-		State lastState = manager.loadLastState();
-		State currentState = generator.generateState(fimOptions.getMessage(), fimOptions.getBaseDirectory());
-		comparator.compare(lastState, currentState).displayChanges(fimOptions.isVerbose());
+		new StateComparator(parameters).compare(lastState, currentState).displayChanges();
 	}
 }

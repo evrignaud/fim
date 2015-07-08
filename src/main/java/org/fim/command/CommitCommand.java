@@ -22,7 +22,7 @@ import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
 import org.fim.model.CompareResult;
-import org.fim.model.FimOptions;
+import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class CommitCommand extends AbstractCommand
@@ -46,21 +46,19 @@ public class CommitCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(FimOptions fimOptions) throws Exception
+	public void execute(Parameters parameters) throws Exception
 	{
-		StateGenerator generator = new StateGenerator(fimOptions.getThreadCount(), fimOptions.getCompareMode());
-		StateManager manager = new StateManager(fimOptions.getStateDir(), fimOptions.getCompareMode());
-		StateComparator comparator = new StateComparator(fimOptions.getCompareMode());
+		fastCompareNotSupported(parameters);
 
-		fastCompareNotSupported(fimOptions.getCompareMode());
-
+		StateManager manager = new StateManager(parameters);
 		State lastState = manager.loadLastState();
-		State currentState = generator.generateState(fimOptions.getMessage(), fimOptions.getBaseDirectory());
-		CompareResult result = comparator.compare(lastState, currentState).displayChanges(fimOptions.isVerbose());
+		State currentState = new StateGenerator(parameters).generateState(parameters.getMessage(), CURRENT_DIRECTORY);
+
+		CompareResult result = new StateComparator(parameters).compare(lastState, currentState).displayChanges();
 		if (result.somethingModified())
 		{
 			System.out.println("");
-			if (fimOptions.isAlwaysYes() || confirmCommand("commit"))
+			if (parameters.isAlwaysYes() || confirmCommand("commit"))
 			{
 				manager.createNewState(currentState);
 			}

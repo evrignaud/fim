@@ -21,7 +21,7 @@ package org.fim.command;
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
-import org.fim.model.FimOptions;
+import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class InitCommand extends AbstractCommand
@@ -45,17 +45,16 @@ public class InitCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(FimOptions fimOptions) throws Exception
+	public void execute(Parameters parameters) throws Exception
 	{
-		StateGenerator generator = new StateGenerator(fimOptions.getThreadCount(), fimOptions.getCompareMode());
-		StateManager manager = new StateManager(fimOptions.getStateDir(), fimOptions.getCompareMode());
-		StateComparator comparator = new StateComparator(fimOptions.getCompareMode());
+		fastCompareNotSupported(parameters);
 
-		fastCompareNotSupported(fimOptions.getCompareMode());
+		parameters.getDefaultStateDir().mkdirs();
 
-		fimOptions.getStateDir().mkdirs();
-		State currentState = generator.generateState("Initial State", fimOptions.getBaseDirectory());
-		comparator.compare(null, currentState).displayChanges(fimOptions.isVerbose());
-		manager.createNewState(currentState);
+		State currentState = new StateGenerator(parameters).generateState("Initial State", CURRENT_DIRECTORY);
+
+		new StateComparator(parameters).compare(null, currentState).displayChanges();
+
+		new StateManager(parameters).createNewState(currentState);
 	}
 }

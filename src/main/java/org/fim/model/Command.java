@@ -26,5 +26,5 @@ public interface Command
 
 	String getDescription();
 
-	void execute(FimOptions fimOptions) throws Exception;
+	void execute(Parameters parameters) throws Exception;
 }

@@ -37,10 +37,12 @@ public class CompareResult
 	private List<Difference> renamed;
 	private List<Difference> deleted;
 
+	private Parameters parameters;
 	private State lastState;
 
-	public CompareResult(State lastState)
+	public CompareResult(Parameters parameters, State lastState)
 	{
+		this.parameters = parameters;
 		this.lastState = lastState;
 
 		added = new ArrayList<>();
@@ -68,7 +70,7 @@ public class CompareResult
 		Collections.sort(differences, fileNameComparator);
 	}
 
-	public CompareResult displayChanges(boolean verbose)
+	public CompareResult displayChanges()
 	{
 		if (lastState != null)
 		{
@@ -80,7 +82,7 @@ public class CompareResult
 			System.out.println("");
 		}
 
-		if (!verbose)
+		if (!parameters.isVerbose())
 		{
 			displayCounts();
 			return this;

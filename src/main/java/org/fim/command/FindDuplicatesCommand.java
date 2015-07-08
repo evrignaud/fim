@@ -21,7 +21,7 @@ package org.fim.command;
 import org.fim.internal.DuplicateFinder;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
-import org.fim.model.FimOptions;
+import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class FindDuplicatesCommand extends AbstractCommand
@@ -45,26 +45,23 @@ public class FindDuplicatesCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(FimOptions fimOptions) throws Exception
+	public void execute(Parameters parameters) throws Exception
 	{
-		StateGenerator generator = new StateGenerator(fimOptions.getThreadCount(), fimOptions.getCompareMode());
-		StateManager manager = new StateManager(fimOptions.getStateDir(), fimOptions.getCompareMode());
-		DuplicateFinder finder = new DuplicateFinder();
+		fastCompareNotSupported(parameters);
 
-		fastCompareNotSupported(fimOptions.getCompareMode());
-
-		System.out.println("Searching for duplicated files" + (fimOptions.isUseLastState() ? " from the last committed State" : ""));
+		System.out.println("Searching for duplicated files" + (parameters.isUseLastState() ? " from the last committed State" : ""));
 		System.out.println("");
 
 		State state;
-		if (fimOptions.isUseLastState())
+		if (parameters.isUseLastState())
 		{
-			state = manager.loadLastState();
+			state = new StateManager(parameters).loadLastState();
 		}
 		else
 		{
-			state = generator.generateState(fimOptions.getMessage(), fimOptions.getBaseDirectory());
+			state = new StateGenerator(parameters).generateState(parameters.getMessage(), CURRENT_DIRECTORY);
 		}
-		finder.findDuplicates(state).displayDuplicates(fimOptions.isVerbose());
+
+		new DuplicateFinder(parameters).findDuplicates(state).displayDuplicates();
 	}
 }

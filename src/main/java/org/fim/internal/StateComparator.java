@@ -26,20 +26,21 @@ import org.fim.model.CompareMode;
 import org.fim.model.CompareResult;
 import org.fim.model.Difference;
 import org.fim.model.FileState;
+import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class StateComparator
 {
-	private final CompareMode compareMode;
+	private final Parameters parameters;
 
-	public StateComparator(CompareMode compareMode)
+	public StateComparator(Parameters parameters)
 	{
-		this.compareMode = compareMode;
+		this.parameters = parameters;
 	}
 
 	public CompareResult compare(State lastState, State currentState)
 	{
-		CompareResult result = new CompareResult(lastState);
+		CompareResult result = new CompareResult(parameters, lastState);
 
 		List<FileState> previousFileStates = new ArrayList<>();
 		List<FileState> notFoundInCurrentFileState = new ArrayList<>();
@@ -104,7 +105,8 @@ public class StateComparator
 		while (iterator.hasNext())
 		{
 			FileState fileState = iterator.next();
-			if (compareMode != CompareMode.FAST && (samePreviousHash = findFilesWithSameHash(fileState, previousFileStates)).size() > 0)
+			if (parameters.getCompareMode() != CompareMode.FAST &&
+					(samePreviousHash = findFilesWithSameHash(fileState, previousFileStates)).size() > 0)
 			{
 				FileState originalFileState = samePreviousHash.get(0);
 				if (notFoundInCurrentFileState.contains(originalFileState))

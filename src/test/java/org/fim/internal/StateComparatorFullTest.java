@@ -18,7 +18,6 @@
  */
 package org.fim.internal;
 
-import org.fim.model.CompareMode;
 import org.fim.model.CompareResult;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.FileNameDiff;
@@ -28,7 +27,7 @@ import org.junit.Test;
 
 public class StateComparatorFullTest extends StateAssert
 {
-	private StateComparator cut = new StateComparator(CompareMode.FULL);
+	private StateComparator cut = new StateComparator(defaultParameters().compareModeFull());
 	private BuildableState s1 = new BuildableState().addFiles("file_01", "file_02", "file_03", "file_04");
 	private BuildableState s2;
 
