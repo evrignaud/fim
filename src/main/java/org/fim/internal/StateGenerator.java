@@ -36,6 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.fim.model.FileState;
 import org.fim.model.Parameters;
 import org.fim.model.State;
+import org.fim.util.Logger;
 
 public class StateGenerator
 {
@@ -67,6 +68,9 @@ public class StateGenerator
 
 	public State generateState(String message, File fileTreeRootDir) throws IOException, NoSuchAlgorithmException
 	{
+		Logger.info(String.format("Starting to hash recursively local files using %d thread", parameters.getThreadCount()));
+		System.out.printf("    ~~ Hash progress legend: x > 200Mo, l > 100Mo, m > 50Mo, s > 20Mo, : > 10Mo, . otherwise ~~%n");
+
 		State state = new State();
 		state.setMessage(message);
 
@@ -115,11 +119,11 @@ public class StateGenerator
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(minutes);
 		if (minutes == 0)
 		{
-			System.out.printf("Scanned %d files in %d sec using %d thread%n%n", state.getFileStates().size(), seconds, parameters.getThreadCount());
+			Logger.info(String.format("Scanned %d files in %d sec using %d thread%n", state.getFileStates().size(), seconds, parameters.getThreadCount()));
 		}
 		else
 		{
-			System.out.printf("Scanned %d files in %d min, %d sec using %d thread%n%n", state.getFileStates().size(), minutes, seconds, parameters.getThreadCount());
+			Logger.info(String.format("Scanned %d files in %d min, %d sec using %d thread%n", state.getFileStates().size(), minutes, seconds, parameters.getThreadCount()));
 		}
 	}
 
