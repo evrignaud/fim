@@ -46,7 +46,7 @@ public class StateGenerator
 	public static final int SIZE_100_MO = 100 * MEGA;
 	public static final int SIZE_200_MO = 200 * MEGA;
 
-	public static final int PROGRESS_DISPLAY_FILE_COUNT = 20;
+	public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
 
 	public static final String DOT_FIM_DIR = ".fim";
 	public static final String NO_HASH = "no_hash";
