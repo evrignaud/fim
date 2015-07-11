@@ -81,27 +81,19 @@ class FileHasher implements Runnable
 		return fileName;
 	}
 
-	protected String hashFile(File file)
+	protected String hashFile(File file) throws IOException
 	{
 		if (stateGenerator.getParameters().getCompareMode() == CompareMode.FAST)
 		{
 			return StateGenerator.NO_HASH;
 		}
-
-		try
+		else if (file.length() < StateGenerator.SIZE_50_MO)
 		{
-			if (file.length() < StateGenerator.SIZE_50_MO)
-			{
-				return hashFileUsingNIO(file);
-			}
-			else
-			{
-				return hashFileChunkByChunk(file);
-			}
+			return hashFileUsingNIO(file);
 		}
-		catch (Exception ex)
+		else
 		{
-			throw new RuntimeException("Exception occurred during file hashing", ex);
+			return hashFileChunkByChunk(file);
 		}
 	}
 
