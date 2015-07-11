@@ -43,7 +43,7 @@ public class State
 	private int fileCount = 0;
 	private List<FileState> fileStates = null;
 
-	public void loadFromZipFile(File stateFile) throws IOException
+	public void loadFromGZipFile(File stateFile) throws IOException
 	{
 		try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile))))
 		{
@@ -56,7 +56,7 @@ public class State
 		}
 	}
 
-	public void saveToZipFile(File stateFile) throws IOException
+	public void saveToGZipFile(File stateFile) throws IOException
 	{
 		fileCount = fileStates.size();
 

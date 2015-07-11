@@ -53,7 +53,7 @@ public class StateManager
 
 	public void createNewState(State state) throws IOException
 	{
-		state.saveToZipFile(getNextStateFile());
+		state.saveToGZipFile(getNextStateFile());
 		writeLastStateNumber();
 	}
 
@@ -80,7 +80,7 @@ public class StateManager
 		}
 
 		State state = new State();
-		state.loadFromZipFile(stateFile);
+		state.loadFromGZipFile(stateFile);
 
 		if (parameters.getCompareMode() == CompareMode.FAST)
 		{

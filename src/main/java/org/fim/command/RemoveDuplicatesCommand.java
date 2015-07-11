@@ -67,21 +67,21 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 
 		fastCompareNotSupported(parameters);
 
-		File fimRepository = new File(parameters.getMasterFimRepositoryDir());
-		if (!fimRepository.exists())
+		File masterFimRepository = new File(parameters.getMasterFimRepositoryDir());
+		if (!masterFimRepository.exists())
 		{
 			System.err.printf("Directory %s does not exist%n", parameters.getMasterFimRepositoryDir());
 			System.exit(-1);
 		}
 
-		if (fimRepository.getCanonicalPath().equals(CURRENT_DIRECTORY.getCanonicalPath()))
+		if (masterFimRepository.getCanonicalPath().equals(CURRENT_DIRECTORY.getCanonicalPath()))
 		{
 			System.err.printf("Cannot remove duplicates from the current directory%n");
 			System.exit(-1);
 		}
 
-		File dotFimDir = new File(fimRepository, StateGenerator.DOT_FIM_DIR);
-		if (!dotFimDir.exists())
+		File masterDotFimDir = new File(masterFimRepository, StateGenerator.DOT_FIM_DIR);
+		if (!masterDotFimDir.exists())
 		{
 			System.err.printf("Directory %s is not a Fim repository%n", parameters.getMasterFimRepositoryDir());
 			System.exit(-1);
@@ -90,7 +90,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		System.out.println("Searching for duplicated files using the " + parameters.getMasterFimRepositoryDir() + " directory as master");
 		System.out.println("");
 
-		File masterStateDir = new File(dotFimDir, "states");
+		File masterStateDir = new File(masterDotFimDir, "states");
 		State masterState = new StateManager(parameters, masterStateDir).loadLastState();
 		Map<String, FileState> masterFilesHash = buildFileHashMap(masterState);
 
