@@ -87,7 +87,7 @@ class FileHasher implements Runnable
 		{
 			return StateGenerator.NO_HASH;
 		}
-		else if (file.length() < StateGenerator.SIZE_50_MO)
+		else if (file.length() < StateGenerator.SIZE_50_MB)
 		{
 			return hashFileUsingNIO(file);
 		}

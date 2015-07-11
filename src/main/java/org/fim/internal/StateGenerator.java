@@ -42,12 +42,12 @@ import org.fim.util.Logger;
 
 public class StateGenerator
 {
-	public static final int MEGA = 1024 * 1024;
-	public static final int SIZE_10_MO = 10 * MEGA;
-	public static final int SIZE_20_MO = 20 * MEGA;
-	public static final int SIZE_50_MO = 50 * MEGA;
-	public static final int SIZE_100_MO = 100 * MEGA;
-	public static final int SIZE_200_MO = 200 * MEGA;
+	public static final int SIZE_1_MB = 1024 * 1024;
+	public static final int SIZE_10_MB = 10 * SIZE_1_MB;
+	public static final int SIZE_20_MB = 20 * SIZE_1_MB;
+	public static final int SIZE_50_MB = 50 * SIZE_1_MB;
+	public static final int SIZE_100_MB = 100 * SIZE_1_MB;
+	public static final int SIZE_200_MB = 200 * SIZE_1_MB;
 
 	public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
 
@@ -72,7 +72,7 @@ public class StateGenerator
 	public State generateState(String message, File fileTreeRootDir) throws IOException, NoSuchAlgorithmException
 	{
 		Logger.info(String.format("Starting to hash recursively local files using %d thread", parameters.getThreadCount()));
-		System.out.printf("    ~~ Hash progress legend: x > 200Mo, l > 100Mo, m > 50Mo, s > 20Mo, : > 10Mo, . otherwise ~~%n");
+		System.out.printf("    ~~ Hash progress legend: x > 200Mb l > 100Mb, m > 50Mb, s > 20Mb, : > 10Mb, . otherwise ~~%n");
 
 		State state = new State();
 		state.setMessage(message);
@@ -186,23 +186,23 @@ public class StateGenerator
 
 			if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0)
 			{
-				if (summedFileLength > SIZE_200_MO)
+				if (summedFileLength > SIZE_200_MB)
 				{
 					System.out.print("x");
 				}
-				else if (summedFileLength > SIZE_100_MO)
+				else if (summedFileLength > SIZE_100_MB)
 				{
 					System.out.print("l");
 				}
-				else if (summedFileLength > SIZE_50_MO)
+				else if (summedFileLength > SIZE_50_MB)
 				{
 					System.out.print("m");
 				}
-				else if (summedFileLength > SIZE_20_MO)
+				else if (summedFileLength > SIZE_20_MB)
 				{
 					System.out.print("s");
 				}
-				else if (summedFileLength > SIZE_10_MO)
+				else if (summedFileLength > SIZE_10_MB)
 				{
 					System.out.print(":");
 				}
