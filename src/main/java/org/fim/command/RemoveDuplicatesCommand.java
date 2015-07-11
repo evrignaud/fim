@@ -80,7 +80,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			System.exit(-1);
 		}
 
-		File masterDotFimDir = new File(masterFimRepository, StateGenerator.DOT_FIM_DIR);
+		File masterDotFimDir = new File(masterFimRepository, Parameters.DOT_FIM_DIR);
 		if (!masterDotFimDir.exists())
 		{
 			System.err.printf("Directory %s is not a Fim repository%n", parameters.getMasterFimRepositoryDir());

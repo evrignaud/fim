@@ -22,14 +22,28 @@ import java.io.File;
 
 public class Parameters implements Cloneable
 {
+	public static final String DOT_FIM_DIR = ".fim";
+
 	private File defaultStateDir;
-	private boolean verbose = true;
-	private CompareMode compareMode = CompareMode.FULL;
-	private String message = "";
-	private boolean useLastState = false;
-	private int threadCount = Runtime.getRuntime().availableProcessors();
-	private String masterFimRepositoryDir = null;
-	private boolean alwaysYes = false;
+	private boolean verbose;
+	private CompareMode compareMode;
+	private String message;
+	private boolean useLastState;
+	private int threadCount;
+	private String masterFimRepositoryDir;
+	private boolean alwaysYes;
+
+	public Parameters()
+	{
+		defaultStateDir = new File(DOT_FIM_DIR, "states");
+		verbose = true;
+		compareMode = CompareMode.FULL;
+		message = "";
+		useLastState = false;
+		threadCount = Runtime.getRuntime().availableProcessors() / 2;
+		masterFimRepositoryDir = null;
+		alwaysYes = false;
+	}
 
 	public File getDefaultStateDir()
 	{

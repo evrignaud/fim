@@ -18,7 +18,6 @@
  */
 package org.fim;
 
-import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +39,6 @@ import org.fim.command.LogCommand;
 import org.fim.command.RemoveDuplicatesCommand;
 import org.fim.command.ResetDatesCommand;
 import org.fim.command.VersionCommand;
-import org.fim.internal.StateGenerator;
 import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
 import org.fim.model.CompareMode;
@@ -148,8 +146,6 @@ public class Main
 			System.err.println("Thread count must be at least one");
 			System.exit(-1);
 		}
-
-		parameters.setDefaultStateDir(new File(StateGenerator.DOT_FIM_DIR, "states"));
 
 		FimReposConstraint constraint = command.getFimReposConstraint();
 		if (constraint == FimReposConstraint.MUST_NOT_EXIST)
