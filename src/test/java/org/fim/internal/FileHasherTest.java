@@ -91,7 +91,7 @@ public class FileHasherTest extends StateAssert
 	}
 
 	@Test
-	public void weCanHashALittleFile()
+	public void weCanHashALittleFile() throws IOException
 	{
 		fileToHash = new File("LICENSE");
 		String hash = cut.hashFile(fileToHash);
