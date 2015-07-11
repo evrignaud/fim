@@ -20,10 +20,9 @@ package org.fim.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.google.common.base.MoreObjects;
 
 public class DuplicateSet
 {
@@ -42,18 +41,33 @@ public class DuplicateSet
 	@Override
 	public boolean equals(Object other)
 	{
-		return new EqualsBuilder().reflectionEquals(this, other);
+		if (this == other)
+		{
+			return true;
+		}
+
+		if (other == null || !(other instanceof DuplicateSet))
+		{
+			return false;
+		}
+
+		DuplicateSet duplicateSet = (DuplicateSet) other;
+
+		return Objects.equals(this.duplicatedFiles, duplicateSet.duplicatedFiles);
+
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder().reflectionHashCode(this);
+		return Objects.hash(duplicatedFiles);
 	}
 
 	@Override
 	public String toString()
 	{
-		return ToStringBuilder.reflectionToString(this);
+		return MoreObjects.toStringHelper(this)
+				.add("duplicatedFiles", duplicatedFiles)
+				.toString();
 	}
 }

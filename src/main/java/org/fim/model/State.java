@@ -27,14 +27,13 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import com.google.common.base.MoreObjects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class State
 {
@@ -72,6 +71,11 @@ public class State
 		return timestamp;
 	}
 
+	protected void setTimestamp(long timestamp)
+	{
+		this.timestamp = timestamp;
+	}
+
 	public String getMessage()
 	{
 		return message;
@@ -80,6 +84,16 @@ public class State
 	public void setMessage(String message)
 	{
 		this.message = message;
+	}
+
+	public int getFileCount()
+	{
+		return fileCount;
+	}
+
+	protected void setFileCount(int fileCount)
+	{
+		this.fileCount = fileCount;
 	}
 
 	public List<FileState> getFileStates()
@@ -92,26 +106,41 @@ public class State
 		this.fileStates = fileStates;
 	}
 
-	public int getFileCount()
-	{
-		return fileCount;
-	}
-
 	@Override
 	public boolean equals(Object other)
 	{
-		return new EqualsBuilder().reflectionEquals(this, other);
+		if (this == other)
+		{
+			return true;
+		}
+
+		if (other == null || !(other instanceof State))
+		{
+			return false;
+		}
+
+		State state = (State) other;
+
+		return Objects.equals(this.timestamp, state.timestamp)
+				&& Objects.equals(this.message, state.message)
+				&& Objects.equals(this.fileCount, state.fileCount)
+				&& Objects.equals(this.fileStates, state.fileStates);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder().reflectionHashCode(this);
+		return Objects.hash(timestamp, message, fileCount, fileStates);
 	}
 
 	@Override
 	public String toString()
 	{
-		return ToStringBuilder.reflectionToString(this);
+		return MoreObjects.toStringHelper(this)
+				.add("timestamp", timestamp)
+				.add("message", message)
+				.add("fileCount", fileCount)
+				.add("fileStates", fileStates)
+				.toString();
 	}
 }

@@ -19,10 +19,9 @@
 package org.fim.model;
 
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.google.common.base.MoreObjects;
 
 public class DuplicatedFiles
 {
@@ -41,18 +40,34 @@ public class DuplicatedFiles
 	@Override
 	public boolean equals(Object other)
 	{
-		return new EqualsBuilder().reflectionEquals(this, other);
+		if (this == other)
+		{
+			return true;
+		}
+
+		if (other == null || !(other instanceof DuplicatedFiles))
+		{
+			return false;
+		}
+
+		DuplicatedFiles duplicatedFiles = (DuplicatedFiles) other;
+
+		return Objects.equals(this.duplicates, duplicatedFiles.duplicates);
+
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder().reflectionHashCode(this);
+		return Objects.hash(duplicates);
 	}
 
 	@Override
 	public String toString()
 	{
-		return ToStringBuilder.reflectionToString(this);
+		return MoreObjects.toStringHelper(this)
+				.add("duplicates", duplicates)
+				.toString();
 	}
+
 }
