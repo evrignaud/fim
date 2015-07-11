@@ -70,9 +70,9 @@ public class FileHasherPerf
 		for (int index = 0; index < 200000; index++)
 		{
 			File file = new File(rootDir, "file_" + (index % 10));
-			cut.hashOnceTheCompleteFileContent(file);
+			cut.hashFileUsingNIO(file);
 		}
-		System.out.println("hashOnceTheCompleteFileContent took: " + (System.currentTimeMillis() - start) + " ms");
+		System.out.println("hashFileUsingNIO took: " + (System.currentTimeMillis() - start) + " ms");
 
 		start = System.currentTimeMillis();
 		for (int index = 0; index < 200000; index++)

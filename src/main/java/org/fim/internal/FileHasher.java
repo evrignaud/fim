@@ -54,10 +54,17 @@ class FileHasher implements Runnable
 	{
 		stateGenerator.updateProgressOutput(file);
 
-		String hash = hashFile(file);
-		String fileName = file.toString();
-		fileName = getRelativeFileName(fileTreeRootDir, fileName);
-		fileStates.add(new FileState(fileName, file.lastModified(), hash));
+		try
+		{
+			String hash = hashFile(file);
+			String fileName = file.toString();
+			fileName = getRelativeFileName(fileTreeRootDir, fileName);
+			fileStates.add(new FileState(fileName, file.lastModified(), hash));
+		}
+		catch (Exception ex)
+		{
+			System.err.printf("%nSkipping file hash. Not able to hash '%s': %s%n", file.getName(), ex.getMessage());
+		}
 	}
 
 	protected String getRelativeFileName(String directory, String fileName)
@@ -85,7 +92,7 @@ class FileHasher implements Runnable
 		{
 			if (file.length() < StateGenerator.SIZE_50_MO)
 			{
-				return hashOnceTheCompleteFileContent(file);
+				return hashFileUsingNIO(file);
 			}
 			else
 			{
@@ -98,7 +105,7 @@ class FileHasher implements Runnable
 		}
 	}
 
-	protected String hashOnceTheCompleteFileContent(File file) throws IOException
+	protected String hashFileUsingNIO(File file) throws IOException
 	{
 		messageDigest.reset();
 
