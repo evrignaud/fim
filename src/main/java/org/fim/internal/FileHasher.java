@@ -32,6 +32,7 @@ import org.fim.model.FileState;
 class FileHasher implements Runnable
 {
 	public static final String HASH_ALGORITHM = "SHA-512";
+	public static final int READ_BUFFER_SIZE = 4 * 1024;
 
 	private final StateGenerator stateGenerator;
 	private final List<FileState> fileStates;
@@ -114,7 +115,7 @@ class FileHasher implements Runnable
 
 		try (FileInputStream fis = new FileInputStream(file))
 		{
-			byte[] dataBytes = new byte[1024];
+			byte[] dataBytes = new byte[READ_BUFFER_SIZE];
 			int nread;
 			while ((nread = fis.read(dataBytes)) != -1)
 			{
