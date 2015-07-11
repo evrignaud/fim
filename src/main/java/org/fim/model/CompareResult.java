@@ -92,37 +92,37 @@ public class CompareResult
 
 		for (Difference diff : added)
 		{
-			System.out.format(String.format(stateFormat + "%s%n", "Added:", diff.getFileState().getFileName()));
+			System.out.printf(stateFormat + "%s%n", "Added:", diff.getFileState().getFileName());
 		}
 
 		for (Difference diff : copied)
 		{
-			System.out.format(String.format(stateFormat + "%s \t(was %s)%n", "Copied:", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName()));
+			System.out.printf(stateFormat + "%s \t(was %s)%n", "Copied:", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName());
 		}
 
 		for (Difference diff : duplicated)
 		{
-			System.out.format(String.format(stateFormat + "%s = %s%n", "Duplicated:", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName()));
+			System.out.printf(stateFormat + "%s = %s%n", "Duplicated:", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName());
 		}
 
 		for (Difference diff : dateModified)
 		{
-			System.out.format(stateFormat + "%s \t%s -> %s%n", "Date modified:", diff.getFileState().getFileName(), formatDate(diff.getPreviousFileState()), formatDate(diff.getFileState()));
+			System.out.printf(stateFormat + "%s \t%s -> %s%n", "Date modified:", diff.getFileState().getFileName(), formatDate(diff.getPreviousFileState()), formatDate(diff.getFileState()));
 		}
 
 		for (Difference diff : contentModified)
 		{
-			System.out.format(stateFormat + "%s \t%s -> %s%n", "Content modified:", diff.getFileState().getFileName(), formatDate(diff.getPreviousFileState()), formatDate(diff.getFileState()));
+			System.out.printf(stateFormat + "%s \t%s -> %s%n", "Content modified:", diff.getFileState().getFileName(), formatDate(diff.getPreviousFileState()), formatDate(diff.getFileState()));
 		}
 
 		for (Difference diff : renamed)
 		{
-			System.out.format(String.format(stateFormat + "%s -> %s%n", "Renamed:", diff.getPreviousFileState().getFileName(), diff.getFileState().getFileName()));
+			System.out.printf(stateFormat + "%s -> %s%n", "Renamed:", diff.getPreviousFileState().getFileName(), diff.getFileState().getFileName());
 		}
 
 		for (Difference diff : deleted)
 		{
-			System.out.format(String.format(stateFormat + "%s%n", "Deleted:", diff.getFileState().getFileName()));
+			System.out.printf(stateFormat + "%s%n", "Deleted:", diff.getFileState().getFileName());
 		}
 
 		if (somethingModified())
