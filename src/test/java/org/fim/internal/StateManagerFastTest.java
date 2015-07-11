@@ -72,7 +72,7 @@ public class StateManagerFastTest extends StateAssert
 		assertAllFileStatesHaveNoHash(result, 30);
 
 		File nextStateFile = cut.getNextStateFile();
-		assertThat(nextStateFile.getName()).isEqualTo("state_11.zjson");
+		assertThat(nextStateFile.getName()).isEqualTo("state_11.json.gz");
 	}
 
 	private void assertAllFileStatesHaveNoHash(State result, int fileCount)

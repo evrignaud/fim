@@ -71,6 +71,6 @@ public class StateManagerFullTest extends StateAssert
 		assertThat(result).isEqualTo(s);
 
 		File nextStateFile = cut.getNextStateFile();
-		assertThat(nextStateFile.getName()).isEqualTo("state_11.zjson");
+		assertThat(nextStateFile.getName()).isEqualTo("state_11.json.gz");
 	}
 }

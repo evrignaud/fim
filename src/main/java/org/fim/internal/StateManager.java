@@ -33,6 +33,8 @@ import org.fim.model.State;
 
 public class StateManager
 {
+	public static final String STATE_EXTENSION = ".json.gz";
+
 	public static final String LAST_STATE_FILE_NAME = "lastState";
 
 	private final Parameters parameters;
@@ -94,9 +96,14 @@ public class StateManager
 		return state;
 	}
 
+	/**
+	 * @return the State file formatted like this: <stateDir>/state_<stateNumber>.json.gz
+	 */
 	public File getStateFile(int stateNumber)
 	{
-		return new File(stateDir, "state_" + stateNumber + ".zjson");
+		StringBuilder builder = new StringBuilder();
+		builder.append("state_").append(stateNumber).append(STATE_EXTENSION);
+		return new File(stateDir, builder.toString());
 	}
 
 	protected void findLastStateNumber()
@@ -145,7 +152,7 @@ public class StateManager
 		if (lastStateNumber != -1)
 		{
 			File lastStateFile = new File(stateDir, LAST_STATE_FILE_NAME);
-			String content = "" + lastStateNumber;
+			String content = Integer.toString(lastStateNumber);
 			try
 			{
 				Files.write(lastStateFile.toPath(), content.getBytes(), CREATE);
