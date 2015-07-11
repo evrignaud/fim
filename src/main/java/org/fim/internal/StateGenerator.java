@@ -33,6 +33,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.fim.model.FileState;
 import org.fim.model.Parameters;
 import org.fim.model.State;
@@ -60,6 +62,7 @@ public class StateGenerator
 	private ReentrantLock countLock = new ReentrantLock();
 	private long summedFileLength;
 	private int fileCount;
+	private long totalBytesHashed;
 
 	public StateGenerator(Parameters parameters)
 	{
@@ -115,16 +118,10 @@ public class StateGenerator
 	private void displayTimeElapsed(long start, State state)
 	{
 		long duration = System.currentTimeMillis() - start;
-		long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
-		long seconds = TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(minutes);
-		if (minutes == 0)
-		{
-			Logger.info(String.format("Scanned %d files in %d sec using %d thread%n", state.getFileStates().size(), seconds, parameters.getThreadCount()));
-		}
-		else
-		{
-			Logger.info(String.format("Scanned %d files in %d min, %d sec using %d thread%n", state.getFileStates().size(), minutes, seconds, parameters.getThreadCount()));
-		}
+		String totalBytesHashedStr = FileUtils.byteCountToDisplaySize(totalBytesHashed);
+		String durationStr = DurationFormatUtils.formatDuration(duration, "HH:mm:ss");
+		Logger.info(String.format("Scanned %d files, for a total size of %s, during %s, using %d thread%n",
+				state.getFileStates().size(), totalBytesHashedStr, durationStr, parameters.getThreadCount()));
 	}
 
 	private void getFileStates(List<FileState> fileStates, String fileTreeRootDir, File directory) throws NoSuchAlgorithmException
@@ -159,6 +156,7 @@ public class StateGenerator
 				{
 					executorService.submit(hasher);
 				}
+				totalBytesHashed += file.length();
 			}
 		}
 	}
@@ -170,6 +168,7 @@ public class StateGenerator
 		{
 			summedFileLength = 0;
 			fileCount = 0;
+			totalBytesHashed = 0;
 		}
 		finally
 		{
