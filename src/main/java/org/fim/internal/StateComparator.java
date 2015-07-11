@@ -117,7 +117,7 @@ public class StateComparator
 				}
 				else
 				{
-					if (originalFileState.contentChanged())
+					if (contentChanged(originalFileState))
 					{
 						result.getCopied().add(new Difference(originalFileState, fileState));
 						iterator.remove();
@@ -150,6 +150,11 @@ public class StateComparator
 		result.sortResults();
 
 		return result;
+	}
+
+	private boolean contentChanged(FileState fileState)
+	{
+		return !fileState.getFileHash().equals(fileState.getNewFileHash());
 	}
 
 	private void logDebug(String message, String desc, List<FileState> fileStates)

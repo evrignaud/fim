@@ -58,11 +58,6 @@ public class FileState
 		this.setFileHash(fileHash);
 	}
 
-	public boolean contentChanged()
-	{
-		return !fileHash.equals(newFileHash);
-	}
-
 	@Override
 	public boolean equals(Object other)
 	{
@@ -140,6 +135,11 @@ public class FileState
 	public void setFileHash(FileHash fileHash)
 	{
 		this.fileHash = fileHash;
+	}
+
+	public FileHash getNewFileHash()
+	{
+		return newFileHash;
 	}
 
 	public void setNewFileHash(FileHash newFileHash)

@@ -144,7 +144,7 @@ public class BuildableState extends State
 
 	private FileHash appendHash(FileHash fileHash, String content)
 	{
-		return new FileHash(fileHash.getFirstMegaHash() + "_" + content, fileHash.getFullHash() + "_" + content);
+		return new FileHash(fileHash.getFirstMbHash() + "_" + content, fileHash.getFullHash() + "_" + content);
 	}
 
 	private void sortFileStates(BuildableState state)
