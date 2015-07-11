@@ -106,6 +106,7 @@ public class FileHasherTest extends StateAssert
 		String hash = cut.hashFile(fileToHash);
 		assertThat(hash.length()).isEqualTo(128);
 		assertThat(hash).isEqualTo("e891a71e312bc6e34f549664706951516c42f660face62756bb155301c5e06ba79db94f83dedd43467530021935f5b427a58d7a5bd245ea1b2b0db8d7b08ee7a");
+		fileToHash.delete();
 	}
 
 	private File createBigLicenseFile(long fileSize) throws IOException
