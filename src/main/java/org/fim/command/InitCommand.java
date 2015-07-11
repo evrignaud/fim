@@ -55,7 +55,11 @@ public class InitCommand extends AbstractCommand
 	{
 		fastCompareNotSupported(parameters);
 
-		parameters.getDefaultStateDir().mkdirs();
+		if (!parameters.getDefaultStateDir().mkdirs())
+		{
+			System.err.println("Not able to create the '" + Parameters.DOT_FIM_DIR + "' directory that holds the Fim repository");
+			System.exit(-1);
+		}
 
 		State currentState = new StateGenerator(parameters).generateState("Initial State", CURRENT_DIRECTORY);
 
