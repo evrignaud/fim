@@ -25,6 +25,7 @@ import java.util.Map;
 import org.fim.Main;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
+import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.Parameters;
 import org.fim.model.State;
@@ -92,12 +93,12 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 
 		File masterStateDir = new File(masterDotFimDir, "states");
 		State masterState = new StateManager(parameters, masterStateDir).loadLastState();
-		Map<String, FileState> masterFilesHash = buildFileHashMap(masterState);
+		Map<FileHash, FileState> masterFilesHash = buildFileHashMap(masterState);
 
 		State localState = new StateGenerator(parameters).generateState(parameters.getMessage(), CURRENT_DIRECTORY);
 		for (FileState localFileState : localState.getFileStates())
 		{
-			FileState masterFileState = masterFilesHash.get(localFileState.getHash());
+			FileState masterFileState = masterFilesHash.get(localFileState.getFileHash());
 			if (masterFileState != null)
 			{
 				System.out.printf("%s is a duplicate of %s/%s%n", localFileState.getFileName(),
@@ -112,13 +113,13 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		}
 	}
 
-	private Map<String, FileState> buildFileHashMap(State state)
+	private Map<FileHash, FileState> buildFileHashMap(State state)
 	{
-		Map<String, FileState> hashMap = new HashMap<>();
+		Map<FileHash, FileState> filesHashMap = new HashMap<>();
 		for (FileState fileState : state.getFileStates())
 		{
-			hashMap.put(fileState.getHash(), fileState);
+			filesHashMap.put(fileState.getFileHash(), fileState);
 		}
-		return hashMap;
+		return filesHashMap;
 	}
 }

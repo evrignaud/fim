@@ -47,7 +47,7 @@ public class StateComparatorFullTest extends StateAssert
 		result = cut.compare(s1, s2);
 		assertOnlyDatesModified(result, "file_01");
 
-		s2 = s1.appendContent("file_01", "append 1");
+		s2 = s1.appendContent("file_01", "append_01");
 		result = cut.compare(s1, s2);
 		assertOnlyContentModified(result, "file_01");
 
@@ -81,7 +81,7 @@ public class StateComparatorFullTest extends StateAssert
 	{
 		s2 = s1.copy("file_01", "file_00")
 				.copy("file_01", "file_06")
-				.appendContent("file_01", "append 1");
+				.appendContent("file_01", "append_01");
 		CompareResult result = cut.compare(s1, s2);
 		assertGotOnlyModifications(result, Modification.COPIED, Modification.CONTENT_MODIFIED);
 		assertFilesModified(result, Modification.COPIED, new FileNameDiff("file_01", "file_00"), new FileNameDiff("file_01", "file_06"));

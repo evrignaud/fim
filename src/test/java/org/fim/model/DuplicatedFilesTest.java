@@ -27,9 +27,9 @@ import org.junit.Test;
 
 public class DuplicatedFilesTest
 {
-	DuplicatedFiles a1;
-	DuplicatedFiles a2;
-	DuplicatedFiles b;
+	private DuplicatedFiles a1;
+	private DuplicatedFiles a2;
+	private DuplicatedFiles b;
 
 	@Before
 	public void setup()

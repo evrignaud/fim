@@ -20,25 +20,22 @@ package org.fim.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.fim.tooling.BuildableState;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StateTest
+public class FileStateTest
 {
-	private BuildableState a1;
-	private BuildableState a2;
-	private BuildableState b;
+	private FileState a1;
+	private FileState a2;
+	private FileState b;
 
 	@Before
 	public void setup()
 	{
-		a1 = new BuildableState().addFiles("file_1", "file_2");
-		a2 = a1.cloneState();
-		a2.setTimestamp(a1.getTimestamp());
+		a1 = new FileState("file_1", 1L, 1, new FileHash("1", "1"));
+		a2 = new FileState("file_1", 1L, 1, new FileHash("1", "1"));
 
-		b = a1.delete("file_2").addFiles("file_3");
-		b.setTimestamp(a1.getTimestamp());
+		b = new FileState("file_2", 2L, 2, new FileHash("2", "2"));
 	}
 
 	@Test

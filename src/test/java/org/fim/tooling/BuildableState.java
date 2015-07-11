@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.State;
 
@@ -46,7 +47,7 @@ public class BuildableState extends State
 			}
 
 			// By default put the fileName as fileContent that will be the hash two
-			FileState fileState = new FileState(fileName, getNow(), fileName);
+			FileState fileState = new FileState(fileName, fileName.length(), getNow(), createHash(fileName));
 			newState.getFileStates().add(fileState);
 		}
 		sortFileStates(newState);
@@ -62,7 +63,7 @@ public class BuildableState extends State
 		}
 
 		FileState sourceFileState = findFileState(newState, sourceFileName, true);
-		FileState targetFileState = new FileState(targetFileName, sourceFileState.getLastModified(), sourceFileState.getHash());
+		FileState targetFileState = new FileState(targetFileName, sourceFileState.getFileLength(), sourceFileState.getLastModified(), new FileHash(sourceFileState.getFileHash()));
 		newState.getFileStates().add(targetFileState);
 		sortFileStates(newState);
 		return newState;
@@ -107,7 +108,7 @@ public class BuildableState extends State
 	{
 		BuildableState newState = cloneState();
 		FileState fileState = findFileState(newState, fileName, true);
-		fileState.setHash(fileContent);
+		fileState.setFileHash(createHash(fileContent));
 		return newState;
 	}
 
@@ -115,13 +116,41 @@ public class BuildableState extends State
 	{
 		BuildableState newState = cloneState();
 		FileState fileState = findFileState(newState, fileName, true);
-		fileState.setHash(fileState.getHash() + fileContent);
+		fileState.setFileHash(appendHash(fileState.getFileHash(), fileContent));
 		return newState;
+	}
+
+	public BuildableState cloneState()
+	{
+		BuildableState newState = new BuildableState();
+		newState.setMessage(getMessage());
+
+		ArrayList<FileState> newFileStates = new ArrayList<>();
+		for (FileState fileState : getFileStates())
+		{
+			FileState newFileState = new FileState(fileState.getFileName(), fileState.getFileLength(), fileState.getLastModified(), new FileHash(fileState.getFileHash()));
+			newFileStates.add(newFileState);
+		}
+		newState.setFileStates(newFileStates);
+		sortFileStates(newState);
+
+		return newState;
+	}
+
+	private FileHash createHash(String content)
+	{
+		return new FileHash("first_mega_" + content, "full_" + content);
+	}
+
+	private FileHash appendHash(FileHash fileHash, String content)
+	{
+		return new FileHash(fileHash.getFirstMegaHash() + "_" + content, fileHash.getFullHash() + "_" + content);
 	}
 
 	private void sortFileStates(BuildableState state)
 	{
 		Collections.sort(state.getFileStates(), fileNameComparator);
+		state.setFileCount(state.getFileStates().size());
 	}
 
 	private FileState findFileState(BuildableState state, String fileName, boolean throwEx)
@@ -144,21 +173,5 @@ public class BuildableState extends State
 	private long getNow()
 	{
 		return new Date().getTime();
-	}
-
-	private BuildableState cloneState()
-	{
-		BuildableState newState = new BuildableState();
-		newState.setMessage(getMessage());
-
-		ArrayList<FileState> newFileStates = new ArrayList<>();
-		for (FileState fileState : getFileStates())
-		{
-			FileState newFileState = new FileState(fileState.getFileName(), fileState.getLastModified(), fileState.getHash());
-			newFileStates.add(newFileState);
-		}
-		newState.setFileStates(newFileStates);
-
-		return newState;
 	}
 }

@@ -25,6 +25,7 @@ import java.util.List;
 import org.fim.model.CompareMode;
 import org.fim.model.CompareResult;
 import org.fim.model.Difference;
+import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.Parameters;
 import org.fim.model.State;
@@ -83,7 +84,7 @@ public class StateComparator
 			if ((previousFileState = findFileWithSameFileName(fileState, notFoundInCurrentFileState)) != null)
 			{
 				notFoundInCurrentFileState.remove(previousFileState);
-				if (previousFileState.getHash().equals(fileState.getHash()) && previousFileState.getLastModified() != fileState.getLastModified())
+				if (previousFileState.getFileHash().equals(fileState.getFileHash()) && previousFileState.getLastModified() != fileState.getLastModified())
 				{
 					result.getDateModified().add(new Difference(previousFileState, fileState));
 					iterator.remove();
@@ -94,7 +95,7 @@ public class StateComparator
 					iterator.remove();
 
 					// File has been modified so set the new hash for accurate duplicate detection
-					previousFileState.setNewHash(fileState.getHash());
+					previousFileState.setNewFileHash(new FileHash(fileState.getFileHash()));
 				}
 			}
 		}
@@ -208,7 +209,7 @@ public class StateComparator
 		List<FileState> sameHash = new ArrayList<>();
 		for (FileState fileState : fileStates)
 		{
-			if (fileState.getHash().equals(search.getHash()))
+			if (fileState.getFileHash().equals(search.getFileHash()))
 			{
 				sameHash.add(fileState);
 			}

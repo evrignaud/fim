@@ -20,25 +20,25 @@ package org.fim.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.fim.tooling.BuildableState;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StateTest
+public class FileHashTest
 {
-	private BuildableState a1;
-	private BuildableState a2;
-	private BuildableState b;
+	private FileHash a1;
+	private FileHash a2;
+	private FileHash b;
+	private FileHash c;
 
 	@Before
 	public void setup()
 	{
-		a1 = new BuildableState().addFiles("file_1", "file_2");
-		a2 = a1.cloneState();
-		a2.setTimestamp(a1.getTimestamp());
+		a1 = new FileHash("hash_1", "hash_2");
+		a2 = new FileHash("hash_1", "hash_2");
 
-		b = a1.delete("file_2").addFiles("file_3");
-		b.setTimestamp(a1.getTimestamp());
+		b = new FileHash("hash_1", "hash_3");
+
+		c = new FileHash("hash_2", "hash_4");
 	}
 
 	@Test
@@ -61,5 +61,20 @@ public class StateTest
 		assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
 
 		assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
+	}
+
+	@Test
+	public void compareIsWorking()
+	{
+		assertThat(a1.compareTo(a2)).isEqualTo(0);
+		assertThat(a2.compareTo(a1)).isEqualTo(0);
+
+		assertThat(a1.compareTo(b)).isEqualTo(-1);
+		assertThat(b.compareTo(c)).isEqualTo(-1);
+		assertThat(a1.compareTo(c)).isEqualTo(-1);
+
+		assertThat(c.compareTo(b)).isEqualTo(1);
+		assertThat(b.compareTo(a1)).isEqualTo(1);
+		assertThat(c.compareTo(a1)).isEqualTo(1);
 	}
 }

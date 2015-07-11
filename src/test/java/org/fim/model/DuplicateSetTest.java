@@ -27,17 +27,17 @@ import org.junit.Test;
 
 public class DuplicateSetTest
 {
-	DuplicateSet a1;
-	DuplicateSet a2;
-	DuplicateSet b;
+	private DuplicateSet a1;
+	private DuplicateSet a2;
+	private DuplicateSet b;
 
 	@Before
 	public void setup()
 	{
-		a1 = new DuplicateSet(Arrays.asList(new FileState("file_1", 1, new FileHash("1", "1")), new FileState("file_2", 2, new FileHash("2", "2"))));
-		a2 = new DuplicateSet(Arrays.asList(new FileState("file_1", 1, new FileHash("1", "1")), new FileState("file_2", 2, new FileHash("2", "2"))));
+		a1 = new DuplicateSet(Arrays.asList(new FileState("file_1", 1L, 1, new FileHash("1", "1")), new FileState("file_2", 2L, 2, new FileHash("2", "2"))));
+		a2 = new DuplicateSet(Arrays.asList(new FileState("file_1", 1L, 1, new FileHash("1", "1")), new FileState("file_2", 2L, 2, new FileHash("2", "2"))));
 
-		b = new DuplicateSet(Arrays.asList(new FileState("file_1", 1, new FileHash("1", "1")), new FileState("file_3", 3, new FileHash("3", "3"))));
+		b = new DuplicateSet(Arrays.asList(new FileState("file_1", 1L, 1, new FileHash("1", "1")), new FileState("file_3", 3L, 3, new FileHash("3", "3"))));
 	}
 
 	@Test

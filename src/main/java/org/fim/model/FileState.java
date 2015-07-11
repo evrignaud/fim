@@ -19,56 +19,87 @@
 package org.fim.model;
 
 import java.util.Comparator;
+import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.google.common.base.MoreObjects;
 
 public class FileState
 {
+	public static final int SIZE_1_MB = 1024 * 1024;
+	public static final int SIZE_10_MB = 10 * SIZE_1_MB;
+	public static final int SIZE_20_MB = 20 * SIZE_1_MB;
+	public static final int SIZE_50_MB = 50 * SIZE_1_MB;
+	public static final int SIZE_100_MB = 100 * SIZE_1_MB;
+	public static final int SIZE_200_MB = 200 * SIZE_1_MB;
+
+	public static final FileHash NO_HASH = new FileHash("no_hash", "no_hash");
+
 	private String fileName;
+	private long fileLength;
 	private long lastModified;
-	private String hash;
+	private FileHash fileHash;
 
-	private transient String newHash; // Used by StateComparator to detect accurately duplicates
+	private transient FileHash newFileHash; // Used by StateComparator to detect accurately duplicates
 
-	public FileState(String fileName, long lastModified, String hash)
+	public FileState(String fileName, long fileLength, long lastModified, FileHash fileHash)
 	{
 		if (fileName == null)
 		{
 			throw new IllegalArgumentException("Invalid null fileName");
 		}
-		if (hash == null)
+		if (fileHash == null)
 		{
 			throw new IllegalArgumentException("Invalid null hash");
 		}
 
 		this.setFileName(fileName);
+		this.setFileLength(fileLength);
 		this.setLastModified(lastModified);
-		this.setHash(hash);
+		this.setFileHash(fileHash);
 	}
 
 	public boolean contentChanged()
 	{
-		return !hash.equals(newHash);
+		return !fileHash.equals(newFileHash);
 	}
 
 	@Override
 	public boolean equals(Object other)
 	{
-		return new EqualsBuilder().reflectionEquals(this, other);
+		if (this == other)
+		{
+			return true;
+		}
+
+		if (other == null || !(other instanceof FileState))
+		{
+			return false;
+		}
+
+		FileState otherFileState = (FileState) other;
+
+		return Objects.equals(this.fileName, otherFileState.fileName)
+				&& Objects.equals(this.fileLength, otherFileState.fileLength)
+				&& Objects.equals(this.lastModified, otherFileState.lastModified)
+				&& Objects.equals(this.fileHash, otherFileState.fileHash);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder().reflectionHashCode(this);
+		return Objects.hash(fileName, fileLength, lastModified, fileHash);
 	}
 
 	@Override
 	public String toString()
 	{
-		return ToStringBuilder.reflectionToString(this);
+		return MoreObjects.toStringHelper(this)
+				.add("fileName", fileName)
+				.add("fileLength", fileLength)
+				.add("lastModified", lastModified)
+				.add("fileHash", fileHash)
+				.add("newFileHash", newFileHash)
+				.toString();
 	}
 
 	public String getFileName()
@@ -81,6 +112,16 @@ public class FileState
 		this.fileName = fileName;
 	}
 
+	public long getFileLength()
+	{
+		return fileLength;
+	}
+
+	public void setFileLength(long fileLength)
+	{
+		this.fileLength = fileLength;
+	}
+
 	public long getLastModified()
 	{
 		return lastModified;
@@ -91,24 +132,24 @@ public class FileState
 		this.lastModified = lastModified;
 	}
 
-	public String getHash()
+	public FileHash getFileHash()
 	{
-		return hash;
+		return fileHash;
 	}
 
-	public void setHash(String hash)
+	public void setFileHash(FileHash fileHash)
 	{
-		this.hash = hash;
+		this.fileHash = fileHash;
 	}
 
-	public void setNewHash(String newHash)
+	public void setNewFileHash(FileHash newFileHash)
 	{
-		this.newHash = newHash;
+		this.newFileHash = newFileHash;
 	}
 
 	public void resetNewHash()
 	{
-		newHash = hash;
+		newFileHash = fileHash;
 	}
 
 	public static class FileNameComparator implements Comparator<FileState>
@@ -125,7 +166,7 @@ public class FileState
 		@Override
 		public int compare(FileState fs1, FileState fs2)
 		{
-			return fs1.getHash().compareTo(fs2.getHash());
+			return fs1.getFileHash().compareTo(fs2.getFileHash());
 		}
 	}
 }

@@ -42,16 +42,7 @@ import org.fim.util.Logger;
 
 public class StateGenerator
 {
-	public static final int SIZE_1_MB = 1024 * 1024;
-	public static final int SIZE_10_MB = 10 * SIZE_1_MB;
-	public static final int SIZE_20_MB = 20 * SIZE_1_MB;
-	public static final int SIZE_50_MB = 50 * SIZE_1_MB;
-	public static final int SIZE_100_MB = 100 * SIZE_1_MB;
-	public static final int SIZE_200_MB = 200 * SIZE_1_MB;
-
 	public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
-
-	public static final String NO_HASH = "no_hash";
 
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
@@ -186,23 +177,23 @@ public class StateGenerator
 
 			if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0)
 			{
-				if (summedFileLength > SIZE_200_MB)
+				if (summedFileLength > FileState.SIZE_200_MB)
 				{
 					System.out.print("x");
 				}
-				else if (summedFileLength > SIZE_100_MB)
+				else if (summedFileLength > FileState.SIZE_100_MB)
 				{
 					System.out.print("l");
 				}
-				else if (summedFileLength > SIZE_50_MB)
+				else if (summedFileLength > FileState.SIZE_50_MB)
 				{
 					System.out.print("m");
 				}
-				else if (summedFileLength > SIZE_20_MB)
+				else if (summedFileLength > FileState.SIZE_20_MB)
 				{
 					System.out.print("s");
 				}
-				else if (summedFileLength > SIZE_10_MB)
+				else if (summedFileLength > FileState.SIZE_10_MB)
 				{
 					System.out.print(":");
 				}

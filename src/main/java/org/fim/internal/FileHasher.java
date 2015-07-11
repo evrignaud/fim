@@ -27,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import org.fim.model.CompareMode;
+import org.fim.model.FileHash;
 import org.fim.model.FileState;
 
 class FileHasher implements Runnable
@@ -56,10 +57,10 @@ class FileHasher implements Runnable
 
 		try
 		{
-			String hash = hashFile(file);
+			FileHash fileHash = hashFile(file);
 			String fileName = file.toString();
 			fileName = getRelativeFileName(fileTreeRootDir, fileName);
-			fileStates.add(new FileState(fileName, file.lastModified(), hash));
+			fileStates.add(new FileState(fileName, file.length(), file.lastModified(), fileHash));
 		}
 		catch (Exception ex)
 		{
@@ -81,20 +82,25 @@ class FileHasher implements Runnable
 		return fileName;
 	}
 
-	protected String hashFile(File file) throws IOException
+	protected FileHash hashFile(File file) throws IOException
 	{
 		if (stateGenerator.getParameters().getCompareMode() == CompareMode.FAST)
 		{
-			return StateGenerator.NO_HASH;
+			return FileState.NO_HASH;
 		}
-		else if (file.length() < StateGenerator.SIZE_50_MB)
+
+		String firstMegaHash = hashFileChunkByChunk(file, FileState.SIZE_1_MB);
+
+		String fullHash;
+		if (file.length() < FileState.SIZE_50_MB)
 		{
-			return hashFileUsingNIO(file);
+			fullHash = hashFileUsingNIO(file);
 		}
 		else
 		{
-			return hashFileChunkByChunk(file);
+			fullHash = hashFileChunkByChunk(file);
 		}
+		return new FileHash(firstMegaHash, fullHash);
 	}
 
 	protected String hashFileUsingNIO(File file) throws IOException
@@ -110,15 +116,26 @@ class FileHasher implements Runnable
 
 	protected String hashFileChunkByChunk(File file) throws IOException
 	{
+		return hashFileChunkByChunk(file, -1);
+	}
+
+	protected String hashFileChunkByChunk(File file, long lenToHash) throws IOException
+	{
 		messageDigest.reset();
 
 		try (FileInputStream fis = new FileInputStream(file))
 		{
 			byte[] dataBytes = new byte[READ_BUFFER_SIZE];
-			int nread;
-			while ((nread = fis.read(dataBytes)) != -1)
+			long readLen = 0;
+			int bytesRead;
+			while ((bytesRead = fis.read(dataBytes)) != -1)
 			{
-				messageDigest.update(dataBytes, 0, nread);
+				messageDigest.update(dataBytes, 0, bytesRead);
+				readLen += bytesRead;
+				if (lenToHash != -1 && readLen >= lenToHash)
+				{
+					break;
+				}
 			}
 		}
 

@@ -37,6 +37,7 @@ import com.google.gson.GsonBuilder;
 
 public class State
 {
+	private String version = "1";
 	private long timestamp = System.currentTimeMillis();
 	private String message = "";
 	private int fileCount = 0;
@@ -121,7 +122,8 @@ public class State
 
 		State state = (State) other;
 
-		return Objects.equals(this.timestamp, state.timestamp)
+		return Objects.equals(this.version, state.version)
+				&& Objects.equals(this.timestamp, state.timestamp)
 				&& Objects.equals(this.message, state.message)
 				&& Objects.equals(this.fileCount, state.fileCount)
 				&& Objects.equals(this.fileStates, state.fileStates);
@@ -130,13 +132,14 @@ public class State
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(timestamp, message, fileCount, fileStates);
+		return Objects.hash(version, timestamp, message, fileCount, fileStates);
 	}
 
 	@Override
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(this)
+				.add("version", version)
 				.add("timestamp", timestamp)
 				.add("message", message)
 				.add("fileCount", fileCount)

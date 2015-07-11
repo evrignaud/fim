@@ -89,7 +89,7 @@ public class StateManager
 			// Replace the real file hash by 'no_hash' to be able to compare the FileState entry
 			for (FileState fileState : state.getFileStates())
 			{
-				fileState.setHash(StateGenerator.NO_HASH);
+				fileState.setFileHash(FileState.NO_HASH);
 			}
 		}
 

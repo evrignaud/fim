@@ -80,7 +80,7 @@ public class StateManagerFastTest extends StateAssert
 		assertThat(result.getFileStates().size()).isEqualTo(fileCount);
 		for (FileState fileState : result.getFileStates())
 		{
-			assertThat(fileState.getHash()).isEqualTo(StateGenerator.NO_HASH);
+			assertThat(fileState.getFileHash()).isEqualTo(FileState.NO_HASH);
 		}
 	}
 }

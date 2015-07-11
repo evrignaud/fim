@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
@@ -94,18 +95,27 @@ public class FileHasherTest extends StateAssert
 	public void weCanHashALittleFile() throws IOException
 	{
 		fileToHash = new File("LICENSE");
-		String hash = cut.hashFile(fileToHash);
-		assertThat(hash.length()).isEqualTo(128);
-		assertThat(hash).isEqualTo("57547468f95220e8e0e265f0682b1dc787e123fa984d12482b38ef69b6f3a8e0843f36bccf4262f3c686e6a9fb55552ed386e295f72e6401f66480d2da6145d1");
+		String fullFileHash = "57547468f95220e8e0e265f0682b1dc787e123fa984d12482b38ef69b6f3a8e0843f36bccf4262f3c686e6a9fb55552ed386e295f72e6401f66480d2da6145d1";
+		FileHash fileHash = cut.hashFile(fileToHash);
+		assertThat(fileHash.getFirstMegaHash().length()).isEqualTo(128);
+		assertThat(fileHash.getFirstMegaHash()).isEqualTo(fullFileHash);
+
+		assertThat(fileHash.getFullHash().length()).isEqualTo(128);
+		assertThat(fileHash.getFullHash()).isEqualTo(fullFileHash);
 	}
 
 	@Test
 	public void weCanHashABigFile() throws IOException
 	{
 		fileToHash = createBigLicenseFile(60 * 1024 * 1024);
-		String hash = cut.hashFile(fileToHash);
-		assertThat(hash.length()).isEqualTo(128);
-		assertThat(hash).isEqualTo("e891a71e312bc6e34f549664706951516c42f660face62756bb155301c5e06ba79db94f83dedd43467530021935f5b427a58d7a5bd245ea1b2b0db8d7b08ee7a");
+		FileHash fileHash = cut.hashFile(fileToHash);
+		assertThat(fileHash.getFirstMegaHash().length()).isEqualTo(128);
+		assertThat(fileHash.getFirstMegaHash()).isEqualTo("733e3c1c2e1a71086637cecfe168a47d35c10cda2b792ff645befef7eaf86b96ecaf357b775dd323d5ab2a638c90c81abcae89372500dd8da60160508486bf4d");
+
+		assertThat(fileHash.getFullHash().length()).isEqualTo(128);
+		assertThat(fileHash.getFullHash()).isEqualTo("e891a71e312bc6e34f549664706951516c42f660face62756bb155301c5e06ba79db94f83dedd43467530021935f5b427a58d7a5bd245ea1b2b0db8d7b08ee7a");
+
+		// Remove the big license file to have a little workspace
 		fileToHash.delete();
 	}
 
