@@ -105,6 +105,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		State masterState = new StateManager(parameters, masterStateDir).loadLastState();
 		Map<FileHash, FileState> masterFilesHash = buildFileHashMap(masterState);
 
+		long totalDuplicatedFilesRemoved = 0;
 		State localState = new StateGenerator(parameters).generateState(parameters.getMessage(), CURRENT_DIRECTORY);
 		for (FileState localFileState : localState.getFileStates())
 		{
@@ -118,9 +119,12 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 					System.out.printf("  %s removed%n", localFileState.getFileName());
 					File localFile = new File(localFileState.getFileName());
 					localFile.delete();
+					totalDuplicatedFilesRemoved++;
 				}
 			}
 		}
+
+		System.out.printf("%nRemoved %d duplicated files%n", totalDuplicatedFilesRemoved);
 	}
 
 	private Map<FileHash, FileState> buildFileHashMap(State state)
