@@ -68,7 +68,7 @@ public class Main
 		Options options = new Options();
 		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as master. Only for the remove duplicates command", false));
 		options.addOption(createOption("d", "dont-hash-files", false, "Do not hash file content. Use only filenames and modification dates", false));
-		options.addOption(createOption("f", "hash-only-first-mb", false, "Hash only the first megabyte of the file", false));
+		options.addOption(createOption("f", "hash-only-first-mb", false, "Hash only the first megabyte of the files", false));
 		options.addOption(createOption("h", "help", false, "Prints the Fim help", false));
 		options.addOption(createOption("l", "use-last-state", false, "Use the last committed State", false));
 		options.addOption(createOption("m", "message", true, "Message to store with the State", false));

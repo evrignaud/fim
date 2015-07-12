@@ -44,6 +44,15 @@ public abstract class AbstractCommand implements Command
 		}
 	}
 
+	protected void computeAllHashMandatory(Parameters parameters)
+	{
+		if (parameters.getHashMode() != HashMode.COMPUTE_ALL_HASH)
+		{
+			System.err.println("It's mandatory to compute all hash for this command.");
+			System.exit(-1);
+		}
+	}
+
 	protected boolean confirmAction(Parameters parameters, String action)
 	{
 		if (parameters.isAlwaysYes())

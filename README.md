@@ -46,6 +46,10 @@ You can do a full diff that will compare the hash of all the files. It can be ve
 
 	$ fim diff
 
+You can compare quickly asking to hash only the first megabyte of the files. **Using this option can produce a non accurate result.**
+
+	$ fim diff -f
+
 Otherwise you can request to not hash file content using the -d option. It will compare only the filenames and modification dates.
 You will not be able to detect files that have been renamed or duplicated.
 
@@ -79,7 +83,7 @@ It's a time consuming operation that will compute the files content hash.
 		 -a,--master-fim-repository <arg>   Fim repository directory that you want to use as master. Only for the remove
 											duplicates command
 		 -d,--dont-hash-files               Do not hash file content. Use only filenames and modification dates
-		 -f,--hash-only-first-mb            Hash only the first megabyte of the file
+		 -f,--hash-only-first-mb            Hash only the first megabyte of the files
 		 -h,--help                          Prints the Fim help
 		 -l,--use-last-state                Use the last committed State
 		 -m,--message <arg>                 Message to store with the State

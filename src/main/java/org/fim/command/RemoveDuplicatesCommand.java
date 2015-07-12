@@ -27,6 +27,7 @@ import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
+import org.fim.model.HashMode;
 import org.fim.model.Parameters;
 import org.fim.model.State;
 
@@ -67,6 +68,15 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		}
 
 		fileContentHashingMandatory(parameters);
+
+		if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_MB)
+		{
+			System.out.println("You are going to detect duplicates and remove them based only on the hash of the first megabyte of the files.");
+			if (!confirmAction(parameters, "continue"))
+			{
+				System.exit(0);
+			}
+		}
 
 		File masterFimRepository = new File(parameters.getMasterFimRepositoryDir());
 		if (!masterFimRepository.exists())

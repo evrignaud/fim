@@ -53,7 +53,7 @@ public class InitCommand extends AbstractCommand
 	@Override
 	public void execute(Parameters parameters) throws Exception
 	{
-		fileContentHashingMandatory(parameters);
+		computeAllHashMandatory(parameters);
 
 		if (!parameters.getDefaultStateDir().mkdirs())
 		{
