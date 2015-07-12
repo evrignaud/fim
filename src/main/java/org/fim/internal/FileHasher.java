@@ -116,8 +116,16 @@ class FileHasher implements Runnable
 
 		if (file.length() <= FileState.SIZE_1_MB)
 		{
-			fullHash = hashFileUsingNIO(file);
-			firstMegaHash = fullHash;
+			firstMegaHash = hashFileUsingNIO(file);
+
+			if (hashMode == HashMode.HASH_ONLY_FIRST_MB)
+			{
+				fullHash = FileState.NO_HASH_STR;
+			}
+			else
+			{
+				fullHash = firstMegaHash;
+			}
 		}
 		else
 		{
