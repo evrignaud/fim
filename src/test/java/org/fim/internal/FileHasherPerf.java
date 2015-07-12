@@ -24,11 +24,8 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.fim.model.FileState;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,18 +40,14 @@ public class FileHasherPerf
 	@Mock
 	private StateGenerator stateGenerator;
 
-	private List<FileState> fileStates;
 	private String rootDir;
-	private File fileToHash;
 	private FileHasher cut;
 
 	@Before
 	public void setup() throws NoSuchAlgorithmException
 	{
-		fileStates = new ArrayList<>();
 		rootDir = "target/" + this.getClass().getSimpleName();
-		fileToHash = new File("file_01");
-		cut = new FileHasher(stateGenerator, fileStates, rootDir, fileToHash);
+		cut = new FileHasher(stateGenerator, null, rootDir);
 	}
 
 	@Test

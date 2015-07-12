@@ -27,9 +27,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -50,7 +51,7 @@ public class StateGenerator
 
 	private ExecutorService executorService;
 
-	private ReentrantLock countLock = new ReentrantLock();
+	private ReentrantLock progressLock = new ReentrantLock();
 	private long summedFileLength;
 	private int fileCount;
 	private long totalBytesHashed;
@@ -60,7 +61,7 @@ public class StateGenerator
 		this.parameters = parameters;
 	}
 
-	public State generateState(String message, File fileTreeRootDir) throws IOException, NoSuchAlgorithmException
+	public State generateState(String message, File fimRepositoryRootDir) throws IOException, NoSuchAlgorithmException
 	{
 		Logger.info(String.format("Scanning recursively local files %s using %d thread", hashModeToString(), parameters.getThreadCount()));
 		System.out.printf("    (Hash progress legend: x > 200Mb l > 100Mb, m > 50Mb, s > 20Mb, : > 10Mb, . otherwise)%n");
@@ -71,21 +72,30 @@ public class StateGenerator
 		long start = System.currentTimeMillis();
 		progressOutputInit();
 
-		if (parameters.getThreadCount() == 1)
+		BlockingDeque<File> filesToHash = new LinkedBlockingDeque<>(1000);
+
+		List<FileHasher> hashers = new ArrayList<>();
+		executorService = Executors.newFixedThreadPool(parameters.getThreadCount());
+		for (int index = 0; index < parameters.getThreadCount(); index++)
 		{
-			state.setFileStates(new ArrayList<FileState>());
-			getFileStates(state.getFileStates(), fileTreeRootDir.toString(), fileTreeRootDir);
-		}
-		else
-		{
-			executorService = Executors.newFixedThreadPool(parameters.getThreadCount());
-			List<FileState> fileStates = new CopyOnWriteArrayList<>();
-			getFileStates(fileStates, fileTreeRootDir.toString(), fileTreeRootDir);
-			waitAllFileHashed();
-			state.setFileStates(new ArrayList<>(fileStates)); // Use an ArrayList at the end, because CopyOnWriteArrayList does not support Sort.
+			FileHasher hasher = new FileHasher(this, filesToHash, fimRepositoryRootDir.toString());
+			executorService.submit(hasher);
+			hashers.add(hasher);
 		}
 
-		Collections.sort(state.getFileStates(), fileNameComparator);
+		scanFileTree(filesToHash, fimRepositoryRootDir);
+
+		waitAllFileHashed();
+
+		List<FileState> fileStates = new ArrayList<>();
+		for (FileHasher hasher : hashers)
+		{
+			fileStates.addAll(hasher.getFileStates());
+		}
+
+		Collections.sort(fileStates, fileNameComparator);
+
+		state.setFileStates(fileStates);
 
 		progressOutputStop();
 		displayTimeElapsed(start, state);
@@ -115,7 +125,7 @@ public class StateGenerator
 		try
 		{
 			executorService.shutdown();
-			executorService.awaitTermination(100, TimeUnit.DAYS);
+			executorService.awaitTermination(3, TimeUnit.DAYS);
 		}
 		catch (InterruptedException ex)
 		{
@@ -132,11 +142,9 @@ public class StateGenerator
 				state.getFileStates().size(), totalBytesHashedStr, durationStr, parameters.getThreadCount()));
 	}
 
-	private void getFileStates(List<FileState> fileStates, String fileTreeRootDir, File directory) throws NoSuchAlgorithmException
+	private void scanFileTree(BlockingDeque<File> filesToHash, File directory) throws NoSuchAlgorithmException
 	{
 		List<File> files = Arrays.asList(directory.listFiles());
-		Collections.sort(files);
-
 		for (File file : files)
 		{
 			if (file.isDirectory() && file.getName().equals(Parameters.DOT_FIM_DIR))
@@ -151,18 +159,17 @@ public class StateGenerator
 
 			if (file.isDirectory())
 			{
-				getFileStates(fileStates, fileTreeRootDir, file);
+				scanFileTree(filesToHash, file);
 			}
 			else
 			{
-				FileHasher hasher = new FileHasher(this, fileStates, fileTreeRootDir, file);
-				if (parameters.getThreadCount() == 1)
+				try
 				{
-					hasher.run();
+					filesToHash.offer(file, 60, TimeUnit.MINUTES);
 				}
-				else
+				catch (InterruptedException ex)
 				{
-					executorService.submit(hasher);
+					ex.printStackTrace();
 				}
 				totalBytesHashed += file.length();
 			}
@@ -171,7 +178,7 @@ public class StateGenerator
 
 	private void progressOutputInit()
 	{
-		countLock.lock();
+		progressLock.lock();
 		try
 		{
 			summedFileLength = 0;
@@ -180,13 +187,13 @@ public class StateGenerator
 		}
 		finally
 		{
-			countLock.unlock();
+			progressLock.unlock();
 		}
 	}
 
 	public void updateProgressOutput(File file)
 	{
-		countLock.lock();
+		progressLock.lock();
 		try
 		{
 			summedFileLength += file.length();
@@ -228,13 +235,13 @@ public class StateGenerator
 		}
 		finally
 		{
-			countLock.unlock();
+			progressLock.unlock();
 		}
 	}
 
 	private void progressOutputStop()
 	{
-		countLock.lock();
+		progressLock.lock();
 		try
 		{
 			if (fileCount > PROGRESS_DISPLAY_FILE_COUNT)
@@ -244,7 +251,7 @@ public class StateGenerator
 		}
 		finally
 		{
-			countLock.unlock();
+			progressLock.unlock();
 		}
 	}
 

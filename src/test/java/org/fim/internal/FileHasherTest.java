@@ -24,12 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.fim.model.FileHash;
-import org.fim.model.FileState;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,9 +43,7 @@ public class FileHasherTest extends StateAssert
 	@Mock
 	private StateGenerator stateGenerator;
 
-	private List<FileState> fileStates;
 	private String rootDir;
-	private File fileToHash;
 	private FileHasher cut;
 
 	@Before
@@ -56,10 +51,8 @@ public class FileHasherTest extends StateAssert
 	{
 		Mockito.when(stateGenerator.getParameters()).thenReturn(defaultParameters());
 
-		fileStates = new ArrayList<>();
 		rootDir = "target/" + this.getClass().getSimpleName();
-		fileToHash = new File("file_01");
-		cut = new FileHasher(stateGenerator, fileStates, rootDir, fileToHash);
+		cut = new FileHasher(stateGenerator, null, rootDir);
 	}
 
 	@Test
@@ -94,7 +87,7 @@ public class FileHasherTest extends StateAssert
 	@Test
 	public void weCanHashALittleFile() throws IOException
 	{
-		fileToHash = new File("LICENSE");
+		File fileToHash = new File("LICENSE");
 		String fullFileHash = "57547468f95220e8e0e265f0682b1dc787e123fa984d12482b38ef69b6f3a8e0843f36bccf4262f3c686e6a9fb55552ed386e295f72e6401f66480d2da6145d1";
 		FileHash fileHash = cut.hashFile(fileToHash);
 		assertThat(fileHash.getFirstMbHash().length()).isEqualTo(128);
@@ -107,7 +100,7 @@ public class FileHasherTest extends StateAssert
 	@Test
 	public void weCanHashABigFile() throws IOException
 	{
-		fileToHash = createBigLicenseFile(60 * 1024 * 1024);
+		File fileToHash = createBigLicenseFile(60 * 1024 * 1024);
 		FileHash fileHash = cut.hashFile(fileToHash);
 		assertThat(fileHash.getFirstMbHash().length()).isEqualTo(128);
 		assertThat(fileHash.getFirstMbHash()).isEqualTo("733e3c1c2e1a71086637cecfe168a47d35c10cda2b792ff645befef7eaf86b96ecaf357b775dd323d5ab2a638c90c81abcae89372500dd8da60160508486bf4d");

@@ -24,7 +24,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.TimeUnit;
 
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
@@ -36,35 +39,53 @@ class FileHasher implements Runnable
 	public static final int READ_BUFFER_SIZE = 4 * 1024;
 
 	private final StateGenerator stateGenerator;
+	private final BlockingDeque<File> filesToHash;
+	private final String fimRepositoryRootDir;
+
 	private final List<FileState> fileStates;
-	private final String fileTreeRootDir;
-	private final File file;
 	private final MessageDigest messageDigest;
 
-	public FileHasher(StateGenerator stateGenerator, List<FileState> fileStates, String fileTreeRootDir, File file) throws NoSuchAlgorithmException
+	public FileHasher(StateGenerator stateGenerator, BlockingDeque<File> filesToHash, String fimRepositoryRootDir) throws NoSuchAlgorithmException
 	{
 		this.stateGenerator = stateGenerator;
-		this.fileStates = fileStates;
-		this.fileTreeRootDir = fileTreeRootDir;
-		this.file = file;
+		this.filesToHash = filesToHash;
+		this.fimRepositoryRootDir = fimRepositoryRootDir;
+
+		this.fileStates = new ArrayList<>();
 		this.messageDigest = MessageDigest.getInstance(HASH_ALGORITHM);
+	}
+
+	public List<FileState> getFileStates()
+	{
+		return fileStates;
 	}
 
 	@Override
 	public void run()
 	{
-		stateGenerator.updateProgressOutput(file);
-
 		try
 		{
-			FileHash fileHash = hashFile(file);
-			String fileName = file.toString();
-			fileName = getRelativeFileName(fileTreeRootDir, fileName);
-			fileStates.add(new FileState(fileName, file.length(), file.lastModified(), fileHash));
+			File file;
+			while ((file = filesToHash.poll(10, TimeUnit.SECONDS)) != null)
+			{
+				stateGenerator.updateProgressOutput(file);
+
+				try
+				{
+					FileHash fileHash = hashFile(file);
+					String fileName = file.toString();
+					fileName = getRelativeFileName(fimRepositoryRootDir, fileName);
+					fileStates.add(new FileState(fileName, file.length(), file.lastModified(), fileHash));
+				}
+				catch (Exception ex)
+				{
+					System.err.printf("%nSkipping file hash. Not able to hash '%s': %s%n", file.getName(), ex.getMessage());
+				}
+			}
 		}
-		catch (Exception ex)
+		catch (InterruptedException ex)
 		{
-			System.err.printf("%nSkipping file hash. Not able to hash '%s': %s%n", file.getName(), ex.getMessage());
+			ex.printStackTrace();
 		}
 	}
 
