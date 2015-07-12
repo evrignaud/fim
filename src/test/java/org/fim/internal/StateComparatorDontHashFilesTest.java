@@ -19,15 +19,17 @@
 package org.fim.internal;
 
 import org.fim.model.CompareResult;
+import org.fim.tooling.BuildableParameters;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.Modification;
 import org.fim.tooling.StateAssert;
 import org.junit.Test;
 
-public class StateComparatorFastTest extends StateAssert
+public class StateComparatorDontHashFilesTest extends StateAssert
 {
-	private StateComparator cut = new StateComparator(defaultParameters().compareModeFast());
-	private BuildableState s1 = new BuildableState().addFiles("file_01", "file_02", "file_03", "file_04");
+	private BuildableParameters parameters = defaultParameters().dontHashFiles();
+	private StateComparator cut = new StateComparator(parameters);
+	private BuildableState s1 = new BuildableState(parameters).addFiles("file_01", "file_02", "file_03", "file_04");
 	private BuildableState s2;
 
 	@Test
@@ -48,7 +50,7 @@ public class StateComparatorFastTest extends StateAssert
 
 		s2 = s1.appendContent("file_01", "append_01");
 		result = cut.compare(s1, s2);
-		assertOnlyContentModified(result, "file_01");
+		assertNothingModified(result);
 
 		s2 = s1.rename("file_01", "file_06");
 		result = cut.compare(s1, s2);
@@ -84,8 +86,7 @@ public class StateComparatorFastTest extends StateAssert
 				.copy("file_01", "file_06")
 				.appendContent("file_01", "append_01");
 		CompareResult result = cut.compare(s1, s2);
-		assertGotOnlyModifications(result, Modification.ADDED, Modification.CONTENT_MODIFIED);
+		assertGotOnlyModifications(result, Modification.ADDED);
 		assertFilesModified(result, Modification.ADDED, "file_00", "file_06");
-		assertFilesModified(result, Modification.CONTENT_MODIFIED, "file_01");
 	}
 }

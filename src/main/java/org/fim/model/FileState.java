@@ -32,7 +32,8 @@ public class FileState
 	public static final int SIZE_100_MB = 100 * SIZE_1_MB;
 	public static final int SIZE_200_MB = 200 * SIZE_1_MB;
 
-	public static final FileHash NO_HASH = new FileHash("no_hash", "no_hash");
+	public static final String NO_HASH_STR = "no_hash";
+	public static final FileHash NO_HASH = new FileHash(NO_HASH_STR, NO_HASH_STR);
 
 	private String fileName;
 	private long fileLength;

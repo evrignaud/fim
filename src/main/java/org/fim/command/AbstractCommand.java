@@ -22,7 +22,7 @@ import java.io.File;
 import java.util.Scanner;
 
 import org.fim.model.Command;
-import org.fim.model.CompareMode;
+import org.fim.model.HashMode;
 import org.fim.model.Parameters;
 
 public abstract class AbstractCommand implements Command
@@ -35,11 +35,11 @@ public abstract class AbstractCommand implements Command
 		return FimReposConstraint.MUST_EXIST;
 	}
 
-	protected void fastCompareNotSupported(Parameters parameters)
+	protected void fileContentHashingMandatory(Parameters parameters)
 	{
-		if (parameters.getCompareMode() == CompareMode.FAST)
+		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
 		{
-			System.err.println("Fast compare mode not supported by this command.");
+			System.err.println("File content hashing mandatory for this command.");
 			System.exit(-1);
 		}
 	}

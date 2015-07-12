@@ -46,10 +46,10 @@ You can do a full diff that will compare the hash of all the files. It can be ve
 
 	$ fim diff
 
-Otherwise you can run a fast compare using the -f option. It will compare only the filenames and modification dates.
-Using the fast compare you will not be able to detect files that have been renamed or duplicated.
+Otherwise you can request to not hash file content using the -d option. It will compare only the filenames and modification dates.
+You will not be able to detect files that have been renamed or duplicated.
 
-	$ fim diff -f
+	$ fim diff -d
 
 Each time you want to record the State of the current file tree you can use the commit command.
 It's a time consuming operation that will compute the files content hash.
@@ -60,7 +60,7 @@ It's a time consuming operation that will compute the files content hash.
 
 	$ fim help
 
-	usage: fim <command> [-a <arg>] [-f] [-h] [-l] [-m <arg>] [-q] [-t <arg>] [-v] [-y]
+	usage: fim <command> [-a <arg>] [-d] [-f] [-h] [-l] [-m <arg>] [-q] [-t <arg>] [-v] [-y]
 
 	File Integrity Checker
 
@@ -78,7 +78,8 @@ It's a time consuming operation that will compute the files content hash.
 	Available options:
 		 -a,--master-fim-repository <arg>   Fim repository directory that you want to use as master. Only for the remove
 											duplicates command
-		 -f,--fast-compare                  Compare only filenames and modification dates
+		 -d,--dont-hash-files               Do not hash file content. Use only filenames and modification dates
+		 -f,--hash-only-first-mb            Hash only the first megabyte of the file
 		 -h,--help                          Prints the Fim help
 		 -l,--use-last-state                Use the last committed State
 		 -m,--message <arg>                 Message to store with the State

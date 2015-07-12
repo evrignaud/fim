@@ -24,16 +24,17 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.fim.model.FileState;
 import org.fim.model.State;
+import org.fim.tooling.BuildableParameters;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StateManagerFastTest extends StateAssert
+public class StateManagerHashOnlyFirstMbTest extends StateAssert
 {
-	private BuildableState s = new BuildableState();
+	private BuildableParameters parameters = defaultParameters().hashOnlyFirstMb();
+	private BuildableState s = new BuildableState(parameters);
 
 	private File stateDir;
 	private StateManager cut;
@@ -46,7 +47,7 @@ public class StateManagerFastTest extends StateAssert
 		FileUtils.deleteDirectory(stateDir);
 		stateDir.mkdirs();
 
-		cut = new StateManager(defaultParameters().compareModeFast(), stateDir);
+		cut = new StateManager(parameters, stateDir);
 	}
 
 	@Test
@@ -66,21 +67,12 @@ public class StateManagerFastTest extends StateAssert
 		assertThat(cut.lastStateNumber).isEqualTo(count);
 
 		State result = cut.loadLastState();
-		assertAllFileStatesHaveNoHash(result, 30);
+		assertThat(result).isEqualTo(s);
 
 		result = cut.loadState(10);
-		assertAllFileStatesHaveNoHash(result, 30);
+		assertThat(result).isEqualTo(s);
 
 		File nextStateFile = cut.getNextStateFile();
 		assertThat(nextStateFile.getName()).isEqualTo("state_11.json.gz");
-	}
-
-	private void assertAllFileStatesHaveNoHash(State result, int fileCount)
-	{
-		assertThat(result.getFileStates().size()).isEqualTo(fileCount);
-		for (FileState fileState : result.getFileStates())
-		{
-			assertThat(fileState.getFileHash()).isEqualTo(FileState.NO_HASH);
-		}
 	}
 }

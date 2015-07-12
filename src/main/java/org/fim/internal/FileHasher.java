@@ -26,9 +26,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import org.fim.model.CompareMode;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
+import org.fim.model.HashMode;
 
 class FileHasher implements Runnable
 {
@@ -84,7 +84,8 @@ class FileHasher implements Runnable
 
 	protected FileHash hashFile(File file) throws IOException
 	{
-		if (stateGenerator.getParameters().getCompareMode() == CompareMode.FAST)
+		HashMode hashMode = stateGenerator.getParameters().getHashMode();
+		if (hashMode == HashMode.DONT_HASH_FILES)
 		{
 			return FileState.NO_HASH;
 		}
@@ -92,14 +93,22 @@ class FileHasher implements Runnable
 		String firstMegaHash = hashFileChunkByChunk(file, FileState.SIZE_1_MB);
 
 		String fullHash;
-		if (file.length() < FileState.SIZE_50_MB)
+		if (hashMode == HashMode.HASH_ONLY_FIRST_MB)
 		{
-			fullHash = hashFileUsingNIO(file);
+			fullHash = FileState.NO_HASH_STR;
 		}
 		else
 		{
-			fullHash = hashFileChunkByChunk(file);
+			if (file.length() < FileState.SIZE_50_MB)
+			{
+				fullHash = hashFileUsingNIO(file);
+			}
+			else
+			{
+				fullHash = hashFileChunkByChunk(file);
+			}
 		}
+
 		return new FileHash(firstMegaHash, fullHash);
 	}
 

@@ -25,14 +25,16 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.fim.model.State;
+import org.fim.tooling.BuildableParameters;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StateManagerFullTest extends StateAssert
+public class StateManagerComputeAllHashTest extends StateAssert
 {
-	private BuildableState s = new BuildableState();
+	private BuildableParameters parameters = defaultParameters().computeAllHash();
+	private BuildableState s = new BuildableState(parameters);
 
 	private File stateDir;
 	private StateManager cut;
@@ -45,7 +47,7 @@ public class StateManagerFullTest extends StateAssert
 		FileUtils.deleteDirectory(stateDir);
 		stateDir.mkdirs();
 
-		cut = new StateManager(defaultParameters().compareModeFull(), stateDir);
+		cut = new StateManager(parameters, stateDir);
 	}
 
 	@Test

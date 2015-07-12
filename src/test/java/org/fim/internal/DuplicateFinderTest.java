@@ -28,7 +28,7 @@ import org.junit.Test;
 public class DuplicateFinderTest extends DuplicateAssert
 {
 	private DuplicateFinder cut = new DuplicateFinder(defaultParameters());
-	private BuildableState s = new BuildableState().addFiles("file_01", "file_02", "file_03", "file_04");
+	private BuildableState s = new BuildableState(defaultParameters()).addFiles("file_01", "file_02", "file_03", "file_04");
 
 	@Test
 	public void noDuplicatesWhenFilesHaveDifferentContent()

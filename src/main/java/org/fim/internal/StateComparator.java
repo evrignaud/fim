@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.fim.model.CompareMode;
 import org.fim.model.CompareResult;
 import org.fim.model.Difference;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
+import org.fim.model.HashMode;
 import org.fim.model.Parameters;
 import org.fim.model.State;
 
@@ -106,7 +106,7 @@ public class StateComparator
 		while (iterator.hasNext())
 		{
 			FileState fileState = iterator.next();
-			if (parameters.getCompareMode() != CompareMode.FAST &&
+			if (parameters.getHashMode() != HashMode.DONT_HASH_FILES &&
 					(samePreviousHash = findFilesWithSameHash(fileState, previousFileStates)).size() > 0)
 			{
 				FileState originalFileState = samePreviousHash.get(0);

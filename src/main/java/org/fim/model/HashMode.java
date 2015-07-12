@@ -18,8 +18,9 @@
  */
 package org.fim.model;
 
-public enum CompareMode
+public enum HashMode
 {
-	FULL,
-	FAST;
+	DONT_HASH_FILES,
+	HASH_ONLY_FIRST_MB,
+	COMPUTE_ALL_HASH;
 }

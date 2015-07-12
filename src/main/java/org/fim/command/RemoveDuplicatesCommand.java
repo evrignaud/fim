@@ -66,7 +66,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			System.exit(-1);
 		}
 
-		fastCompareNotSupported(parameters);
+		fileContentHashingMandatory(parameters);
 
 		File masterFimRepository = new File(parameters.getMasterFimRepositoryDir());
 		if (!masterFimRepository.exists())

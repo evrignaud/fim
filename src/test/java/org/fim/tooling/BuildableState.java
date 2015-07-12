@@ -25,14 +25,19 @@ import java.util.Date;
 
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
+import org.fim.model.HashMode;
+import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class BuildableState extends State
 {
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
-	public BuildableState()
+	private final Parameters parameters;
+
+	public BuildableState(Parameters parameters)
 	{
+		this.parameters = parameters;
 		setFileStates(new ArrayList<FileState>());
 	}
 
@@ -122,7 +127,7 @@ public class BuildableState extends State
 
 	public BuildableState cloneState()
 	{
-		BuildableState newState = new BuildableState();
+		BuildableState newState = new BuildableState(parameters);
 		newState.setMessage(getMessage());
 
 		ArrayList<FileState> newFileStates = new ArrayList<>();
@@ -139,12 +144,34 @@ public class BuildableState extends State
 
 	private FileHash createHash(String content)
 	{
-		return new FileHash("first_mega_" + content, "full_" + content);
+		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
+		{
+			return FileState.NO_HASH;
+		}
+		else if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_MB)
+		{
+			return new FileHash("first_mega_" + content, FileState.NO_HASH_STR);
+		}
+		else
+		{
+			return new FileHash("first_mega_" + content, "full_" + content);
+		}
 	}
 
 	private FileHash appendHash(FileHash fileHash, String content)
 	{
-		return new FileHash(fileHash.getFirstMbHash() + "_" + content, fileHash.getFullHash() + "_" + content);
+		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
+		{
+			return FileState.NO_HASH;
+		}
+		else if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
+		{
+			return new FileHash(fileHash.getFirstMbHash() + "_" + content, FileState.NO_HASH_STR);
+		}
+		else
+		{
+			return new FileHash(fileHash.getFirstMbHash() + "_" + content, fileHash.getFullHash() + "_" + content);
+		}
 	}
 
 	private void sortFileStates(BuildableState state)

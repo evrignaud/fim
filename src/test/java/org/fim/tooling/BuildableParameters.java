@@ -18,20 +18,26 @@
  */
 package org.fim.tooling;
 
-import org.fim.model.CompareMode;
+import org.fim.model.HashMode;
 import org.fim.model.Parameters;
 
 public class BuildableParameters extends Parameters
 {
-	public BuildableParameters compareModeFull()
+	public BuildableParameters dontHashFiles()
 	{
-		setCompareMode(CompareMode.FULL);
+		setHashMode(HashMode.DONT_HASH_FILES);
 		return this;
 	}
 
-	public BuildableParameters compareModeFast()
+	public BuildableParameters hashOnlyFirstMb()
 	{
-		setCompareMode(CompareMode.FAST);
+		setHashMode(HashMode.HASH_ONLY_FIRST_MB);
+		return this;
+	}
+
+	public BuildableParameters computeAllHash()
+	{
+		setHashMode(HashMode.COMPUTE_ALL_HASH);
 		return this;
 	}
 }

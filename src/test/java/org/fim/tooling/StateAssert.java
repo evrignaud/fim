@@ -86,10 +86,14 @@ public class StateAssert
 
 		for (Modification modification : Modification.values())
 		{
+			List<Difference> differences = getDifferences(result, modification);
 			if (modificationsList.contains(modification) == false)
 			{
-				List<Difference> differences = getDifferences(result, modification);
 				assertThat(differences.isEmpty()).isTrue();
+			}
+			else
+			{
+				assertThat(differences.isEmpty()).isFalse();
 			}
 		}
 	}

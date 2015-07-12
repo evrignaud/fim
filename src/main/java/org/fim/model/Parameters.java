@@ -26,7 +26,7 @@ public class Parameters implements Cloneable
 
 	private File defaultStateDir;
 	private boolean verbose;
-	private CompareMode compareMode;
+	private HashMode hashMode;
 	private String message;
 	private boolean useLastState;
 	private int threadCount;
@@ -37,7 +37,7 @@ public class Parameters implements Cloneable
 	{
 		defaultStateDir = new File(DOT_FIM_DIR, "states");
 		verbose = true;
-		compareMode = CompareMode.FULL;
+		hashMode = HashMode.COMPUTE_ALL_HASH;
 		message = "";
 		useLastState = false;
 		threadCount = Runtime.getRuntime().availableProcessors() / 2;
@@ -65,14 +65,14 @@ public class Parameters implements Cloneable
 		this.verbose = verbose;
 	}
 
-	public CompareMode getCompareMode()
+	public HashMode getHashMode()
 	{
-		return compareMode;
+		return hashMode;
 	}
 
-	public void setCompareMode(CompareMode compareMode)
+	public void setHashMode(HashMode hashMode)
 	{
-		this.compareMode = compareMode;
+		this.hashMode = hashMode;
 	}
 
 	public String getMessage()

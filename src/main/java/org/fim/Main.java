@@ -41,7 +41,7 @@ import org.fim.command.ResetDatesCommand;
 import org.fim.command.VersionCommand;
 import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
-import org.fim.model.CompareMode;
+import org.fim.model.HashMode;
 import org.fim.model.Parameters;
 
 public class Main
@@ -67,7 +67,8 @@ public class Main
 	{
 		Options options = new Options();
 		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as master. Only for the remove duplicates command", false));
-		options.addOption(createOption("f", "fast-compare", false, "Compare only filenames and modification dates", false));
+		options.addOption(createOption("d", "dont-hash-files", false, "Do not hash file content. Use only filenames and modification dates", false));
+		options.addOption(createOption("f", "hash-only-first-mb", false, "Hash only the first megabyte of the file", false));
 		options.addOption(createOption("h", "help", false, "Prints the Fim help", false));
 		options.addOption(createOption("l", "use-last-state", false, "Use the last committed State", false));
 		options.addOption(createOption("m", "message", true, "Message to store with the State", false));
@@ -106,7 +107,8 @@ public class Main
 			CommandLine commandLine = cmdLineGnuParser.parse(options, optionArgs);
 
 			parameters.setVerbose(!commandLine.hasOption('q'));
-			parameters.setCompareMode(commandLine.hasOption('f') ? CompareMode.FAST : CompareMode.FULL);
+			parameters.setHashMode(commandLine.hasOption('d') ? HashMode.DONT_HASH_FILES : HashMode.COMPUTE_ALL_HASH);
+			parameters.setHashMode(commandLine.hasOption('f') ? HashMode.HASH_ONLY_FIRST_MB : HashMode.COMPUTE_ALL_HASH);
 			parameters.setMessage(commandLine.getOptionValue('m', parameters.getMessage()));
 			parameters.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "" + parameters.getThreadCount())));
 			parameters.setUseLastState(commandLine.hasOption('l'));
@@ -135,16 +137,16 @@ public class Main
 			youMustSpecifyACommandToRun();
 		}
 
-		if (parameters.getCompareMode() == CompareMode.FAST)
-		{
-			parameters.setThreadCount(1);
-			System.out.println("Using fast compare mode. Thread count forced to 1");
-		}
-
 		if (parameters.getThreadCount() < 1)
 		{
 			System.err.println("Thread count must be at least one");
 			System.exit(-1);
+		}
+
+		if (parameters.getThreadCount() != 1 && parameters.getHashMode() == HashMode.DONT_HASH_FILES)
+		{
+			parameters.setThreadCount(1);
+			System.out.println("Not hashing file content so thread count forced to 1");
 		}
 
 		FimReposConstraint constraint = command.getFimReposConstraint();

@@ -37,7 +37,7 @@ import com.google.gson.GsonBuilder;
 
 public class State
 {
-	private String version = "1";
+	private String modelVersion = "1";
 	private long timestamp = System.currentTimeMillis();
 	private String message = "";
 	private int fileCount = 0;
@@ -65,6 +65,16 @@ public class State
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			gson.toJson(this, writer);
 		}
+	}
+
+	public String getModelVersion()
+	{
+		return modelVersion;
+	}
+
+	public void setModelVersion(String modelVersion)
+	{
+		this.modelVersion = modelVersion;
 	}
 
 	public long getTimestamp()
@@ -122,7 +132,7 @@ public class State
 
 		State state = (State) other;
 
-		return Objects.equals(this.version, state.version)
+		return Objects.equals(this.modelVersion, state.modelVersion)
 				&& Objects.equals(this.timestamp, state.timestamp)
 				&& Objects.equals(this.message, state.message)
 				&& Objects.equals(this.fileCount, state.fileCount)
@@ -132,14 +142,14 @@ public class State
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(version, timestamp, message, fileCount, fileStates);
+		return Objects.hash(modelVersion, timestamp, message, fileCount, fileStates);
 	}
 
 	@Override
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(this)
-				.add("version", version)
+				.add("modelVersion", modelVersion)
 				.add("timestamp", timestamp)
 				.add("message", message)
 				.add("fileCount", fileCount)

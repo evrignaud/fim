@@ -47,7 +47,7 @@ public class FindDuplicatesCommand extends AbstractCommand
 	@Override
 	public void execute(Parameters parameters) throws Exception
 	{
-		fastCompareNotSupported(parameters);
+		fileContentHashingMandatory(parameters);
 
 		System.out.println("Searching for duplicated files" + (parameters.isUseLastState() ? " from the last committed State" : ""));
 		System.out.println("");

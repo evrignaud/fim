@@ -44,9 +44,19 @@ public class FileHash implements Comparable<FileHash>
 		return firstMbHash;
 	}
 
+	public void setFirstMbHash(String firstMbHash)
+	{
+		this.firstMbHash = firstMbHash;
+	}
+
 	public String getFullHash()
 	{
 		return fullHash;
+	}
+
+	public void setFullHash(String fullHash)
+	{
+		this.fullHash = fullHash;
 	}
 
 	@Override

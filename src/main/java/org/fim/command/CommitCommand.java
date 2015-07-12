@@ -48,7 +48,7 @@ public class CommitCommand extends AbstractCommand
 	@Override
 	public void execute(Parameters parameters) throws Exception
 	{
-		fastCompareNotSupported(parameters);
+		fileContentHashingMandatory(parameters);
 
 		StateManager manager = new StateManager(parameters);
 		State lastState = manager.loadLastState();

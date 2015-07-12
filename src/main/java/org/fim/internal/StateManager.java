@@ -26,8 +26,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
 
-import org.fim.model.CompareMode;
 import org.fim.model.FileState;
+import org.fim.model.HashMode;
 import org.fim.model.Parameters;
 import org.fim.model.State;
 
@@ -84,12 +84,20 @@ public class StateManager
 		State state = new State();
 		state.loadFromGZipFile(stateFile);
 
-		if (parameters.getCompareMode() == CompareMode.FAST)
+		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
 		{
-			// Replace the real file hash by 'no_hash' to be able to compare the FileState entry
+			// Replace all the file hash by 'no_hash' to be able to compare the FileState entry
 			for (FileState fileState : state.getFileStates())
 			{
 				fileState.setFileHash(FileState.NO_HASH);
+			}
+		}
+		else if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_MB)
+		{
+			// Replace the full file hash by 'no_hash' to be able to compare the FileState entry
+			for (FileState fileState : state.getFileStates())
+			{
+				fileState.getFileHash().setFullHash(FileState.NO_HASH_STR);
 			}
 		}
 

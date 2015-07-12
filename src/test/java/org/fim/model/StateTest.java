@@ -21,10 +21,11 @@ package org.fim.model;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.fim.tooling.BuildableState;
+import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StateTest
+public class StateTest extends StateAssert
 {
 	private BuildableState a1;
 	private BuildableState a2;
@@ -33,7 +34,7 @@ public class StateTest
 	@Before
 	public void setup()
 	{
-		a1 = new BuildableState().addFiles("file_1", "file_2");
+		a1 = new BuildableState(defaultParameters()).addFiles("file_1", "file_2");
 		a2 = a1.cloneState();
 		a2.setTimestamp(a1.getTimestamp());
 
