@@ -62,8 +62,8 @@ public class StateGenerator
 
 	public State generateState(String message, File fileTreeRootDir) throws IOException, NoSuchAlgorithmException
 	{
-		Logger.info(String.format("Starting to hash recursively local files using %d thread", parameters.getThreadCount()));
-		System.out.printf("    ~~ Hash progress legend: x > 200Mb l > 100Mb, m > 50Mb, s > 20Mb, : > 10Mb, . otherwise ~~%n");
+		Logger.info(String.format("Scanning recursively local files %s using %d thread", hashModeToString(), parameters.getThreadCount()));
+		System.out.printf("    (Hash progress legend: x > 200Mb l > 100Mb, m > 50Mb, s > 20Mb, : > 10Mb, . otherwise)%n");
 
 		State state = new State();
 		state.setMessage(message);
@@ -91,6 +91,23 @@ public class StateGenerator
 		displayTimeElapsed(start, state);
 
 		return state;
+	}
+
+	private String hashModeToString()
+	{
+		switch (parameters.getHashMode())
+		{
+			case DONT_HASH_FILES:
+				return "retrieving file attributes";
+
+			case HASH_ONLY_FIRST_MB:
+				return "hashing the first megabyte";
+
+			case COMPUTE_ALL_HASH:
+				return "computing all hash";
+		}
+
+		throw new IllegalArgumentException("Invalid hash mode " + parameters.getHashMode());
 	}
 
 	private void waitAllFileHashed()

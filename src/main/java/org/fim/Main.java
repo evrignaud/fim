@@ -107,13 +107,24 @@ public class Main
 			CommandLine commandLine = cmdLineGnuParser.parse(options, optionArgs);
 
 			parameters.setVerbose(!commandLine.hasOption('q'));
-			parameters.setHashMode(commandLine.hasOption('d') ? HashMode.DONT_HASH_FILES : HashMode.COMPUTE_ALL_HASH);
-			parameters.setHashMode(commandLine.hasOption('f') ? HashMode.HASH_ONLY_FIRST_MB : HashMode.COMPUTE_ALL_HASH);
 			parameters.setMessage(commandLine.getOptionValue('m', parameters.getMessage()));
 			parameters.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "" + parameters.getThreadCount())));
 			parameters.setUseLastState(commandLine.hasOption('l'));
 			parameters.setMasterFimRepositoryDir(commandLine.getOptionValue('a'));
 			parameters.setAlwaysYes(commandLine.hasOption('y'));
+
+			if (commandLine.hasOption('d'))
+			{
+				parameters.setHashMode(HashMode.DONT_HASH_FILES);
+			}
+			else if (commandLine.hasOption('f'))
+			{
+				parameters.setHashMode(HashMode.HASH_ONLY_FIRST_MB);
+			}
+			else
+			{
+				parameters.setHashMode(HashMode.COMPUTE_ALL_HASH);
+			}
 
 			if (commandLine.hasOption('h'))
 			{
