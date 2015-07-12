@@ -90,18 +90,21 @@ class FileHasher implements Runnable
 			return FileState.NO_HASH;
 		}
 
-		String firstMegaHash = hashFileChunkByChunk(file, FileState.SIZE_1_MB);
-
+		String firstMegaHash;
 		String fullHash;
-		if (hashMode == HashMode.HASH_ONLY_FIRST_MB)
+
+		if (file.length() <= FileState.SIZE_1_MB)
 		{
-			fullHash = FileState.NO_HASH_STR;
+			fullHash = hashFileUsingNIO(file);
+			firstMegaHash = fullHash;
 		}
 		else
 		{
-			if (file.length() < FileState.SIZE_50_MB)
+			firstMegaHash = hashFileChunkByChunk(file, FileState.SIZE_1_MB);
+
+			if (hashMode == HashMode.HASH_ONLY_FIRST_MB)
 			{
-				fullHash = hashFileUsingNIO(file);
+				fullHash = FileState.NO_HASH_STR;
 			}
 			else
 			{
