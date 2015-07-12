@@ -63,7 +63,7 @@ public class StateGenerator
 
 	public State generateState(String message, File fimRepositoryRootDir) throws IOException, NoSuchAlgorithmException
 	{
-		Logger.info(String.format("Scanning recursively local files %s using %d thread", hashModeToString(), parameters.getThreadCount()));
+		Logger.info(String.format("Scanning recursively local files %s, using %d thread", hashModeToString(), parameters.getThreadCount()));
 		System.out.printf("    (Hash progress legend: x > 200Mb l > 100Mb, m > 50Mb, s > 20Mb, : > 10Mb, . otherwise)%n");
 
 		State state = new State();
