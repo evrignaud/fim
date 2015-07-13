@@ -15,7 +15,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- versions -->
-		<source.version>1.8</source.version>
+		<java.version>1.8</java.version>
 
 		<guava.version>18.0</guava.version>
 		<commons-lang3.version>3.4</commons-lang3.version>
@@ -121,8 +121,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
-					<source>${source.version}</source>
-					<target>${source.version}</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 				</configuration>
 			</plugin>
 			<plugin>
