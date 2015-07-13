@@ -24,7 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.security.NoSuchAlgorithmException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -106,7 +106,7 @@ public class StateGenerator
 		throw new IllegalArgumentException("Invalid hash mode " + hashMode);
 	}
 
-	public State generateState(String comment, Path rootDir, Path dirToScan) throws NoSuchAlgorithmException
+	public State generateState(String comment, Path rootDir, Path dirToScan) throws GeneralSecurityException
 	{
 		this.rootDir = rootDir;
 
@@ -155,7 +155,7 @@ public class StateGenerator
 		executorService = Executors.newFixedThreadPool(context.getThreadCount());
 	}
 
-	private void startFileHashers() throws NoSuchAlgorithmException
+	private void startFileHashers() throws GeneralSecurityException
 	{
 		if (!hashersStarted)
 		{
@@ -211,7 +211,7 @@ public class StateGenerator
 		}
 	}
 
-	private void scanFileTree(BlockingDeque<Path> filesToHash, Path directory) throws NoSuchAlgorithmException
+	private void scanFileTree(BlockingDeque<Path> filesToHash, Path directory) throws GeneralSecurityException
 	{
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory))
 		{

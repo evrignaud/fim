@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.fim.command.AbstractCommand;
 import org.fim.command.CommitCommand;
 import org.fim.command.DiffCommand;
@@ -87,6 +89,8 @@ public class Main
 
 	public static void main(String[] args) throws Exception
 	{
+		Security.addProvider(new BouncyCastleProvider());
+
 		String[] filteredArgs = filterEmptyArgs(args);
 		if (filteredArgs.length < 1)
 		{

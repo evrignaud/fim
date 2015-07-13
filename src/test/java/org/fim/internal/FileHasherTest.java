@@ -27,16 +27,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.security.NoSuchAlgorithmException;
+import java.security.GeneralSecurityException;
+import java.security.Security;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
 import org.fim.tooling.BuildableContext;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -57,6 +60,12 @@ public class FileHasherTest extends StateAssert
 		this.hashMode = hashMode;
 	}
 
+	@BeforeClass
+	public static void setupOnce()
+	{
+		Security.addProvider(new BouncyCastleProvider());
+	}
+
 	@Parameterized.Parameters(name = "Hash mode: {0}")
 	public static Collection<Object[]> parameters()
 	{
@@ -69,7 +78,7 @@ public class FileHasherTest extends StateAssert
 	}
 
 	@Before
-	public void setup() throws NoSuchAlgorithmException, IOException
+	public void setup() throws GeneralSecurityException, IOException
 	{
 		Path rootDir = Paths.get("target/" + this.getClass().getSimpleName());
 
@@ -105,7 +114,7 @@ public class FileHasherTest extends StateAssert
 	@Test
 	public void weCanHashAn_Empty_File() throws IOException
 	{
-		String smallBlockHash = "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e";
+		String smallBlockHash = "0eab42de4c3ceb9235fc91acffe746b29c29a8c366b7c60e4e67c466f36a4304c00fa9caf9d87976ba469bcbe06713b435f091ef2769fb160cdab33d3670680e";
 		String mediumBlockHash = smallBlockHash;
 		String fullFileHash = smallBlockHash;
 
@@ -119,7 +128,7 @@ public class FileHasherTest extends StateAssert
 	@Test
 	public void weCanHashA_2KB_File() throws IOException
 	{
-		String smallBlockHash = "76b1e87b9f5df5d1584c5684432005d533196532439edbbf25ba9c7e82b7b0f7652c66e20ab07d854b950c8eeb5e2f65a03054f68d093fa75927ab2041bd8f74";
+		String smallBlockHash = "1af5d49d0da9efa558297b9895f560c483dfe9785bfa35d587b5657896d07aae939e5f67648774600dd4458f165612e26ef199e0812703710b524cd125dcfc9e";
 		String mediumBlockHash = smallBlockHash;
 		String fullFileHash = smallBlockHash;
 
@@ -133,8 +142,8 @@ public class FileHasherTest extends StateAssert
 	@Test
 	public void weCanHashA_30KB_File() throws IOException
 	{
-		String smallBlockHash = "757af34fe2d75e895caf4e479e77e5b2ba97510140933c89facc0399eb92063e83d7833d5d3285d35ee310b6d599aa8f8cafbd480cb797bbb2d8b8b47880d2ba";
-		String mediumBlockHash = "f66f942e45d12bda1224a7644e7b157a67e0cb66dc48e36d92cfbf8febf3fdae2d567a0906f1c3684f19e0902460513cf9f5fba285ce9d8f61fd1ea4772d79c3";
+		String smallBlockHash = "3589cbc818057856c6ac13b3baa1368ecb7005a75c807f13817ab6f03d16346107532848aeeb9979e172bd86312c044676209540c4e06d508c796dc90d073526";
+		String mediumBlockHash = "9f26b15e16e850abe70375bdbc9b9fb66fe305b9cf23147174c4460253caddfbc356c8453eec57c4a9551efea6f5a11644382bfcdb7232d89f7adf275a550de3";
 		String fullFileHash = mediumBlockHash;
 
 		Path fileToHash = createFileWithSize(30 * 1024);
@@ -147,9 +156,9 @@ public class FileHasherTest extends StateAssert
 	@Test
 	public void weCanHashA_60MB_File() throws IOException
 	{
-		String smallBlockHash = "757af34fe2d75e895caf4e479e77e5b2ba97510140933c89facc0399eb92063e83d7833d5d3285d35ee310b6d599aa8f8cafbd480cb797bbb2d8b8b47880d2ba";
-		String mediumBlockHash = "733e3c1c2e1a71086637cecfe168a47d35c10cda2b792ff645befef7eaf86b96ecaf357b775dd323d5ab2a638c90c81abcae89372500dd8da60160508486bf4d";
-		String fullFileHash = "e891a71e312bc6e34f549664706951516c42f660face62756bb155301c5e06ba79db94f83dedd43467530021935f5b427a58d7a5bd245ea1b2b0db8d7b08ee7a";
+		String smallBlockHash = "3589cbc818057856c6ac13b3baa1368ecb7005a75c807f13817ab6f03d16346107532848aeeb9979e172bd86312c044676209540c4e06d508c796dc90d073526";
+		String mediumBlockHash = "a67a8e1723b682c3955a0c7cfca7bbbeacb2e31b2582942fac5fa8d9cd3406c8e6a43633287f3a724189252a00239c6a33557059a3d2738c7daaf98bca71dd52";
+		String fullFileHash = "07ba81967b8baa14dd312d74751f977a3fd3971ef8f0429c83a9a9fa8b85814cf59dc8dfa2d1bfd72e5f79fecb2aa7c3dc91aaee2a167a387f012456017ffacc";
 
 		Path fileToHash = createFileWithSize(60 * 1024 * 1024);
 

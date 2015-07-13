@@ -24,13 +24,14 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.TimeUnit;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
@@ -41,7 +42,7 @@ import sun.nio.ch.DirectBuffer;
 
 class FileHasher implements Runnable
 {
-	public static final String HASH_ALGORITHM = "SHA-512";
+	public static final String HASH_ALGORITHM = "SHA3-512";
 
 	private final StateGenerator stateGenerator;
 	private final BlockingDeque<Path> filesToHash;
@@ -56,7 +57,7 @@ class FileHasher implements Runnable
 	private long totalFileContentLength;
 	private long totalBytesHashed;
 
-	public FileHasher(StateGenerator stateGenerator, BlockingDeque<Path> filesToHash, String rootDir) throws NoSuchAlgorithmException
+	public FileHasher(StateGenerator stateGenerator, BlockingDeque<Path> filesToHash, String rootDir) throws GeneralSecurityException
 	{
 		this.stateGenerator = stateGenerator;
 		this.filesToHash = filesToHash;
@@ -64,9 +65,9 @@ class FileHasher implements Runnable
 
 		this.fileStates = new ArrayList<>();
 
-		this.smallBlockDigest = MessageDigest.getInstance(HASH_ALGORITHM);
-		this.mediumBlockDigest = MessageDigest.getInstance(HASH_ALGORITHM);
-		this.fullDigest = MessageDigest.getInstance(HASH_ALGORITHM);
+		this.smallBlockDigest = MessageDigest.getInstance(HASH_ALGORITHM, BouncyCastleProvider.PROVIDER_NAME);
+		this.mediumBlockDigest = MessageDigest.getInstance(HASH_ALGORITHM, BouncyCastleProvider.PROVIDER_NAME);
+		this.fullDigest = MessageDigest.getInstance(HASH_ALGORITHM, BouncyCastleProvider.PROVIDER_NAME);
 	}
 
 	public List<FileState> getFileStates()
