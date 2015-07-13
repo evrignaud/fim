@@ -26,31 +26,27 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.fim.model.FileState;
 
-@RunWith(MockitoJUnitRunner.class)
+// @RunWith(MockitoJUnitRunner.class)
 public class FileHasherPerf
 {
 	private final Charset utf8 = Charset.forName("UTF-8");
 
-	@Mock
+	// @Mock
 	private StateGenerator stateGenerator;
 
 	private String rootDir;
 	private FileHasher cut;
 
-	@Before
+	// @Before
 	public void setup() throws NoSuchAlgorithmException
 	{
 		rootDir = "target/" + this.getClass().getSimpleName();
 		cut = new FileHasher(stateGenerator, null, rootDir);
 	}
 
-	@Test
+	// @Test
 	public void findMostEfficientHash() throws IOException
 	{
 		for (int index = 0; index < 10; index++)
@@ -71,7 +67,7 @@ public class FileHasherPerf
 		for (int index = 0; index < 200000; index++)
 		{
 			File file = new File(rootDir, "file_" + (index % 10));
-			cut.hashFileChunkByChunk(file);
+			cut.hashFileChunkByChunk(file, FileState.SIZE_UNLIMITED);
 		}
 		System.out.println("hashFileChunkByChunk took: " + (System.currentTimeMillis() - start) + " ms");
 	}

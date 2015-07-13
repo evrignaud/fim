@@ -33,12 +33,12 @@ public class FileHashTest
 	@Before
 	public void setup()
 	{
-		a1 = new FileHash("hash_1", "hash_2");
-		a2 = new FileHash("hash_1", "hash_2");
+		a1 = new FileHash("hash_1", "hash_2", "hash_3");
+		a2 = new FileHash("hash_1", "hash_2", "hash_3");
 
-		b = new FileHash("hash_1", "hash_3");
+		b = new FileHash("hash_1", "hash_2", "hash_4");
 
-		c = new FileHash("hash_2", "hash_4");
+		c = new FileHash("hash_3", "hash_4", "hash_5");
 	}
 
 	@Test
@@ -70,11 +70,11 @@ public class FileHashTest
 		assertThat(a2.compareTo(a1)).isEqualTo(0);
 
 		assertThat(a1.compareTo(b)).isEqualTo(-1);
-		assertThat(b.compareTo(c)).isEqualTo(-1);
-		assertThat(a1.compareTo(c)).isEqualTo(-1);
+		assertThat(b.compareTo(c)).isEqualTo(-2);
+		assertThat(a1.compareTo(c)).isEqualTo(-2);
 
-		assertThat(c.compareTo(b)).isEqualTo(1);
+		assertThat(c.compareTo(b)).isEqualTo(2);
 		assertThat(b.compareTo(a1)).isEqualTo(1);
-		assertThat(c.compareTo(a1)).isEqualTo(1);
+		assertThat(c.compareTo(a1)).isEqualTo(2);
 	}
 }

@@ -61,13 +61,13 @@ public class StateGenerator
 		this.parameters = parameters;
 	}
 
-	public State generateState(String message, File fimRepositoryRootDir) throws IOException, NoSuchAlgorithmException
+	public State generateState(String comment, File fimRepositoryRootDir) throws IOException, NoSuchAlgorithmException
 	{
 		Logger.info(String.format("Scanning recursively local files %s, using %d thread", hashModeToString(), parameters.getThreadCount()));
 		System.out.printf("    (Hash progress legend: x > 200Mb l > 100Mb, m > 50Mb, s > 20Mb, : > 10Mb, . otherwise)%n");
 
 		State state = new State();
-		state.setMessage(message);
+		state.setComment(comment);
 
 		long start = System.currentTimeMillis();
 		progressOutputInit();
@@ -108,10 +108,13 @@ public class StateGenerator
 		switch (parameters.getHashMode())
 		{
 			case DONT_HASH_FILES:
-				return "retrieving file attributes";
+				return "retrieving only file attributes";
 
-			case HASH_ONLY_FIRST_MB:
-				return "hashing the first megabyte";
+			case HASH_ONLY_FIRST_FOUR_KILO:
+				return "hashing only first four kilo";
+
+			case HASH_ONLY_FIRST_MEGA:
+				return "hashing only first mega";
 
 			case COMPUTE_ALL_HASH:
 				return "computing all hash";

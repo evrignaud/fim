@@ -69,9 +69,18 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 
 		fileContentHashingMandatory(parameters);
 
-		if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_MB)
+		if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
 		{
-			System.out.println("You are going to detect duplicates and remove them based only on the hash of the first megabyte of the files.");
+			System.out.println("You are going to detect duplicates and remove them based only on the hash of the first four kilo of the files.");
+			if (!confirmAction(parameters, "continue"))
+			{
+				System.exit(0);
+			}
+		}
+
+		if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_MEGA)
+		{
+			System.out.println("You are going to detect duplicates and remove them based only on the hash of the first mega of the files.");
 			if (!confirmAction(parameters, "continue"))
 			{
 				System.exit(0);
@@ -106,7 +115,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		Map<FileHash, FileState> masterFilesHash = buildFileHashMap(masterState);
 
 		long totalDuplicatedFilesRemoved = 0;
-		State localState = new StateGenerator(parameters).generateState(parameters.getMessage(), CURRENT_DIRECTORY);
+		State localState = new StateGenerator(parameters).generateState("", CURRENT_DIRECTORY);
 		for (FileState localFileState : localState.getFileStates())
 		{
 			FileState masterFileState = masterFilesHash.get(localFileState.getFileHash());

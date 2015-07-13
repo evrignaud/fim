@@ -25,15 +25,19 @@ import com.google.common.base.MoreObjects;
 
 public class FileState
 {
-	public static final int SIZE_1_MB = 1024 * 1024;
+	public static final int SIZE_1_KB = 1024;
+	public static final int SIZE_4_KB = 4 * SIZE_1_KB;
+
+	public static final int SIZE_1_MB = 1024 * SIZE_1_KB;
 	public static final int SIZE_10_MB = 10 * SIZE_1_MB;
 	public static final int SIZE_20_MB = 20 * SIZE_1_MB;
 	public static final int SIZE_50_MB = 50 * SIZE_1_MB;
 	public static final int SIZE_100_MB = 100 * SIZE_1_MB;
 	public static final int SIZE_200_MB = 200 * SIZE_1_MB;
 
-	public static final String NO_HASH_STR = "no_hash";
-	public static final FileHash NO_HASH = new FileHash(NO_HASH_STR, NO_HASH_STR);
+	public static final int SIZE_UNLIMITED = -1;
+
+	public static final String NO_HASH = "no_hash";
 
 	private String fileName;
 	private long fileLength;

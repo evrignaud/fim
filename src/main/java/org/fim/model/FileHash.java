@@ -24,29 +24,42 @@ import com.google.common.base.MoreObjects;
 
 public class FileHash implements Comparable<FileHash>
 {
-	private String firstMbHash;
+	private String firstFourKiloHash;
+	private String firstMegaHash;
 	private String fullHash;
 
-	public FileHash(String firstMbHash, String fullHash)
+	public FileHash(String firstFourKiloHash, String firstMegaHash, String fullHash)
 	{
-		this.firstMbHash = firstMbHash;
+		this.firstFourKiloHash = firstFourKiloHash;
+		this.firstMegaHash = firstMegaHash;
 		this.fullHash = fullHash;
 	}
 
 	public FileHash(FileHash fileHash)
 	{
-		this.firstMbHash = fileHash.getFirstMbHash();
+		this.firstFourKiloHash = fileHash.getFirstFourKiloHash();
+		this.firstMegaHash = fileHash.getFirstMegaHash();
 		this.fullHash = fileHash.getFullHash();
 	}
 
-	public String getFirstMbHash()
+	public String getFirstFourKiloHash()
 	{
-		return firstMbHash;
+		return firstFourKiloHash;
 	}
 
-	public void setFirstMbHash(String firstMbHash)
+	public void setFirstFourKiloHash(String firstFourKiloHash)
 	{
-		this.firstMbHash = firstMbHash;
+		this.firstFourKiloHash = firstFourKiloHash;
+	}
+
+	public String getFirstMegaHash()
+	{
+		return firstMegaHash;
+	}
+
+	public void setFirstMegaHash(String firstMegaHash)
+	{
+		this.firstMegaHash = firstMegaHash;
 	}
 
 	public String getFullHash()
@@ -74,7 +87,8 @@ public class FileHash implements Comparable<FileHash>
 
 		FileHash otherFileHash = (FileHash) other;
 
-		return Objects.equals(this.firstMbHash, otherFileHash.firstMbHash)
+		return Objects.equals(this.firstFourKiloHash, otherFileHash.firstFourKiloHash)
+				&& Objects.equals(this.firstMegaHash, otherFileHash.firstMegaHash)
 				&& Objects.equals(this.fullHash, otherFileHash.fullHash);
 
 	}
@@ -82,14 +96,15 @@ public class FileHash implements Comparable<FileHash>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(firstMbHash, fullHash);
+		return Objects.hash(firstFourKiloHash, firstMegaHash, fullHash);
 	}
 
 	@Override
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(this)
-				.add("firstMbHash", firstMbHash)
+				.add("firstFourKiloHash", firstFourKiloHash)
+				.add("firstMegaHash", firstMegaHash)
 				.add("fullHash", fullHash)
 				.toString();
 	}
@@ -97,7 +112,18 @@ public class FileHash implements Comparable<FileHash>
 	@Override
 	public int compareTo(FileHash other)
 	{
-		int first = firstMbHash.compareTo(other.firstMbHash);
-		return first == 0 ? fullHash.compareTo(other.fullHash) : first;
+		int value = firstFourKiloHash.compareTo(other.firstFourKiloHash);
+		if (value != 0)
+		{
+			return value;
+		}
+
+		value = firstMegaHash.compareTo(other.firstMegaHash);
+		if (value != 0)
+		{
+			return value;
+		}
+
+		return fullHash.compareTo(other.fullHash);
 	}
 }

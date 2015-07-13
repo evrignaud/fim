@@ -39,7 +39,7 @@ public class State
 {
 	private String modelVersion = "1";
 	private long timestamp = System.currentTimeMillis();
-	private String message = "";
+	private String comment = "";
 	private int fileCount = 0;
 	private List<FileState> fileStates = null;
 
@@ -50,7 +50,7 @@ public class State
 			Gson gson = new Gson();
 			State state = gson.fromJson(reader, State.class);
 			timestamp = state.timestamp;
-			message = state.message;
+			comment = state.comment;
 			fileCount = state.fileStates.size();
 			fileStates = state.fileStates;
 		}
@@ -87,14 +87,14 @@ public class State
 		this.timestamp = timestamp;
 	}
 
-	public String getMessage()
+	public String getComment()
 	{
-		return message;
+		return comment;
 	}
 
-	public void setMessage(String message)
+	public void setComment(String comment)
 	{
-		this.message = message;
+		this.comment = comment;
 	}
 
 	public int getFileCount()
@@ -134,7 +134,7 @@ public class State
 
 		return Objects.equals(this.modelVersion, state.modelVersion)
 				&& Objects.equals(this.timestamp, state.timestamp)
-				&& Objects.equals(this.message, state.message)
+				&& Objects.equals(this.comment, state.comment)
 				&& Objects.equals(this.fileCount, state.fileCount)
 				&& Objects.equals(this.fileStates, state.fileStates);
 	}
@@ -142,7 +142,7 @@ public class State
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(modelVersion, timestamp, message, fileCount, fileStates);
+		return Objects.hash(modelVersion, timestamp, comment, fileCount, fileStates);
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class State
 		return MoreObjects.toStringHelper(this)
 				.add("modelVersion", modelVersion)
 				.add("timestamp", timestamp)
-				.add("message", message)
+				.add("comment", comment)
 				.add("fileCount", fileCount)
 				.add("fileStates", fileStates)
 				.toString();

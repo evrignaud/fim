@@ -61,7 +61,12 @@ public class InitCommand extends AbstractCommand
 			System.exit(-1);
 		}
 
-		State currentState = new StateGenerator(parameters).generateState("Initial State", CURRENT_DIRECTORY);
+		String comment = parameters.getComment();
+		if (comment.length() == 0)
+		{
+			comment = "Initial State";
+		}
+		State currentState = new StateGenerator(parameters).generateState(comment, CURRENT_DIRECTORY);
 
 		new StateComparator(parameters).compare(null, currentState).displayChanges();
 

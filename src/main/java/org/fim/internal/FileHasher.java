@@ -36,7 +36,6 @@ import org.fim.model.HashMode;
 class FileHasher implements Runnable
 {
 	public static final String HASH_ALGORITHM = "SHA-512";
-	public static final int READ_BUFFER_SIZE = 4 * 1024;
 
 	private final StateGenerator stateGenerator;
 	private final BlockingDeque<File> filesToHash;
@@ -106,42 +105,27 @@ class FileHasher implements Runnable
 	protected FileHash hashFile(File file) throws IOException
 	{
 		HashMode hashMode = stateGenerator.getParameters().getHashMode();
-		if (hashMode == HashMode.DONT_HASH_FILES)
+
+		String firstFourKiloHash = FileState.NO_HASH;
+		String firstMegaHash = FileState.NO_HASH;
+		String fullHash = FileState.NO_HASH;
+
+		if (hashMode == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
 		{
-			return FileState.NO_HASH;
+			firstFourKiloHash = hashFileChunkByChunk(file, FileState.SIZE_4_KB);
 		}
-
-		String firstMegaHash;
-		String fullHash;
-
-		if (file.length() <= FileState.SIZE_1_MB)
-		{
-			firstMegaHash = hashFileUsingNIO(file);
-
-			if (hashMode == HashMode.HASH_ONLY_FIRST_MB)
-			{
-				fullHash = FileState.NO_HASH_STR;
-			}
-			else
-			{
-				fullHash = firstMegaHash;
-			}
-		}
-		else
+		else if (hashMode == HashMode.HASH_ONLY_FIRST_MEGA)
 		{
 			firstMegaHash = hashFileChunkByChunk(file, FileState.SIZE_1_MB);
-
-			if (hashMode == HashMode.HASH_ONLY_FIRST_MB)
-			{
-				fullHash = FileState.NO_HASH_STR;
-			}
-			else
-			{
-				fullHash = hashFileChunkByChunk(file);
-			}
+		}
+		else if (hashMode == HashMode.COMPUTE_ALL_HASH)
+		{
+			firstFourKiloHash = hashFileChunkByChunk(file, FileState.SIZE_4_KB);
+			firstMegaHash = hashFileChunkByChunk(file, FileState.SIZE_1_MB);
+			fullHash = hashFileChunkByChunk(file, FileState.SIZE_UNLIMITED);
 		}
 
-		return new FileHash(firstMegaHash, fullHash);
+		return new FileHash(firstFourKiloHash, firstMegaHash, fullHash);
 	}
 
 	protected String hashFileUsingNIO(File file) throws IOException
@@ -155,25 +139,20 @@ class FileHasher implements Runnable
 		return toHexString(digestBytes);
 	}
 
-	protected String hashFileChunkByChunk(File file) throws IOException
-	{
-		return hashFileChunkByChunk(file, -1);
-	}
-
 	protected String hashFileChunkByChunk(File file, long lenToHash) throws IOException
 	{
 		messageDigest.reset();
 
 		try (FileInputStream fis = new FileInputStream(file))
 		{
-			byte[] dataBytes = new byte[READ_BUFFER_SIZE];
+			byte[] dataBytes = new byte[FileState.SIZE_4_KB];
 			long readLen = 0;
 			int bytesRead;
 			while ((bytesRead = fis.read(dataBytes)) != -1)
 			{
 				messageDigest.update(dataBytes, 0, bytesRead);
 				readLen += bytesRead;
-				if (lenToHash != -1 && readLen >= lenToHash)
+				if (lenToHash != FileState.SIZE_UNLIMITED && readLen >= lenToHash)
 				{
 					break;
 				}

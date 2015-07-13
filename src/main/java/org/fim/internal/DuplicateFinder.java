@@ -49,7 +49,7 @@ public class DuplicateFinder
 		List<FileState> fileStates = new ArrayList<>(state.getFileStates());
 		Collections.sort(fileStates, fullHashComparator);
 
-		FileHash previousHash = FileState.NO_HASH;
+		FileHash previousHash = new FileHash(FileState.NO_HASH, FileState.NO_HASH, FileState.NO_HASH);
 		for (FileState fileState : fileStates)
 		{
 			if (!previousHash.equals(fileState.getFileHash()))

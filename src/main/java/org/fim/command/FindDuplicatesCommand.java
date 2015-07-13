@@ -59,7 +59,7 @@ public class FindDuplicatesCommand extends AbstractCommand
 		}
 		else
 		{
-			state = new StateGenerator(parameters).generateState(parameters.getMessage(), CURRENT_DIRECTORY);
+			state = new StateGenerator(parameters).generateState("", CURRENT_DIRECTORY);
 		}
 
 		new DuplicateFinder(parameters).findDuplicates(state).displayDuplicates();

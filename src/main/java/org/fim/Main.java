@@ -68,10 +68,11 @@ public class Main
 		Options options = new Options();
 		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as master. Only for the remove duplicates command", false));
 		options.addOption(createOption("d", "dont-hash-files", false, "Do not hash file content. Use only filenames and modification dates", false));
-		options.addOption(createOption("f", "hash-only-first-mb", false, "Hash only the first megabyte of the files", false));
+		options.addOption(createOption("k", "hash-only-first-four-kilo", false, "Hash only the first four kilo of the files", false));
+		options.addOption(createOption("m", "hash-only-first-mega", false, "Hash only the first mega of the files", false));
 		options.addOption(createOption("h", "help", false, "Prints the Fim help", false));
 		options.addOption(createOption("l", "use-last-state", false, "Use the last committed State", false));
-		options.addOption(createOption("m", "message", true, "Message to store with the State", false));
+		options.addOption(createOption("c", "comment", true, "Sets that State comment during commit", false));
 		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
 		options.addOption(createOption("t", "thread-count", true, "Number of thread to use to hash files content in parallel", false));
 		options.addOption(createOption("v", "version", false, "Prints the Fim version", false));
@@ -107,7 +108,7 @@ public class Main
 			CommandLine commandLine = cmdLineGnuParser.parse(options, optionArgs);
 
 			parameters.setVerbose(!commandLine.hasOption('q'));
-			parameters.setMessage(commandLine.getOptionValue('m', parameters.getMessage()));
+			parameters.setComment(commandLine.getOptionValue('c', parameters.getComment()));
 			parameters.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "" + parameters.getThreadCount())));
 			parameters.setUseLastState(commandLine.hasOption('l'));
 			parameters.setMasterFimRepositoryDir(commandLine.getOptionValue('a'));
@@ -117,9 +118,13 @@ public class Main
 			{
 				parameters.setHashMode(HashMode.DONT_HASH_FILES);
 			}
-			else if (commandLine.hasOption('f'))
+			else if (commandLine.hasOption('k'))
 			{
-				parameters.setHashMode(HashMode.HASH_ONLY_FIRST_MB);
+				parameters.setHashMode(HashMode.HASH_ONLY_FIRST_FOUR_KILO);
+			}
+			else if (commandLine.hasOption('m'))
+			{
+				parameters.setHashMode(HashMode.HASH_ONLY_FIRST_MEGA);
 			}
 			else
 			{

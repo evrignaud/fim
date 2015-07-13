@@ -75,9 +75,9 @@ public class CompareResult
 		if (lastState != null)
 		{
 			System.out.println("Comparing with the last committed state from " + formatDate(lastState.getTimestamp()));
-			if (lastState.getMessage().length() > 0)
+			if (lastState.getComment().length() > 0)
 			{
-				System.out.println("Message: " + lastState.getMessage());
+				System.out.println("Comment: " + lastState.getComment());
 			}
 			System.out.println("");
 		}

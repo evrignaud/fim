@@ -32,10 +32,10 @@ public class FileStateTest
 	@Before
 	public void setup()
 	{
-		a1 = new FileState("file_1", 1L, 1, new FileHash("1", "1"));
-		a2 = new FileState("file_1", 1L, 1, new FileHash("1", "1"));
+		a1 = new FileState("file_1", 1L, 1, new FileHash("1", "1", "1"));
+		a2 = new FileState("file_1", 1L, 1, new FileHash("1", "1", "1"));
 
-		b = new FileState("file_2", 2L, 2, new FileHash("2", "2"));
+		b = new FileState("file_2", 2L, 2, new FileHash("2", "2", "2"));
 	}
 
 	@Test

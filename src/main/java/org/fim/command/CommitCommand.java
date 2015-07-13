@@ -52,7 +52,7 @@ public class CommitCommand extends AbstractCommand
 
 		StateManager manager = new StateManager(parameters);
 		State lastState = manager.loadLastState();
-		State currentState = new StateGenerator(parameters).generateState(parameters.getMessage(), CURRENT_DIRECTORY);
+		State currentState = new StateGenerator(parameters).generateState(parameters.getComment(), CURRENT_DIRECTORY);
 
 		CompareResult result = new StateComparator(parameters).compare(lastState, currentState).displayChanges();
 		if (result.somethingModified())

@@ -31,9 +31,9 @@ import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StateManagerHashOnlyFirstMbTest extends StateAssert
+public class StateManagerHashOnlyFirstFourKiloTest extends StateAssert
 {
-	private BuildableParameters parameters = defaultParameters().hashOnlyFirstMb();
+	private BuildableParameters parameters = defaultParameters().hashOnlyFirstFourKilo();
 	private BuildableState s = new BuildableState(parameters);
 
 	private File stateDir;

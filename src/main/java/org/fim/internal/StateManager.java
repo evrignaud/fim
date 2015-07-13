@@ -84,20 +84,30 @@ public class StateManager
 		State state = new State();
 		state.loadFromGZipFile(stateFile);
 
+		// Replace by 'no_hash' accurately to be able to compare the FileState entry
 		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
 		{
-			// Replace all the file hash by 'no_hash' to be able to compare the FileState entry
 			for (FileState fileState : state.getFileStates())
 			{
-				fileState.setFileHash(FileState.NO_HASH);
+				fileState.getFileHash().setFirstFourKiloHash(FileState.NO_HASH);
+				fileState.getFileHash().setFirstMegaHash(FileState.NO_HASH);
+				fileState.getFileHash().setFullHash(FileState.NO_HASH);
 			}
 		}
-		else if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_MB)
+		else if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
 		{
-			// Replace the full file hash by 'no_hash' to be able to compare the FileState entry
 			for (FileState fileState : state.getFileStates())
 			{
-				fileState.getFileHash().setFullHash(FileState.NO_HASH_STR);
+				fileState.getFileHash().setFirstMegaHash(FileState.NO_HASH);
+				fileState.getFileHash().setFullHash(FileState.NO_HASH);
+			}
+		}
+		else if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_MEGA)
+		{
+			for (FileState fileState : state.getFileStates())
+			{
+				fileState.getFileHash().setFirstFourKiloHash(FileState.NO_HASH);
+				fileState.getFileHash().setFullHash(FileState.NO_HASH);
 			}
 		}
 

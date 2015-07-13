@@ -27,7 +27,7 @@ public class Parameters implements Cloneable
 	private File defaultStateDir;
 	private boolean verbose;
 	private HashMode hashMode;
-	private String message;
+	private String comment;
 	private boolean useLastState;
 	private int threadCount;
 	private String masterFimRepositoryDir;
@@ -35,14 +35,14 @@ public class Parameters implements Cloneable
 
 	public Parameters()
 	{
-		defaultStateDir = new File(DOT_FIM_DIR, "states");
-		verbose = true;
-		hashMode = HashMode.COMPUTE_ALL_HASH;
-		message = "";
-		useLastState = false;
-		threadCount = Runtime.getRuntime().availableProcessors() / 2;
-		masterFimRepositoryDir = null;
-		alwaysYes = false;
+		this.defaultStateDir = new File(DOT_FIM_DIR, "states");
+		this.verbose = true;
+		this.hashMode = HashMode.COMPUTE_ALL_HASH;
+		this.comment = "";
+		this.useLastState = false;
+		this.threadCount = Runtime.getRuntime().availableProcessors() / 2;
+		this.masterFimRepositoryDir = null;
+		this.alwaysYes = false;
 	}
 
 	public File getDefaultStateDir()
@@ -75,14 +75,14 @@ public class Parameters implements Cloneable
 		this.hashMode = hashMode;
 	}
 
-	public String getMessage()
+	public String getComment()
 	{
-		return message;
+		return comment;
 	}
 
-	public void setMessage(String message)
+	public void setComment(String comment)
 	{
-		this.message = message;
+		this.comment = comment;
 	}
 
 	public boolean isUseLastState()

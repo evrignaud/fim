@@ -128,7 +128,7 @@ public class BuildableState extends State
 	public BuildableState cloneState()
 	{
 		BuildableState newState = new BuildableState(parameters);
-		newState.setMessage(getMessage());
+		newState.setComment(getComment());
 
 		ArrayList<FileState> newFileStates = new ArrayList<>();
 		for (FileState fileState : getFileStates())
@@ -144,34 +144,54 @@ public class BuildableState extends State
 
 	private FileHash createHash(String content)
 	{
-		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
+		HashMode hashMode = parameters.getHashMode();
+
+		String firstFourKiloHash = FileState.NO_HASH;
+		String firstMegaHash = FileState.NO_HASH;
+		String fullHash = FileState.NO_HASH;
+
+		if (hashMode == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
 		{
-			return FileState.NO_HASH;
+			firstFourKiloHash = "first_four_kilo_" + content;
 		}
-		else if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_MB)
+		else if (hashMode == HashMode.HASH_ONLY_FIRST_MEGA)
 		{
-			return new FileHash("first_mega_" + content, FileState.NO_HASH_STR);
+			firstMegaHash = "first_mega_" + content;
 		}
-		else
+		else if (hashMode == HashMode.COMPUTE_ALL_HASH)
 		{
-			return new FileHash("first_mega_" + content, "full_" + content);
+			firstFourKiloHash = "first_four_kilo_" + content;
+			firstMegaHash = "first_mega_" + content;
+			fullHash = "full_" + content;
 		}
+
+		return new FileHash(firstFourKiloHash, firstMegaHash, fullHash);
 	}
 
 	private FileHash appendHash(FileHash fileHash, String content)
 	{
-		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
+		HashMode hashMode = parameters.getHashMode();
+
+		String firstFourKiloHash = FileState.NO_HASH;
+		String firstMegaHash = FileState.NO_HASH;
+		String fullHash = FileState.NO_HASH;
+
+		if (hashMode == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
 		{
-			return FileState.NO_HASH;
+			firstFourKiloHash = fileHash.getFirstFourKiloHash() + "_" + content;
 		}
-		else if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
+		else if (hashMode == HashMode.HASH_ONLY_FIRST_MEGA)
 		{
-			return new FileHash(fileHash.getFirstMbHash() + "_" + content, FileState.NO_HASH_STR);
+			firstMegaHash = fileHash.getFirstMegaHash() + "_" + content;
 		}
-		else
+		else if (hashMode == HashMode.COMPUTE_ALL_HASH)
 		{
-			return new FileHash(fileHash.getFirstMbHash() + "_" + content, fileHash.getFullHash() + "_" + content);
+			firstFourKiloHash = fileHash.getFirstFourKiloHash() + "_" + content;
+			firstMegaHash = fileHash.getFirstMegaHash() + "_" + content;
+			fullHash = fileHash.getFullHash() + "_" + content;
 		}
+
+		return new FileHash(firstFourKiloHash, firstMegaHash, fullHash);
 	}
 
 	private void sortFileStates(BuildableState state)

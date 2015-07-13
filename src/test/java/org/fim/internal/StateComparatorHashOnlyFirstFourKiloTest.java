@@ -26,9 +26,9 @@ import org.fim.tooling.Modification;
 import org.fim.tooling.StateAssert;
 import org.junit.Test;
 
-public class StateComparatorHashOnlyFirstMbTest extends StateAssert
+public class StateComparatorHashOnlyFirstFourKiloTest extends StateAssert
 {
-	private BuildableParameters parameters = defaultParameters().hashOnlyFirstMb();
+	private BuildableParameters parameters = defaultParameters().hashOnlyFirstFourKilo();
 	private StateComparator cut = new StateComparator(parameters);
 	private BuildableState s1 = new BuildableState(parameters).addFiles("file_01", "file_02", "file_03", "file_04");
 	private BuildableState s2;

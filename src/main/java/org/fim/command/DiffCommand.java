@@ -48,7 +48,7 @@ public class DiffCommand extends AbstractCommand
 	public void execute(Parameters parameters) throws Exception
 	{
 		State lastState = new StateManager(parameters).loadLastState();
-		State currentState = new StateGenerator(parameters).generateState(parameters.getMessage(), CURRENT_DIRECTORY);
+		State currentState = new StateGenerator(parameters).generateState("", CURRENT_DIRECTORY);
 
 		new StateComparator(parameters).compare(lastState, currentState).displayChanges();
 	}

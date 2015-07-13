@@ -29,9 +29,15 @@ public class BuildableParameters extends Parameters
 		return this;
 	}
 
-	public BuildableParameters hashOnlyFirstMb()
+	public BuildableParameters hashOnlyFirstFourKilo()
 	{
-		setHashMode(HashMode.HASH_ONLY_FIRST_MB);
+		setHashMode(HashMode.HASH_ONLY_FIRST_FOUR_KILO);
+		return this;
+	}
+
+	public BuildableParameters hashOnlyFirstMega()
+	{
+		setHashMode(HashMode.HASH_ONLY_FIRST_MEGA);
 		return this;
 	}
 

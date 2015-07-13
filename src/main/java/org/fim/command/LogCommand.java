@@ -65,9 +65,9 @@ public class LogCommand extends AbstractCommand
 			{
 				State state = manager.loadState(stateNumber);
 				System.out.printf("State #%d: %s%n", stateNumber, formatDate(state.getTimestamp()));
-				if (state.getMessage().length() > 0)
+				if (state.getComment().length() > 0)
 				{
-					System.out.printf("\tMessage: %s%n", state.getMessage());
+					System.out.printf("\tComment: %s%n", state.getComment());
 				}
 				System.out.printf("\tContains %d files%n", state.getFileCount());
 				System.out.println("");

@@ -56,9 +56,9 @@ public class ResetDatesCommand extends AbstractCommand
 		State lastState = manager.loadLastState();
 
 		System.out.println("Reset file modification dates based on the last committed State done " + formatDate(lastState.getTimestamp()));
-		if (lastState.getMessage().length() > 0)
+		if (lastState.getComment().length() > 0)
 		{
-			System.out.println("Message: " + lastState.getMessage());
+			System.out.println("Comment: " + lastState.getComment());
 		}
 		System.out.println("");
 
