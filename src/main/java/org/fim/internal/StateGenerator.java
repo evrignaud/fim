@@ -37,6 +37,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.fim.model.FileState;
+import org.fim.model.HashMode;
 import org.fim.model.Parameters;
 import org.fim.model.State;
 import org.fim.util.Logger;
@@ -54,6 +55,7 @@ public class StateGenerator
 	private ReentrantLock progressLock = new ReentrantLock();
 	private long summedFileLength;
 	private int fileCount;
+	private long totalFileContentLength;
 	private long totalBytesHashed;
 
 	public StateGenerator(Parameters parameters)
@@ -91,6 +93,8 @@ public class StateGenerator
 		for (FileHasher hasher : hashers)
 		{
 			fileStates.addAll(hasher.getFileStates());
+			totalFileContentLength += hasher.getTotalFileContentLength();
+			totalBytesHashed += hasher.getTotalBytesHashed();
 		}
 
 		Collections.sort(fileStates, fileNameComparator);
@@ -98,7 +102,7 @@ public class StateGenerator
 		state.setFileStates(fileStates);
 
 		progressOutputStop();
-		displayTimeElapsed(start, state);
+		displayStatistics(start, state);
 
 		return state;
 	}
@@ -136,18 +140,31 @@ public class StateGenerator
 		}
 	}
 
-	private void displayTimeElapsed(long start, State state)
+	private void displayStatistics(long start, State state)
 	{
 		long duration = System.currentTimeMillis() - start;
+
+		String totalFileContentLengthStr = FileUtils.byteCountToDisplaySize(totalFileContentLength);
 		String totalBytesHashedStr = FileUtils.byteCountToDisplaySize(totalBytesHashed);
 		String durationStr = DurationFormatUtils.formatDuration(duration, "HH:mm:ss");
-		Logger.info(String.format("Scanned %d files, for a total size of %s, during %s, using %d thread%n",
-				state.getFileStates().size(), totalBytesHashedStr, durationStr, parameters.getThreadCount()));
+
+		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
+		{
+			Logger.info(String.format("Scanned %d files (%s), during %s, using %d thread%n",
+					state.getFileStates().size(), totalBytesHashedStr, durationStr, parameters.getThreadCount()));
+		}
+		else
+		{
+			Logger.info(String.format("Hashed %d files (%s), hashed %s bytes, during %s, using %d thread%n",
+					state.getFileStates().size(), totalFileContentLengthStr, totalBytesHashedStr, durationStr, parameters.getThreadCount()));
+		}
 	}
 
 	private void scanFileTree(BlockingDeque<File> filesToHash, File directory) throws NoSuchAlgorithmException
 	{
 		List<File> files = Arrays.asList(directory.listFiles());
+		Collections.sort(files);
+
 		for (File file : files)
 		{
 			if (file.isDirectory() && file.getName().equals(Parameters.DOT_FIM_DIR))
@@ -174,7 +191,6 @@ public class StateGenerator
 				{
 					ex.printStackTrace();
 				}
-				totalBytesHashed += file.length();
 			}
 		}
 	}
@@ -186,7 +202,6 @@ public class StateGenerator
 		{
 			summedFileLength = 0;
 			fileCount = 0;
-			totalBytesHashed = 0;
 		}
 		finally
 		{

@@ -44,6 +44,9 @@ class FileHasher implements Runnable
 	private final List<FileState> fileStates;
 	private final MessageDigest messageDigest;
 
+	private long totalFileContentLength;
+	private long totalBytesHashed;
+
 	public FileHasher(StateGenerator stateGenerator, BlockingDeque<File> filesToHash, String fimRepositoryRootDir) throws NoSuchAlgorithmException
 	{
 		this.stateGenerator = stateGenerator;
@@ -57,6 +60,16 @@ class FileHasher implements Runnable
 	public List<FileState> getFileStates()
 	{
 		return fileStates;
+	}
+
+	public long getTotalFileContentLength()
+	{
+		return totalFileContentLength;
+	}
+
+	public long getTotalBytesHashed()
+	{
+		return totalBytesHashed;
 	}
 
 	@Override
@@ -125,6 +138,8 @@ class FileHasher implements Runnable
 			fullHash = hashFileChunkByChunk(file, FileState.SIZE_UNLIMITED);
 		}
 
+		totalFileContentLength += file.length();
+
 		return new FileHash(firstFourKiloHash, firstMegaHash, fullHash);
 	}
 
@@ -135,28 +150,33 @@ class FileHasher implements Runnable
 		byte[] dataBytes = Files.readAllBytes(file.toPath());
 		messageDigest.update(dataBytes);
 
+		totalBytesHashed += file.length();
+
 		byte[] digestBytes = messageDigest.digest();
 		return toHexString(digestBytes);
 	}
 
-	protected String hashFileChunkByChunk(File file, long lenToHash) throws IOException
+	protected String hashFileChunkByChunk(File file, long lengthToHash) throws IOException
 	{
 		messageDigest.reset();
 
 		try (FileInputStream fis = new FileInputStream(file))
 		{
 			byte[] dataBytes = new byte[FileState.SIZE_4_KB];
-			long readLen = 0;
+			long bytesHashed = 0;
 			int bytesRead;
 			while ((bytesRead = fis.read(dataBytes)) != -1)
 			{
 				messageDigest.update(dataBytes, 0, bytesRead);
-				readLen += bytesRead;
-				if (lenToHash != FileState.SIZE_UNLIMITED && readLen >= lenToHash)
+				bytesHashed += bytesRead;
+
+				if (lengthToHash != FileState.SIZE_UNLIMITED && bytesHashed >= lengthToHash)
 				{
 					break;
 				}
 			}
+
+			totalBytesHashed += bytesHashed;
 		}
 
 		byte[] digestBytes = messageDigest.digest();
