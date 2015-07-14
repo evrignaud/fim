@@ -51,7 +51,7 @@ public class BuildableState extends State
 				throw new IllegalArgumentException("New file: Duplicate fileName " + fileName);
 			}
 
-			// By default put the fileName as fileContent that will be the hash two
+			// By default put the fileName as fileContent that will be the hash
 			FileState fileState = new FileState(fileName, fileName.length(), getNow(), createHash(fileName));
 			newState.getFileStates().add(fileState);
 		}
