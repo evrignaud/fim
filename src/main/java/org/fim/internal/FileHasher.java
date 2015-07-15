@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
-import org.fim.model.HashMode;
 
 class FileHasher implements Runnable
 {
@@ -117,25 +116,28 @@ class FileHasher implements Runnable
 
 	protected FileHash hashFile(File file) throws IOException
 	{
-		HashMode hashMode = stateGenerator.getParameters().getHashMode();
-
 		String firstFourKiloHash = FileState.NO_HASH;
 		String firstMegaHash = FileState.NO_HASH;
 		String fullHash = FileState.NO_HASH;
 
-		if (hashMode == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
+		switch (stateGenerator.getParameters().getHashMode())
 		{
-			firstFourKiloHash = hashFileChunkByChunk(file, FileState.SIZE_4_KB);
-		}
-		else if (hashMode == HashMode.HASH_ONLY_FIRST_MEGA)
-		{
-			firstMegaHash = hashFileChunkByChunk(file, FileState.SIZE_1_MB);
-		}
-		else if (hashMode == HashMode.COMPUTE_ALL_HASH)
-		{
-			firstFourKiloHash = hashFileChunkByChunk(file, FileState.SIZE_4_KB);
-			firstMegaHash = hashFileChunkByChunk(file, FileState.SIZE_1_MB);
-			fullHash = hashFileChunkByChunk(file, FileState.SIZE_UNLIMITED);
+			case DONT_HASH_FILES:
+				break;
+
+			case HASH_ONLY_FIRST_FOUR_KILO:
+				firstFourKiloHash = hashFileChunkByChunk(file, FileState.SIZE_4_KB);
+				break;
+
+			case HASH_ONLY_FIRST_MEGA:
+				firstMegaHash = hashFileChunkByChunk(file, FileState.SIZE_1_MB);
+				break;
+
+			case COMPUTE_ALL_HASH:
+				firstFourKiloHash = hashFileChunkByChunk(file, FileState.SIZE_4_KB);
+				firstMegaHash = hashFileChunkByChunk(file, FileState.SIZE_1_MB);
+				fullHash = hashFileChunkByChunk(file, FileState.SIZE_UNLIMITED);
+				break;
 		}
 
 		totalFileContentLength += file.length();

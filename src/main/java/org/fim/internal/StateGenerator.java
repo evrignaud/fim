@@ -155,7 +155,7 @@ public class StateGenerator
 		}
 		else
 		{
-			Logger.info(String.format("Hashed %d files (%s), hashed %s bytes, during %s, using %d thread%n",
+			Logger.info(String.format("Scanned %d files (%s), hashed %s bytes, during %s, using %d thread%n",
 					state.getFileStates().size(), totalFileContentLengthStr, totalBytesHashedStr, durationStr, parameters.getThreadCount()));
 		}
 	}

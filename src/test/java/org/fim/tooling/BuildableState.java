@@ -25,7 +25,6 @@ import java.util.Date;
 
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
-import org.fim.model.HashMode;
 import org.fim.model.Parameters;
 import org.fim.model.State;
 
@@ -144,25 +143,29 @@ public class BuildableState extends State
 
 	private FileHash createHash(String content)
 	{
-		HashMode hashMode = parameters.getHashMode();
-
 		String firstFourKiloHash = FileState.NO_HASH;
 		String firstMegaHash = FileState.NO_HASH;
 		String fullHash = FileState.NO_HASH;
 
-		if (hashMode == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
+		switch (parameters.getHashMode())
 		{
-			firstFourKiloHash = "first_four_kilo_" + content;
-		}
-		else if (hashMode == HashMode.HASH_ONLY_FIRST_MEGA)
-		{
-			firstMegaHash = "first_mega_" + content;
-		}
-		else if (hashMode == HashMode.COMPUTE_ALL_HASH)
-		{
-			firstFourKiloHash = "first_four_kilo_" + content;
-			firstMegaHash = "first_mega_" + content;
-			fullHash = "full_" + content;
+			case DONT_HASH_FILES:
+				// Nothing to do
+				break;
+
+			case HASH_ONLY_FIRST_FOUR_KILO:
+				firstFourKiloHash = "first_four_kilo_" + content;
+				break;
+
+			case HASH_ONLY_FIRST_MEGA:
+				firstMegaHash = "first_mega_" + content;
+				break;
+
+			case COMPUTE_ALL_HASH:
+				firstFourKiloHash = "first_four_kilo_" + content;
+				firstMegaHash = "first_mega_" + content;
+				fullHash = "full_" + content;
+				break;
 		}
 
 		return new FileHash(firstFourKiloHash, firstMegaHash, fullHash);
@@ -170,25 +173,29 @@ public class BuildableState extends State
 
 	private FileHash appendHash(FileHash fileHash, String content)
 	{
-		HashMode hashMode = parameters.getHashMode();
-
 		String firstFourKiloHash = FileState.NO_HASH;
 		String firstMegaHash = FileState.NO_HASH;
 		String fullHash = FileState.NO_HASH;
 
-		if (hashMode == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
+		switch (parameters.getHashMode())
 		{
-			firstFourKiloHash = fileHash.getFirstFourKiloHash() + "_" + content;
-		}
-		else if (hashMode == HashMode.HASH_ONLY_FIRST_MEGA)
-		{
-			firstMegaHash = fileHash.getFirstMegaHash() + "_" + content;
-		}
-		else if (hashMode == HashMode.COMPUTE_ALL_HASH)
-		{
-			firstFourKiloHash = fileHash.getFirstFourKiloHash() + "_" + content;
-			firstMegaHash = fileHash.getFirstMegaHash() + "_" + content;
-			fullHash = fileHash.getFullHash() + "_" + content;
+			case DONT_HASH_FILES:
+				// Nothing to do
+				break;
+
+			case HASH_ONLY_FIRST_FOUR_KILO:
+				firstFourKiloHash = fileHash.getFirstFourKiloHash() + "_" + content;
+				break;
+
+			case HASH_ONLY_FIRST_MEGA:
+				firstMegaHash = fileHash.getFirstMegaHash() + "_" + content;
+				break;
+
+			case COMPUTE_ALL_HASH:
+				firstFourKiloHash = fileHash.getFirstFourKiloHash() + "_" + content;
+				firstMegaHash = fileHash.getFirstMegaHash() + "_" + content;
+				fullHash = fileHash.getFullHash() + "_" + content;
+				break;
 		}
 
 		return new FileHash(firstFourKiloHash, firstMegaHash, fullHash);

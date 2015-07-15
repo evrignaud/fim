@@ -27,7 +27,6 @@ import java.nio.file.Files;
 import java.util.List;
 
 import org.fim.model.FileState;
-import org.fim.model.HashMode;
 import org.fim.model.Parameters;
 import org.fim.model.State;
 
@@ -85,30 +84,36 @@ public class StateManager
 		state.loadFromGZipFile(stateFile);
 
 		// Replace by 'no_hash' accurately to be able to compare the FileState entry
-		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
+		switch (parameters.getHashMode())
 		{
-			for (FileState fileState : state.getFileStates())
-			{
-				fileState.getFileHash().setFirstFourKiloHash(FileState.NO_HASH);
-				fileState.getFileHash().setFirstMegaHash(FileState.NO_HASH);
-				fileState.getFileHash().setFullHash(FileState.NO_HASH);
-			}
-		}
-		else if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
-		{
-			for (FileState fileState : state.getFileStates())
-			{
-				fileState.getFileHash().setFirstMegaHash(FileState.NO_HASH);
-				fileState.getFileHash().setFullHash(FileState.NO_HASH);
-			}
-		}
-		else if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_MEGA)
-		{
-			for (FileState fileState : state.getFileStates())
-			{
-				fileState.getFileHash().setFirstFourKiloHash(FileState.NO_HASH);
-				fileState.getFileHash().setFullHash(FileState.NO_HASH);
-			}
+			case DONT_HASH_FILES:
+				for (FileState fileState : state.getFileStates())
+				{
+					fileState.getFileHash().setFirstFourKiloHash(FileState.NO_HASH);
+					fileState.getFileHash().setFirstMegaHash(FileState.NO_HASH);
+					fileState.getFileHash().setFullHash(FileState.NO_HASH);
+				}
+				break;
+
+			case HASH_ONLY_FIRST_FOUR_KILO:
+				for (FileState fileState : state.getFileStates())
+				{
+					fileState.getFileHash().setFirstMegaHash(FileState.NO_HASH);
+					fileState.getFileHash().setFullHash(FileState.NO_HASH);
+				}
+				break;
+
+			case HASH_ONLY_FIRST_MEGA:
+				for (FileState fileState : state.getFileStates())
+				{
+					fileState.getFileHash().setFirstFourKiloHash(FileState.NO_HASH);
+					fileState.getFileHash().setFullHash(FileState.NO_HASH);
+				}
+				break;
+
+			case COMPUTE_ALL_HASH:
+				// Nothing to do
+				break;
 		}
 
 		return state;
