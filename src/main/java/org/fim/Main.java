@@ -67,7 +67,7 @@ public class Main
 	{
 		Options options = new Options();
 		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as master. Only for the remove duplicates command", false));
-		options.addOption(createOption("d", "dont-hash-files", false, "Do not hash file content. Use only filenames and modification dates", false));
+		options.addOption(createOption("f", "fast-mode", false, "Do not hash file content. Use only filenames and modification dates", false));
 		options.addOption(createOption("k", "hash-only-first-four-kilo", false, "Hash only the first four kilo of the files", false));
 		options.addOption(createOption("m", "hash-only-first-mega", false, "Hash only the first mega of the files", false));
 		options.addOption(createOption("h", "help", false, "Prints the Fim help", false));
@@ -114,7 +114,7 @@ public class Main
 			parameters.setMasterFimRepositoryDir(commandLine.getOptionValue('a'));
 			parameters.setAlwaysYes(commandLine.hasOption('y'));
 
-			if (commandLine.hasOption('d'))
+			if (commandLine.hasOption('f'))
 			{
 				parameters.setHashMode(HashMode.DONT_HASH_FILES);
 			}

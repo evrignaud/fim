@@ -54,10 +54,14 @@ You can compare quickly asking to hash only the first megabyte of the files. **U
 
 	$ fim diff -m
 
-Otherwise you can request to not hash file content using the -d option. It will compare only the filenames and modification dates.
+You can compare quicker asking to hash only the first four kilobytes of the files. **Using this option can produce a non accurate result.**
+
+	$ fim diff -k
+
+Otherwise you can request to not hash file content using the fast mode (-f option). It will compare only the filenames and modification dates.
 You will not be able to detect files that have been renamed or duplicated.
 
-	$ fim diff -d
+	$ fim diff -f
 
 Each time you want to record the State of the current file tree you can use the commit command.
 It's a time consuming operation that will compute the files content hash.
@@ -68,7 +72,7 @@ It's a time consuming operation that will compute the files content hash.
 
 	$ fim help
 
-	usage: fim <command> [-a <arg>] [-c <arg>] [-d] [-h] [-k] [-l] [-m] [-q] [-t <arg>] [-v] [-y]
+	usage: fim <command> [-a <arg>] [-c <arg>] [-f] [-h] [-k] [-l] [-m] [-q] [-t <arg>] [-v] [-y]
 
 	File Integrity Checker
 
@@ -87,7 +91,7 @@ It's a time consuming operation that will compute the files content hash.
 		 -a,--master-fim-repository <arg>   Fim repository directory that you want to use as master. Only for the remove
 											duplicates command
 		 -c,--comment <arg>                 Sets that State comment during commit
-		 -d,--dont-hash-files               Do not hash file content. Use only filenames and modification dates
+		 -f,--fast-mode                     Do not hash file content. Use only filenames and modification dates
 		 -h,--help                          Prints the Fim help
 		 -k,--hash-only-first-four-kilo     Hash only the first four kilo of the files
 		 -l,--use-last-state                Use the last committed State
