@@ -36,6 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.model.Parameters;
@@ -46,7 +47,15 @@ public class StateGenerator
 {
 	public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
 
-	private static final char[] hashProgressChars = new char[]{'.', 'o', 'O', '@', '#'};
+	private static final Pair<Character, Integer>[] hashProgress = new Pair[]
+			{
+					Pair.of('.', 0),
+					Pair.of('o', FileState.SIZE_20_MB),
+					Pair.of('O', FileState.SIZE_50_MB),
+					Pair.of('@', FileState.SIZE_100_MB),
+					Pair.of('#', FileState.SIZE_200_MB)
+			};
+
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
 	private final Parameters parameters;
@@ -67,7 +76,7 @@ public class StateGenerator
 	public State generateState(String comment, File fimRepositoryRootDir) throws IOException, NoSuchAlgorithmException
 	{
 		Logger.info(String.format("Scanning recursively local files %s, using %d thread", hashModeToString(), parameters.getThreadCount()));
-		System.out.printf("    (Hash progress legend: x > 200Mb l > 100Mb, m > 50Mb, s > 20Mb, : > 10Mb, . otherwise)%n");
+		System.out.printf("    (Hash progress legend: " + hashProgressLegend() + ")%n");
 
 		State state = new State();
 		state.setComment(comment);
@@ -217,28 +226,7 @@ public class StateGenerator
 
 			if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0)
 			{
-				int progressIndex;
-				if (summedFileLength > FileState.SIZE_200_MB)
-				{
-					progressIndex = 4;
-				}
-				else if (summedFileLength > FileState.SIZE_100_MB)
-				{
-					progressIndex = 3;
-				}
-				else if (summedFileLength > FileState.SIZE_50_MB)
-				{
-					progressIndex = 2;
-				}
-				else if (summedFileLength > FileState.SIZE_20_MB)
-				{
-					progressIndex = 1;
-				}
-				else
-				{
-					progressIndex = 0;
-				}
-				System.out.print(hashProgressChars[progressIndex]);
+				System.out.print(getProgressChar());
 				summedFileLength = 0;
 			}
 
@@ -251,6 +239,43 @@ public class StateGenerator
 		{
 			progressLock.unlock();
 		}
+	}
+
+	private String hashProgressLegend()
+	{
+		StringBuilder sb = new StringBuilder();
+		for (int progressIndex = hashProgress.length - 1; progressIndex >= 0; progressIndex--)
+		{
+			char marker = hashProgress[progressIndex].getLeft();
+			sb.append(marker);
+
+			int fileLength = hashProgress[progressIndex].getRight();
+			if (fileLength == 0)
+			{
+				sb.append(" otherwise");
+			}
+			else
+			{
+				sb.append(" > ").append(FileUtils.byteCountToDisplaySize(fileLength));
+			}
+			sb.append(", ");
+		}
+		String legend = sb.toString();
+		legend = legend.substring(0, legend.length() - 2);
+		return legend;
+	}
+
+	private char getProgressChar()
+	{
+		int progressIndex;
+		for (progressIndex = hashProgress.length - 1; progressIndex >= 0; progressIndex--)
+		{
+			if (summedFileLength > hashProgress[progressIndex].getRight())
+			{
+				break;
+			}
+		}
+		return hashProgress[progressIndex].getLeft();
 	}
 
 	private void progressOutputStop()
