@@ -46,13 +46,13 @@ public class StateGenerator
 {
 	public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
 
+	private static final char[] hashProgressChars = new char[]{'.', 'o', 'O', '@', '#'};
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
 	private final Parameters parameters;
+	private final ReentrantLock progressLock;
 
 	private ExecutorService executorService;
-
-	private ReentrantLock progressLock = new ReentrantLock();
 	private long summedFileLength;
 	private int fileCount;
 	private long totalFileContentLength;
@@ -61,6 +61,7 @@ public class StateGenerator
 	public StateGenerator(Parameters parameters)
 	{
 		this.parameters = parameters;
+		this.progressLock = new ReentrantLock();
 	}
 
 	public State generateState(String comment, File fimRepositoryRootDir) throws IOException, NoSuchAlgorithmException
@@ -219,30 +220,28 @@ public class StateGenerator
 
 			if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0)
 			{
+				int progressIndex;
 				if (summedFileLength > FileState.SIZE_200_MB)
 				{
-					System.out.print("x");
+					progressIndex = 4;
 				}
 				else if (summedFileLength > FileState.SIZE_100_MB)
 				{
-					System.out.print("l");
+					progressIndex = 3;
 				}
 				else if (summedFileLength > FileState.SIZE_50_MB)
 				{
-					System.out.print("m");
+					progressIndex = 2;
 				}
 				else if (summedFileLength > FileState.SIZE_20_MB)
 				{
-					System.out.print("s");
-				}
-				else if (summedFileLength > FileState.SIZE_10_MB)
-				{
-					System.out.print(":");
+					progressIndex = 1;
 				}
 				else
 				{
-					System.out.print(".");
+					progressIndex = 0;
 				}
+				System.out.print(hashProgressChars[progressIndex]);
 				summedFileLength = 0;
 			}
 
