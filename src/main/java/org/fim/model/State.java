@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.zip.GZIPInputStream;
@@ -37,22 +38,28 @@ import com.google.gson.GsonBuilder;
 
 public class State
 {
-	private String modelVersion = "1";
-	private long timestamp = System.currentTimeMillis();
-	private String comment = "";
-	private int fileCount = 0;
-	private List<FileState> fileStates = null;
+	private String modelVersion;
+	private long timestamp;
+	private String comment;
+	private int fileCount;
+	private List<FileState> fileStates;
 
-	public void loadFromGZipFile(File stateFile) throws IOException
+	public State()
+	{
+		modelVersion = "1";
+		timestamp = System.currentTimeMillis();
+		comment = "";
+		fileCount = 0;
+		fileStates = new ArrayList<>();
+	}
+
+	public static State loadFromGZipFile(File stateFile) throws IOException
 	{
 		try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile))))
 		{
 			Gson gson = new Gson();
 			State state = gson.fromJson(reader, State.class);
-			timestamp = state.timestamp;
-			comment = state.comment;
-			fileCount = state.fileStates.size();
-			fileStates = state.fileStates;
+			return state;
 		}
 	}
 

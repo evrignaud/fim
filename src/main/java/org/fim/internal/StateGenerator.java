@@ -90,17 +90,14 @@ public class StateGenerator
 
 		waitAllFileHashed();
 
-		List<FileState> fileStates = new ArrayList<>();
 		for (FileHasher hasher : hashers)
 		{
-			fileStates.addAll(hasher.getFileStates());
+			state.getFileStates().addAll(hasher.getFileStates());
 			totalFileContentLength += hasher.getTotalFileContentLength();
 			totalBytesHashed += hasher.getTotalBytesHashed();
 		}
 
-		Collections.sort(fileStates, fileNameComparator);
-
-		state.setFileStates(fileStates);
+		Collections.sort(state.getFileStates(), fileNameComparator);
 
 		progressOutputStop();
 		displayStatistics(start, state);

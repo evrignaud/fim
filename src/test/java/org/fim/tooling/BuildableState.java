@@ -37,7 +37,6 @@ public class BuildableState extends State
 	public BuildableState(Parameters parameters)
 	{
 		this.parameters = parameters;
-		setFileStates(new ArrayList<FileState>());
 	}
 
 	public BuildableState addFiles(String... fileNames)

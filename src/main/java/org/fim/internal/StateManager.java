@@ -80,9 +80,15 @@ public class StateManager
 			throw new IllegalStateException(String.format("Unable to load State file %d from directory %s", stateNumber, stateDir));
 		}
 
-		State state = new State();
-		state.loadFromGZipFile(stateFile);
+		State state = State.loadFromGZipFile(stateFile);
 
+		adjustAccordingToHashMode(state);
+
+		return state;
+	}
+
+	private void adjustAccordingToHashMode(State state)
+	{
 		// Replace by 'no_hash' accurately to be able to compare the FileState entry
 		switch (parameters.getHashMode())
 		{
@@ -115,8 +121,6 @@ public class StateManager
 				// Nothing to do
 				break;
 		}
-
-		return state;
 	}
 
 	/**
