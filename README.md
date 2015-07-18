@@ -64,7 +64,7 @@ You will not be able to detect files that have been renamed or duplicated.
 	$ fim diff -f
 
 Each time you want to record the State of the current file tree you can use the commit command.
-It's a time consuming operation that will compute the files content hash.
+It's a time consuming operation that will compute all the hash of each files content.
 
 	$ fim ci
 
