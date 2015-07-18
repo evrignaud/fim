@@ -46,8 +46,8 @@ import org.fim.model.Parameters;
 
 public class Main
 {
-	private static List<AbstractCommand> commands;
-	private static Options options;
+	private static List<AbstractCommand> commands = buildCommands();
+	private static Options options = buildOptions();
 
 	private static List<AbstractCommand> buildCommands()
 	{
@@ -82,9 +82,6 @@ public class Main
 
 	public static void main(String[] args) throws Exception
 	{
-		commands = buildCommands();
-		options = buildOptions();
-
 		String[] filteredArgs = filterEmptyArgs(args);
 		if (filteredArgs.length < 1)
 		{
