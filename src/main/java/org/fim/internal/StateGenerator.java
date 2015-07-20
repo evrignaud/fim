@@ -75,7 +75,7 @@ public class StateGenerator
 
 	public State generateState(String comment, File fimRepositoryRootDir) throws IOException, NoSuchAlgorithmException
 	{
-		Logger.info(String.format("Scanning recursively local files %s, using %d thread", hashModeToString(), parameters.getThreadCount()));
+		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(), parameters.getThreadCount()));
 		System.out.printf("    (Hash progress legend: " + hashProgressLegend() + ")%n");
 
 		State state = new State();
@@ -233,6 +233,9 @@ public class StateGenerator
 			if (fileCount % (100 * PROGRESS_DISPLAY_FILE_COUNT) == 0)
 			{
 				System.out.println("");
+
+				// Very important to avoid os::commit_memory error caused by very big usage of FileChannel.map()
+				System.gc();
 			}
 		}
 		finally

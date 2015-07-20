@@ -19,9 +19,10 @@
 package org.fim.internal;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
+import org.fim.model.HashMode;
 
 class FileHasher implements Runnable
 {
@@ -41,7 +43,10 @@ class FileHasher implements Runnable
 	private final String fimRepositoryRootDir;
 
 	private final List<FileState> fileStates;
-	private final MessageDigest messageDigest;
+
+	private final MessageDigest firstFourKiloDigest;
+	private final MessageDigest firstMegaDigest;
+	private final MessageDigest fullDigest;
 
 	private long totalFileContentLength;
 	private long totalBytesHashed;
@@ -53,7 +58,10 @@ class FileHasher implements Runnable
 		this.fimRepositoryRootDir = fimRepositoryRootDir;
 
 		this.fileStates = new ArrayList<>();
-		this.messageDigest = MessageDigest.getInstance(HASH_ALGORITHM);
+
+		this.firstFourKiloDigest = MessageDigest.getInstance(HASH_ALGORITHM);
+		this.firstMegaDigest = MessageDigest.getInstance(HASH_ALGORITHM);
+		this.fullDigest = MessageDigest.getInstance(HASH_ALGORITHM);
 	}
 
 	public List<FileState> getFileStates()
@@ -77,7 +85,7 @@ class FileHasher implements Runnable
 		try
 		{
 			File file;
-			while ((file = filesToHash.poll(10, TimeUnit.SECONDS)) != null)
+			while ((file = filesToHash.poll(3, TimeUnit.SECONDS)) != null)
 			{
 				stateGenerator.updateProgressOutput(file);
 
@@ -116,72 +124,79 @@ class FileHasher implements Runnable
 
 	protected FileHash hashFile(File file) throws IOException
 	{
-		String firstFourKiloHash = FileState.NO_HASH;
-		String firstMegaHash = FileState.NO_HASH;
-		String fullHash = FileState.NO_HASH;
+		HashMode hashMode = stateGenerator.getParameters().getHashMode();
 
-		switch (stateGenerator.getParameters().getHashMode())
+		firstFourKiloDigest.reset();
+		firstMegaDigest.reset();
+		fullDigest.reset();
+
+		MappedByteBuffer data;
+		long fileSize = 0;
+		long remainder = 0;
+		long position = 0;
+		final Path path = file.toPath();
+
+		try (final FileChannel channel = FileChannel.open(path))
 		{
-			case DONT_HASH_FILES:
-				break;
+			fileSize = channel.size();
+			remainder = fileSize;
 
-			case HASH_ONLY_FIRST_FOUR_KILO:
-				firstFourKiloHash = hashFileChunkByChunk(file, FileState.SIZE_4_KB);
-				break;
+			long size = Math.min(remainder, FileState.SIZE_4_KB);
+			data = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
+			position += data.limit();
+			remainder -= data.limit();
 
-			case HASH_ONLY_FIRST_MEGA:
-				firstMegaHash = hashFileChunkByChunk(file, FileState.SIZE_1_MB);
-				break;
-
-			case COMPUTE_ALL_HASH:
-				firstFourKiloHash = hashFileChunkByChunk(file, FileState.SIZE_4_KB);
-				firstMegaHash = hashFileChunkByChunk(file, FileState.SIZE_1_MB);
-				fullHash = hashFileChunkByChunk(file, FileState.SIZE_UNLIMITED);
-				break;
-		}
-
-		totalFileContentLength += file.length();
-
-		return new FileHash(firstFourKiloHash, firstMegaHash, fullHash);
-	}
-
-	protected String hashFileUsingNIO(File file) throws IOException
-	{
-		messageDigest.reset();
-
-		byte[] dataBytes = Files.readAllBytes(file.toPath());
-		messageDigest.update(dataBytes);
-
-		totalBytesHashed += file.length();
-
-		byte[] digestBytes = messageDigest.digest();
-		return toHexString(digestBytes);
-	}
-
-	protected String hashFileChunkByChunk(File file, long lengthToHash) throws IOException
-	{
-		messageDigest.reset();
-
-		try (FileInputStream fis = new FileInputStream(file))
-		{
-			byte[] dataBytes = new byte[FileState.SIZE_4_KB];
-			long bytesHashed = 0;
-			int bytesRead;
-			while ((bytesRead = fis.read(dataBytes)) != -1)
+			firstFourKiloDigest.update(data);
+			if (hashMode == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
 			{
-				messageDigest.update(dataBytes, 0, bytesRead);
-				bytesHashed += bytesRead;
-
-				if (lengthToHash != FileState.SIZE_UNLIMITED && bytesHashed >= lengthToHash)
-				{
-					break;
-				}
+				return new FileHash(getHash(firstFourKiloDigest), FileState.NO_HASH, FileState.NO_HASH);
 			}
 
-			totalBytesHashed += bytesHashed;
+			data.flip();
+			firstMegaDigest.update(data);
+
+			data.flip();
+			fullDigest.update(data);
+
+			if (position < fileSize)
+			{
+				size = Math.min(remainder, FileState.SIZE_1_MB - position);
+				data = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
+				position += data.limit();
+				remainder -= data.limit();
+
+				firstMegaDigest.update(data);
+				if (hashMode == HashMode.HASH_ONLY_FIRST_MEGA)
+				{
+					return new FileHash(FileState.NO_HASH, getHash(firstMegaDigest), FileState.NO_HASH);
+				}
+
+				data.flip();
+				fullDigest.update(data);
+
+				while (position < fileSize)
+				{
+					size = Math.min(remainder, FileState.SIZE_1_MB);
+					data = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
+					position += data.limit();
+					remainder -= data.limit();
+
+					fullDigest.update(data);
+				}
+			}
+		}
+		finally
+		{
+			totalFileContentLength += fileSize;
+			totalBytesHashed += position;
 		}
 
-		byte[] digestBytes = messageDigest.digest();
+		return new FileHash(getHash(firstFourKiloDigest), getHash(firstMegaDigest), getHash(fullDigest));
+	}
+
+	private String getHash(MessageDigest digest)
+	{
+		byte[] digestBytes = digest.digest();
 		return toHexString(digestBytes);
 	}
 
