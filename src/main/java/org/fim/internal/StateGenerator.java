@@ -76,7 +76,7 @@ public class StateGenerator
 	public State generateState(String comment, File fimRepositoryRootDir) throws IOException, NoSuchAlgorithmException
 	{
 		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(), parameters.getThreadCount()));
-		System.out.printf("    (Hash progress legend: " + hashProgressLegend() + ")%n");
+		System.out.printf("    (Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgressLegend());
 
 		State state = new State();
 		state.setComment(comment);
