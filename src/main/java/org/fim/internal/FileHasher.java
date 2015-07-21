@@ -196,6 +196,10 @@ class FileHasher implements Runnable
 			totalBytesHashed += position;
 		}
 
+		if (hashMode == HashMode.HASH_ONLY_FIRST_MEGA)
+		{
+			return new FileHash(FileState.NO_HASH, getHash(firstMegaDigest), FileState.NO_HASH);
+		}
 		return new FileHash(getHash(firstFourKiloDigest), getHash(firstMegaDigest), getHash(fullDigest));
 	}
 

@@ -110,12 +110,13 @@ public class FileHasherTest extends StateAssert
 	}
 
 	@Test
-	public void weCanHashALittleFile() throws IOException
+	public void weCanHashA_2KB_File() throws IOException
 	{
-		File fileToHash = new File("LICENSE");
-		String firstFourKiloHash = "757af34fe2d75e895caf4e479e77e5b2ba97510140933c89facc0399eb92063e83d7833d5d3285d35ee310b6d599aa8f8cafbd480cb797bbb2d8b8b47880d2ba";
-		String firstMegaHash = "57547468f95220e8e0e265f0682b1dc787e123fa984d12482b38ef69b6f3a8e0843f36bccf4262f3c686e6a9fb55552ed386e295f72e6401f66480d2da6145d1";
-		String fullFileHash = "57547468f95220e8e0e265f0682b1dc787e123fa984d12482b38ef69b6f3a8e0843f36bccf4262f3c686e6a9fb55552ed386e295f72e6401f66480d2da6145d1";
+		String firstFourKiloHash = "76b1e87b9f5df5d1584c5684432005d533196532439edbbf25ba9c7e82b7b0f7652c66e20ab07d854b950c8eeb5e2f65a03054f68d093fa75927ab2041bd8f74";
+		String firstMegaHash = firstFourKiloHash;
+		String fullFileHash = firstFourKiloHash;
+
+		File fileToHash = createFileWithSize(2 * 1024);
 
 		FileHash fileHash = cut.hashFile(fileToHash);
 
@@ -123,13 +124,27 @@ public class FileHasherTest extends StateAssert
 	}
 
 	@Test
-	public void weCanHashABigFile() throws IOException
+	public void weCanHashA_30KB_File() throws IOException
+	{
+		String firstFourKiloHash = "757af34fe2d75e895caf4e479e77e5b2ba97510140933c89facc0399eb92063e83d7833d5d3285d35ee310b6d599aa8f8cafbd480cb797bbb2d8b8b47880d2ba";
+		String firstMegaHash = "f66f942e45d12bda1224a7644e7b157a67e0cb66dc48e36d92cfbf8febf3fdae2d567a0906f1c3684f19e0902460513cf9f5fba285ce9d8f61fd1ea4772d79c3";
+		String fullFileHash = firstMegaHash;
+
+		File fileToHash = createFileWithSize(30 * 1024);
+
+		FileHash fileHash = cut.hashFile(fileToHash);
+
+		assertFileHash(fileHash, firstFourKiloHash, firstMegaHash, fullFileHash);
+	}
+
+	@Test
+	public void weCanHashA_60MB_File() throws IOException
 	{
 		String firstFourKiloHash = "757af34fe2d75e895caf4e479e77e5b2ba97510140933c89facc0399eb92063e83d7833d5d3285d35ee310b6d599aa8f8cafbd480cb797bbb2d8b8b47880d2ba";
 		String firstMegaHash = "733e3c1c2e1a71086637cecfe168a47d35c10cda2b792ff645befef7eaf86b96ecaf357b775dd323d5ab2a638c90c81abcae89372500dd8da60160508486bf4d";
 		String fullFileHash = "e891a71e312bc6e34f549664706951516c42f660face62756bb155301c5e06ba79db94f83dedd43467530021935f5b427a58d7a5bd245ea1b2b0db8d7b08ee7a";
 
-		File fileToHash = createBigLicenseFile(60 * 1024 * 1024);
+		File fileToHash = createFileWithSize(60 * 1024 * 1024);
 
 		FileHash fileHash = cut.hashFile(fileToHash);
 
@@ -169,23 +184,28 @@ public class FileHasherTest extends StateAssert
 		}
 	}
 
-	private File createBigLicenseFile(long fileSize) throws IOException
+	private File createFileWithSize(long fileSize) throws IOException
 	{
 		File license = new File("LICENSE");
 		String content = FileUtils.readFileToString(license, utf8);
 
-		File bigLicense = new File(rootDir, "BIG_LICENSE");
-		if (bigLicense.exists())
+		File newFile = new File(rootDir, "LICENSE_" + fileSize);
+		if (newFile.exists())
 		{
-			bigLicense.delete();
+			newFile.delete();
+		}
+
+		if (content.length() > fileSize)
+		{
+			content = content.substring(0, (int) fileSize);
 		}
 
 		do
 		{
-			FileUtils.writeStringToFile(bigLicense, content, true);
+			FileUtils.writeStringToFile(newFile, content, true);
 		}
-		while (bigLicense.length() < fileSize);
+		while (newFile.length() < fileSize);
 
-		return bigLicense;
+		return newFile;
 	}
 }
