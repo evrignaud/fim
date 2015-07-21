@@ -34,7 +34,7 @@ this is why we can call it an __Unversioned Control System (UVCS)__.
 Fim keeps only each version of the different State that have been committed.
 You cannot use them to retrieve the content of one file that you may have lost.
 
-> __Fim does not replace a backup software.__
+> __Fim does not replace a backup software__
 
 Table of contents
 =================
