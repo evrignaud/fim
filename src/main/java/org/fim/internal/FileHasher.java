@@ -126,6 +126,11 @@ class FileHasher implements Runnable
 	{
 		HashMode hashMode = stateGenerator.getParameters().getHashMode();
 
+		if (hashMode == HashMode.DONT_HASH_FILES)
+		{
+			return new FileHash(FileState.NO_HASH, FileState.NO_HASH, FileState.NO_HASH);
+		}
+
 		firstFourKiloDigest.reset();
 		firstMegaDigest.reset();
 		fullDigest.reset();
