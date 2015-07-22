@@ -11,14 +11,14 @@
 	<fileSets>
 		<fileSet>
 			<directory>target</directory>
-			<outputDirectory>/bin</outputDirectory>
+			<outputDirectory>bin</outputDirectory>
 			<includes>
 				<include>fim-*.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
 			<directory>src/main/resources/script</directory>
-			<outputDirectory>/</outputDirectory>
+			<outputDirectory></outputDirectory>
 			<filtered>true</filtered>
 			<includes>
 				<include>fim</include>
@@ -27,7 +27,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>${basedir}</directory>
-			<outputDirectory>/</outputDirectory>
+			<outputDirectory></outputDirectory>
 			<includes>
 				<include>LICENSE</include>
 				<include>*.md</include>

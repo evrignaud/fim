@@ -161,7 +161,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>${maven-assembly-plugin.version}</version>
 				<configuration>
-					<outputDirectory>dist</outputDirectory>
+					<outputDirectory>${project.build.directory}/dist</outputDirectory>
 					<descriptors>
 						<descriptor>src/main/assembly/assembly-dist.xml</descriptor>
 					</descriptors>
