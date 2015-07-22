@@ -29,6 +29,7 @@ import java.util.List;
 import org.fim.model.FileState;
 import org.fim.model.Parameters;
 import org.fim.model.State;
+import org.fim.util.Logger;
 
 public class StateManager
 {
@@ -39,7 +40,6 @@ public class StateManager
 	private final Parameters parameters;
 	private final Charset utf8 = Charset.forName("UTF-8");
 	private final File stateDir;
-	protected int lastStateNumber = -1;
 
 	public StateManager(Parameters parameters)
 	{
@@ -54,21 +54,15 @@ public class StateManager
 
 	public void createNewState(State state) throws IOException
 	{
-		state.saveToGZipFile(getNextStateFile());
-		writeLastStateNumber();
-	}
-
-	public File getNextStateFile()
-	{
-		findLastStateNumber();
+		int lastStateNumber = getLastStateNumber();
 		lastStateNumber++;
-		File statFile = getStateFile(lastStateNumber);
-		return statFile;
+		state.saveToGZipFile(getStateFile(lastStateNumber));
+		saveLastStateNumber(lastStateNumber);
 	}
 
 	public State loadLastState() throws IOException
 	{
-		findLastStateNumber();
+		int lastStateNumber = getLastStateNumber();
 		return loadState(lastStateNumber);
 	}
 
@@ -133,29 +127,9 @@ public class StateManager
 		return new File(stateDir, builder.toString());
 	}
 
-	protected void findLastStateNumber()
+	public int getLastStateNumber()
 	{
-		readLastStateNumber();
-		if (lastStateNumber != -1)
-		{
-			return;
-		}
-
-		for (int index = 1; ; index++)
-		{
-			File statFile = getStateFile(index);
-			if (!statFile.exists())
-			{
-				lastStateNumber = index - 1;
-				return;
-			}
-		}
-	}
-
-	public void readLastStateNumber()
-	{
-		lastStateNumber = -1;
-
+		boolean lastStateFileDesynchronized = false;
 		File lastStateFile = new File(stateDir, LAST_STATE_FILE_NAME);
 		if (lastStateFile.exists())
 		{
@@ -164,17 +138,39 @@ public class StateManager
 				List<String> strings = Files.readAllLines(lastStateFile.toPath(), utf8);
 				if (strings.size() > 0)
 				{
-					lastStateNumber = Integer.parseInt(strings.get(0));
+					int number = Integer.parseInt(strings.get(0));
+					File statFile = getStateFile(number);
+					if (statFile.exists())
+					{
+						return number;
+					}
 				}
 			}
 			catch (IOException ex)
 			{
 				ex.printStackTrace();
 			}
+
+			lastStateFileDesynchronized = true;
+		}
+
+		for (int index = 1; ; index++)
+		{
+			File statFile = getStateFile(index);
+			if (!statFile.exists())
+			{
+				int number = index - 1;
+				if (lastStateFileDesynchronized)
+				{
+					Logger.error(String.format("'%s' file desynchronized. Resetting it to %d.", lastStateFile, number));
+					saveLastStateNumber(number);
+				}
+				return number;
+			}
 		}
 	}
 
-	private void writeLastStateNumber()
+	private void saveLastStateNumber(int lastStateNumber)
 	{
 		if (lastStateNumber != -1)
 		{
@@ -189,10 +185,5 @@ public class StateManager
 				ex.printStackTrace();
 			}
 		}
-	}
-
-	public int getLastStateNumber()
-	{
-		return lastStateNumber;
 	}
 }

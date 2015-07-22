@@ -89,11 +89,10 @@ public class StateManagerTest extends StateAssert
 			s = s.addFiles(dirName + "/file_1", dirName + "/file_2", dirName + "/file_3");
 			cut.createNewState(s);
 
-			assertThat(cut.lastStateNumber).isEqualTo(index + 1);
+			assertThat(cut.getLastStateNumber()).isEqualTo(index + 1);
 		}
 
-		cut.findLastStateNumber();
-		assertThat(cut.lastStateNumber).isEqualTo(count);
+		assertThat(cut.getLastStateNumber()).isEqualTo(count);
 
 		State result = cut.loadLastState();
 		if (hashMode == HashMode.DONT_HASH_FILES)
@@ -105,6 +104,10 @@ public class StateManagerTest extends StateAssert
 			assertThat(result).isEqualTo(s);
 		}
 
+		assertThat(cut.getLastStateNumber()).isEqualTo(10);
+		File stateFile = cut.getStateFile(cut.getLastStateNumber());
+		assertThat(stateFile.getName()).isEqualTo("state_10.json.gz");
+
 		result = cut.loadState(10);
 		if (hashMode == HashMode.DONT_HASH_FILES)
 		{
@@ -114,9 +117,22 @@ public class StateManagerTest extends StateAssert
 		{
 			assertThat(result).isEqualTo(s);
 		}
+	}
 
-		File nextStateFile = cut.getNextStateFile();
-		assertThat(nextStateFile.getName()).isEqualTo("state_11.json.gz");
+	@Test
+	public void weCanRetrieveLastStateNumberWhenAStateFileIsMissing() throws IOException
+	{
+		s = s.addFiles("file_1", "file_2");
+		cut.createNewState(s);
+
+		s = s.addFiles("file_3");
+		cut.createNewState(s);
+
+		assertThat(cut.getLastStateNumber()).isEqualTo(2);
+
+		cut.getStateFile(2).delete();
+
+		assertThat(cut.getLastStateNumber()).isEqualTo(1);
 	}
 
 	private void assertAllFileStatesHaveNoHash(State result, int fileCount)

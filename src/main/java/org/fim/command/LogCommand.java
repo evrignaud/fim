@@ -51,7 +51,6 @@ public class LogCommand extends AbstractCommand
 	{
 		StateManager manager = new StateManager(parameters);
 
-		manager.readLastStateNumber();
 		if (manager.getLastStateNumber() == -1)
 		{
 			System.out.println("No State found");
