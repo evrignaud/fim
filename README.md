@@ -75,7 +75,7 @@ It's a time consuming operation that will compute all the hash of each files con
 
 	$ fim ci
 
-[TOC](#table-of-contents)
+[\[^ TOC\]](#table-of-contents)
 
 ## Usage
 
@@ -110,7 +110,7 @@ It's a time consuming operation that will compute all the hash of each files con
 		 -v,--version                       Prints the Fim version
 		 -y,--always-yes                    Always yes to every questions
 
-[TOC](#table-of-contents)
+[\[^ TOC\]](#table-of-contents)
 
 ## Simple example
 
@@ -334,7 +334,7 @@ State #2: 2015/07/21 22:28:38
 
 ```
 
-[TOC](#table-of-contents)
+[\[^ TOC\]](#table-of-contents)
 
 ## Real life example
 
@@ -515,4 +515,4 @@ This time in my case, **it takes 2 hours** as for the `init` command.
 There is also the fast mode using the `-f` option that do not hash file content. It helps to detect faster changes but only file names that have changed.
 This time in my case, **it takes 8 seconds**.
 
-[TOC](#table-of-contents)
+[\[^ TOC\]](#table-of-contents)
