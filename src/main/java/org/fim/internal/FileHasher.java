@@ -85,7 +85,7 @@ class FileHasher implements Runnable
 		try
 		{
 			File file;
-			while ((file = filesToHash.poll(3, TimeUnit.SECONDS)) != null)
+			while ((file = filesToHash.poll(500, TimeUnit.MILLISECONDS)) != null)
 			{
 				stateGenerator.updateProgressOutput(file);
 

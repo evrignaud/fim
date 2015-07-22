@@ -35,14 +35,18 @@ public class Parameters implements Cloneable
 
 	public Parameters()
 	{
-		this.defaultStateDir = new File(DOT_FIM_DIR, "states");
-		this.verbose = true;
-		this.hashMode = HashMode.COMPUTE_ALL_HASH;
-		this.comment = "";
-		this.useLastState = false;
-		this.threadCount = Runtime.getRuntime().availableProcessors() / 2;
-		this.masterFimRepositoryDir = null;
-		this.alwaysYes = false;
+		defaultStateDir = new File(DOT_FIM_DIR, "states");
+		verbose = true;
+		hashMode = HashMode.COMPUTE_ALL_HASH;
+		comment = "";
+		useLastState = false;
+		threadCount = Runtime.getRuntime().availableProcessors() / 2;
+		if (threadCount < 1)
+		{
+			threadCount = 1;
+		}
+		masterFimRepositoryDir = null;
+		alwaysYes = false;
 	}
 
 	public File getDefaultStateDir()
