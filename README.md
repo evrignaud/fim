@@ -1,6 +1,16 @@
 # Fim
-File Integrity Manager
-============
+
+Table of contents
+=================
+
+  * [File Integrity Manager](#file-integrity-manager)
+  * [Fim workflow](#fim-workflow)
+  * [Usage](#usage)
+  * [Simple example](#simple-example)
+  * [Real life example](#real-life-example)
+  * [License](https://github.com/evrignaud/fim/blob/master/LICENSE.md)
+
+## File Integrity Manager
 
 Fim manage the integrity of a complete file tree.
 
@@ -35,15 +45,6 @@ Fim keeps only each version of the different State that have been committed.
 You cannot use them to retrieve the content of one file that you may have lost.
 
 > __Fim does not replace a backup software__
-
-Table of contents
-=================
-
-  * [Fim workflow](#fim-workflow)
-  * [Usage](#usage)
-  * [Simple example](#simple-example)
-  * [Real life example](#real-life-example)
-  * [License](https://github.com/evrignaud/fim/blob/master/LICENSE.md)
   
 ## Fim workflow
 
