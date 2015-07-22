@@ -333,7 +333,7 @@ State #2: 2015/07/21 22:28:38
 ## Real life example
 
 Here is the output of the initialization of a big Fim repository that contains 297 GB of photos and videos.
-It takes 2 hours to hash all the files content.
+**It takes 2 hours** to hash all the files content.
 
 ```shell
 ~/Photos_Videos$ fim init
@@ -388,7 +388,7 @@ oooooooooooooooooo#ooooooooooo..oo@...ooooo#o
 41453 added
 ```
 
-I am able to check the differences very quickly using the `-k` option that will check only the first four kilobytes and it take 4 minutes :=).
+I am able to check the differences very quickly using the `-k` option that will check only the first four kilobytes and **it take 4 minutes** :=).
 
 ```shell
 ~/Photos_Videos$ fim diff -k
@@ -447,7 +447,7 @@ Nothing modified
 This quick diff can be inaccurate.
 To increase accuracy, you can use the `-m` option. This result is more accurate,
 but it cannot be completely accurate as only the hash of the first megabyte of the files are computed.
-This time in my case, it takes 20 minutes to check the differences.
+This time in my case, **it takes 20 minutes** to check the differences.
 
 ```shell
 ~/Photos_Videos$ fim diff -m
@@ -504,4 +504,7 @@ Nothing modified
 ```
 
 If you want to be completely sure of the `diff` result you need to run a full hash of all the files content using the `fim diff` command without any option.
-This time in my case, it takes 2 hours as for the `init` command.
+This time in my case, **it takes 2 hours** as for the `init` command.
+
+There is also the fast mode that do not hash file content. It helps to detect faster changes but only file names that have changed.
+This time in my case, **it takes 8 seconds**.
