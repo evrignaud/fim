@@ -1,7 +1,6 @@
 # Fim
 
-Table of contents
-=================
+## Table of contents
 
   * [File Integrity Manager](#file-integrity-manager)
   * [Fim workflow](#fim-workflow)
@@ -45,7 +44,9 @@ Fim keeps only each version of the different State that have been committed.
 You cannot use them to retrieve the content of one file that you may have lost.
 
 > __Fim does not replace a backup software__
-  
+
+[\[^ TOC\]](#table-of-contents)
+
 ## Fim workflow
 
 First you need to initialize the Fim repository using the init command.
