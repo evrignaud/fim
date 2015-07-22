@@ -27,7 +27,7 @@ set JAVA_OPTIONS=-Xmx4g -XX:MaxMetaspaceSize=4g
 @rem     Useful info found here
 @rem     http://superuser.com/questions/489240/how-to-get-filename-only-without-path-in-windows-command-line
 @rem -----------------------------------------------
-for %%f in (%baseDir%target\fim-*.jar) do (
+for %%f in ("%baseDir%target\fim-*.jar") do (
     set JAR_FILE=%%~nxf
 )
 
