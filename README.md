@@ -513,6 +513,6 @@ If you want to be completely sure of the `diff` result you need to run a full ha
 This time in my case, **it takes 2 hours** as for the `init` command.
 
 There is also the fast mode using the `-f` option that do not hash file content. It helps to detect faster changes but only file names that have changed.
-This time in my case, **it takes 8 seconds**.
+This time in my case, **it takes 3 seconds**.
 
 [\[^ TOC\]](#table-of-contents)

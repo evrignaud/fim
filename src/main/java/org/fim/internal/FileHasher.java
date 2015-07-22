@@ -128,6 +128,7 @@ class FileHasher implements Runnable
 
 		if (hashMode == HashMode.DONT_HASH_FILES)
 		{
+			totalFileContentLength += file.length();
 			return new FileHash(FileState.NO_HASH, FileState.NO_HASH, FileState.NO_HASH);
 		}
 

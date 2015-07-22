@@ -76,7 +76,10 @@ public class StateGenerator
 	public State generateState(String comment, File fimRepositoryRootDir) throws IOException, NoSuchAlgorithmException
 	{
 		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(), parameters.getThreadCount()));
-		System.out.printf("    (Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgressLegend());
+		if (displayHashLegend())
+		{
+			System.out.printf("    (Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgressLegend());
+		}
 
 		State state = new State();
 		state.setComment(comment);
@@ -158,7 +161,7 @@ public class StateGenerator
 		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
 		{
 			Logger.info(String.format("Scanned %d files (%s), during %s, using %d thread%n",
-					state.getFileStates().size(), totalBytesHashedStr, durationStr, parameters.getThreadCount()));
+					state.getFileStates().size(), totalFileContentLengthStr, durationStr, parameters.getThreadCount()));
 		}
 		else
 		{
@@ -204,16 +207,8 @@ public class StateGenerator
 
 	private void progressOutputInit()
 	{
-		progressLock.lock();
-		try
-		{
-			summedFileLength = 0;
-			fileCount = 0;
-		}
-		finally
-		{
-			progressLock.unlock();
-		}
+		summedFileLength = 0;
+		fileCount = 0;
 	}
 
 	public void updateProgressOutput(File file)
@@ -221,18 +216,25 @@ public class StateGenerator
 		progressLock.lock();
 		try
 		{
-			summedFileLength += file.length();
 			fileCount++;
 
-			if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0)
+			if (displayHashLegend())
 			{
-				System.out.print(getProgressChar());
-				summedFileLength = 0;
+				summedFileLength += file.length();
+
+				if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0)
+				{
+					System.out.print(getProgressChar(summedFileLength));
+					summedFileLength = 0;
+				}
 			}
 
 			if (fileCount % (100 * PROGRESS_DISPLAY_FILE_COUNT) == 0)
 			{
-				System.out.println("");
+				if (displayHashLegend())
+				{
+					System.out.println("");
+				}
 
 				// Very important to avoid os::commit_memory error caused by very big usage of FileChannel.map()
 				System.gc();
@@ -268,12 +270,12 @@ public class StateGenerator
 		return legend;
 	}
 
-	private char getProgressChar()
+	private char getProgressChar(long fileLength)
 	{
 		int progressIndex;
 		for (progressIndex = hashProgress.length - 1; progressIndex >= 0; progressIndex--)
 		{
-			if (summedFileLength > hashProgress[progressIndex].getRight())
+			if (fileLength > hashProgress[progressIndex].getRight())
 			{
 				break;
 			}
@@ -283,18 +285,18 @@ public class StateGenerator
 
 	private void progressOutputStop()
 	{
-		progressLock.lock();
-		try
+		if (displayHashLegend())
 		{
 			if (fileCount > PROGRESS_DISPLAY_FILE_COUNT)
 			{
 				System.out.println("");
 			}
 		}
-		finally
-		{
-			progressLock.unlock();
-		}
+	}
+
+	private boolean displayHashLegend()
+	{
+		return parameters.isVerbose() && parameters.getHashMode() != HashMode.DONT_HASH_FILES;
 	}
 
 	public Parameters getParameters()
