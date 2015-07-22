@@ -92,9 +92,9 @@ class FileHasher implements Runnable
 				try
 				{
 					FileHash fileHash = hashFile(file);
-					String fileName = file.toString();
-					fileName = getRelativeFileName(fimRepositoryRootDir, fileName);
-					fileStates.add(new FileState(fileName, file.length(), file.lastModified(), fileHash));
+					String normalizedFileName = getNormalizedFileName(file);
+					normalizedFileName = getRelativeFileName(fimRepositoryRootDir, normalizedFileName);
+					fileStates.add(new FileState(normalizedFileName, file.length(), file.lastModified(), fileHash));
 				}
 				catch (Exception ex)
 				{
@@ -106,6 +106,16 @@ class FileHasher implements Runnable
 		{
 			ex.printStackTrace();
 		}
+	}
+
+	private String getNormalizedFileName(File file)
+	{
+		String normalizedFileName = file.toString();
+		if (file.separatorChar != '/')
+		{
+			normalizedFileName = normalizedFileName.replace(File.separatorChar, '/');
+		}
+		return normalizedFileName;
 	}
 
 	protected String getRelativeFileName(String directory, String fileName)
