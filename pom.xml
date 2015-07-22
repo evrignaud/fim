@@ -31,6 +31,7 @@
 		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 		<maven-shade-plugin.version>2.1</maven-shade-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<maven-assembly-plugin.version>2.5.5</maven-assembly-plugin.version>
 		<maven-release-plugin.version>2.4.1</maven-release-plugin.version>
 		<maven-site-plugin.version>3.2</maven-site-plugin.version>
 
@@ -154,6 +155,27 @@
 						</manifest>
 					</archive>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>${maven-assembly-plugin.version}</version>
+				<configuration>
+					<outputDirectory>dist</outputDirectory>
+					<descriptors>
+						<descriptor>src/main/assembly/assembly-dist.xml</descriptor>
+					</descriptors>
+					<finalName>${project.artifactId}-${project.version}</finalName>
+				</configuration>
+				<executions>
+					<execution>
+						<id>dist</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<plugin>
