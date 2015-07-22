@@ -1,0 +1,43 @@
+#!/bin/bash
+#-----------------------------------------------------------------------------------------------------------------------
+# This file is part of Fim - File Integrity Manager
+#
+# Copyright (C) 2015  Etienne Vrignaud
+#
+# Fim is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Fim is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Fim.  If not, see <http://www.gnu.org/licenses/>.
+#-----------------------------------------------------------------------------------------------------------------------
+
+allJavaLines=target/all_java_lines
+shortendFileName=target/all_java_lines_shortened
+uniqDuplicatedLines=target/uniq_duplicated_ines
+
+find . -name "*.java" -exec cat {}  \; > ${allJavaLines}
+
+totalJavaLines=`cat ${allJavaLines} | wc -l`
+
+# Trim all lines, remove empty lines and remove non meaningful lines 
+cat ${allJavaLines} | awk '{$1=$1;print}' | egrep -v "^$|^{$|^}$|^//|^/\*|^\*|^import|^package|^try|^continue|^break|^return|^@Test" > ${shortendFileName}
+
+meaningfulLines=`cat ${shortendFileName} | wc -l`
+differentLines=`cat ${shortendFileName} | sort | uniq | wc -l`
+
+duplicatedLines=`echo "$meaningfulLines - $differentLines" | bc`
+duplicatePercent=`echo "$duplicatedLines * 100 / $meaningfulLines" | bc`
+
+cat ${shortendFileName} | sort | uniq -d > ${uniqDuplicatedLines}
+
+echo "Total java lines: $totalJavaLines"
+echo "$duplicatedLines duplicated lines ($duplicatePercent%)"
+echo ""
+echo "More details in ${uniqDuplicatedLines}"
