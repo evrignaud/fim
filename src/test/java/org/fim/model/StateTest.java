@@ -20,6 +20,10 @@ package org.fim.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
@@ -62,5 +66,23 @@ public class StateTest extends StateAssert
 		assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
 
 		assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
+	}
+
+	@Test
+	public void weCanHashAState() throws ParseException
+	{
+		// Fix the timeStamps in order that state hash can be verified
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+		Date date = sdf.parse("2015/07/23 23:24:10");
+		long timestamp = date.getTime();
+
+		a1.setTimestamp(timestamp);
+		for (FileState fileState : a1.getFileStates())
+		{
+			fileState.setLastModified(timestamp);
+		}
+
+		String hash = a1.hashState();
+		assertThat(hash).isEqualTo("fe5c535a2fba07f111af4f4c27713d41c30df2cba5d9748740291bb711483518142e6e56fc8769256782fa0b09d6d4a83d572094e687e990476cb36df18a33d6");
 	}
 }

@@ -21,11 +21,12 @@ package org.fim.internal;
 import static java.nio.file.StandardOpenOption.CREATE;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import com.google.common.base.Charsets;
+import org.fim.model.CorruptedStateException;
 import org.fim.model.FileState;
 import org.fim.model.Parameters;
 import org.fim.model.State;
@@ -38,7 +39,6 @@ public class StateManager
 	public static final String LAST_STATE_FILE_NAME = "lastState";
 
 	private final Parameters parameters;
-	private final Charset utf8 = Charset.forName("UTF-8");
 	private final Path stateDir;
 
 	public StateManager(Parameters parameters)
@@ -74,11 +74,18 @@ public class StateManager
 			throw new IllegalStateException(String.format("Unable to load State file %d from directory %s", stateNumber, stateDir));
 		}
 
-		State state = State.loadFromGZipFile(stateFile);
+		try
+		{
+			State state = State.loadFromGZipFile(stateFile);
 
-		adjustAccordingToHashMode(state);
+			adjustAccordingToHashMode(state);
 
-		return state;
+			return state;
+		}
+		catch (CorruptedStateException e)
+		{
+			throw new IllegalStateException(String.format("The content of the State file #%d have been modified and may be corrupted", stateNumber));
+		}
 	}
 
 	private void adjustAccordingToHashMode(State state)
@@ -135,7 +142,7 @@ public class StateManager
 		{
 			try
 			{
-				List<String> strings = Files.readAllLines(lastStateFile, utf8);
+				List<String> strings = Files.readAllLines(lastStateFile, Charsets.UTF_8);
 				if (strings.size() > 0)
 				{
 					int number = Integer.parseInt(strings.get(0));

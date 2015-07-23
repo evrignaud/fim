@@ -18,7 +18,6 @@
  */
 package org.fim.model;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,12 +32,19 @@ import java.util.Objects;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hasher;
+import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class State
+public class State implements Hashable
 {
+	private String stateHash;
+
 	private String modelVersion;
 	private long timestamp;
 	private String comment;
@@ -54,19 +60,30 @@ public class State
 		fileStates = new ArrayList<>();
 	}
 
-	public static State loadFromGZipFile(Path stateFile) throws IOException
+	public static State loadFromGZipFile(Path stateFile) throws IOException, CorruptedStateException
 	{
 		try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile.toFile()))))
 		{
 			Gson gson = new Gson();
 			State state = gson.fromJson(reader, State.class);
+			checkIntegrity(state);
 			return state;
+		}
+	}
+
+	private static void checkIntegrity(State state) throws CorruptedStateException
+	{
+		String hash = state.hashState();
+		if (!state.stateHash.equals(hash))
+		{
+			throw new CorruptedStateException();
 		}
 	}
 
 	public void saveToGZipFile(Path stateFile) throws IOException
 	{
 		fileCount = fileStates.size();
+		stateHash = hashState();
 
 		try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile.toFile()))))
 		{
@@ -125,6 +142,15 @@ public class State
 		this.fileStates = fileStates;
 	}
 
+	public String hashState()
+	{
+		HashFunction hashFunction = Hashing.sha512();
+		Hasher hasher = hashFunction.newHasher(FileState.SIZE_10_MB);
+		hashObject(hasher);
+		HashCode hash = hasher.hash();
+		return hash.toString();
+	}
+
 	@Override
 	public boolean equals(Object other)
 	{
@@ -163,5 +189,20 @@ public class State
 				.add("fileCount", fileCount)
 				.add("fileStates", fileStates)
 				.toString();
+	}
+
+	@Override
+	public void hashObject(Hasher hasher)
+	{
+		hasher
+				.putString(modelVersion, Charsets.UTF_8)
+				.putLong(timestamp)
+				.putString(comment, Charsets.UTF_8)
+				.putInt(fileCount);
+
+		for (FileState fileState : fileStates)
+		{
+			fileState.hashObject(hasher);
+		}
 	}
 }

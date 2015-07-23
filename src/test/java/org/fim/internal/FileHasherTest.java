@@ -23,7 +23,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,7 +44,6 @@ import org.junit.runners.Parameterized;
 public class FileHasherTest extends StateAssert
 {
 	public static final String NO_HASH = "no_hash";
-	private final Charset utf8 = Charset.forName("UTF-8");
 
 	private StateGenerator stateGenerator;
 

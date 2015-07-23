@@ -21,9 +21,11 @@ package org.fim.model;
 import java.util.Comparator;
 import java.util.Objects;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
+import com.google.common.hash.Hasher;
 
-public class FileState
+public class FileState implements Hashable
 {
 	public static final int SIZE_1_KB = 1024;
 	public static final int SIZE_4_KB = 4 * SIZE_1_KB;
@@ -34,8 +36,6 @@ public class FileState
 	public static final int SIZE_50_MB = 50 * SIZE_1_MB;
 	public static final int SIZE_100_MB = 100 * SIZE_1_MB;
 	public static final int SIZE_200_MB = 200 * SIZE_1_MB;
-
-	public static final int SIZE_UNLIMITED = -1;
 
 	public static final String NO_HASH = "no_hash";
 
@@ -155,6 +155,17 @@ public class FileState
 	public void resetNewHash()
 	{
 		newFileHash = fileHash;
+	}
+
+	@Override
+	public void hashObject(Hasher hasher)
+	{
+		hasher
+				.putString(fileName, Charsets.UTF_8)
+				.putLong(fileLength)
+				.putLong(lastModified);
+
+		fileHash.hashObject(hasher);
 	}
 
 	public static class FileNameComparator implements Comparator<FileState>

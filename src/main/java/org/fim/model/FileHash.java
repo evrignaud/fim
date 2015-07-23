@@ -20,9 +20,11 @@ package org.fim.model;
 
 import java.util.Objects;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
+import com.google.common.hash.Hasher;
 
-public class FileHash implements Comparable<FileHash>
+public class FileHash implements Comparable<FileHash>, Hashable
 {
 	private String firstFourKiloHash;
 	private String firstMegaHash;
@@ -125,5 +127,14 @@ public class FileHash implements Comparable<FileHash>
 		}
 
 		return fullHash.compareTo(other.fullHash);
+	}
+
+	@Override
+	public void hashObject(Hasher hasher)
+	{
+		hasher
+				.putString(firstFourKiloHash, Charsets.UTF_8)
+				.putString(firstMegaHash, Charsets.UTF_8)
+				.putString(fullHash, Charsets.UTF_8);
 	}
 }
