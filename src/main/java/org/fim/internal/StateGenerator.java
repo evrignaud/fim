@@ -21,7 +21,9 @@ package org.fim.internal;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -176,20 +178,8 @@ public class StateGenerator
 		{
 			for (Path file : stream)
 			{
-				if (Files.isSymbolicLink(file))
-				{
-					continue;
-				}
-				else if (Files.isDirectory(file))
-				{
-					if (file.getFileName().toString().equals(Parameters.DOT_FIM_DIR))
-					{
-						continue;
-					}
-
-					scanFileTree(filesToHash, file);
-				}
-				else
+				BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+				if (attributes.isRegularFile())
 				{
 					try
 					{
@@ -199,6 +189,15 @@ public class StateGenerator
 					{
 						Logger.error(ex);
 					}
+				}
+				else if (attributes.isDirectory())
+				{
+					if (file.getFileName().toString().equals(Parameters.DOT_FIM_DIR))
+					{
+						continue;
+					}
+
+					scanFileTree(filesToHash, file);
 				}
 			}
 		}
@@ -210,7 +209,7 @@ public class StateGenerator
 		fileCount = 0;
 	}
 
-	public void updateProgressOutput(Path file) throws IOException
+	public void updateProgressOutput(long fileSize) throws IOException
 	{
 		progressLock.lock();
 		try
@@ -219,7 +218,7 @@ public class StateGenerator
 
 			if (displayHashLegend())
 			{
-				summedFileLength += Files.size(file);
+				summedFileLength += fileSize;
 
 				if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0)
 				{

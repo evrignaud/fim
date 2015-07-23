@@ -24,6 +24,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -89,14 +90,17 @@ class FileHasher implements Runnable
 			Path file;
 			while ((file = filesToHash.poll(500, TimeUnit.MILLISECONDS)) != null)
 			{
-				stateGenerator.updateProgressOutput(file);
-
 				try
 				{
-					FileHash fileHash = hashFile(file);
+					BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
+
+					stateGenerator.updateProgressOutput(attributes.size());
+
+					FileHash fileHash = hashFile(file, attributes.size());
 					String normalizedFileName = getNormalizedFileName(file);
 					normalizedFileName = getRelativeFileName(fimRepositoryRootDir, normalizedFileName);
-					fileStates.add(new FileState(normalizedFileName, Files.size(file), getLastModified(file), fileHash));
+
+					fileStates.add(new FileState(normalizedFileName, attributes.size(), attributes.lastModifiedTime().toMillis(), fileHash));
 				}
 				catch (Exception ex)
 				{
@@ -104,18 +108,10 @@ class FileHasher implements Runnable
 				}
 			}
 		}
-		catch (IOException | InterruptedException ex)
+		catch (InterruptedException ex)
 		{
 			Logger.error(ex);
 		}
-	}
-
-	private long getLastModified(Path file) throws IOException
-	{
-		// Make sure to use Files.getLastModifiedTime(Path) instead of file.lastModified()
-		// in order to get the same value on Linux and Windows as explained here:
-		//     http://dev-answers.blogspot.fr/2014/11/avoid-using-javaiofilelastmodified-for.html
-		return Files.getLastModifiedTime(file).toMillis();
 	}
 
 	private String getNormalizedFileName(Path file)
@@ -142,13 +138,13 @@ class FileHasher implements Runnable
 		return fileName;
 	}
 
-	protected FileHash hashFile(Path file) throws IOException
+	protected FileHash hashFile(Path file, long fileSize) throws IOException
 	{
 		HashMode hashMode = stateGenerator.getParameters().getHashMode();
 
 		if (hashMode == HashMode.DONT_HASH_FILES)
 		{
-			totalFileContentLength += Files.size(file);
+			totalFileContentLength += fileSize;
 			return new FileHash(FileState.NO_HASH, FileState.NO_HASH, FileState.NO_HASH);
 		}
 
@@ -157,15 +153,11 @@ class FileHasher implements Runnable
 		fullDigest.reset();
 
 		MappedByteBuffer data;
-		long fileSize = 0;
-		long remainder = 0;
+		long remainder = fileSize;
 		long position = 0;
 
 		try (final FileChannel channel = FileChannel.open(file))
 		{
-			fileSize = channel.size();
-			remainder = fileSize;
-
 			long size = Math.min(remainder, FileState.SIZE_4_KB);
 			data = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
 			position += data.limit();

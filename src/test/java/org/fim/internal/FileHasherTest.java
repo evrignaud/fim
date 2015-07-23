@@ -122,7 +122,7 @@ public class FileHasherTest extends StateAssert
 
 		Path fileToHash = createFileWithSize(2 * 1024);
 
-		FileHash fileHash = cut.hashFile(fileToHash);
+		FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
 
 		assertFileHash(fileHash, firstFourKiloHash, firstMegaHash, fullFileHash);
 	}
@@ -136,7 +136,7 @@ public class FileHasherTest extends StateAssert
 
 		Path fileToHash = createFileWithSize(30 * 1024);
 
-		FileHash fileHash = cut.hashFile(fileToHash);
+		FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
 
 		assertFileHash(fileHash, firstFourKiloHash, firstMegaHash, fullFileHash);
 	}
@@ -150,7 +150,7 @@ public class FileHasherTest extends StateAssert
 
 		Path fileToHash = createFileWithSize(60 * 1024 * 1024);
 
-		FileHash fileHash = cut.hashFile(fileToHash);
+		FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
 
 		assertFileHash(fileHash, firstFourKiloHash, firstMegaHash, fullFileHash);
 	}

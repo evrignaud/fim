@@ -4,7 +4,7 @@
 
   * [File Integrity Manager](#file-integrity-manager)
   * [Fim workflow](#fim-workflow)
-  * [Usage](#usage)
+  * [Fim usage](#usage)
   * [Simple example](#simple-example)
   * [Real life example](#real-life-example)
   * [License](https://github.com/evrignaud/fim/blob/master/LICENSE.md)
@@ -79,7 +79,7 @@ It's a time consuming operation that will compute all the hash of each files con
 
 [\[^ TOC\]](#table-of-contents)
 
-## Usage
+## Fim usage
 
 	$ fim help
 
