@@ -18,13 +18,14 @@
  */
 package org.fim.model;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Parameters implements Cloneable
 {
 	public static final String DOT_FIM_DIR = ".fim";
 
-	private File defaultStateDir;
+	private Path defaultStateDir;
 	private boolean verbose;
 	private HashMode hashMode;
 	private String comment;
@@ -35,7 +36,7 @@ public class Parameters implements Cloneable
 
 	public Parameters()
 	{
-		defaultStateDir = new File(DOT_FIM_DIR, "states");
+		defaultStateDir = Paths.get(DOT_FIM_DIR, "states");
 		verbose = true;
 		hashMode = HashMode.COMPUTE_ALL_HASH;
 		comment = "";
@@ -49,14 +50,9 @@ public class Parameters implements Cloneable
 		alwaysYes = false;
 	}
 
-	public File getDefaultStateDir()
+	public Path getDefaultStateDir()
 	{
 		return defaultStateDir;
-	}
-
-	public void setDefaultStateDir(File defaultStateDir)
-	{
-		this.defaultStateDir = defaultStateDir;
 	}
 
 	public boolean isVerbose()

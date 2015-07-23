@@ -20,8 +20,10 @@ package org.fim.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -45,7 +47,7 @@ public class StateManagerTest extends StateAssert
 	private BuildableParameters parameters;
 	private BuildableState s;
 
-	private File stateDir;
+	private Path stateDir;
 	private StateManager cut;
 
 	public StateManagerTest(final HashMode hashMode)
@@ -71,10 +73,11 @@ public class StateManagerTest extends StateAssert
 		parameters.setHashMode(hashMode);
 		s = new BuildableState(parameters);
 
-		stateDir = new File("target", this.getClass().getSimpleName());
+		stateDir = Paths.get("target", this.getClass().getSimpleName());
 
-		FileUtils.deleteDirectory(stateDir);
-		stateDir.mkdirs();
+		FileUtils.deleteDirectory(stateDir.toFile());
+
+		Files.createDirectories(stateDir);
 
 		cut = new StateManager(parameters, stateDir);
 	}
@@ -105,8 +108,8 @@ public class StateManagerTest extends StateAssert
 		}
 
 		assertThat(cut.getLastStateNumber()).isEqualTo(10);
-		File stateFile = cut.getStateFile(cut.getLastStateNumber());
-		assertThat(stateFile.getName()).isEqualTo("state_10.json.gz");
+		Path stateFile = cut.getStateFile(cut.getLastStateNumber());
+		assertThat(stateFile.getFileName().toString()).isEqualTo("state_10.json.gz");
 
 		result = cut.loadState(10);
 		if (hashMode == HashMode.DONT_HASH_FILES)
@@ -130,7 +133,7 @@ public class StateManagerTest extends StateAssert
 
 		assertThat(cut.getLastStateNumber()).isEqualTo(2);
 
-		cut.getStateFile(2).delete();
+		Files.delete(cut.getStateFile(2));
 
 		assertThat(cut.getLastStateNumber()).isEqualTo(1);
 	}

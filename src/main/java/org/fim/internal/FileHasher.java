@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -33,13 +34,14 @@ import java.util.concurrent.TimeUnit;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
+import org.fim.util.Logger;
 
 class FileHasher implements Runnable
 {
 	public static final String HASH_ALGORITHM = "SHA-512";
 
 	private final StateGenerator stateGenerator;
-	private final BlockingDeque<File> filesToHash;
+	private final BlockingDeque<Path> filesToHash;
 	private final String fimRepositoryRootDir;
 
 	private final List<FileState> fileStates;
@@ -51,7 +53,7 @@ class FileHasher implements Runnable
 	private long totalFileContentLength;
 	private long totalBytesHashed;
 
-	public FileHasher(StateGenerator stateGenerator, BlockingDeque<File> filesToHash, String fimRepositoryRootDir) throws NoSuchAlgorithmException
+	public FileHasher(StateGenerator stateGenerator, BlockingDeque<Path> filesToHash, String fimRepositoryRootDir) throws NoSuchAlgorithmException
 	{
 		this.stateGenerator = stateGenerator;
 		this.filesToHash = filesToHash;
@@ -84,7 +86,7 @@ class FileHasher implements Runnable
 	{
 		try
 		{
-			File file;
+			Path file;
 			while ((file = filesToHash.poll(500, TimeUnit.MILLISECONDS)) != null)
 			{
 				stateGenerator.updateProgressOutput(file);
@@ -94,24 +96,32 @@ class FileHasher implements Runnable
 					FileHash fileHash = hashFile(file);
 					String normalizedFileName = getNormalizedFileName(file);
 					normalizedFileName = getRelativeFileName(fimRepositoryRootDir, normalizedFileName);
-					fileStates.add(new FileState(normalizedFileName, file.length(), file.lastModified(), fileHash));
+					fileStates.add(new FileState(normalizedFileName, Files.size(file), getLastModified(file), fileHash));
 				}
 				catch (Exception ex)
 				{
-					System.err.printf("%nSkipping file hash. Not able to hash '%s': %s%n", file.getName(), ex.getMessage());
+					System.err.printf("%nSkipping file hash. Not able to hash '%s': %s%n", file, ex.getMessage());
 				}
 			}
 		}
-		catch (InterruptedException ex)
+		catch (IOException | InterruptedException ex)
 		{
-			ex.printStackTrace();
+			Logger.error(ex);
 		}
 	}
 
-	private String getNormalizedFileName(File file)
+	private long getLastModified(Path file) throws IOException
+	{
+		// Make sure to use Files.getLastModifiedTime(Path) instead of file.lastModified()
+		// in order to get the same value on Linux and Windows as explained here:
+		//     http://dev-answers.blogspot.fr/2014/11/avoid-using-javaiofilelastmodified-for.html
+		return Files.getLastModifiedTime(file).toMillis();
+	}
+
+	private String getNormalizedFileName(Path file)
 	{
 		String normalizedFileName = file.toString();
-		if (file.separatorChar != '/')
+		if (File.separatorChar != '/')
 		{
 			normalizedFileName = normalizedFileName.replace(File.separatorChar, '/');
 		}
@@ -132,13 +142,13 @@ class FileHasher implements Runnable
 		return fileName;
 	}
 
-	protected FileHash hashFile(File file) throws IOException
+	protected FileHash hashFile(Path file) throws IOException
 	{
 		HashMode hashMode = stateGenerator.getParameters().getHashMode();
 
 		if (hashMode == HashMode.DONT_HASH_FILES)
 		{
-			totalFileContentLength += file.length();
+			totalFileContentLength += Files.size(file);
 			return new FileHash(FileState.NO_HASH, FileState.NO_HASH, FileState.NO_HASH);
 		}
 
@@ -150,9 +160,8 @@ class FileHasher implements Runnable
 		long fileSize = 0;
 		long remainder = 0;
 		long position = 0;
-		final Path path = file.toPath();
 
-		try (final FileChannel channel = FileChannel.open(path))
+		try (final FileChannel channel = FileChannel.open(file))
 		{
 			fileSize = channel.size();
 			remainder = fileSize;

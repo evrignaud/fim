@@ -22,14 +22,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.commons.io.FileUtils;
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
 import org.fim.tooling.BuildableParameters;
@@ -49,7 +51,7 @@ public class FileHasherTest extends StateAssert
 
 	private HashMode hashMode;
 	private BuildableParameters parameters;
-	private String rootDir;
+	private Path rootDir;
 	private FileHasher cut;
 
 	public FileHasherTest(final HashMode hashMode)
@@ -69,15 +71,17 @@ public class FileHasherTest extends StateAssert
 	}
 
 	@Before
-	public void setup() throws NoSuchAlgorithmException
+	public void setup() throws NoSuchAlgorithmException, IOException
 	{
 		stateGenerator = mock(StateGenerator.class);
 		parameters = defaultParameters();
 		parameters.setHashMode(hashMode);
 		when(stateGenerator.getParameters()).thenReturn(parameters);
 
-		rootDir = "target/" + this.getClass().getSimpleName();
-		cut = new FileHasher(stateGenerator, null, rootDir);
+		rootDir = Paths.get("target/" + this.getClass().getSimpleName());
+		Files.createDirectories(rootDir);
+
+		cut = new FileHasher(stateGenerator, null, rootDir.toString());
 	}
 
 	@Test
@@ -116,7 +120,7 @@ public class FileHasherTest extends StateAssert
 		String firstMegaHash = firstFourKiloHash;
 		String fullFileHash = firstFourKiloHash;
 
-		File fileToHash = createFileWithSize(2 * 1024);
+		Path fileToHash = createFileWithSize(2 * 1024);
 
 		FileHash fileHash = cut.hashFile(fileToHash);
 
@@ -130,7 +134,7 @@ public class FileHasherTest extends StateAssert
 		String firstMegaHash = "f66f942e45d12bda1224a7644e7b157a67e0cb66dc48e36d92cfbf8febf3fdae2d567a0906f1c3684f19e0902460513cf9f5fba285ce9d8f61fd1ea4772d79c3";
 		String fullFileHash = firstMegaHash;
 
-		File fileToHash = createFileWithSize(30 * 1024);
+		Path fileToHash = createFileWithSize(30 * 1024);
 
 		FileHash fileHash = cut.hashFile(fileToHash);
 
@@ -144,14 +148,11 @@ public class FileHasherTest extends StateAssert
 		String firstMegaHash = "733e3c1c2e1a71086637cecfe168a47d35c10cda2b792ff645befef7eaf86b96ecaf357b775dd323d5ab2a638c90c81abcae89372500dd8da60160508486bf4d";
 		String fullFileHash = "e891a71e312bc6e34f549664706951516c42f660face62756bb155301c5e06ba79db94f83dedd43467530021935f5b427a58d7a5bd245ea1b2b0db8d7b08ee7a";
 
-		File fileToHash = createFileWithSize(60 * 1024 * 1024);
+		Path fileToHash = createFileWithSize(60 * 1024 * 1024);
 
 		FileHash fileHash = cut.hashFile(fileToHash);
 
 		assertFileHash(fileHash, firstFourKiloHash, firstMegaHash, fullFileHash);
-
-		// Remove the big license file to have a little workspace
-		fileToHash.delete();
 	}
 
 	private void assertFileHash(FileHash fileHash, String firstFourKiloHash, String firstMegaHash, String fullFileHash)
@@ -184,27 +185,26 @@ public class FileHasherTest extends StateAssert
 		}
 	}
 
-	private File createFileWithSize(long fileSize) throws IOException
+	private Path createFileWithSize(long fileSize) throws IOException
 	{
-		File license = new File("LICENSE");
-		String content = FileUtils.readFileToString(license, utf8);
+		Path license = Paths.get("LICENSE");
+		byte[] content = Files.readAllBytes(license);
 
-		File newFile = new File(rootDir, "LICENSE_" + fileSize);
-		if (newFile.exists())
+		Path newFile = rootDir.resolve("LICENSE_" + fileSize);
+		if (Files.exists(newFile))
 		{
-			newFile.delete();
+			Files.delete(newFile);
 		}
 
-		if (content.length() > fileSize)
+		if (content.length > fileSize)
 		{
-			content = content.substring(0, (int) fileSize);
+			content = Arrays.copyOf(content, (int) fileSize);
 		}
 
-		do
+		for (int size = 0; size < fileSize; size += content.length)
 		{
-			FileUtils.writeStringToFile(newFile, content, true);
+			Files.write(newFile, content, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 		}
-		while (newFile.length() < fileSize);
 
 		return newFile;
 	}

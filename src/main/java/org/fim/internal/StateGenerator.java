@@ -18,12 +18,12 @@
  */
 package org.fim.internal;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -73,7 +73,7 @@ public class StateGenerator
 		this.progressLock = new ReentrantLock();
 	}
 
-	public State generateState(String comment, File fimRepositoryRootDir) throws IOException, NoSuchAlgorithmException
+	public State generateState(String comment, Path fimRepositoryRootDir) throws IOException, NoSuchAlgorithmException
 	{
 		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(), parameters.getThreadCount()));
 		if (displayHashLegend())
@@ -87,7 +87,7 @@ public class StateGenerator
 		long start = System.currentTimeMillis();
 		progressOutputInit();
 
-		BlockingDeque<File> filesToHash = new LinkedBlockingDeque<>(1000);
+		BlockingDeque<Path> filesToHash = new LinkedBlockingDeque<>(1000);
 
 		List<FileHasher> hashers = new ArrayList<>();
 		executorService = Executors.newFixedThreadPool(parameters.getThreadCount());
@@ -146,7 +146,7 @@ public class StateGenerator
 		}
 		catch (InterruptedException ex)
 		{
-			ex.printStackTrace();
+			Logger.error(ex);
 		}
 	}
 
@@ -170,36 +170,35 @@ public class StateGenerator
 		}
 	}
 
-	private void scanFileTree(BlockingDeque<File> filesToHash, File directory) throws NoSuchAlgorithmException
+	private void scanFileTree(BlockingDeque<Path> filesToHash, Path directory) throws IOException
 	{
-		List<File> files = Arrays.asList(directory.listFiles());
-		Collections.sort(files);
-
-		for (File file : files)
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory))
 		{
-			if (file.isDirectory() && file.getName().equals(Parameters.DOT_FIM_DIR))
+			for (Path file : stream)
 			{
-				continue;
-			}
-
-			if (Files.isSymbolicLink(file.toPath()))
-			{
-				continue;
-			}
-
-			if (file.isDirectory())
-			{
-				scanFileTree(filesToHash, file);
-			}
-			else
-			{
-				try
+				if (Files.isSymbolicLink(file))
 				{
-					filesToHash.offer(file, 60, TimeUnit.MINUTES);
+					continue;
 				}
-				catch (InterruptedException ex)
+				else if (Files.isDirectory(file))
 				{
-					ex.printStackTrace();
+					if (file.getFileName().toString().equals(Parameters.DOT_FIM_DIR))
+					{
+						continue;
+					}
+
+					scanFileTree(filesToHash, file);
+				}
+				else
+				{
+					try
+					{
+						filesToHash.offer(file, 120, TimeUnit.MINUTES);
+					}
+					catch (InterruptedException ex)
+					{
+						Logger.error(ex);
+					}
 				}
 			}
 		}
@@ -211,7 +210,7 @@ public class StateGenerator
 		fileCount = 0;
 	}
 
-	public void updateProgressOutput(File file)
+	public void updateProgressOutput(Path file) throws IOException
 	{
 		progressLock.lock();
 		try
@@ -220,7 +219,7 @@ public class StateGenerator
 
 			if (displayHashLegend())
 			{
-				summedFileLength += file.length();
+				summedFileLength += Files.size(file);
 
 				if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0)
 				{

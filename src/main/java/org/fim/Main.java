@@ -19,6 +19,7 @@
 package org.fim;
 
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -165,7 +166,7 @@ public class Main
 		FimReposConstraint constraint = command.getFimReposConstraint();
 		if (constraint == FimReposConstraint.MUST_NOT_EXIST)
 		{
-			if (parameters.getDefaultStateDir().exists())
+			if (Files.exists(parameters.getDefaultStateDir()))
 			{
 				System.err.println("Fim repository already exist");
 				System.exit(0);
@@ -173,7 +174,7 @@ public class Main
 		}
 		else if (constraint == FimReposConstraint.MUST_EXIST)
 		{
-			if (!parameters.getDefaultStateDir().exists())
+			if (!Files.exists(parameters.getDefaultStateDir()))
 			{
 				System.err.println("Fim repository does not exist. Please run 'fim init' before.");
 				System.exit(-1);

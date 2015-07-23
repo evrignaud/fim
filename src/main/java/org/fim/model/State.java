@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -53,9 +54,9 @@ public class State
 		fileStates = new ArrayList<>();
 	}
 
-	public static State loadFromGZipFile(File stateFile) throws IOException
+	public static State loadFromGZipFile(Path stateFile) throws IOException
 	{
-		try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile))))
+		try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile.toFile()))))
 		{
 			Gson gson = new Gson();
 			State state = gson.fromJson(reader, State.class);
@@ -63,11 +64,11 @@ public class State
 		}
 	}
 
-	public void saveToGZipFile(File stateFile) throws IOException
+	public void saveToGZipFile(Path stateFile) throws IOException
 	{
 		fileCount = fileStates.size();
 
-		try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile))))
+		try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile.toFile()))))
 		{
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			gson.toJson(this, writer);

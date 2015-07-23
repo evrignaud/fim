@@ -18,7 +18,8 @@
  */
 package org.fim.command;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 import org.fim.model.Command;
@@ -27,7 +28,7 @@ import org.fim.model.Parameters;
 
 public abstract class AbstractCommand implements Command
 {
-	protected static final File CURRENT_DIRECTORY = new File(".");
+	protected static final Path CURRENT_DIRECTORY = Paths.get(".");
 
 	@Override
 	public FimReposConstraint getFimReposConstraint()

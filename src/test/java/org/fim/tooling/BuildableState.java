@@ -32,7 +32,7 @@ public class BuildableState extends State
 {
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
-	private final Parameters parameters;
+	private transient final Parameters parameters;
 
 	public BuildableState(Parameters parameters)
 	{

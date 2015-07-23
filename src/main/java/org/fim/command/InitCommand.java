@@ -18,6 +18,10 @@
  */
 package org.fim.command;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.security.NoSuchAlgorithmException;
+
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
@@ -51,13 +55,17 @@ public class InitCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Parameters parameters) throws Exception
+	public void execute(Parameters parameters) throws IOException, NoSuchAlgorithmException
 	{
 		computeAllHashMandatory(parameters);
 
-		if (!parameters.getDefaultStateDir().mkdirs())
+		try
 		{
-			System.err.println("Not able to create the '" + Parameters.DOT_FIM_DIR + "' directory that holds the Fim repository");
+			Files.createDirectories(parameters.getDefaultStateDir());
+		}
+		catch (IOException ex)
+		{
+			System.err.println("Not able to create the '" + Parameters.DOT_FIM_DIR + "' directory that holds the Fim repository: " + ex.getMessage());
 			System.exit(-1);
 		}
 

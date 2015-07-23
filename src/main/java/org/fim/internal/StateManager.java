@@ -20,10 +20,10 @@ package org.fim.internal;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.fim.model.FileState;
@@ -39,14 +39,14 @@ public class StateManager
 
 	private final Parameters parameters;
 	private final Charset utf8 = Charset.forName("UTF-8");
-	private final File stateDir;
+	private final Path stateDir;
 
 	public StateManager(Parameters parameters)
 	{
 		this(parameters, parameters.getDefaultStateDir());
 	}
 
-	public StateManager(Parameters parameters, File stateDir)
+	public StateManager(Parameters parameters, Path stateDir)
 	{
 		this.parameters = parameters;
 		this.stateDir = stateDir;
@@ -68,8 +68,8 @@ public class StateManager
 
 	public State loadState(int stateNumber) throws IOException
 	{
-		File stateFile = getStateFile(stateNumber);
-		if (!stateFile.exists())
+		Path stateFile = getStateFile(stateNumber);
+		if (!Files.exists(stateFile))
 		{
 			throw new IllegalStateException(String.format("Unable to load State file %d from directory %s", stateNumber, stateDir));
 		}
@@ -120,27 +120,27 @@ public class StateManager
 	/**
 	 * @return the State file formatted like this: <stateDir>/state_<stateNumber>.json.gz
 	 */
-	public File getStateFile(int stateNumber)
+	public Path getStateFile(int stateNumber)
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("state_").append(stateNumber).append(STATE_EXTENSION);
-		return new File(stateDir, builder.toString());
+		return stateDir.resolve(builder.toString());
 	}
 
 	public int getLastStateNumber()
 	{
 		boolean lastStateFileDesynchronized = false;
-		File lastStateFile = new File(stateDir, LAST_STATE_FILE_NAME);
-		if (lastStateFile.exists())
+		Path lastStateFile = stateDir.resolve(LAST_STATE_FILE_NAME);
+		if (Files.exists(lastStateFile))
 		{
 			try
 			{
-				List<String> strings = Files.readAllLines(lastStateFile.toPath(), utf8);
+				List<String> strings = Files.readAllLines(lastStateFile, utf8);
 				if (strings.size() > 0)
 				{
 					int number = Integer.parseInt(strings.get(0));
-					File statFile = getStateFile(number);
-					if (statFile.exists())
+					Path stateFile = getStateFile(number);
+					if (Files.exists(stateFile))
 					{
 						return number;
 					}
@@ -148,7 +148,7 @@ public class StateManager
 			}
 			catch (IOException ex)
 			{
-				ex.printStackTrace();
+				Logger.error(ex);
 			}
 
 			lastStateFileDesynchronized = true;
@@ -156,8 +156,8 @@ public class StateManager
 
 		for (int index = 1; ; index++)
 		{
-			File statFile = getStateFile(index);
-			if (!statFile.exists())
+			Path stateFile = getStateFile(index);
+			if (!Files.exists(stateFile))
 			{
 				int number = index - 1;
 				if (lastStateFileDesynchronized)
@@ -174,15 +174,15 @@ public class StateManager
 	{
 		if (lastStateNumber != -1)
 		{
-			File lastStateFile = new File(stateDir, LAST_STATE_FILE_NAME);
+			Path lastStateFile = stateDir.resolve(LAST_STATE_FILE_NAME);
 			String content = Integer.toString(lastStateNumber);
 			try
 			{
-				Files.write(lastStateFile.toPath(), content.getBytes(), CREATE);
+				Files.write(lastStateFile, content.getBytes(), CREATE);
 			}
 			catch (IOException ex)
 			{
-				ex.printStackTrace();
+				Logger.error(ex);
 			}
 		}
 	}

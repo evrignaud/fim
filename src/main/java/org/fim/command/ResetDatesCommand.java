@@ -20,7 +20,10 @@ package org.fim.command;
 
 import static org.fim.util.FormatUtil.formatDate;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 
 import org.fim.internal.StateManager;
 import org.fim.model.FileState;
@@ -65,14 +68,14 @@ public class ResetDatesCommand extends AbstractCommand
 		int dateResetCount = 0;
 		for (FileState fileState : lastState.getFileStates())
 		{
-			File file = new File(fileState.getFileName());
-			if (file.exists())
+			Path file = Paths.get(fileState.getFileName());
+			if (Files.exists(file))
 			{
-				long lastModified = file.lastModified();
+				long lastModified = Files.getLastModifiedTime(file).toMillis();
 				if (lastModified != fileState.getLastModified())
 				{
 					dateResetCount++;
-					file.setLastModified(fileState.getLastModified());
+					Files.setLastModifiedTime(file, FileTime.fromMillis(fileState.getLastModified()));
 					System.out.printf("Set file modification: %s\t%s -> %s%n", fileState.getFileName(),
 							formatDate(lastModified), formatDate(fileState.getLastModified()));
 				}

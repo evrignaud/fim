@@ -20,7 +20,8 @@ package org.fim.command;
 
 import static org.fim.util.FormatUtil.formatDate;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.fim.internal.StateManager;
 import org.fim.model.Parameters;
@@ -59,8 +60,8 @@ public class LogCommand extends AbstractCommand
 
 		for (int stateNumber = 1; stateNumber <= manager.getLastStateNumber(); stateNumber++)
 		{
-			File statFile = manager.getStateFile(stateNumber);
-			if (statFile.exists())
+			Path statFile = manager.getStateFile(stateNumber);
+			if (Files.exists(statFile))
 			{
 				State state = manager.loadState(stateNumber);
 				System.out.printf("State #%d: %s%n", stateNumber, formatDate(state.getTimestamp()));

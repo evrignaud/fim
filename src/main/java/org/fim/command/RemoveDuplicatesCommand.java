@@ -18,7 +18,9 @@
  */
 package org.fim.command;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,21 +89,21 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			}
 		}
 
-		File masterFimRepository = new File(parameters.getMasterFimRepositoryDir());
-		if (!masterFimRepository.exists())
+		Path masterFimRepository = Paths.get(parameters.getMasterFimRepositoryDir());
+		if (!Files.exists(masterFimRepository))
 		{
 			System.err.printf("Directory %s does not exist%n", parameters.getMasterFimRepositoryDir());
 			System.exit(-1);
 		}
 
-		if (masterFimRepository.getCanonicalPath().equals(CURRENT_DIRECTORY.getCanonicalPath()))
+		if (masterFimRepository.normalize().equals(CURRENT_DIRECTORY.normalize()))
 		{
 			System.err.printf("Cannot remove duplicates from the current directory%n");
 			System.exit(-1);
 		}
 
-		File masterDotFimDir = new File(masterFimRepository, Parameters.DOT_FIM_DIR);
-		if (!masterDotFimDir.exists())
+		Path masterDotFimDir = masterFimRepository.resolve(Parameters.DOT_FIM_DIR);
+		if (!Files.exists(masterDotFimDir))
 		{
 			System.err.printf("Directory %s is not a Fim repository%n", parameters.getMasterFimRepositoryDir());
 			System.exit(-1);
@@ -110,7 +112,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		System.out.println("Searching for duplicated files using the " + parameters.getMasterFimRepositoryDir() + " directory as master");
 		System.out.println("");
 
-		File masterStateDir = new File(masterDotFimDir, "states");
+		Path masterStateDir = masterDotFimDir.resolve("states");
 		State masterState = new StateManager(parameters, masterStateDir).loadLastState();
 		Map<FileHash, FileState> masterFilesHash = buildFileHashMap(masterState);
 
@@ -126,8 +128,8 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 				if (confirmAction(parameters, "remove it"))
 				{
 					System.out.printf("  %s removed%n", localFileState.getFileName());
-					File localFile = new File(localFileState.getFileName());
-					localFile.delete();
+					Path localFile = Paths.get(localFileState.getFileName());
+					Files.delete(localFile);
 					totalDuplicatedFilesRemoved++;
 				}
 			}
