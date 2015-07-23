@@ -43,7 +43,7 @@ import com.google.gson.GsonBuilder;
 
 public class State implements Hashable
 {
-	private String stateHash;
+	private String stateHash; // Ensure the integrity of the complete State content
 
 	private String modelVersion;
 	private long timestamp;
