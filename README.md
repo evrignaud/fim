@@ -4,7 +4,7 @@
 
   * [File Integrity Manager](#file-integrity-manager)
   * [Fim workflow](#fim-workflow)
-  * [Fim usage](#usage)
+  * [Fim usage](#fim-usage)
   * [Simple example](#simple-example)
   * [Real life example](#real-life-example)
   * [License](https://github.com/evrignaud/fim/blob/master/LICENSE.md)
