@@ -307,7 +307,7 @@ Deleted:          file06
 Do you really want to commit (y/n/A)? y
 ```
 
-##### Now everything is ok
+##### Nothing is modified
 
 ```shell
 ~/sample$ fim diff
