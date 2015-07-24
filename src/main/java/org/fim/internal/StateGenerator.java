@@ -233,9 +233,6 @@ public class StateGenerator
 				{
 					System.out.println("");
 				}
-
-				// Very important to avoid os::commit_memory error caused by very big usage of FileChannel.map()
-				System.gc();
 			}
 		}
 		finally

@@ -36,6 +36,8 @@ import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.util.Logger;
+import sun.misc.Cleaner;
+import sun.nio.ch.DirectBuffer;
 
 class FileHasher implements Runnable
 {
@@ -152,7 +154,7 @@ class FileHasher implements Runnable
 		firstMegaDigest.reset();
 		fullDigest.reset();
 
-		MappedByteBuffer data;
+		MappedByteBuffer data = null;
 		long remainder = fileSize;
 		long position = 0;
 
@@ -178,6 +180,7 @@ class FileHasher implements Runnable
 			if (position < fileSize)
 			{
 				size = Math.min(remainder, FileState.SIZE_1_MB - position);
+				unmap(data);
 				data = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
 				position += data.limit();
 				remainder -= data.limit();
@@ -194,6 +197,7 @@ class FileHasher implements Runnable
 				while (position < fileSize)
 				{
 					size = Math.min(remainder, FileState.SIZE_1_MB);
+					unmap(data);
 					data = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
 					position += data.limit();
 					remainder -= data.limit();
@@ -204,6 +208,7 @@ class FileHasher implements Runnable
 		}
 		finally
 		{
+			unmap(data);
 			totalFileContentLength += fileSize;
 			totalBytesHashed += position;
 		}
@@ -213,6 +218,22 @@ class FileHasher implements Runnable
 			return new FileHash(FileState.NO_HASH, getHash(firstMegaDigest), FileState.NO_HASH);
 		}
 		return new FileHash(getHash(firstFourKiloDigest), getHash(firstMegaDigest), getHash(fullDigest));
+	}
+
+	/**
+	 * Comes from here: http://stackoverflow.com/questions/8553158/prevent-outofmemory-when-using-java-nio-mappedbytebuffer
+	 */
+	public void unmap(MappedByteBuffer bb)
+	{
+		if (bb == null)
+		{
+			return;
+		}
+		Cleaner cleaner = ((DirectBuffer) bb).cleaner();
+		if (cleaner != null)
+		{
+			cleaner.clean();
+		}
 	}
 
 	private String getHash(MessageDigest digest)
