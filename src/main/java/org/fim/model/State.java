@@ -196,13 +196,18 @@ public class State implements Hashable
 	{
 		hasher
 				.putString(modelVersion, Charsets.UTF_8)
+				.putChar(HASH_SEPARATOR)
 				.putLong(timestamp)
+				.putChar(HASH_SEPARATOR)
 				.putString(comment, Charsets.UTF_8)
-				.putInt(fileCount);
+				.putChar(HASH_SEPARATOR)
+				.putInt(fileCount)
+				.putChar(HASH_SEPARATOR);
 
 		for (FileState fileState : fileStates)
 		{
 			fileState.hashObject(hasher);
+			hasher.putChar(HASH_SEPARATOR);
 		}
 	}
 }

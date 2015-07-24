@@ -162,8 +162,11 @@ public class FileState implements Hashable
 	{
 		hasher
 				.putString(fileName, Charsets.UTF_8)
+				.putChar(HASH_SEPARATOR)
 				.putLong(fileLength)
-				.putLong(lastModified);
+				.putChar(HASH_SEPARATOR)
+				.putLong(lastModified)
+				.putChar(HASH_SEPARATOR);
 
 		fileHash.hashObject(hasher);
 	}

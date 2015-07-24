@@ -134,7 +134,9 @@ public class FileHash implements Comparable<FileHash>, Hashable
 	{
 		hasher
 				.putString(firstFourKiloHash, Charsets.UTF_8)
+				.putChar(HASH_SEPARATOR)
 				.putString(firstMegaHash, Charsets.UTF_8)
+				.putChar(HASH_SEPARATOR)
 				.putString(fullHash, Charsets.UTF_8);
 	}
 }
