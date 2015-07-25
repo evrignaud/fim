@@ -154,61 +154,61 @@ class FileHasher implements Runnable
 		firstMegaDigest.reset();
 		fullDigest.reset();
 
-		MappedByteBuffer data = null;
+		MappedByteBuffer buffer = null;
 		long remainder = fileSize;
 		long position = 0;
 
 		try (final FileChannel channel = FileChannel.open(file))
 		{
 			long size = Math.min(remainder, FileState.SIZE_4_KB);
-			data = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
-			position += data.limit();
-			remainder -= data.limit();
+			buffer = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
+			position += buffer.limit();
+			remainder -= buffer.limit();
 
-			firstFourKiloDigest.update(data);
+			firstFourKiloDigest.update(buffer);
 			if (hashMode == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
 			{
 				return new FileHash(getHash(firstFourKiloDigest), FileState.NO_HASH, FileState.NO_HASH);
 			}
 
-			data.flip();
-			firstMegaDigest.update(data);
+			buffer.flip();
+			firstMegaDigest.update(buffer);
 
-			data.flip();
-			fullDigest.update(data);
+			buffer.flip();
+			fullDigest.update(buffer);
 
 			if (position < fileSize)
 			{
 				size = Math.min(remainder, FileState.SIZE_1_MB - position);
-				unmap(data);
-				data = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
-				position += data.limit();
-				remainder -= data.limit();
+				unmap(buffer);
+				buffer = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
+				position += buffer.limit();
+				remainder -= buffer.limit();
 
-				firstMegaDigest.update(data);
+				firstMegaDigest.update(buffer);
 				if (hashMode == HashMode.HASH_ONLY_FIRST_MEGA)
 				{
 					return new FileHash(FileState.NO_HASH, getHash(firstMegaDigest), FileState.NO_HASH);
 				}
 
-				data.flip();
-				fullDigest.update(data);
+				buffer.flip();
+				fullDigest.update(buffer);
 
 				while (position < fileSize)
 				{
 					size = Math.min(remainder, FileState.SIZE_1_MB);
-					unmap(data);
-					data = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
-					position += data.limit();
-					remainder -= data.limit();
+					unmap(buffer);
+					buffer = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
+					position += buffer.limit();
+					remainder -= buffer.limit();
 
-					fullDigest.update(data);
+					fullDigest.update(buffer);
 				}
 			}
 		}
 		finally
 		{
-			unmap(data);
+			unmap(buffer);
 			totalFileContentLength += fileSize;
 			totalBytesHashed += position;
 		}
