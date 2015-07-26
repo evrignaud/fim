@@ -37,7 +37,7 @@ import org.fim.command.FindDuplicatesCommand;
 import org.fim.command.HelpCommand;
 import org.fim.command.InitCommand;
 import org.fim.command.LogCommand;
-import org.fim.command.RemoveDuplicatesCommand;
+import org.fim.command.RemoveMirroredFilesCommand;
 import org.fim.command.ResetDatesCommand;
 import org.fim.command.VersionCommand;
 import org.fim.model.Command;
@@ -58,7 +58,7 @@ public class Main
 				new DiffCommand(),
 				new ResetDatesCommand(),
 				new FindDuplicatesCommand(),
-				new RemoveDuplicatesCommand(),
+				new RemoveMirroredFilesCommand(),
 				new LogCommand(),
 				new HelpCommand(),
 				new VersionCommand());
@@ -67,7 +67,7 @@ public class Main
 	private static Options buildOptions()
 	{
 		Options options = new Options();
-		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as master. Only for the remove duplicates command", false));
+		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as master. Only for the remove mirrored files command", false));
 		options.addOption(createOption("f", "fast-mode", false, "Do not hash file content. Use only filenames and modification dates", false));
 		options.addOption(createOption("k", "hash-only-first-four-kilo", false, "Hash only the first four kilo of the files", false));
 		options.addOption(createOption("m", "hash-only-first-mega", false, "Hash only the first mega of the files", false));

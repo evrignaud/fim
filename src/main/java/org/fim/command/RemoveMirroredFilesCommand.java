@@ -36,24 +36,24 @@ import org.fim.model.Parameters;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
-public class RemoveDuplicatesCommand extends AbstractCommand
+public class RemoveMirroredFilesCommand extends AbstractCommand
 {
 	@Override
 	public String getCmdName()
 	{
-		return "remove-duplicates";
+		return "remove-mirrored-files";
 	}
 
 	@Override
 	public String getShortCmdName()
 	{
-		return "rdup";
+		return "rmirror";
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Remove duplicated files from local directory based on a master Fim repository";
+		return "Remove mirrored files from local directory based on a master Fim repository";
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 
 		if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
 		{
-			System.out.println("You are going to detect duplicates and remove them based only on the hash of the first four kilo of the files.");
+			System.out.println("You are going to detect mirrored files and remove them based only on the hash of the first four kilo of the files.");
 			if (!confirmAction(parameters, "continue"))
 			{
 				System.exit(0);
@@ -85,7 +85,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 
 		if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_MEGA)
 		{
-			System.out.println("You are going to detect duplicates and remove them based only on the hash of the first mega of the files.");
+			System.out.println("You are going to detect mirrored files and remove them based only on the hash of the first mega of the files.");
 			if (!confirmAction(parameters, "continue"))
 			{
 				System.exit(0);
@@ -101,7 +101,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 
 		if (masterFimRepository.normalize().equals(CURRENT_DIRECTORY.normalize()))
 		{
-			System.err.printf("Cannot remove duplicates from the current directory%n");
+			System.err.printf("Cannot remove mirrored files from the current directory%n");
 			System.exit(-1);
 		}
 
@@ -112,21 +112,21 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			System.exit(-1);
 		}
 
-		System.out.println("Searching for duplicated files using the " + parameters.getMasterFimRepositoryDir() + " directory as master");
+		System.out.println("Searching for mirrored files files using the " + parameters.getMasterFimRepositoryDir() + " directory as master");
 		System.out.println("");
 
 		Path masterStateDir = masterDotFimDir.resolve("states");
 		State masterState = new StateManager(parameters, masterStateDir).loadLastState();
 		Map<FileHash, FileState> masterFilesHash = buildFileHashMap(masterState);
 
-		long totalDuplicatedFilesRemoved = 0;
+		long totalFilesRemoved = 0;
 		State localState = new StateGenerator(parameters).generateState("", CURRENT_DIRECTORY);
 		for (FileState localFileState : localState.getFileStates())
 		{
 			FileState masterFileState = masterFilesHash.get(localFileState.getFileHash());
 			if (masterFileState != null)
 			{
-				System.out.printf("'%s' is a duplicate of '%s/%s'%n", localFileState.getFileName(),
+				System.out.printf("'%s' is a mirror of '%s/%s'%n", localFileState.getFileName(),
 						parameters.getMasterFimRepositoryDir(), masterFileState.getFileName());
 				if (confirmAction(parameters, "remove it"))
 				{
@@ -135,7 +135,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 					{
 						Files.delete(localFile);
 						System.out.printf("  '%s' removed%n", localFileState.getFileName());
-						totalDuplicatedFilesRemoved++;
+						totalFilesRemoved++;
 					}
 					catch (IOException ex)
 					{
@@ -145,7 +145,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			}
 		}
 
-		System.out.printf("%nRemoved %d duplicated files%n", totalDuplicatedFilesRemoved);
+		System.out.printf("%nRemoved %d mirrored files%n", totalFilesRemoved);
 	}
 
 	private Map<FileHash, FileState> buildFileHashMap(State state)
