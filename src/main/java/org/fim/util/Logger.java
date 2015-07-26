@@ -48,6 +48,11 @@ public class Logger
 		error(exceptionStackTraceToString(ex));
 	}
 
+	public static void error(String message, Exception ex)
+	{
+		error(new StringBuilder().append(message).append(": ").append(exceptionStackTraceToString(ex)).toString());
+	}
+
 	public static void error(String message)
 	{
 		writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Error - ").append(message).toString());

@@ -18,9 +18,11 @@
  */
 package org.fim.command;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +34,7 @@ import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.model.Parameters;
 import org.fim.model.State;
+import org.fim.util.Logger;
 
 public class RemoveDuplicatesCommand extends AbstractCommand
 {
@@ -60,7 +63,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Parameters parameters) throws Exception
+	public void execute(Parameters parameters) throws IOException, NoSuchAlgorithmException
 	{
 		if (parameters.getMasterFimRepositoryDir() == null)
 		{
@@ -123,14 +126,21 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			FileState masterFileState = masterFilesHash.get(localFileState.getFileHash());
 			if (masterFileState != null)
 			{
-				System.out.printf("%s is a duplicate of %s/%s%n", localFileState.getFileName(),
+				System.out.printf("'%s' is a duplicate of '%s/%s'%n", localFileState.getFileName(),
 						parameters.getMasterFimRepositoryDir(), masterFileState.getFileName());
 				if (confirmAction(parameters, "remove it"))
 				{
-					System.out.printf("  %s removed%n", localFileState.getFileName());
 					Path localFile = Paths.get(localFileState.getFileName());
-					Files.delete(localFile);
-					totalDuplicatedFilesRemoved++;
+					try
+					{
+						Files.delete(localFile);
+						System.out.printf("  '%s' removed%n", localFileState.getFileName());
+						totalDuplicatedFilesRemoved++;
+					}
+					catch (IOException ex)
+					{
+						Logger.error(String.format("Error deleting file '%s'", localFile), ex);
+					}
 				}
 			}
 		}
