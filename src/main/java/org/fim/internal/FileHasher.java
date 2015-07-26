@@ -89,8 +89,6 @@ class FileHasher implements Runnable
 	{
 		try
 		{
-			waitQueueToBeFilled(2 * 1000);
-
 			Path file;
 			while ((file = filesToHash.poll(500, TimeUnit.MILLISECONDS)) != null)
 			{
@@ -116,33 +114,6 @@ class FileHasher implements Runnable
 		{
 			Logger.error(ex);
 		}
-	}
-
-	private void waitQueueToBeFilled(long timeout)
-	{
-		long sleepTime = 200;
-		long maxCount = timeout / sleepTime;
-		for (int index = 0; index < maxCount; index++)
-		{
-			if (!isEmpty())
-			{
-				break;
-			}
-
-			try
-			{
-				Thread.sleep(sleepTime);
-			}
-			catch (InterruptedException e)
-			{
-				break;
-			}
-		}
-	}
-
-	private boolean isEmpty()
-	{
-		return filesToHash.size() == 0;
 	}
 
 	private String getNormalizedFileName(Path file)

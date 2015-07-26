@@ -48,6 +48,7 @@ import org.fim.util.Logger;
 public class StateGenerator
 {
 	public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
+	public static final int FILES_QUEUE_CAPACITY = 500;
 
 	private static final Pair<Character, Integer>[] hashProgress = new Pair[]
 			{
@@ -67,6 +68,11 @@ public class StateGenerator
 	private long summedFileLength;
 	private int fileCount;
 	private long totalFileContentLength;
+
+	private Path fimRepositoryRootDir;
+	private BlockingDeque<Path> filesToHash;
+	private boolean hashersStarted;
+	private List<FileHasher> hashers;
 	private long totalBytesHashed;
 
 	public StateGenerator(Parameters parameters)
@@ -77,6 +83,8 @@ public class StateGenerator
 
 	public State generateState(String comment, Path fimRepositoryRootDir) throws IOException, NoSuchAlgorithmException
 	{
+		this.fimRepositoryRootDir = fimRepositoryRootDir;
+
 		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(), parameters.getThreadCount()));
 		if (displayHashLegend())
 		{
@@ -89,20 +97,15 @@ public class StateGenerator
 		long start = System.currentTimeMillis();
 		progressOutputInit();
 
-		BlockingDeque<Path> filesToHash = new LinkedBlockingDeque<>(1000);
-
-		List<FileHasher> hashers = new ArrayList<>();
-		executorService = Executors.newFixedThreadPool(parameters.getThreadCount());
-		for (int index = 0; index < parameters.getThreadCount(); index++)
-		{
-			FileHasher hasher = new FileHasher(this, filesToHash, fimRepositoryRootDir.toString());
-			executorService.submit(hasher);
-			hashers.add(hasher);
-		}
+		filesToHash = new LinkedBlockingDeque<>(FILES_QUEUE_CAPACITY);
+		InitializeFileHashers();
 
 		scanFileTree(filesToHash, fimRepositoryRootDir);
 
-		waitAllFileHashed();
+		// In case the FileHashers have not been started
+		startFileHashers();
+
+		waitAllFilesToBeHashed();
 
 		for (FileHasher hasher : hashers)
 		{
@@ -117,6 +120,27 @@ public class StateGenerator
 		displayStatistics(start, state);
 
 		return state;
+	}
+
+	private void InitializeFileHashers()
+	{
+		hashersStarted = false;
+		hashers = new ArrayList<>();
+		executorService = Executors.newFixedThreadPool(parameters.getThreadCount());
+	}
+
+	private void startFileHashers() throws NoSuchAlgorithmException
+	{
+		if (!hashersStarted)
+		{
+			for (int index = 0; index < parameters.getThreadCount(); index++)
+			{
+				FileHasher hasher = new FileHasher(this, filesToHash, fimRepositoryRootDir.toString());
+				executorService.submit(hasher);
+				hashers.add(hasher);
+			}
+			hashersStarted = true;
+		}
 	}
 
 	private String hashModeToString()
@@ -139,7 +163,7 @@ public class StateGenerator
 		throw new IllegalArgumentException("Invalid hash mode " + parameters.getHashMode());
 	}
 
-	private void waitAllFileHashed()
+	private void waitAllFilesToBeHashed()
 	{
 		try
 		{
@@ -172,12 +196,17 @@ public class StateGenerator
 		}
 	}
 
-	private void scanFileTree(BlockingDeque<Path> filesToHash, Path directory) throws IOException
+	private void scanFileTree(BlockingDeque<Path> filesToHash, Path directory) throws IOException, NoSuchAlgorithmException
 	{
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory))
 		{
 			for (Path file : stream)
 			{
+				if (!hashersStarted && filesToHash.size() > FILES_QUEUE_CAPACITY / 2)
+				{
+					startFileHashers();
+				}
+
 				BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
 				if (attributes.isRegularFile())
 				{
