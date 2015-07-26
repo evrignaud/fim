@@ -1,14 +1,5 @@
 # Fim
 
-## Table of contents
-
-  * [File Integrity Manager](#file-integrity-manager)
-  * [Fim workflow](#fim-workflow)
-  * [Fim usage](#fim-usage)
-  * [Simple example](#simple-example)
-  * [Real life example](#real-life-example)
-  * [License](https://github.com/evrignaud/fim/blob/master/LICENSE.md)
-
 ## File Integrity Manager
 
 Fim manage the integrity of a complete file tree.
