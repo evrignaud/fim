@@ -36,7 +36,7 @@ You cannot use them to retrieve the content of one file that you may have lost.
 
 > __Fim does not replace a backup software__
 
-[\[^ TOC\]](#table-of-contents)
+
 
 ## Fim workflow
 
@@ -68,7 +68,7 @@ It's a time consuming operation that will compute all the hash of each files con
 
 	$ fim ci
 
-[\[^ TOC\]](#table-of-contents)
+
 
 ## Fim usage
 
@@ -103,7 +103,7 @@ It's a time consuming operation that will compute all the hash of each files con
 		 -v,--version                       Prints the Fim version
 		 -y,--always-yes                    Always yes to every questions
 
-[\[^ TOC\]](#table-of-contents)
+
 
 ## Simple example
 
@@ -327,7 +327,7 @@ State #2: 2015/07/21 22:28:38
 
 ```
 
-[\[^ TOC\]](#table-of-contents)
+
 
 ## Real life example
 
@@ -508,4 +508,4 @@ This time in my case, **it takes 2 hours** as for the `init` command.
 There is also the fast mode using the `-f` option that do not hash file content. It helps to detect faster changes but only file names that have changed.
 This time in my case, **it takes 3 seconds**.
 
-[\[^ TOC\]](#table-of-contents)
+
