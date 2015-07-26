@@ -30,7 +30,20 @@
 			<outputDirectory></outputDirectory>
 			<includes>
 				<include>LICENSE</include>
-				<include>*.md</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>target/gh-pages</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>*.html</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>target/gh-pages/stylesheets</directory>
+			<outputDirectory>stylesheets</outputDirectory>
+			<includes>
+				<include>*.css</include>
 			</includes>
 		</fileSet>
 	</fileSets>
