@@ -88,19 +88,19 @@ It's a time consuming operation that will compute all the hash of each files con
 	File Integrity Checker
 
 	Available commands:
-		 init                      Initialize a Fim repository
-		 ci / commit               Commit the current directory State
-		 diff                      Compare the current directory State with the previous one
-		 rdates / reset-dates      Reset the file modification dates like it's stored in the last committed State
-		 fdup / find-duplicates    Find duplicated files
-		 rdup / remove-duplicates  Remove duplicated files from local directory based on a master Fim repository
-		 log                       Display States log
-		 help                      Prints the Fim help
-		 version                   Prints the Fim version
+		 init                           Initialize a Fim repository
+		 ci / commit                    Commit the current directory State
+		 diff                           Compare the current directory State with the previous one
+		 rdates / reset-dates           Reset the file modification dates like it's stored in the last committed State
+		 fdup / find-duplicates         Find duplicated files
+		 rmirror / rm-mirrored-files    Remove mirrored files from local directory based on a master Fim repository
+		 log                            Display States log
+		 help                           Prints the Fim help
+		 version                        Prints the Fim version
 
 	Available options:
 		 -a,--master-fim-repository <arg>   Fim repository directory that you want to use as master. Only for the remove
-											duplicates command
+											mirrored files command
 		 -c,--comment <arg>                 Sets that State comment during commit
 		 -f,--fast-mode                     Do not hash file content. Use only filenames and modification dates
 		 -h,--help                          Prints the Fim help

@@ -41,7 +41,7 @@ public class RemoveMirroredFilesCommand extends AbstractCommand
 	@Override
 	public String getCmdName()
 	{
-		return "remove-mirrored-files";
+		return "rm-mirrored-files";
 	}
 
 	@Override
