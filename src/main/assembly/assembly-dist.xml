@@ -40,9 +40,10 @@
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>target/gh-pages/stylesheets</directory>
-			<outputDirectory>stylesheets</outputDirectory>
+			<directory>target/gh-pages/strapdown</directory>
+			<outputDirectory>strapdown</outputDirectory>
 			<includes>
+				<include>*.js</include>
 				<include>*.css</include>
 			</includes>
 		</fileSet>
