@@ -26,9 +26,12 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -49,6 +52,8 @@ public class StateGenerator
 {
 	public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
 	public static final int FILES_QUEUE_CAPACITY = 500;
+
+	private static final Set ignoredDirectories = new HashSet<>(Arrays.asList(Parameters.DOT_FIM_DIR, ".git", ".svn", ".cvs"));
 
 	private static final Pair<Character, Integer>[] hashProgress = new Pair[]
 			{
@@ -221,7 +226,8 @@ public class StateGenerator
 				}
 				else if (attributes.isDirectory())
 				{
-					if (file.getFileName().toString().equals(Parameters.DOT_FIM_DIR))
+					String fileName = file.getFileName().toString();
+					if (ignoredDirectories.contains(fileName))
 					{
 						continue;
 					}
