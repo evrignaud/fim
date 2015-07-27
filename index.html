@@ -144,7 +144,7 @@ Available options:
 Here is a step by step example of Fim usage.
 For the purpose of this example we use small files.
 
-##### Create a set of files
+### Create a set of files
 
 ```shell
 ~$ mkdir sample
@@ -170,7 +170,7 @@ drwxrwxr-x 7 4096 juil. 20 22:00 ..
 -rw-rw-r-- 1   12 juil. 21 22:24 file10
 ```
 
-##### Initialize the Fim repository
+### Initialize the Fim repository
 
 ```shell
 ~/sample$ fim init
@@ -192,7 +192,7 @@ Added:            file10
 10 added
 ```
 
-##### A new `.fim` directory have been created
+### A new `.fim` directory have been created
 
 ```shell
 ~/sample$ ls -la
@@ -212,7 +212,7 @@ drwxrwxr-x 7 4096 juil. 20 22:00 ..
 drwxrwxr-x 3 4096 juil. 21 22:25 .fim
 ```
 
-##### Do some modifications in the files
+### Do some modifications in the files
 
 ```shell
 ~/sample$ mkdir dir1
@@ -262,7 +262,7 @@ drwxrwxr-x 4 4096 juil. 21 22:26 ..
 -rw-rw-r-- 1   12 juil. 21 22:24 file01
 ```
 
-##### Fim is able to detect all the modifications that have been done
+### Fim is able to detect all the modifications
 
 ```shell
 ~/sample$ fim diff
@@ -286,7 +286,7 @@ Deleted:          file06
 1 added, 1 copied, 1 duplicated, 1 date modified, 2 content modified, 1 renamed, 1 deleted
 ```
 
-##### Search for duplicated files
+### Search for duplicated files
 
 ```shell
 ~/sample$ fim fdup
@@ -306,7 +306,7 @@ Searching for duplicated files
 
 ```
 
-##### Commit the modifications
+### Commit the modifications
 
 ```shell
 ~/sample$ fim ci -c "After modifications"
@@ -332,7 +332,7 @@ Deleted:          file06
 Do you really want to commit (y/n/A)? y
 ```
 
-##### Nothing is modified
+### Nothing is modified
 
 ```shell
 ~/sample$ fim diff
@@ -347,7 +347,7 @@ Comment: After modifications
 Nothing modified
 ```
 
-##### Display the Fim log
+### Display the Fim log
 
 ```shell
 ~/sample$ fim log
@@ -362,8 +362,9 @@ State #2: 2015/07/21 22:28:38
 ```
 
 
-
 ## Real life example
+
+### Initialize the big Fim repository
 
 Here is the output of the initialization of a big Fim repository that contains 297 GB of photos and videos.
 **It takes 2 hours** to hash all the files content.
@@ -421,7 +422,9 @@ oooooooooooooooooo#ooooooooooo..oo@...ooooo#o
 41453 added
 ```
 
-I am able to check the differences very quickly using the `-k` option that will check only the first four kilobytes and **it take 4 minutes** :=).
+### Check quickly for differences
+
+It is possible to check the differences very quickly using the `-k` option that will check only the first four kilobytes and **it take 4 minutes** :=).
 
 ```shell
 ~/Photos_Videos$ fim diff -k
@@ -476,6 +479,8 @@ Comment: Initial State
 
 Nothing modified
 ```
+
+### Check more accuratly for differences
 
 This quick diff can be inaccurate.
 To increase accuracy, you can use the `-m` option. This result is more accurate,
@@ -536,11 +541,30 @@ Comment: Initial State
 Nothing modified
 ```
 
+### Fully checking for differences
+
 If you want to be completely sure of the `diff` result you need to run a full hash of all the files content using the `fim diff` command without any option.
 This time in my case, **it takes 2 hours** as for the `init` command.
 
+### Checking without hashing
+
 There is also the fast mode using the `-f` option that do not hash file content. It helps to detect faster changes but only file names that have changed.
 This time in my case, **it takes 3 seconds**.
+
+
+## About
+
+Forged by Etienne Vrignaud.
+
+## Languages
+
+This tool is written in Java.
+
+## License
+
+This project is released under the [GPLv3 license](https://github.com/evrignaud/fim/blob/master/LICENSE.md), for more details, take a look at the LICENSE file in the source.
+
+Basically, that allow you to use all or part of the project for you own business.
 
 </xmp>
 
