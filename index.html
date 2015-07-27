@@ -22,6 +22,7 @@
 <xmp style="display:none;" toc toc-top-link>
 
 # Presentation
+---
 
 Fim manage the integrity of a complete file tree.
 
@@ -57,9 +58,10 @@ You cannot use them to retrieve the content of one file that you may have lost.
 
 > __Fim does not replace a backup software__
 
----
+<br />
 
 # Fim workflow
+---
 
 First you need to initialize the Fim repository using the init command.
 This will record the first State of your file tree.
@@ -101,9 +103,10 @@ It's a time consuming operation that will compute all the hash of each files con
 $ fim ci
 ```
 
----
+<br />
 
 # Fim usage
+---
 
 ```shell
 $ fim help
@@ -138,9 +141,10 @@ Available options:
    -y,--always-yes                    Always yes to every questions
 ```
 
----
+<br />
 
 # Simple example
+---
 
 Here is a step by step example of Fim usage.
 For the purpose of this example we use small files.
@@ -213,7 +217,7 @@ drwxrwxr-x 7 4096 juil. 20 22:00 ..
 drwxrwxr-x 3 4096 juil. 21 22:25 .fim
 ```
 
-## Do some modifications in the files
+## Do some modifications
 
 ```shell
 ~/sample$ mkdir dir1
@@ -263,7 +267,7 @@ drwxrwxr-x 4 4096 juil. 21 22:26 ..
 -rw-rw-r-- 1   12 juil. 21 22:24 file01
 ```
 
-## Fim is able to detect all the modifications
+## Fim detects the modifications
 
 ```shell
 ~/sample$ fim diff
@@ -333,7 +337,7 @@ Deleted:          file06
 Do you really want to commit (y/n/A)? y
 ```
 
-## Nothing is modified
+## Nothing is modified now
 
 ```shell
 ~/sample$ fim diff
@@ -362,9 +366,10 @@ State #2: 2015/07/21 22:28:38
 
 ```
 
----
+<br />
 
 # Real life example
+---
 
 ## Initialize the big Fim repository
 
@@ -542,30 +547,39 @@ Comment: Initial State
 
 Nothing modified
 ```
+<br />
 
 ## Fully checking for differences
 
 If you want to be completely sure of the `diff` result you need to run a full hash of all the files content using the `fim diff` command without any option.
 This time in my case, **it takes 2 hours** as for the `init` command.
 
+<br />
+
 ## Checking without hashing
 
 There is also the fast mode using the `-f` option that do not hash file content. It helps to detect faster changes but only file names that have changed.
 This time in my case, **it takes 3 seconds**.
 
----
+<br />
+<br />
 
 # About
+---
 
 Forged by Etienne Vrignaud.
 
-
+<br />
+   
 # Language
+---
 
 This tool is written in Java.
 
+<br />
 
 # License
+---
 
 This project is released under the [GPLv3 license](https://github.com/evrignaud/fim/blob/master/LICENSE.md), for more details, take a look at the LICENSE file in the source.
 
