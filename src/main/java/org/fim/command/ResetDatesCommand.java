@@ -47,7 +47,7 @@ public class ResetDatesCommand extends AbstractCommand
 	@Override
 	public String getDescription()
 	{
-		return "Reset the file modification dates like it's stored in the last committed State";
+		return "Reset the file modification dates like it is stored in the last committed State";
 	}
 
 	@Override
