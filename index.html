@@ -143,6 +143,31 @@ Available options:
 
 <br />
 
+# Building Fim distribution
+---
+
+1. Get the code
+
+	- [Download .zip](https://github.com/evrignaud/fim/zipball/master)
+	- or [Download .tar.gz](https://github.com/evrignaud/fim/tarball/master)
+	- or clone it using either `https://github.com/evrignaud/fim.git` or `git@github.com:evrignaud/fim.git`
+
+2. build it
+
+```shell
+mvn clean install
+```
+
+3. Two distribution files are generated into the `target/dist` directory.
+
+```shell
+$ ls -a1 target/dist/
+fim-1.0.0-SNAPSHOT-distribution.tar.gz
+fim-1.0.0-SNAPSHOT-distribution.zip
+```
+
+<br />
+
 # Simple example
 ---
 
@@ -591,5 +616,8 @@ Basically, that allow you to use all or part of the project for you own business
 </xmp>
 
 <script src="strapdown/ndossougbe.github.io-strapdown.js"></script>
+
+<p><a href="https://github.com/evrignaud/fim"><img style="position: fixed; top: 0; right: 0; border: 0; z-index: 1000; margin: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a></p>
+
 </body>
 </html>
