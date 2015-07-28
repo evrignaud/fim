@@ -58,7 +58,7 @@ You cannot use them to retrieve the content of one file that you may have lost.
 
 > __Fim does not replace a backup software__
 
-<br />
+<br/>
 
 # Fim workflow
 ---
@@ -103,7 +103,7 @@ It's a time consuming operation that will compute all the hash of each files con
 $ fim ci
 ```
 
-<br />
+<br/>
 
 # Fim usage
 ---
@@ -141,24 +141,29 @@ Available options:
      -y,--always-yes                    Always yes to every questions
 ```
 
-<br />
+<br/>
 
-# Building Fim distribution
+# Building Fim
 ---
 
-1. Get the code
+- Get the code
 
 	- [Download .zip](https://github.com/evrignaud/fim/zipball/master)
 	- or [Download .tar.gz](https://github.com/evrignaud/fim/tarball/master)
 	- or clone it using either `https://github.com/evrignaud/fim.git` or `git@github.com:evrignaud/fim.git`
 
-2. build it
+- build it
 
 ```shell
 mvn clean install
 ```
 
-3. Two distribution files are generated into the `target/dist` directory.
+- You can run the jar file generated into the `target` directory using the two shell script files located in the root directory.<br/>
+
+> `fim` for linux<br/>
+> `fim.bat` for windows
+
+- Two distribution files are generated into the `target/dist` directory.
 
 ```shell
 $ ls -a1 target/dist/
@@ -166,7 +171,7 @@ fim-1.0.0-SNAPSHOT-distribution.tar.gz
 fim-1.0.0-SNAPSHOT-distribution.zip
 ```
 
-<br />
+<br/>
 
 # Simple example
 ---
@@ -391,14 +396,14 @@ State #2: 2015/07/21 22:28:38
 
 ```
 
-<br />
+<br/>
 
 # Real life example
 ---
 
 ## Initialize the big Fim repository
 
-Here is the output of the initialization of a big Fim repository that contains 297 GB of photos and videos.<br />
+Here is the output of the initialization of a big Fim repository that contains 297 GB of photos and videos.<br/>
 In my case **it takes 2 hours** to hash all the files content.
 
 ```shell
@@ -458,7 +463,7 @@ We have hashed 297 GB of files in 2 hours 4 minutes. So we have a global through
 
 ## Check quickly for differences
 
-It is possible to check the differences very quickly using the `-k` option that will check only the first four kilobytes.<br />
+It is possible to check the differences very quickly using the `-k` option that will check only the first four kilobytes.<br/>
 In my case **it take 4 minutes :=)**.
 
 ```shell
@@ -517,9 +522,9 @@ Nothing modified
 
 ## Check more accuratly for differences
 
-This quick diff can be inaccurate.<br />
+This quick diff can be inaccurate.<br/>
 To increase accuracy, you can use the `-m` option. This result is more accurate,
-but it cannot be completely accurate as only the hash of the first megabyte of the files are computed.<br />
+but it cannot be completely accurate as only the hash of the first megabyte of the files are computed.<br/>
 This time in my case, **it takes 20 minutes** to check the differences.
 
 ```shell
@@ -575,36 +580,36 @@ Comment: Initial State
 
 Nothing modified
 ```
-<br />
+<br/>
 
 ## Fully checking for differences
 
-If you want to be completely sure of the `diff` result you need to run a full hash of all the files content using the `fim diff` command without any option.<br />
+If you want to be completely sure of the `diff` result you need to run a full hash of all the files content using the `fim diff` command without any option.<br/>
 This time in my case, **it takes 2 hours** as for the `init` command.
 
-<br />
+<br/>
 
 ## Checking without hashing
 
-There is also the fast mode using the `-f` option that do not hash file content. It helps to detect faster changes but only file names that have changed.<br />
+There is also the fast mode using the `-f` option that do not hash file content. It helps to detect faster changes but only file names that have changed.<br/>
 This time in my case, **it takes 3 seconds**.
 
-<br />
-<br />
+<br/>
+<br/>
 
 # About
 ---
 
 Forged by Etienne Vrignaud.
 
-<br />
+<br/>
    
 # Language
 ---
 
 This tool is written in Java.
 
-<br />
+<br/>
 
 # License
 ---
@@ -617,7 +622,11 @@ Basically, that allow you to use all or part of the project for you own business
 
 <script src="strapdown/ndossougbe.github.io-strapdown.js"></script>
 
-<p><a href="https://github.com/evrignaud/fim"><img style="position: fixed; top: 0; right: 0; border: 0; z-index: 1000; margin: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a></p>
+<p>
+    <a href="https://github.com/evrignaud/fim"><img
+            style="position: fixed; top: 0; right: 0; border: 0; z-index: 1000; margin: 0;"
+            src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+</p>
 
 </body>
 </html>
