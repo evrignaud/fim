@@ -190,8 +190,7 @@ public class StateGenerator
 		String durationStr = DurationFormatUtils.formatDuration(duration, "HH:mm:ss");
 
 		long durationSeconds = duration / 1000;
-		long totalMegaHashed = totalBytesHashed / (1024 * 1024);
-		long globalThroughput = totalMegaHashed / durationSeconds;
+		long globalThroughput = totalBytesHashed / durationSeconds;
 		String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
 
 		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
