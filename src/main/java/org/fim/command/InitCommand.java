@@ -65,7 +65,8 @@ public class InitCommand extends AbstractCommand
 		}
 		catch (IOException ex)
 		{
-			System.err.println("Not able to create the '" + Parameters.DOT_FIM_DIR + "' directory that holds the Fim repository: " + ex.getMessage());
+			System.err.printf("Not able to create the '%s' directory that holds the Fim repository: %s %s%n",
+					Parameters.DOT_FIM_DIR, ex.getClass().getSimpleName(), ex.getMessage());
 			System.exit(-1);
 		}
 

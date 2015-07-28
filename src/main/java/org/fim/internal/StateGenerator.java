@@ -93,7 +93,7 @@ public class StateGenerator
 		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(), parameters.getThreadCount()));
 		if (displayHashLegend())
 		{
-			System.out.printf("    (Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgressLegend());
+			System.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgressLegend());
 		}
 
 		State state = new State();
@@ -189,6 +189,11 @@ public class StateGenerator
 		String totalBytesHashedStr = FileUtils.byteCountToDisplaySize(totalBytesHashed);
 		String durationStr = DurationFormatUtils.formatDuration(duration, "HH:mm:ss");
 
+		long durationSeconds = duration / 1000;
+		long totalMegaHashed = totalBytesHashed / (1024 * 1024);
+		long globalThroughput = totalMegaHashed / durationSeconds;
+		String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
+
 		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
 		{
 			Logger.info(String.format("Scanned %d files (%s), during %s, using %d thread%n",
@@ -196,8 +201,8 @@ public class StateGenerator
 		}
 		else
 		{
-			Logger.info(String.format("Scanned %d files (%s), hashed %s bytes, during %s, using %d thread%n",
-					state.getFileStates().size(), totalFileContentLengthStr, totalBytesHashedStr, durationStr, parameters.getThreadCount()));
+			Logger.info(String.format("Scanned %d files (%s), hashed %s bytes (global throughput %s/s), during %s, using %d thread%n",
+					state.getFileStates().size(), totalFileContentLengthStr, totalBytesHashedStr, throughputStr, durationStr, parameters.getThreadCount()));
 		}
 	}
 
@@ -300,12 +305,12 @@ public class StateGenerator
 		return legend;
 	}
 
-	private char getProgressChar(long fileLength)
+	protected char getProgressChar(long fileLength)
 	{
 		int progressIndex;
 		for (progressIndex = hashProgress.length - 1; progressIndex >= 0; progressIndex--)
 		{
-			if (fileLength > hashProgress[progressIndex].getRight())
+			if (fileLength >= hashProgress[progressIndex].getRight())
 			{
 				break;
 			}

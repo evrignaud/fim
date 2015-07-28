@@ -112,6 +112,20 @@ public class FileHasherTest extends StateAssert
 	}
 
 	@Test
+	public void weCanHashAn_Empty_File() throws IOException
+	{
+		String firstFourKiloHash = "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e";
+		String firstMegaHash = firstFourKiloHash;
+		String fullFileHash = firstFourKiloHash;
+
+		Path fileToHash = createFileWithSize(0);
+
+		FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
+
+		assertFileHash(fileHash, firstFourKiloHash, firstMegaHash, fullFileHash);
+	}
+
+	@Test
 	public void weCanHashA_2KB_File() throws IOException
 	{
 		String firstFourKiloHash = "76b1e87b9f5df5d1584c5684432005d533196532439edbbf25ba9c7e82b7b0f7652c66e20ab07d854b950c8eeb5e2f65a03054f68d093fa75927ab2041bd8f74";
@@ -192,6 +206,12 @@ public class FileHasherTest extends StateAssert
 		if (Files.exists(newFile))
 		{
 			Files.delete(newFile);
+		}
+
+		if (fileSize == 0)
+		{
+			Files.createFile(newFile);
+			return newFile;
 		}
 
 		if (content.length > fileSize)
