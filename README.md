@@ -24,4 +24,4 @@ You can download Java 8 from [here](http://www.oracle.com/technetwork/java/javas
 
 
 
-[![Analytics](https://ga-beacon.appspot.com/UA-65759837-1/fim/README.md)](https://github.com/evrignaud/fim)
+![Analytics](https://ga-beacon.appspot.com/UA-65759837-1/fim/README.md?pixel)
