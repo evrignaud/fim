@@ -17,6 +17,11 @@ Fim manage the integrity of a complete file tree.
 
 You can download binary distributions of Fim from [here](https://github.com/evrignaud/fim/releases/latest)
 
+## Fim requirements
+
+Fim is compiled using Java 8 and require Java 8 to run.
+You can download Java 8 from [here](http://www.oracle.com/technetwork/java/javase/downloads/index.html). You need at least Java 8 Standard Edition JRE.
+
 
 
 [![Analytics](https://ga-beacon.appspot.com/UA-65759837-1/fim/README.md)](https://github.com/evrignaud/fim)
