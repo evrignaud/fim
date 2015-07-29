@@ -17,6 +17,13 @@
 			</includes>
 		</fileSet>
 		<fileSet>
+			<directory>target</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>fim-*-sources.jar</include>
+			</includes>
+		</fileSet>
+		<fileSet>
 			<directory>src/main/resources/script</directory>
 			<outputDirectory></outputDirectory>
 			<filtered>true</filtered>
