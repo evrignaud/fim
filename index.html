@@ -15,6 +15,8 @@
     ga('send', 'pageview');
   </script>
 
+  <link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,900' rel='stylesheet' type='text/css'>
+
 </head>
 
 <body>
@@ -58,6 +60,7 @@ You cannot use them to retrieve the content of one file that you may have lost.
 
 > __Fim does not replace a backup software__
 
+<br/>
 <br/>
 
 # Fim workflow
@@ -104,6 +107,7 @@ $ fim ci
 ```
 
 <br/>
+<br/>
 
 # Fim usage
 ---
@@ -127,8 +131,8 @@ Available commands:
      version                    Prints the Fim version
 
 Available options:
-     -a,--master-fim-repository <arg>   Fim repository directory that you want to use as remote master. Only for the
-                                        remove duplicated files command
+     -a,--master-fim-repository <arg>   Fim repository directory that you want to use as remote master.
+                                        Only for the remove duplicated files command
      -c,--comment <arg>                 Sets that State comment during commit
      -f,--fast-mode                     Do not hash file content. Use only filenames and modification dates
      -h,--help                          Prints the Fim help
@@ -141,6 +145,7 @@ Available options:
      -y,--always-yes                    Always yes to every questions
 ```
 
+<br/>
 <br/>
 
 # Building Fim
@@ -172,12 +177,15 @@ fim-1.0.0-SNAPSHOT-distribution.zip
 ```
 
 <br/>
+<br/>
 
 # Simple example
 ---
 
 Here is a step by step example of Fim usage.
 For the purpose of this example we use small files.
+
+<br/>
 
 ## Create a set of files
 
@@ -205,13 +213,15 @@ drwxrwxr-x 7 4096 juil. 20 22:00 ..
 -rw-rw-r-- 1   12 juil. 21 22:24 file10
 ```
 
+<br/>
+
 ## Initialize the Fim repository
 
 ```shell
 ~/sample$ fim init
 2015/07/21 22:25:02 - Info  - Scanning recursively local files, computing all hash, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
-.2015/07/21 22:25:05 - Info  - Scanned 10 files (120 bytes), hashed 120 bytes bytes, during 00:00:03, using 2 thread
+.2015/07/21 22:25:05 - Info  - Scanned 10 files (120 bytes), hashed 120 bytes bytes (avg 120 bytes/s), during 00:00:03, using 2 thread
 
 Added:            file01
 Added:            file02
@@ -226,6 +236,8 @@ Added:            file10
 
 10 added
 ```
+
+<br/>
 
 ## A new `.fim` directory have been created
 
@@ -246,6 +258,8 @@ drwxrwxr-x 7 4096 juil. 20 22:00 ..
 -rw-rw-r-- 1   12 juil. 21 22:24 file10
 drwxrwxr-x 3 4096 juil. 21 22:25 .fim
 ```
+
+<br/>
 
 ## Do some modifications
 
@@ -297,6 +311,8 @@ drwxrwxr-x 4 4096 juil. 21 22:26 ..
 -rw-rw-r-- 1   12 juil. 21 22:24 file01
 ```
 
+<br/>
+
 ## Fim detects the modifications
 
 ```shell
@@ -304,7 +320,7 @@ drwxrwxr-x 4 4096 juil. 21 22:26 ..
 2015/07/21 22:27:41 - Info  - Scanning recursively local files, computing all hash, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 .
-2015/07/21 22:27:44 - Info  - Scanned 12 files (152 bytes), hashed 152 bytes bytes, during 00:00:03, using 2 thread
+2015/07/21 22:27:44 - Info  - Scanned 12 files (152 bytes), hashed 152 bytes bytes (avg 152 bytes/s), during 00:00:03, using 2 thread
 
 Comparing with the last committed state from 2015/07/21 22:25:02
 Comment: Initial State
@@ -321,6 +337,8 @@ Deleted:          file06
 1 added, 1 copied, 1 duplicated, 1 date modified, 2 content modified, 1 renamed, 1 deleted
 ```
 
+<br/>
+
 ## Search for duplicated files
 
 ```shell
@@ -330,7 +348,7 @@ Searching for duplicated files
 2015/07/21 22:28:07 - Info  - Scanning recursively local files, computing all hash, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 .
-2015/07/21 22:28:10 - Info  - Scanned 12 files (152 bytes), hashed 152 bytes bytes, during 00:00:03, using 2 thread
+2015/07/21 22:28:10 - Info  - Scanned 12 files (152 bytes), hashed 152 bytes bytes (avg 152 bytes/s), during 00:00:03, using 2 thread
 
 1 duplicated files
 
@@ -341,6 +359,8 @@ Searching for duplicated files
 
 ```
 
+<br/>
+
 ## Commit the modifications
 
 ```shell
@@ -348,7 +368,7 @@ Searching for duplicated files
 2015/07/21 22:28:38 - Info  - Scanning recursively local files, computing all hash, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 .
-2015/07/21 22:28:41 - Info  - Scanned 12 files (152 bytes), hashed 152 bytes bytes, during 00:00:03, using 2 thread
+2015/07/21 22:28:41 - Info  - Scanned 12 files (152 bytes), hashed 152 bytes bytes (avg 152 bytes/s), during 00:00:03, using 2 thread
 
 Comparing with the last committed state from 2015/07/21 22:25:02
 Comment: Initial State
@@ -367,6 +387,8 @@ Deleted:          file06
 Do you really want to commit (y/n/A)? y
 ```
 
+<br/>
+
 ## Nothing is modified now
 
 ```shell
@@ -374,13 +396,15 @@ Do you really want to commit (y/n/A)? y
 2015/07/21 22:30:32 - Info  - Scanning recursively local files, computing all hash, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 .
-2015/07/21 22:30:35 - Info  - Scanned 12 files (152 bytes), hashed 152 bytes bytes, during 00:00:03, using 2 thread
+2015/07/21 22:30:35 - Info  - Scanned 12 files (152 bytes), hashed 152 bytes bytes (avg 152 bytes/s), during 00:00:03, using 2 thread
 
 Comparing with the last committed state from 2015/07/21 22:28:38
 Comment: After modifications
 
 Nothing modified
 ```
+
+<br/>
 
 ## Display the Fim log
 
@@ -397,9 +421,12 @@ State #2: 2015/07/21 22:28:38
 ```
 
 <br/>
+<br/>
+
 
 # Real life example
 ---
+
 
 ## Initialize the big Fim repository
 
@@ -452,14 +479,14 @@ oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo..oo
 oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 oooooooooooooooooo#ooooooooooo..oo@...ooooo#o
-2015/07/21 01:11:54 - Info  - Scanned 41453 files (297 GB), hashed 297 GB bytes, during 02:04:25, using 2 thread
+2015/07/21 01:11:54 - Info  - Scanned 41453 files (297 GB), hashed 297 GB bytes (avg 41 MB/s), during 02:04:25, using 2 thread
 
 ... # File list is skipped as it is too long
 
 41453 added
 ```
 
-We have hashed 297 GB of files in 2 hours 4 minutes. So we have a global throughput of 40.7 MB per second.
+<br/>
 
 ## Check quickly for differences
 
@@ -512,13 +539,15 @@ oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo..oo
 oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 oooooooooooooooooo#ooooooooooo..oo@...ooooo#o
-2015/07/21 08:53:47 - Info  - Scanned 41453 files (297 GB), hashed 161 MB bytes, during 00:04:25, using 2 thread
+2015/07/21 08:53:47 - Info  - Scanned 41453 files (297 GB), hashed 161 MB bytes (avg 622 KB/s), during 00:04:25, using 2 thread
 
 Comparing with the last committed state from 2015/07/20 23:07:28
 Comment: Initial State
 
 Nothing modified
 ```
+
+<br/>
 
 ## Check more accuratly for differences
 
@@ -573,13 +602,14 @@ oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo..oo
 oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 oooooooooooooooooo#ooooooooooo..oo@...ooooo#o
-2015/07/21 13:05:04 - Info  - Scanned 41453 files (297 GB), hashed 35 GB bytes, during 00:19:39, using 2 thread
+2015/07/21 13:05:04 - Info  - Scanned 41453 files (297 GB), hashed 35 GB bytes (avg 30 MB/s), during 00:19:39, using 2 thread
 
 Comparing with the last committed state from 2015/07/20 23:07:28
 Comment: Initial State
 
 Nothing modified
 ```
+
 <br/>
 
 ## Fully checking for differences
@@ -596,20 +626,68 @@ This time in my case, **it takes 3 seconds**.
 
 <br/>
 <br/>
+<br/>
+<br/>
+<br/>
+
+
+# Dealing with duplicates
+---
+
+Duplicated files are addressed by Fim in two different ways.
+
+## Duplicates inside a Fim repository
+
+Fim allow you to detect duplicates using the `fdup` command.<br/>
+If you want to remove them, Fim cannot do it. It does not provide a smart way to remove those duplicates.
+
+<br/>
+
+## Duplicates that are outside
+
+You can use Fim to remove duplicated files that are located outside a Fim repository using the `rdup` command.<br/>
+It can be useful if you want to cleanup old backups that are no more synchronised and you want to be sure to not loose any files that could have been modified or added.
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+# How many threads should I use?
+---
+
+Fim hash files using several threads.<br/>
+This allow to take advantage of the computer resources and maximize the overall performances of file hashing.
+By default Fim use an arbitrary thread count that is the number of cpu cores divided by two.<br/>
+You can specify the number of thread to be used for file hashing.<br/>
+The best value depend on the kind of hard disk you have. The more throughput you have, the more thread you can use.
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
 
 # About
 ---
 
-Forged by Etienne Vrignaud.
+> Forged by Etienne Vrignaud.
 
 <br/>
+<br/>
+
    
 # Language
 ---
 
-This tool is written in Java.
+> This tool is written in Java.
 
 <br/>
+<br/>
+
 
 # License
 ---
