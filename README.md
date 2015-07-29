@@ -16,3 +16,7 @@ Fim manage the integrity of a complete file tree.
 ## Fim releases
 
 You can download binary distributions of Fim from [here](https://github.com/evrignaud/fim/releases/latest)
+
+
+
+[![Analytics](https://ga-beacon.appspot.com/UA-65759837-1/fim/README.md)](https://github.com/evrignaud/fim)
