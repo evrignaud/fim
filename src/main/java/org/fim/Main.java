@@ -250,7 +250,7 @@ public class Main
 			{
 				cmdName = command.getCmdName();
 			}
-			usage.append(String.format("     %-30s %s\n", cmdName, command.getDescription()));
+			usage.append(String.format("     %-26s %s\n", cmdName, command.getDescription()));
 		}
 
 		usage.append("\n");
