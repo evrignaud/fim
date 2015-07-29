@@ -41,7 +41,7 @@ public class FindDuplicatesCommand extends AbstractCommand
 	@Override
 	public String getDescription()
 	{
-		return "Find duplicated files";
+		return "Find local duplicated files in the Fim repository";
 	}
 
 	@Override
