@@ -190,6 +190,11 @@ public class StateGenerator
 		String durationStr = DurationFormatUtils.formatDuration(duration, "HH:mm:ss");
 
 		long durationSeconds = duration / 1000;
+		if (durationSeconds <= 0)
+		{
+			durationSeconds = 1;
+		}
+		
 		long globalThroughput = totalBytesHashed / durationSeconds;
 		String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
 
@@ -200,7 +205,7 @@ public class StateGenerator
 		}
 		else
 		{
-			Logger.info(String.format("Scanned %d files (%s), hashed %s bytes (global throughput %s/s), during %s, using %d thread%n",
+			Logger.info(String.format("Scanned %d files (%s), hashed %s bytes (avg %s/s), during %s, using %d thread%n",
 					state.getFileStates().size(), totalFileContentLengthStr, totalBytesHashedStr, throughputStr, durationStr, parameters.getThreadCount()));
 		}
 	}
