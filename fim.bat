@@ -31,4 +31,6 @@ for %%f in ("%baseDir%target\fim-*.jar") do (
     set JAR_FILE=%%~nxf
 )
 
+set JAR_FILE=%JAR_FILE:-sources=%
+
 java %JAVA_OPTIONS% -jar "%baseDir%target\%JAR_FILE%" "%1" "%2" "%3" "%4" "%5" "%6"
