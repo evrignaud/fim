@@ -86,7 +86,7 @@ public class StateGenerator
 		this.progressLock = new ReentrantLock();
 	}
 
-	public State generateState(String comment, Path fimRepositoryRootDir) throws IOException, NoSuchAlgorithmException
+	public State generateState(String comment, Path fimRepositoryRootDir) throws NoSuchAlgorithmException
 	{
 		this.fimRepositoryRootDir = fimRepositoryRootDir;
 
@@ -194,7 +194,7 @@ public class StateGenerator
 		{
 			durationSeconds = 1;
 		}
-		
+
 		long globalThroughput = totalBytesHashed / durationSeconds;
 		String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
 
@@ -210,7 +210,7 @@ public class StateGenerator
 		}
 	}
 
-	private void scanFileTree(BlockingDeque<Path> filesToHash, Path directory) throws IOException, NoSuchAlgorithmException
+	private void scanFileTree(BlockingDeque<Path> filesToHash, Path directory) throws NoSuchAlgorithmException
 	{
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory))
 		{
@@ -244,6 +244,10 @@ public class StateGenerator
 					scanFileTree(filesToHash, file);
 				}
 			}
+		}
+		catch (IOException ex)
+		{
+			Logger.error(ex);
 		}
 	}
 

@@ -20,7 +20,6 @@ package org.fim.command;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.security.NoSuchAlgorithmException;
 
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
@@ -55,7 +54,7 @@ public class InitCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Parameters parameters) throws IOException, NoSuchAlgorithmException
+	public void execute(Parameters parameters) throws Exception
 	{
 		computeAllHashMandatory(parameters);
 

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,7 +62,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Parameters parameters) throws IOException, NoSuchAlgorithmException
+	public void execute(Parameters parameters) throws Exception
 	{
 		if (parameters.getMasterFimRepositoryDir() == null)
 		{
