@@ -106,7 +106,8 @@ class FileHasher implements Runnable
 				}
 				catch (Exception ex)
 				{
-					System.err.printf("%nSkipping file hash. Not able to hash '%s': %s %s%n", file, ex.getClass().getSimpleName(), ex.getMessage());
+					System.out.println("");
+					Logger.error("Skipping - Error hashing file", ex);
 				}
 			}
 		}

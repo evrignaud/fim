@@ -155,7 +155,7 @@ public class StateManager
 			}
 			catch (IOException ex)
 			{
-				Logger.error(ex);
+				Logger.error("Error reading last state number", ex);
 			}
 
 			lastStateFileDesynchronized = true;
@@ -189,7 +189,7 @@ public class StateManager
 			}
 			catch (IOException ex)
 			{
-				Logger.error(ex);
+				Logger.error("Error saving last state number " + lastStateNumber, ex);
 			}
 		}
 	}

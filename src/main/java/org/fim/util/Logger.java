@@ -50,7 +50,7 @@ public class Logger
 
 	public static void error(String message, Exception ex)
 	{
-		error(new StringBuilder().append(message).append(": ").append(exceptionStackTraceToString(ex)).toString());
+		error(new StringBuilder().append(message).append(": ").append(ex.getClass().getSimpleName()).append(": ").append(ex.getMessage()).toString());
 	}
 
 	public static void error(String message)

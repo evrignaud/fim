@@ -247,7 +247,8 @@ public class StateGenerator
 		}
 		catch (IOException ex)
 		{
-			Logger.error(ex);
+			System.out.println("");
+			Logger.error("Skipping - Error scanning directory", ex);
 		}
 	}
 
@@ -330,7 +331,7 @@ public class StateGenerator
 	{
 		if (displayHashLegend())
 		{
-			if (fileCount > PROGRESS_DISPLAY_FILE_COUNT)
+			if (fileCount >= PROGRESS_DISPLAY_FILE_COUNT)
 			{
 				System.out.println("");
 			}

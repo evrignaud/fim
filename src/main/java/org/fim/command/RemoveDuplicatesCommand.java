@@ -138,7 +138,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 					}
 					catch (IOException ex)
 					{
-						Logger.error(String.format("Error deleting file '%s'", localFile), ex);
+						Logger.error("Error deleting file", ex);
 					}
 				}
 			}
