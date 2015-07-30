@@ -13,7 +13,7 @@
 			<directory>target</directory>
 			<outputDirectory>bin</outputDirectory>
 			<includes>
-				<include>fim-*.jar</include>
+				<include>fim-${project.version}.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
