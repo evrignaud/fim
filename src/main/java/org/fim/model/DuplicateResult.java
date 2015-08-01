@@ -21,17 +21,21 @@ package org.fim.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
 public class DuplicateResult
 {
 	private final Parameters parameters;
 	private final List<DuplicateSet> duplicateSets;
 	private long duplicatedFilesCount;
+	private long wastedSpace;
 
 	public DuplicateResult(Parameters parameters)
 	{
 		this.parameters = parameters;
 		this.duplicateSets = new ArrayList<>();
 		this.duplicatedFilesCount = 0;
+		this.wastedSpace = 0;
 	}
 
 	public void addDuplicatedFiles(List<FileState> duplicatedFiles)
@@ -40,6 +44,10 @@ public class DuplicateResult
 		{
 			duplicatedFilesCount += duplicatedFiles.size() - 1;
 
+			duplicatedFiles.stream()
+					.filter(fileState -> duplicatedFiles.indexOf(fileState) > 0)
+					.forEach(fileState -> wastedSpace += fileState.getFileLength());
+
 			DuplicateSet duplicateSet = new DuplicateSet(duplicatedFiles);
 			duplicateSets.add(duplicateSet);
 		}
@@ -47,8 +55,6 @@ public class DuplicateResult
 
 	public DuplicateResult displayDuplicates()
 	{
-		System.out.println(duplicatedFilesCount + " duplicated files\n");
-
 		if (parameters.isVerbose())
 		{
 			for (DuplicateSet duplicateSet : duplicateSets)
@@ -70,6 +76,8 @@ public class DuplicateResult
 				System.out.println("");
 			}
 		}
+		System.out.printf("%d duplicated files spread in %d duplicate sets, %s of wasted space%n%n",
+				duplicatedFilesCount, duplicateSets.size(), FileUtils.byteCountToDisplaySize(wastedSpace));
 
 		return this;
 	}
@@ -77,6 +85,11 @@ public class DuplicateResult
 	public long getDuplicatedFilesCount()
 	{
 		return duplicatedFilesCount;
+	}
+
+	public long getWastedSpace()
+	{
+		return wastedSpace;
 	}
 
 	public List<DuplicateSet> getDuplicateSets()

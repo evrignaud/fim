@@ -32,14 +32,12 @@ import org.fim.model.State;
 public class DuplicateFinder
 {
 	private final Parameters parameters;
-	private final List<FileState> duplicatedFiles;
-	private final Comparator<FileState> fullHashComparator;
+	private final Comparator<FileState> hashComparator;
 
 	public DuplicateFinder(Parameters parameters)
 	{
 		this.parameters = parameters;
-		this.duplicatedFiles = new ArrayList<>();
-		this.fullHashComparator = new FileState.HashComparator();
+		this.hashComparator = new FileState.HashComparator();
 	}
 
 	public DuplicateResult findDuplicates(State state)
@@ -47,18 +45,19 @@ public class DuplicateFinder
 		DuplicateResult result = new DuplicateResult(parameters);
 
 		List<FileState> fileStates = new ArrayList<>(state.getFileStates());
-		Collections.sort(fileStates, fullHashComparator);
+		Collections.sort(fileStates, hashComparator);
 
-		FileHash previousHash = new FileHash(FileState.NO_HASH, FileState.NO_HASH, FileState.NO_HASH);
+		List<FileState> duplicatedFiles = new ArrayList<>();
+		FileHash previousFileHash = new FileHash(FileState.NO_HASH, FileState.NO_HASH, FileState.NO_HASH);
 		for (FileState fileState : fileStates)
 		{
-			if (!previousHash.equals(fileState.getFileHash()))
+			if (!previousFileHash.equals(fileState.getFileHash()))
 			{
 				result.addDuplicatedFiles(duplicatedFiles);
 				duplicatedFiles.clear();
 			}
 
-			previousHash = fileState.getFileHash();
+			previousFileHash = fileState.getFileHash();
 			duplicatedFiles.add(fileState);
 		}
 		result.addDuplicatedFiles(duplicatedFiles);

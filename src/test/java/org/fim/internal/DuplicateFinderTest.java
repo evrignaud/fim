@@ -44,13 +44,16 @@ public class DuplicateFinderTest extends DuplicateAssert
 		s = s.copy("file_01", "file_10");
 		DuplicateResult result = cut.findDuplicates(s);
 		assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10"));
+		assertThat(result.getWastedSpace()).isEqualTo(("file_10").length());
 
 		s = s.copy("file_01", "file_11");
 		result = cut.findDuplicates(s);
 		assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10", "file_11"));
+		assertThat(result.getWastedSpace()).isEqualTo(("file_10" + "file_11").length());
 
 		s = s.copy("file_02", "file_08");
 		result = cut.findDuplicates(s);
 		assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10", "file_11"), duplicatedFiles("file_02", "file_08"));
+		assertThat(result.getWastedSpace()).isEqualTo(("file_10" + "file_11" + "file_08").length());
 	}
 }
