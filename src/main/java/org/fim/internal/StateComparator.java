@@ -64,9 +64,14 @@ public class StateComparator
 
 		notFoundInCurrentFileState.addAll(previousFileStates);
 
+		int notModifiedCount = 0;
 		for (FileState fileState : currentState.getFileStates())
 		{
-			if (!notFoundInCurrentFileState.remove(fileState))
+			if (notFoundInCurrentFileState.remove(fileState))
+			{
+				notModifiedCount++;
+			}
+			else
 			{
 				addedOrModified.add(fileState);
 			}
@@ -139,7 +144,13 @@ public class StateComparator
 
 		if (addedOrModified.size() != 0)
 		{
-			throw new IllegalStateException("Comparison algorithm error");
+			throw new IllegalStateException(String.format("Comparison algorithm error: addedOrModified size=%d", addedOrModified.size()));
+		}
+
+		if (notModifiedCount + result.modifiedCount() != currentState.getFileCount())
+		{
+			throw new IllegalStateException(String.format("Comparison algorithm error: notModifiedCount=%d modifiedCount=%d currentStateFileCount=%d",
+					notModifiedCount, result.modifiedCount(), currentState.getFileCount()));
 		}
 
 		for (FileState fileState : notFoundInCurrentFileState)

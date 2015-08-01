@@ -82,7 +82,7 @@ public class State implements Hashable
 
 	public void saveToGZipFile(Path stateFile) throws IOException
 	{
-		fileCount = fileStates.size();
+		updateFileCount();
 		stateHash = hashState();
 
 		try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile.toFile()))))
@@ -90,6 +90,11 @@ public class State implements Hashable
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			gson.toJson(this, writer);
 		}
+	}
+
+	public void updateFileCount()
+	{
+		fileCount = fileStates.size();
 	}
 
 	public String getModelVersion()
@@ -124,12 +129,13 @@ public class State implements Hashable
 
 	public int getFileCount()
 	{
+		updateFileCount();
 		return fileCount;
 	}
 
 	protected void setFileCount(int fileCount)
 	{
-		this.fileCount = fileCount;
+		// Do nothing
 	}
 
 	public List<FileState> getFileStates()

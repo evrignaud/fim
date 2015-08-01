@@ -188,7 +188,12 @@ public class CompareResult
 
 	public boolean somethingModified()
 	{
-		return (added.size() + copied.size() + duplicated.size() + dateModified.size() + contentModified.size() + renamed.size() + deleted.size()) > 0;
+		return modifiedCount() > 0;
+	}
+
+	public int modifiedCount()
+	{
+		return added.size() + copied.size() + duplicated.size() + dateModified.size() + contentModified.size() + renamed.size() + deleted.size();
 	}
 
 	public List<Difference> getAdded()
