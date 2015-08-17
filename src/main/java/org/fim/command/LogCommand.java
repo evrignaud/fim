@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.fim.internal.StateManager;
+import org.fim.model.ModificationCounts;
 import org.fim.model.Parameters;
 import org.fim.model.State;
 
@@ -64,14 +65,56 @@ public class LogCommand extends AbstractCommand
 			if (Files.exists(statFile))
 			{
 				State state = manager.loadState(stateNumber);
-				System.out.printf("State #%d: %s%n", stateNumber, formatDate(state.getTimestamp()));
+				System.out.printf("State #%d: %s (%d files)%n", stateNumber, formatDate(state.getTimestamp()), state.getFileCount());
 				if (state.getComment().length() > 0)
 				{
 					System.out.printf("\tComment: %s%n", state.getComment());
 				}
-				System.out.printf("\tContains %d files%n", state.getFileCount());
+				displayCounts(state.getModificationCounts());
 				System.out.println("");
 			}
 		}
+	}
+
+	private void displayCounts(ModificationCounts modificationCounts)
+	{
+		String message = "";
+		if (modificationCounts.getAdded() > 0)
+		{
+			message += "" + modificationCounts.getAdded() + " added, ";
+		}
+
+		if (modificationCounts.getCopied() > 0)
+		{
+			message += "" + modificationCounts.getCopied() + " copied, ";
+		}
+
+		if (modificationCounts.getDuplicated() > 0)
+		{
+			message += "" + modificationCounts.getDuplicated() + " duplicated, ";
+		}
+
+		if (modificationCounts.getDateModified() > 0)
+		{
+			message += "" + modificationCounts.getDateModified() + " date modified, ";
+		}
+
+		if (modificationCounts.getContentModified() > 0)
+		{
+			message += "" + modificationCounts.getContentModified() + " content modified, ";
+		}
+
+		if (modificationCounts.getRenamed() > 0)
+		{
+			message += "" + modificationCounts.getRenamed() + " renamed, ";
+		}
+
+		if (modificationCounts.getDeleted() > 0)
+		{
+			message += "" + modificationCounts.getDeleted() + " deleted, ";
+		}
+
+		message = message.replaceAll(", $", "");
+		System.out.printf("\t%s%n", message);
 	}
 }

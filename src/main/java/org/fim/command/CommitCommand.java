@@ -60,6 +60,7 @@ public class CommitCommand extends AbstractCommand
 			System.out.println("");
 			if (confirmAction(parameters, "commit"))
 			{
+				currentState.setModificationCounts(result.getModificationCounts());
 				manager.createNewState(currentState);
 			}
 			else

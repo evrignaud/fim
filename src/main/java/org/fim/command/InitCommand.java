@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
+import org.fim.model.CompareResult;
 import org.fim.model.Parameters;
 import org.fim.model.State;
 
@@ -76,7 +77,8 @@ public class InitCommand extends AbstractCommand
 		}
 		State currentState = new StateGenerator(parameters).generateState(comment, CURRENT_DIRECTORY);
 
-		new StateComparator(parameters).compare(null, currentState).displayChanges();
+		CompareResult result = new StateComparator(parameters).compare(null, currentState).displayChanges();
+		currentState.setModificationCounts(result.getModificationCounts());
 
 		new StateManager(parameters).createNewState(currentState);
 	}

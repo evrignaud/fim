@@ -51,6 +51,8 @@ public class State implements Hashable
 	private int fileCount;
 	private List<FileState> fileStates;
 
+	private ModificationCounts modificationCounts;
+
 	public State()
 	{
 		modelVersion = "1";
@@ -146,6 +148,16 @@ public class State implements Hashable
 	public void setFileStates(List<FileState> fileStates)
 	{
 		this.fileStates = fileStates;
+	}
+
+	public ModificationCounts getModificationCounts()
+	{
+		return modificationCounts;
+	}
+
+	public void setModificationCounts(ModificationCounts modificationCounts)
+	{
+		this.modificationCounts = modificationCounts;
 	}
 
 	public String hashState()

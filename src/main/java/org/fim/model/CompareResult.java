@@ -196,6 +196,20 @@ public class CompareResult
 		return added.size() + copied.size() + duplicated.size() + dateModified.size() + contentModified.size() + renamed.size() + deleted.size();
 	}
 
+	public ModificationCounts getModificationCounts()
+	{
+		ModificationCounts modificationCounts = new ModificationCounts();
+		modificationCounts.setAdded(added.size());
+		modificationCounts.setCopied(copied.size());
+		modificationCounts.setDuplicated(duplicated.size());
+		modificationCounts.setDateModified(dateModified.size());
+		modificationCounts.setContentModified(contentModified.size());
+		modificationCounts.setRenamed(renamed.size());
+		modificationCounts.setDeleted(deleted.size());
+
+		return modificationCounts;
+	}
+
 	public List<Difference> getAdded()
 	{
 		return added;
