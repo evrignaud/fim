@@ -70,7 +70,7 @@ public class DuplicateResult
 					}
 					else
 					{
-						System.out.printf("      %s%n", fileState.getFileName());
+						System.out.printf("      %s - %s%n", FileUtils.byteCountToDisplaySize(fileState.getFileLength()), fileState.getFileName());
 					}
 				}
 				System.out.println("");
