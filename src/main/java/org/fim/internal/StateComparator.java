@@ -27,6 +27,7 @@ import org.fim.model.Difference;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
+import org.fim.model.Modification;
 import org.fim.model.Parameters;
 import org.fim.model.State;
 
@@ -92,11 +93,13 @@ public class StateComparator
 				if (previousFileState.getFileHash().equals(fileState.getFileHash()) && previousFileState.getLastModified() != fileState.getLastModified())
 				{
 					result.getDateModified().add(new Difference(previousFileState, fileState));
+					fileState.setModification(Modification.dateModified);
 					iterator.remove();
 				}
 				else
 				{
 					result.getContentModified().add(new Difference(previousFileState, fileState));
+					fileState.setModification(Modification.contentModified);
 					iterator.remove();
 
 					// File has been modified so set the new hash for accurate duplicate detection
@@ -118,6 +121,7 @@ public class StateComparator
 				if (notFoundInCurrentFileState.contains(originalFileState))
 				{
 					result.getRenamed().add(new Difference(originalFileState, fileState));
+					fileState.setModification(Modification.renamed);
 					iterator.remove();
 				}
 				else
@@ -125,11 +129,13 @@ public class StateComparator
 					if (contentChanged(originalFileState))
 					{
 						result.getCopied().add(new Difference(originalFileState, fileState));
+						fileState.setModification(Modification.copied);
 						iterator.remove();
 					}
 					else
 					{
 						result.getDuplicated().add(new Difference(originalFileState, fileState));
+						fileState.setModification(Modification.duplicated);
 						iterator.remove();
 					}
 				}
@@ -138,6 +144,7 @@ public class StateComparator
 			else
 			{
 				result.getAdded().add(new Difference(null, fileState));
+				fileState.setModification(Modification.added);
 				iterator.remove();
 			}
 		}
@@ -153,9 +160,9 @@ public class StateComparator
 					notModifiedCount, result.modifiedCount(), currentState.getFileCount()));
 		}
 
-		for (FileState fileState : notFoundInCurrentFileState)
+		for (FileState notFound : notFoundInCurrentFileState)
 		{
-			result.getDeleted().add(new Difference(null, fileState));
+			result.getDeleted().add(new Difference(null, notFound));
 		}
 
 		result.sortResults();

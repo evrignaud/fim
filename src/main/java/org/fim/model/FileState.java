@@ -42,6 +42,7 @@ public class FileState implements Hashable
 	private String fileName;
 	private long fileLength;
 	private long lastModified;
+	private Modification modification;
 	private FileHash fileHash;
 
 	private transient FileHash newFileHash; // Used by StateComparator to detect accurately duplicates
@@ -130,6 +131,16 @@ public class FileState implements Hashable
 	public void setLastModified(long lastModified)
 	{
 		this.lastModified = lastModified;
+	}
+
+	public Modification getModification()
+	{
+		return modification;
+	}
+
+	public void setModification(Modification modification)
+	{
+		this.modification = modification;
 	}
 
 	public FileHash getFileHash()
