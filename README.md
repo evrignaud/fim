@@ -19,8 +19,8 @@ You can download binary distributions of Fim from [here](https://github.com/evri
 
 ## Fim requirements
 
-Fim is compiled using Java 8 and require Java 8 to run.
-You can download Java 8 from [here](http://www.oracle.com/technetwork/java/javase/downloads/index.html). You need at least Java 8 Standard Edition JRE.
+Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from [here](http://www.oracle.com/technetwork/java/javase/downloads/index.html).<br/>
+You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.
 
 
 
