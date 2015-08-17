@@ -49,9 +49,10 @@ public class State implements Hashable
 	private long timestamp;
 	private String comment;
 	private int fileCount;
-	private List<FileState> fileStates;
 
 	private ModificationCounts modificationCounts;
+
+	private List<FileState> fileStates;
 
 	public State()
 	{
