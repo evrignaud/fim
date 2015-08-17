@@ -18,25 +18,20 @@
  */
 package org.fim.internal;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
-import com.google.common.base.Charsets;
 import org.fim.model.CorruptedStateException;
 import org.fim.model.FileState;
 import org.fim.model.Parameters;
+import org.fim.model.Settings;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
 public class StateManager
 {
 	public static final String STATE_EXTENSION = ".json.gz";
-
-	public static final String LAST_STATE_FILE_NAME = "lastState";
 
 	private final Parameters parameters;
 	private final Path stateDir;
@@ -136,26 +131,19 @@ public class StateManager
 
 	public int getLastStateNumber()
 	{
+		Path stateFile;
+		int number;
 		boolean lastStateFileDesynchronized = false;
-		Path lastStateFile = stateDir.resolve(LAST_STATE_FILE_NAME);
-		if (Files.exists(lastStateFile))
+
+		Settings settings = new Settings(stateDir);
+		if (settings.isSaved())
 		{
-			try
+			settings.load();
+			number = settings.getLastStateNumber();
+			stateFile = getStateFile(number);
+			if (Files.exists(stateFile))
 			{
-				List<String> strings = Files.readAllLines(lastStateFile, Charsets.UTF_8);
-				if (strings.size() > 0)
-				{
-					int number = Integer.parseInt(strings.get(0));
-					Path stateFile = getStateFile(number);
-					if (Files.exists(stateFile))
-					{
-						return number;
-					}
-				}
-			}
-			catch (IOException ex)
-			{
-				Logger.error("Error reading last state number", ex);
+				return number;
 			}
 
 			lastStateFileDesynchronized = true;
@@ -163,13 +151,13 @@ public class StateManager
 
 		for (int index = 1; ; index++)
 		{
-			Path stateFile = getStateFile(index);
+			stateFile = getStateFile(index);
 			if (!Files.exists(stateFile))
 			{
-				int number = index - 1;
+				number = index - 1;
 				if (lastStateFileDesynchronized)
 				{
-					Logger.error(String.format("'%s' file desynchronized. Resetting it to %d.", lastStateFile, number));
+					Logger.error(String.format("lastStateNumber desynchronized. Resetting it to %d.", number));
 					saveLastStateNumber(number);
 				}
 				return number;
@@ -181,16 +169,13 @@ public class StateManager
 	{
 		if (lastStateNumber != -1)
 		{
-			Path lastStateFile = stateDir.resolve(LAST_STATE_FILE_NAME);
-			String content = Integer.toString(lastStateNumber);
-			try
+			Settings settings = new Settings(stateDir);
+			if (settings.isSaved())
 			{
-				Files.write(lastStateFile, content.getBytes(), CREATE);
+				settings.load();
 			}
-			catch (IOException ex)
-			{
-				Logger.error("Error saving last state number " + lastStateNumber, ex);
-			}
+			settings.setLastStateNumber(lastStateNumber);
+			settings.save();
 		}
 	}
 }
