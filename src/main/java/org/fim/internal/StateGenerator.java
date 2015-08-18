@@ -152,16 +152,16 @@ public class StateGenerator
 	{
 		switch (parameters.getHashMode())
 		{
-			case DONT_HASH_FILES:
+			case dontHashFiles:
 				return "retrieving only file attributes";
 
-			case HASH_ONLY_FIRST_FOUR_KILO:
-				return "hashing only first four kilo";
+			case hashOnlySmallBlock:
+				return "hashing only first four kilos";
 
-			case HASH_ONLY_FIRST_MEGA:
+			case hashOnlyMediumBlock:
 				return "hashing only first mega";
 
-			case COMPUTE_ALL_HASH:
+			case computeAllHash:
 				return "computing all hash";
 		}
 
@@ -198,7 +198,7 @@ public class StateGenerator
 		long globalThroughput = totalBytesHashed / durationSeconds;
 		String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
 
-		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
+		if (parameters.getHashMode() == HashMode.dontHashFiles)
 		{
 			Logger.info(String.format("Scanned %d files (%s), during %s, using %d thread%n",
 					state.getFileStates().size(), totalFileContentLengthStr, durationStr, parameters.getThreadCount()));
@@ -340,7 +340,7 @@ public class StateGenerator
 
 	private boolean displayHashLegend()
 	{
-		return parameters.isVerbose() && parameters.getHashMode() != HashMode.DONT_HASH_FILES;
+		return parameters.isVerbose() && parameters.getHashMode() != HashMode.dontHashFiles;
 	}
 
 	public Parameters getParameters()

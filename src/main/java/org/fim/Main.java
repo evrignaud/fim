@@ -69,7 +69,7 @@ public class Main
 		Options options = new Options();
 		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as remote master.\nOnly for the remove duplicated files command", false));
 		options.addOption(createOption("f", "fast-mode", false, "Do not hash file content. Use only filenames and modification dates", false));
-		options.addOption(createOption("k", "hash-only-first-four-kilo", false, "Hash only the first four kilo of the files", false));
+		options.addOption(createOption("k", "hash-only-first-four-kilos", false, "Hash only the first four kilos of the files", false));
 		options.addOption(createOption("m", "hash-only-first-mega", false, "Hash only the first mega of the files", false));
 		options.addOption(createOption("h", "help", false, "Prints the Fim help", false));
 		options.addOption(createOption("l", "use-last-state", false, "Use the last committed State", false));
@@ -114,19 +114,19 @@ public class Main
 
 			if (commandLine.hasOption('f'))
 			{
-				parameters.setHashMode(HashMode.DONT_HASH_FILES);
+				parameters.setHashMode(HashMode.dontHashFiles);
 			}
 			else if (commandLine.hasOption('k'))
 			{
-				parameters.setHashMode(HashMode.HASH_ONLY_FIRST_FOUR_KILO);
+				parameters.setHashMode(HashMode.hashOnlySmallBlock);
 			}
 			else if (commandLine.hasOption('m'))
 			{
-				parameters.setHashMode(HashMode.HASH_ONLY_FIRST_MEGA);
+				parameters.setHashMode(HashMode.hashOnlyMediumBlock);
 			}
 			else
 			{
-				parameters.setHashMode(HashMode.COMPUTE_ALL_HASH);
+				parameters.setHashMode(HashMode.computeAllHash);
 			}
 
 			if (commandLine.hasOption('h'))
@@ -157,7 +157,7 @@ public class Main
 			System.exit(-1);
 		}
 
-		if (parameters.getThreadCount() != 1 && parameters.getHashMode() == HashMode.DONT_HASH_FILES)
+		if (parameters.getThreadCount() != 1 && parameters.getHashMode() == HashMode.dontHashFiles)
 		{
 			parameters.setThreadCount(1);
 			System.out.println("Not hashing file content so thread count forced to 1");

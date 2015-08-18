@@ -38,7 +38,7 @@ public class Parameters implements Cloneable
 	{
 		defaultStateDir = Paths.get(DOT_FIM_DIR, "states");
 		verbose = true;
-		hashMode = HashMode.COMPUTE_ALL_HASH;
+		hashMode = HashMode.computeAllHash;
 		comment = "";
 		useLastState = false;
 		threadCount = Runtime.getRuntime().availableProcessors() / 2;

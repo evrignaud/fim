@@ -38,7 +38,7 @@ public abstract class AbstractCommand implements Command
 
 	protected void fileContentHashingMandatory(Parameters parameters)
 	{
-		if (parameters.getHashMode() == HashMode.DONT_HASH_FILES)
+		if (parameters.getHashMode() == HashMode.dontHashFiles)
 		{
 			System.err.println("File content hashing mandatory for this command.");
 			System.exit(-1);
@@ -47,7 +47,7 @@ public abstract class AbstractCommand implements Command
 
 	protected void computeAllHashMandatory(Parameters parameters)
 	{
-		if (parameters.getHashMode() != HashMode.COMPUTE_ALL_HASH)
+		if (parameters.getHashMode() != HashMode.computeAllHash)
 		{
 			System.err.println("It's mandatory to compute all hash for this command.");
 			System.exit(-1);

@@ -142,62 +142,62 @@ public class BuildableState extends State
 
 	private FileHash createHash(String content)
 	{
-		String firstFourKiloHash = FileState.NO_HASH;
-		String firstMegaHash = FileState.NO_HASH;
+		String smallBlockHash = FileState.NO_HASH;
+		String mediumBlockHash = FileState.NO_HASH;
 		String fullHash = FileState.NO_HASH;
 
 		switch (parameters.getHashMode())
 		{
-			case DONT_HASH_FILES:
+			case dontHashFiles:
 				// Nothing to do
 				break;
 
-			case HASH_ONLY_FIRST_FOUR_KILO:
-				firstFourKiloHash = "first_four_kilo_" + content;
+			case hashOnlySmallBlock:
+				smallBlockHash = "small_block_" + content;
 				break;
 
-			case HASH_ONLY_FIRST_MEGA:
-				firstMegaHash = "first_mega_" + content;
+			case hashOnlyMediumBlock:
+				mediumBlockHash = "medium_block_" + content;
 				break;
 
-			case COMPUTE_ALL_HASH:
-				firstFourKiloHash = "first_four_kilo_" + content;
-				firstMegaHash = "first_mega_" + content;
+			case computeAllHash:
+				smallBlockHash = "small_block_" + content;
+				mediumBlockHash = "medium_block_" + content;
 				fullHash = "full_" + content;
 				break;
 		}
 
-		return new FileHash(firstFourKiloHash, firstMegaHash, fullHash);
+		return new FileHash(smallBlockHash, mediumBlockHash, fullHash);
 	}
 
 	private FileHash appendHash(FileHash fileHash, String content)
 	{
-		String firstFourKiloHash = FileState.NO_HASH;
-		String firstMegaHash = FileState.NO_HASH;
+		String smallBlockHash = FileState.NO_HASH;
+		String mediumBlockHash = FileState.NO_HASH;
 		String fullHash = FileState.NO_HASH;
 
 		switch (parameters.getHashMode())
 		{
-			case DONT_HASH_FILES:
+			case dontHashFiles:
 				// Nothing to do
 				break;
 
-			case HASH_ONLY_FIRST_FOUR_KILO:
-				firstFourKiloHash = fileHash.getFirstFourKiloHash() + "_" + content;
+			case hashOnlySmallBlock:
+				smallBlockHash = fileHash.getSmallBlockHash() + "_" + content;
 				break;
 
-			case HASH_ONLY_FIRST_MEGA:
-				firstMegaHash = fileHash.getFirstMegaHash() + "_" + content;
+			case hashOnlyMediumBlock:
+				mediumBlockHash = fileHash.getMediumBlockHash() + "_" + content;
 				break;
 
-			case COMPUTE_ALL_HASH:
-				firstFourKiloHash = fileHash.getFirstFourKiloHash() + "_" + content;
-				firstMegaHash = fileHash.getFirstMegaHash() + "_" + content;
+			case computeAllHash:
+				smallBlockHash = fileHash.getSmallBlockHash() + "_" + content;
+				mediumBlockHash = fileHash.getMediumBlockHash() + "_" + content;
 				fullHash = fileHash.getFullHash() + "_" + content;
 				break;
 		}
 
-		return new FileHash(firstFourKiloHash, firstMegaHash, fullHash);
+		return new FileHash(smallBlockHash, mediumBlockHash, fullHash);
 	}
 
 	private void sortFileStates(BuildableState state)

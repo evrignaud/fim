@@ -25,25 +25,25 @@ public class BuildableParameters extends Parameters
 {
 	public BuildableParameters dontHashFiles()
 	{
-		setHashMode(HashMode.DONT_HASH_FILES);
+		setHashMode(HashMode.dontHashFiles);
 		return this;
 	}
 
-	public BuildableParameters hashOnlyFirstFourKilo()
+	public BuildableParameters hashOnlySmallBlock()
 	{
-		setHashMode(HashMode.HASH_ONLY_FIRST_FOUR_KILO);
+		setHashMode(HashMode.hashOnlySmallBlock);
 		return this;
 	}
 
-	public BuildableParameters hashOnlyFirstMega()
+	public BuildableParameters hashOnlyMediumBlock()
 	{
-		setHashMode(HashMode.HASH_ONLY_FIRST_MEGA);
+		setHashMode(HashMode.hashOnlyMediumBlock);
 		return this;
 	}
 
 	public BuildableParameters computeAllHash()
 	{
-		setHashMode(HashMode.COMPUTE_ALL_HASH);
+		setHashMode(HashMode.computeAllHash);
 		return this;
 	}
 }

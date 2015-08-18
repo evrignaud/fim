@@ -49,8 +49,8 @@ class FileHasher implements Runnable
 
 	private final List<FileState> fileStates;
 
-	private final MessageDigest firstFourKiloDigest;
-	private final MessageDigest firstMegaDigest;
+	private final MessageDigest smallBlockDigest;
+	private final MessageDigest mediumBlockDigest;
 	private final MessageDigest fullDigest;
 
 	private long totalFileContentLength;
@@ -64,8 +64,8 @@ class FileHasher implements Runnable
 
 		this.fileStates = new ArrayList<>();
 
-		this.firstFourKiloDigest = MessageDigest.getInstance(HASH_ALGORITHM);
-		this.firstMegaDigest = MessageDigest.getInstance(HASH_ALGORITHM);
+		this.smallBlockDigest = MessageDigest.getInstance(HASH_ALGORITHM);
+		this.mediumBlockDigest = MessageDigest.getInstance(HASH_ALGORITHM);
 		this.fullDigest = MessageDigest.getInstance(HASH_ALGORITHM);
 	}
 
@@ -145,14 +145,14 @@ class FileHasher implements Runnable
 	{
 		HashMode hashMode = stateGenerator.getParameters().getHashMode();
 
-		if (hashMode == HashMode.DONT_HASH_FILES)
+		if (hashMode == HashMode.dontHashFiles)
 		{
 			totalFileContentLength += fileSize;
 			return new FileHash(FileState.NO_HASH, FileState.NO_HASH, FileState.NO_HASH);
 		}
 
-		firstFourKiloDigest.reset();
-		firstMegaDigest.reset();
+		smallBlockDigest.reset();
+		mediumBlockDigest.reset();
 		fullDigest.reset();
 
 		MappedByteBuffer buffer = null;
@@ -166,14 +166,14 @@ class FileHasher implements Runnable
 			position += buffer.limit();
 			remainder -= buffer.limit();
 
-			firstFourKiloDigest.update(buffer);
-			if (hashMode == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
+			smallBlockDigest.update(buffer);
+			if (hashMode == HashMode.hashOnlySmallBlock)
 			{
-				return new FileHash(getHash(firstFourKiloDigest), FileState.NO_HASH, FileState.NO_HASH);
+				return new FileHash(getHash(smallBlockDigest), FileState.NO_HASH, FileState.NO_HASH);
 			}
 
 			buffer.flip();
-			firstMegaDigest.update(buffer);
+			mediumBlockDigest.update(buffer);
 
 			buffer.flip();
 			fullDigest.update(buffer);
@@ -186,10 +186,10 @@ class FileHasher implements Runnable
 				position += buffer.limit();
 				remainder -= buffer.limit();
 
-				firstMegaDigest.update(buffer);
-				if (hashMode == HashMode.HASH_ONLY_FIRST_MEGA)
+				mediumBlockDigest.update(buffer);
+				if (hashMode == HashMode.hashOnlyMediumBlock)
 				{
-					return new FileHash(FileState.NO_HASH, getHash(firstMegaDigest), FileState.NO_HASH);
+					return new FileHash(FileState.NO_HASH, getHash(mediumBlockDigest), FileState.NO_HASH);
 				}
 
 				buffer.flip();
@@ -214,11 +214,11 @@ class FileHasher implements Runnable
 			totalBytesHashed += position;
 		}
 
-		if (hashMode == HashMode.HASH_ONLY_FIRST_MEGA)
+		if (hashMode == HashMode.hashOnlyMediumBlock)
 		{
-			return new FileHash(FileState.NO_HASH, getHash(firstMegaDigest), FileState.NO_HASH);
+			return new FileHash(FileState.NO_HASH, getHash(mediumBlockDigest), FileState.NO_HASH);
 		}
-		return new FileHash(getHash(firstFourKiloDigest), getHash(firstMegaDigest), getHash(fullDigest));
+		return new FileHash(getHash(smallBlockDigest), getHash(mediumBlockDigest), getHash(fullDigest));
 	}
 
 	/**

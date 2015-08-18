@@ -61,10 +61,10 @@ public class FileHasherTest extends StateAssert
 	public static Collection<Object[]> parameters()
 	{
 		return Arrays.asList(new Object[][]{
-				{HashMode.DONT_HASH_FILES},
-				{HashMode.HASH_ONLY_FIRST_FOUR_KILO},
-				{HashMode.HASH_ONLY_FIRST_MEGA},
-				{HashMode.COMPUTE_ALL_HASH}
+				{HashMode.dontHashFiles},
+				{HashMode.hashOnlySmallBlock},
+				{HashMode.hashOnlyMediumBlock},
+				{HashMode.computeAllHash}
 		});
 	}
 
@@ -114,84 +114,84 @@ public class FileHasherTest extends StateAssert
 	@Test
 	public void weCanHashAn_Empty_File() throws IOException
 	{
-		String firstFourKiloHash = "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e";
-		String firstMegaHash = firstFourKiloHash;
-		String fullFileHash = firstFourKiloHash;
+		String smallBlockHash = "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e";
+		String mediumBlockHash = smallBlockHash;
+		String fullFileHash = smallBlockHash;
 
 		Path fileToHash = createFileWithSize(0);
 
 		FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
 
-		assertFileHash(fileHash, firstFourKiloHash, firstMegaHash, fullFileHash);
+		assertFileHash(fileHash, smallBlockHash, mediumBlockHash, fullFileHash);
 	}
 
 	@Test
 	public void weCanHashA_2KB_File() throws IOException
 	{
-		String firstFourKiloHash = "76b1e87b9f5df5d1584c5684432005d533196532439edbbf25ba9c7e82b7b0f7652c66e20ab07d854b950c8eeb5e2f65a03054f68d093fa75927ab2041bd8f74";
-		String firstMegaHash = firstFourKiloHash;
-		String fullFileHash = firstFourKiloHash;
+		String smallBlockHash = "76b1e87b9f5df5d1584c5684432005d533196532439edbbf25ba9c7e82b7b0f7652c66e20ab07d854b950c8eeb5e2f65a03054f68d093fa75927ab2041bd8f74";
+		String mediumBlockHash = smallBlockHash;
+		String fullFileHash = smallBlockHash;
 
 		Path fileToHash = createFileWithSize(2 * 1024);
 
 		FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
 
-		assertFileHash(fileHash, firstFourKiloHash, firstMegaHash, fullFileHash);
+		assertFileHash(fileHash, smallBlockHash, mediumBlockHash, fullFileHash);
 	}
 
 	@Test
 	public void weCanHashA_30KB_File() throws IOException
 	{
-		String firstFourKiloHash = "757af34fe2d75e895caf4e479e77e5b2ba97510140933c89facc0399eb92063e83d7833d5d3285d35ee310b6d599aa8f8cafbd480cb797bbb2d8b8b47880d2ba";
-		String firstMegaHash = "f66f942e45d12bda1224a7644e7b157a67e0cb66dc48e36d92cfbf8febf3fdae2d567a0906f1c3684f19e0902460513cf9f5fba285ce9d8f61fd1ea4772d79c3";
-		String fullFileHash = firstMegaHash;
+		String smallBlockHash = "757af34fe2d75e895caf4e479e77e5b2ba97510140933c89facc0399eb92063e83d7833d5d3285d35ee310b6d599aa8f8cafbd480cb797bbb2d8b8b47880d2ba";
+		String mediumBlockHash = "f66f942e45d12bda1224a7644e7b157a67e0cb66dc48e36d92cfbf8febf3fdae2d567a0906f1c3684f19e0902460513cf9f5fba285ce9d8f61fd1ea4772d79c3";
+		String fullFileHash = mediumBlockHash;
 
 		Path fileToHash = createFileWithSize(30 * 1024);
 
 		FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
 
-		assertFileHash(fileHash, firstFourKiloHash, firstMegaHash, fullFileHash);
+		assertFileHash(fileHash, smallBlockHash, mediumBlockHash, fullFileHash);
 	}
 
 	@Test
 	public void weCanHashA_60MB_File() throws IOException
 	{
-		String firstFourKiloHash = "757af34fe2d75e895caf4e479e77e5b2ba97510140933c89facc0399eb92063e83d7833d5d3285d35ee310b6d599aa8f8cafbd480cb797bbb2d8b8b47880d2ba";
-		String firstMegaHash = "733e3c1c2e1a71086637cecfe168a47d35c10cda2b792ff645befef7eaf86b96ecaf357b775dd323d5ab2a638c90c81abcae89372500dd8da60160508486bf4d";
+		String smallBlockHash = "757af34fe2d75e895caf4e479e77e5b2ba97510140933c89facc0399eb92063e83d7833d5d3285d35ee310b6d599aa8f8cafbd480cb797bbb2d8b8b47880d2ba";
+		String mediumBlockHash = "733e3c1c2e1a71086637cecfe168a47d35c10cda2b792ff645befef7eaf86b96ecaf357b775dd323d5ab2a638c90c81abcae89372500dd8da60160508486bf4d";
 		String fullFileHash = "e891a71e312bc6e34f549664706951516c42f660face62756bb155301c5e06ba79db94f83dedd43467530021935f5b427a58d7a5bd245ea1b2b0db8d7b08ee7a";
 
 		Path fileToHash = createFileWithSize(60 * 1024 * 1024);
 
 		FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
 
-		assertFileHash(fileHash, firstFourKiloHash, firstMegaHash, fullFileHash);
+		assertFileHash(fileHash, smallBlockHash, mediumBlockHash, fullFileHash);
 	}
 
-	private void assertFileHash(FileHash fileHash, String firstFourKiloHash, String firstMegaHash, String fullFileHash)
+	private void assertFileHash(FileHash fileHash, String smallBlockHash, String mediumBlockHash, String fullFileHash)
 	{
 		switch (hashMode)
 		{
-			case DONT_HASH_FILES:
-				assertThat(fileHash.getFirstFourKiloHash()).isEqualTo(NO_HASH);
-				assertThat(fileHash.getFirstMegaHash()).isEqualTo(NO_HASH);
+			case dontHashFiles:
+				assertThat(fileHash.getSmallBlockHash()).isEqualTo(NO_HASH);
+				assertThat(fileHash.getMediumBlockHash()).isEqualTo(NO_HASH);
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
 				break;
 
-			case HASH_ONLY_FIRST_FOUR_KILO:
-				assertThat(fileHash.getFirstFourKiloHash()).isEqualTo(firstFourKiloHash);
-				assertThat(fileHash.getFirstMegaHash()).isEqualTo(NO_HASH);
+			case hashOnlySmallBlock:
+				assertThat(fileHash.getSmallBlockHash()).isEqualTo(smallBlockHash);
+				assertThat(fileHash.getMediumBlockHash()).isEqualTo(NO_HASH);
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
 				break;
 
-			case HASH_ONLY_FIRST_MEGA:
-				assertThat(fileHash.getFirstFourKiloHash()).isEqualTo(NO_HASH);
-				assertThat(fileHash.getFirstMegaHash()).isEqualTo(firstMegaHash);
+			case hashOnlyMediumBlock:
+				assertThat(fileHash.getSmallBlockHash()).isEqualTo(NO_HASH);
+				assertThat(fileHash.getMediumBlockHash()).isEqualTo(mediumBlockHash);
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
 				break;
 
-			case COMPUTE_ALL_HASH:
-				assertThat(fileHash.getFirstFourKiloHash()).isEqualTo(firstFourKiloHash);
-				assertThat(fileHash.getFirstMegaHash()).isEqualTo(firstMegaHash);
+			case computeAllHash:
+				assertThat(fileHash.getSmallBlockHash()).isEqualTo(smallBlockHash);
+				assertThat(fileHash.getMediumBlockHash()).isEqualTo(mediumBlockHash);
 				assertThat(fileHash.getFullHash()).isEqualTo(fullFileHash);
 				break;
 		}

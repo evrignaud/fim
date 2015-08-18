@@ -26,42 +26,42 @@ import com.google.common.hash.Hasher;
 
 public class FileHash implements Comparable<FileHash>, Hashable
 {
-	private String firstFourKiloHash;
-	private String firstMegaHash;
+	private String smallBlockHash;
+	private String mediumBlockHash;
 	private String fullHash;
 
-	public FileHash(String firstFourKiloHash, String firstMegaHash, String fullHash)
+	public FileHash(String smallBlockHash, String mediumBlockHash, String fullHash)
 	{
-		this.firstFourKiloHash = firstFourKiloHash;
-		this.firstMegaHash = firstMegaHash;
+		this.smallBlockHash = smallBlockHash;
+		this.mediumBlockHash = mediumBlockHash;
 		this.fullHash = fullHash;
 	}
 
 	public FileHash(FileHash fileHash)
 	{
-		this.firstFourKiloHash = fileHash.getFirstFourKiloHash();
-		this.firstMegaHash = fileHash.getFirstMegaHash();
+		this.smallBlockHash = fileHash.getSmallBlockHash();
+		this.mediumBlockHash = fileHash.getMediumBlockHash();
 		this.fullHash = fileHash.getFullHash();
 	}
 
-	public String getFirstFourKiloHash()
+	public String getSmallBlockHash()
 	{
-		return firstFourKiloHash;
+		return smallBlockHash;
 	}
 
-	public void setFirstFourKiloHash(String firstFourKiloHash)
+	public void setSmallBlockHash(String smallBlockHash)
 	{
-		this.firstFourKiloHash = firstFourKiloHash;
+		this.smallBlockHash = smallBlockHash;
 	}
 
-	public String getFirstMegaHash()
+	public String getMediumBlockHash()
 	{
-		return firstMegaHash;
+		return mediumBlockHash;
 	}
 
-	public void setFirstMegaHash(String firstMegaHash)
+	public void setMediumBlockHash(String mediumBlockHash)
 	{
-		this.firstMegaHash = firstMegaHash;
+		this.mediumBlockHash = mediumBlockHash;
 	}
 
 	public String getFullHash()
@@ -89,8 +89,8 @@ public class FileHash implements Comparable<FileHash>, Hashable
 
 		FileHash otherFileHash = (FileHash) other;
 
-		return Objects.equals(this.firstFourKiloHash, otherFileHash.firstFourKiloHash)
-				&& Objects.equals(this.firstMegaHash, otherFileHash.firstMegaHash)
+		return Objects.equals(this.smallBlockHash, otherFileHash.smallBlockHash)
+				&& Objects.equals(this.mediumBlockHash, otherFileHash.mediumBlockHash)
 				&& Objects.equals(this.fullHash, otherFileHash.fullHash);
 
 	}
@@ -98,15 +98,15 @@ public class FileHash implements Comparable<FileHash>, Hashable
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(firstFourKiloHash, firstMegaHash, fullHash);
+		return Objects.hash(smallBlockHash, mediumBlockHash, fullHash);
 	}
 
 	@Override
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(this)
-				.add("firstFourKiloHash", firstFourKiloHash)
-				.add("firstMegaHash", firstMegaHash)
+				.add("smallBlockHash", smallBlockHash)
+				.add("mediumBlockHash", mediumBlockHash)
 				.add("fullHash", fullHash)
 				.toString();
 	}
@@ -114,13 +114,13 @@ public class FileHash implements Comparable<FileHash>, Hashable
 	@Override
 	public int compareTo(FileHash other)
 	{
-		int value = firstFourKiloHash.compareTo(other.firstFourKiloHash);
+		int value = smallBlockHash.compareTo(other.smallBlockHash);
 		if (value != 0)
 		{
 			return value;
 		}
 
-		value = firstMegaHash.compareTo(other.firstMegaHash);
+		value = mediumBlockHash.compareTo(other.mediumBlockHash);
 		if (value != 0)
 		{
 			return value;
@@ -133,9 +133,9 @@ public class FileHash implements Comparable<FileHash>, Hashable
 	public void hashObject(Hasher hasher)
 	{
 		hasher
-				.putString(firstFourKiloHash, Charsets.UTF_8)
+				.putString(smallBlockHash, Charsets.UTF_8)
 				.putChar(HASH_SEPARATOR)
-				.putString(firstMegaHash, Charsets.UTF_8)
+				.putString(mediumBlockHash, Charsets.UTF_8)
 				.putChar(HASH_SEPARATOR)
 				.putString(fullHash, Charsets.UTF_8);
 	}

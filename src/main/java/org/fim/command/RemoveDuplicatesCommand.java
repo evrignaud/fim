@@ -73,16 +73,16 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 
 		fileContentHashingMandatory(parameters);
 
-		if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_FOUR_KILO)
+		if (parameters.getHashMode() == HashMode.hashOnlySmallBlock)
 		{
-			System.out.println("You are going to detect duplicates and remove them based only on the hash of the first four kilo of the files.");
+			System.out.println("You are going to detect duplicates and remove them based only on the hash of the first four kilos of the files.");
 			if (!confirmAction(parameters, "continue"))
 			{
 				System.exit(0);
 			}
 		}
 
-		if (parameters.getHashMode() == HashMode.HASH_ONLY_FIRST_MEGA)
+		if (parameters.getHashMode() == HashMode.hashOnlyMediumBlock)
 		{
 			System.out.println("You are going to detect duplicates and remove them based only on the hash of the first mega of the files.");
 			if (!confirmAction(parameters, "continue"))

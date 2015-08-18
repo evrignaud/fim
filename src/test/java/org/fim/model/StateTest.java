@@ -76,7 +76,7 @@ public class StateTest extends StateAssert
 		fixTimeStamps(a1);
 
 		String a1_hash = a1.hashState();
-		assertThat(a1_hash).isEqualTo("9dedf87af7a3b61881dd1c94a58539725b01f2e6e702cfa151d6552156ece9821532f107023410169f093ff55094d15a408827ac4618be10860cb4a3be5b02bf");
+		assertThat(a1_hash).isEqualTo("f0f31aa93998952ce600aabb51b0e0b31bda29d1301b5810238614fcfcdba1b8148f46acf3ce100232e980659ae6c2857e86fbb66e70e49dc1c6ed0f31731262");
 	}
 
 	@Test

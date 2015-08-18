@@ -93,32 +93,32 @@ public class StateManager
 		// Replace by 'no_hash' accurately to be able to compare the FileState entry
 		switch (parameters.getHashMode())
 		{
-			case DONT_HASH_FILES:
+			case dontHashFiles:
 				for (FileState fileState : state.getFileStates())
 				{
-					fileState.getFileHash().setFirstFourKiloHash(FileState.NO_HASH);
-					fileState.getFileHash().setFirstMegaHash(FileState.NO_HASH);
+					fileState.getFileHash().setSmallBlockHash(FileState.NO_HASH);
+					fileState.getFileHash().setMediumBlockHash(FileState.NO_HASH);
 					fileState.getFileHash().setFullHash(FileState.NO_HASH);
 				}
 				break;
 
-			case HASH_ONLY_FIRST_FOUR_KILO:
+			case hashOnlySmallBlock:
 				for (FileState fileState : state.getFileStates())
 				{
-					fileState.getFileHash().setFirstMegaHash(FileState.NO_HASH);
+					fileState.getFileHash().setMediumBlockHash(FileState.NO_HASH);
 					fileState.getFileHash().setFullHash(FileState.NO_HASH);
 				}
 				break;
 
-			case HASH_ONLY_FIRST_MEGA:
+			case hashOnlyMediumBlock:
 				for (FileState fileState : state.getFileStates())
 				{
-					fileState.getFileHash().setFirstFourKiloHash(FileState.NO_HASH);
+					fileState.getFileHash().setSmallBlockHash(FileState.NO_HASH);
 					fileState.getFileHash().setFullHash(FileState.NO_HASH);
 				}
 				break;
 
-			case COMPUTE_ALL_HASH:
+			case computeAllHash:
 				// Nothing to do
 				break;
 		}

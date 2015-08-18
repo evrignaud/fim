@@ -53,10 +53,10 @@ public class StateComparatorTest extends StateAssert
 	public static Collection<Object[]> parameters()
 	{
 		return Arrays.asList(new Object[][]{
-				{HashMode.DONT_HASH_FILES},
-				{HashMode.HASH_ONLY_FIRST_FOUR_KILO},
-				{HashMode.HASH_ONLY_FIRST_MEGA},
-				{HashMode.COMPUTE_ALL_HASH}
+				{HashMode.dontHashFiles},
+				{HashMode.hashOnlySmallBlock},
+				{HashMode.hashOnlyMediumBlock},
+				{HashMode.computeAllHash}
 		});
 	}
 
@@ -87,7 +87,7 @@ public class StateComparatorTest extends StateAssert
 
 		s2 = s1.appendContent("file_01", "append_01");
 		result = cut.compare(s1, s2);
-		if (hashMode == HashMode.DONT_HASH_FILES)
+		if (hashMode == HashMode.dontHashFiles)
 		{
 			assertNothingModified(result);
 		}
@@ -98,7 +98,7 @@ public class StateComparatorTest extends StateAssert
 
 		s2 = s1.rename("file_01", "file_06");
 		result = cut.compare(s1, s2);
-		if (hashMode == HashMode.DONT_HASH_FILES)
+		if (hashMode == HashMode.dontHashFiles)
 		{
 			assertGotOnlyModifications(result, Modification.ADDED, Modification.DELETED);
 			assertFilesModified(result, Modification.DELETED, "file_01");
@@ -111,7 +111,7 @@ public class StateComparatorTest extends StateAssert
 
 		s2 = s1.copy("file_01", "file_06");
 		result = cut.compare(s1, s2);
-		if (hashMode == HashMode.DONT_HASH_FILES)
+		if (hashMode == HashMode.dontHashFiles)
 		{
 			assertOnlyFilesAdded(result, "file_06");
 		}
@@ -132,7 +132,7 @@ public class StateComparatorTest extends StateAssert
 				.copy("file_01", "file_06")
 				.touch("file_01");
 		CompareResult result = cut.compare(s1, s2);
-		if (hashMode == HashMode.DONT_HASH_FILES)
+		if (hashMode == HashMode.dontHashFiles)
 		{
 			assertGotOnlyModifications(result, Modification.ADDED, Modification.DATE_MODIFIED);
 			assertFilesModified(result, Modification.ADDED, "file_00", "file_06");
@@ -152,7 +152,7 @@ public class StateComparatorTest extends StateAssert
 				.copy("file_01", "file_06")
 				.appendContent("file_01", "append_01");
 		CompareResult result = cut.compare(s1, s2);
-		if (hashMode == HashMode.DONT_HASH_FILES)
+		if (hashMode == HashMode.dontHashFiles)
 		{
 			assertGotOnlyModifications(result, Modification.ADDED);
 			assertFilesModified(result, Modification.ADDED, "file_00", "file_06");
