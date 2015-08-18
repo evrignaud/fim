@@ -71,6 +71,8 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			System.exit(-1);
 		}
 
+		checkGlobalHashMode(parameters);
+
 		fileContentHashingMandatory(parameters);
 
 		if (parameters.getHashMode() == HashMode.hashOnlySmallBlock)

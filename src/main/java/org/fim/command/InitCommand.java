@@ -21,10 +21,12 @@ package org.fim.command;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import org.fim.internal.SettingsManager;
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
 import org.fim.model.CompareResult;
+import org.fim.model.HashMode;
 import org.fim.model.Parameters;
 import org.fim.model.State;
 
@@ -57,8 +59,6 @@ public class InitCommand extends AbstractCommand
 	@Override
 	public void execute(Parameters parameters) throws Exception
 	{
-		computeAllHashMandatory(parameters);
-
 		try
 		{
 			Files.createDirectories(parameters.getDefaultStateDir());
@@ -68,6 +68,15 @@ public class InitCommand extends AbstractCommand
 			System.err.printf("Not able to create the '%s' directory that holds the Fim repository: %s %s%n",
 					Parameters.DOT_FIM_DIR, ex.getClass().getSimpleName(), ex.getMessage());
 			System.exit(-1);
+		}
+
+		if (parameters.getHashMode() != HashMode.computeAllHash)
+		{
+			SettingsManager settingsManager = new SettingsManager();
+			settingsManager.setGlobalHashMode(parameters.getHashMode());
+			settingsManager.save();
+
+			System.err.printf("Global hash mode is set to '%s'%n", StateGenerator.hashModeToString(parameters.getHashMode()));
 		}
 
 		String comment = parameters.getComment();

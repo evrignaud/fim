@@ -25,7 +25,6 @@ import java.nio.file.Path;
 import org.fim.model.CorruptedStateException;
 import org.fim.model.FileState;
 import org.fim.model.Parameters;
-import org.fim.model.Settings;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
@@ -135,18 +134,20 @@ public class StateManager
 		int number;
 		boolean lastStateFileDesynchronized = false;
 
-		Settings settings = new Settings(stateDir);
-		if (settings.isSaved())
+		SettingsManager settingsManager = new SettingsManager();
+		if (settingsManager.isSaved())
 		{
-			settings.load();
-			number = settings.getLastStateNumber();
+			number = settingsManager.getLastStateNumber();
 			stateFile = getStateFile(number);
 			if (Files.exists(stateFile))
 			{
 				return number;
 			}
 
-			lastStateFileDesynchronized = true;
+			if (number > 0)
+			{
+				lastStateFileDesynchronized = true;
+			}
 		}
 
 		for (int index = 1; ; index++)
@@ -169,13 +170,9 @@ public class StateManager
 	{
 		if (lastStateNumber != -1)
 		{
-			Settings settings = new Settings(stateDir);
-			if (settings.isSaved())
-			{
-				settings.load();
-			}
-			settings.setLastStateNumber(lastStateNumber);
-			settings.save();
+			SettingsManager settingsManager = new SettingsManager();
+			settingsManager.setLastStateNumber(lastStateNumber);
+			settingsManager.save();
 		}
 	}
 }

@@ -53,8 +53,6 @@ public class ResetDatesCommand extends AbstractCommand
 	@Override
 	public void execute(Parameters parameters) throws Exception
 	{
-		fileContentHashingMandatory(parameters);
-
 		StateManager manager = new StateManager(parameters);
 		State lastState = manager.loadLastState();
 

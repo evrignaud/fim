@@ -47,6 +47,8 @@ public class DiffCommand extends AbstractCommand
 	@Override
 	public void execute(Parameters parameters) throws Exception
 	{
+		checkGlobalHashMode(parameters);
+
 		State currentState = new StateGenerator(parameters).generateState("", CURRENT_DIRECTORY);
 		State lastState = new StateManager(parameters).loadLastState();
 

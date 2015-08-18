@@ -86,11 +86,31 @@ public class StateGenerator
 		this.progressLock = new ReentrantLock();
 	}
 
+	public static String hashModeToString(HashMode hashMode)
+	{
+		switch (hashMode)
+		{
+			case dontHashFiles:
+				return "retrieving only file attributes";
+
+			case hashOnlySmallBlock:
+				return "hashing only first four kilos";
+
+			case hashOnlyMediumBlock:
+				return "hashing only first mega";
+
+			case computeAllHash:
+				return "computing all hash";
+		}
+
+		throw new IllegalArgumentException("Invalid hash mode " + hashMode);
+	}
+
 	public State generateState(String comment, Path fimRepositoryRootDir) throws NoSuchAlgorithmException
 	{
 		this.fimRepositoryRootDir = fimRepositoryRootDir;
 
-		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(), parameters.getThreadCount()));
+		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(parameters.getHashMode()), parameters.getThreadCount()));
 		if (displayHashLegend())
 		{
 			System.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgressLegend());
@@ -146,26 +166,6 @@ public class StateGenerator
 			}
 			hashersStarted = true;
 		}
-	}
-
-	private String hashModeToString()
-	{
-		switch (parameters.getHashMode())
-		{
-			case dontHashFiles:
-				return "retrieving only file attributes";
-
-			case hashOnlySmallBlock:
-				return "hashing only first four kilos";
-
-			case hashOnlyMediumBlock:
-				return "hashing only first mega";
-
-			case computeAllHash:
-				return "computing all hash";
-		}
-
-		throw new IllegalArgumentException("Invalid hash mode " + parameters.getHashMode());
 	}
 
 	private void waitAllFilesToBeHashed()

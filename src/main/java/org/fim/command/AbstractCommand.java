@@ -22,6 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
+import org.fim.internal.SettingsManager;
+import org.fim.internal.StateGenerator;
 import org.fim.model.Command;
 import org.fim.model.HashMode;
 import org.fim.model.Parameters;
@@ -45,12 +47,13 @@ public abstract class AbstractCommand implements Command
 		}
 	}
 
-	protected void computeAllHashMandatory(Parameters parameters)
+	protected void checkGlobalHashMode(Parameters parameters)
 	{
-		if (parameters.getHashMode() != HashMode.computeAllHash)
+		SettingsManager settingsManager = new SettingsManager();
+		if (settingsManager.getGlobalHashMode() != HashMode.computeAllHash)
 		{
-			System.err.println("It's mandatory to compute all hash for this command.");
-			System.exit(-1);
+			System.out.printf("Global hash mode is '%s' so set hashMode to it%n", StateGenerator.hashModeToString(settingsManager.getGlobalHashMode()));
+			parameters.setHashMode(settingsManager.getGlobalHashMode());
 		}
 	}
 
