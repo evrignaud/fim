@@ -96,7 +96,7 @@ public class StateManager
 				}
 				break;
 
-			case hashOnlySmallBlock:
+			case hashSmallBlock:
 				for (FileState fileState : state.getFileStates())
 				{
 					fileState.getFileHash().setMediumBlockHash(FileState.NO_HASH);
@@ -104,10 +104,9 @@ public class StateManager
 				}
 				break;
 
-			case hashOnlyMediumBlock:
+			case hashMediumBlock:
 				for (FileState fileState : state.getFileStates())
 				{
-					fileState.getFileHash().setSmallBlockHash(FileState.NO_HASH);
 					fileState.getFileHash().setFullHash(FileState.NO_HASH);
 				}
 				break;

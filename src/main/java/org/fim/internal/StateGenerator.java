@@ -93,11 +93,11 @@ public class StateGenerator
 			case dontHashFiles:
 				return "retrieving only file attributes";
 
-			case hashOnlySmallBlock:
-				return "hashing only first four kilos";
+			case hashSmallBlock:
+				return "hashing first four kilos";
 
-			case hashOnlyMediumBlock:
-				return "hashing only first mega";
+			case hashMediumBlock:
+				return "hashing first mega";
 
 			case computeAllHash:
 				return "computing all hash";
@@ -118,6 +118,7 @@ public class StateGenerator
 
 		State state = new State();
 		state.setComment(comment);
+		state.setHashMode(parameters.getHashMode());
 
 		long start = System.currentTimeMillis();
 		progressOutputInit();

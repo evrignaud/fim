@@ -29,15 +29,15 @@ public class BuildableParameters extends Parameters
 		return this;
 	}
 
-	public BuildableParameters hashOnlySmallBlock()
+	public BuildableParameters hashSmallBlock()
 	{
-		setHashMode(HashMode.hashOnlySmallBlock);
+		setHashMode(HashMode.hashSmallBlock);
 		return this;
 	}
 
-	public BuildableParameters hashOnlyMediumBlock()
+	public BuildableParameters hashMediumBlock()
 	{
-		setHashMode(HashMode.hashOnlyMediumBlock);
+		setHashMode(HashMode.hashMediumBlock);
 		return this;
 	}
 

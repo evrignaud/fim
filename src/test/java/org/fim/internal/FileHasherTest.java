@@ -62,8 +62,8 @@ public class FileHasherTest extends StateAssert
 	{
 		return Arrays.asList(new Object[][]{
 				{HashMode.dontHashFiles},
-				{HashMode.hashOnlySmallBlock},
-				{HashMode.hashOnlyMediumBlock},
+				{HashMode.hashSmallBlock},
+				{HashMode.hashMediumBlock},
 				{HashMode.computeAllHash}
 		});
 	}
@@ -177,14 +177,14 @@ public class FileHasherTest extends StateAssert
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
 				break;
 
-			case hashOnlySmallBlock:
+			case hashSmallBlock:
 				assertThat(fileHash.getSmallBlockHash()).isEqualTo(smallBlockHash);
 				assertThat(fileHash.getMediumBlockHash()).isEqualTo(NO_HASH);
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
 				break;
 
-			case hashOnlyMediumBlock:
-				assertThat(fileHash.getSmallBlockHash()).isEqualTo(NO_HASH);
+			case hashMediumBlock:
+				assertThat(fileHash.getSmallBlockHash()).isEqualTo(smallBlockHash);
 				assertThat(fileHash.getMediumBlockHash()).isEqualTo(mediumBlockHash);
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
 				break;

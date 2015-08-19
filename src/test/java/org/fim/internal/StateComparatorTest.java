@@ -54,8 +54,8 @@ public class StateComparatorTest extends StateAssert
 	{
 		return Arrays.asList(new Object[][]{
 				{HashMode.dontHashFiles},
-				{HashMode.hashOnlySmallBlock},
-				{HashMode.hashOnlyMediumBlock},
+				{HashMode.hashSmallBlock},
+				{HashMode.hashMediumBlock},
 				{HashMode.computeAllHash}
 		});
 	}

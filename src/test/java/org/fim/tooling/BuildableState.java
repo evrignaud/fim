@@ -142,28 +142,29 @@ public class BuildableState extends State
 
 	private FileHash createHash(String content)
 	{
-		String smallBlockHash = FileState.NO_HASH;
-		String mediumBlockHash = FileState.NO_HASH;
-		String fullHash = FileState.NO_HASH;
+		String smallBlockHash = "small_block_" + content;
+		String mediumBlockHash = "medium_block_" + content;
+		String fullHash = "full_" + content;
 
 		switch (parameters.getHashMode())
 		{
 			case dontHashFiles:
-				// Nothing to do
+				smallBlockHash = FileState.NO_HASH;
+				mediumBlockHash = FileState.NO_HASH;
+				fullHash = FileState.NO_HASH;
 				break;
 
-			case hashOnlySmallBlock:
-				smallBlockHash = "small_block_" + content;
+			case hashSmallBlock:
+				mediumBlockHash = FileState.NO_HASH;
+				fullHash = FileState.NO_HASH;
 				break;
 
-			case hashOnlyMediumBlock:
-				mediumBlockHash = "medium_block_" + content;
+			case hashMediumBlock:
+				fullHash = FileState.NO_HASH;
 				break;
 
 			case computeAllHash:
-				smallBlockHash = "small_block_" + content;
-				mediumBlockHash = "medium_block_" + content;
-				fullHash = "full_" + content;
+				// Nothing to do
 				break;
 		}
 
@@ -172,28 +173,29 @@ public class BuildableState extends State
 
 	private FileHash appendHash(FileHash fileHash, String content)
 	{
-		String smallBlockHash = FileState.NO_HASH;
-		String mediumBlockHash = FileState.NO_HASH;
-		String fullHash = FileState.NO_HASH;
+		String smallBlockHash = fileHash.getSmallBlockHash() + "_" + content;
+		String mediumBlockHash = fileHash.getMediumBlockHash() + "_" + content;
+		String fullHash = fileHash.getFullHash() + "_" + content;
 
 		switch (parameters.getHashMode())
 		{
 			case dontHashFiles:
-				// Nothing to do
+				smallBlockHash = FileState.NO_HASH;
+				mediumBlockHash = FileState.NO_HASH;
+				fullHash = FileState.NO_HASH;
 				break;
 
-			case hashOnlySmallBlock:
-				smallBlockHash = fileHash.getSmallBlockHash() + "_" + content;
+			case hashSmallBlock:
+				mediumBlockHash = FileState.NO_HASH;
+				fullHash = FileState.NO_HASH;
 				break;
 
-			case hashOnlyMediumBlock:
-				mediumBlockHash = fileHash.getMediumBlockHash() + "_" + content;
+			case hashMediumBlock:
+				fullHash = FileState.NO_HASH;
 				break;
 
 			case computeAllHash:
-				smallBlockHash = fileHash.getSmallBlockHash() + "_" + content;
-				mediumBlockHash = fileHash.getMediumBlockHash() + "_" + content;
-				fullHash = fileHash.getFullHash() + "_" + content;
+				// Nothing to do
 				break;
 		}
 

@@ -21,7 +21,7 @@ package org.fim.model;
 public enum HashMode
 {
 	dontHashFiles,
-	hashOnlySmallBlock,
-	hashOnlyMediumBlock,
+	hashSmallBlock,
+	hashMediumBlock,
 	computeAllHash;
 }

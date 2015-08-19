@@ -167,7 +167,7 @@ class FileHasher implements Runnable
 			remainder -= buffer.limit();
 
 			smallBlockDigest.update(buffer);
-			if (hashMode == HashMode.hashOnlySmallBlock)
+			if (hashMode == HashMode.hashSmallBlock)
 			{
 				return new FileHash(getHash(smallBlockDigest), FileState.NO_HASH, FileState.NO_HASH);
 			}
@@ -187,9 +187,9 @@ class FileHasher implements Runnable
 				remainder -= buffer.limit();
 
 				mediumBlockDigest.update(buffer);
-				if (hashMode == HashMode.hashOnlyMediumBlock)
+				if (hashMode == HashMode.hashMediumBlock)
 				{
-					return new FileHash(FileState.NO_HASH, getHash(mediumBlockDigest), FileState.NO_HASH);
+					return new FileHash(getHash(smallBlockDigest), getHash(mediumBlockDigest), FileState.NO_HASH);
 				}
 
 				buffer.flip();
@@ -214,10 +214,11 @@ class FileHasher implements Runnable
 			totalBytesHashed += position;
 		}
 
-		if (hashMode == HashMode.hashOnlyMediumBlock)
+		if (hashMode == HashMode.hashMediumBlock)
 		{
-			return new FileHash(FileState.NO_HASH, getHash(mediumBlockDigest), FileState.NO_HASH);
+			return new FileHash(getHash(smallBlockDigest), getHash(mediumBlockDigest), FileState.NO_HASH);
 		}
+
 		return new FileHash(getHash(smallBlockDigest), getHash(mediumBlockDigest), getHash(fullDigest));
 	}
 
