@@ -20,11 +20,13 @@ package org.fim.tooling;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.fim.model.CompareResult;
 import org.fim.model.Difference;
+import org.fim.model.FileState;
 
 public class StateAssert
 {
@@ -153,4 +155,13 @@ public class StateAssert
 		throw new IllegalArgumentException("Invalid Modification " + modification);
 	}
 
+	protected List<String> toFileNames(List<FileState> fileStates)
+	{
+		List<String> fileNames = new ArrayList<>();
+		for (FileState fileState : fileStates)
+		{
+			fileNames.add(fileState.getFileName());
+		}
+		return fileNames;
+	}
 }

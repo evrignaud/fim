@@ -27,6 +27,9 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.zip.GZIPInputStream;
@@ -40,11 +43,13 @@ import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.fim.util.FileUtils;
 import org.fim.util.Logger;
 
 public class State implements Hashable
 {
 	public static final String CURRENT_MODEL_VERSION = "2";
+	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
 	private String stateHash; // Ensure the integrity of the complete State content
 
@@ -97,6 +102,8 @@ public class State implements Hashable
 
 	public void saveToGZipFile(Path stateFile) throws IOException
 	{
+		Collections.sort(fileStates, fileNameComparator);
+
 		updateFileCount();
 		stateHash = hashState();
 
@@ -104,6 +111,23 @@ public class State implements Hashable
 		{
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			gson.toJson(this, writer);
+		}
+	}
+
+	public void filterDirectory(Path repositoryRootDir, Path currentDirectory, boolean keepFilesInside)
+	{
+		String rootDir = FileUtils.getNormalizedFileName(repositoryRootDir);
+		String curDir = FileUtils.getNormalizedFileName(currentDirectory);
+		String subDirectory = FileUtils.getRelativeFileName(rootDir, curDir);
+
+		Iterator<FileState> iterator = fileStates.iterator();
+		while (iterator.hasNext())
+		{
+			FileState fileState = iterator.next();
+			if (fileState.getFileName().startsWith(subDirectory) != keepFilesInside)
+			{
+				iterator.remove();
+			}
 		}
 	}
 

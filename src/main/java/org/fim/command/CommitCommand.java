@@ -58,7 +58,12 @@ public class CommitCommand extends AbstractCommand
 
 		StateManager manager = new StateManager(parameters);
 		State lastState = manager.loadLastState();
-		State currentState = new StateGenerator(parameters).generateState(parameters.getComment(), CURRENT_DIRECTORY);
+		State currentState = new StateGenerator(parameters).generateState(parameters.getComment(), parameters.getRepositoryRootDir(), CURRENT_DIRECTORY);
+
+		if (parameters.isRunInSubDirectory())
+		{
+			lastState.filterDirectory(parameters.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
+		}
 
 		CompareResult result = new StateComparator(parameters).compare(lastState, currentState).displayChanges();
 		if (result.somethingModified())
@@ -66,6 +71,14 @@ public class CommitCommand extends AbstractCommand
 			System.out.println("");
 			if (confirmAction(parameters, "commit"))
 			{
+				if (parameters.isRunInSubDirectory())
+				{
+					lastState = manager.loadLastState();
+					lastState.filterDirectory(parameters.getRepositoryRootDir(), CURRENT_DIRECTORY, false);
+
+					currentState.getFileStates().addAll(lastState.getFileStates());
+				}
+
 				currentState.setModificationCounts(result.getModificationCounts());
 				manager.createNewState(currentState);
 			}

@@ -20,6 +20,8 @@ package org.fim;
 
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -163,6 +165,8 @@ public class Main
 			System.out.println("Not hashing file content so thread count forced to 1");
 		}
 
+		setRepositoryRootDir(parameters);
+
 		FimReposConstraint constraint = command.getFimReposConstraint();
 		if (constraint == FimReposConstraint.MUST_NOT_EXIST)
 		{
@@ -182,6 +186,25 @@ public class Main
 		}
 
 		command.execute((Parameters) parameters.clone());
+	}
+
+	private static void setRepositoryRootDir(Parameters parameters)
+	{
+		boolean runInSubDirectory = false;
+		Path directory = Paths.get(".").toAbsolutePath().normalize();
+		while (directory != null)
+		{
+			Path dotFimDir = directory.resolve(Parameters.DOT_FIM_DIR);
+			if (Files.exists(dotFimDir))
+			{
+				parameters.setRepositoryRootDir(directory);
+				parameters.setRunInSubDirectory(runInSubDirectory);
+				return;
+			}
+
+			directory = directory.getParent();
+			runInSubDirectory = true;
+		}
 	}
 
 	private static Command findCommand(final String cmdName)

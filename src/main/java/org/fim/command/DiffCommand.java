@@ -49,8 +49,13 @@ public class DiffCommand extends AbstractCommand
 	{
 		checkGlobalHashMode(parameters);
 
-		State currentState = new StateGenerator(parameters).generateState("", CURRENT_DIRECTORY);
+		State currentState = new StateGenerator(parameters).generateState("", parameters.getRepositoryRootDir(), CURRENT_DIRECTORY);
 		State lastState = new StateManager(parameters).loadLastState();
+
+		if (parameters.isRunInSubDirectory())
+		{
+			lastState.filterDirectory(parameters.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
+		}
 
 		new StateComparator(parameters).compare(lastState, currentState).displayChanges();
 	}

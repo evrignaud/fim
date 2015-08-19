@@ -106,7 +106,7 @@ public class StateGenerator
 		throw new IllegalArgumentException("Invalid hash mode " + hashMode);
 	}
 
-	public State generateState(String comment, Path rootDir) throws NoSuchAlgorithmException
+	public State generateState(String comment, Path rootDir, Path dirToScan) throws NoSuchAlgorithmException
 	{
 		this.rootDir = rootDir;
 
@@ -126,7 +126,7 @@ public class StateGenerator
 		filesToHash = new LinkedBlockingDeque<>(FILES_QUEUE_CAPACITY);
 		InitializeFileHashers();
 
-		scanFileTree(filesToHash, rootDir);
+		scanFileTree(filesToHash, dirToScan);
 
 		// In case the FileHashers have not been started
 		startFileHashers();

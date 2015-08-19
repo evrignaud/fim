@@ -18,7 +18,6 @@
  */
 package org.fim.internal;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -35,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
+import org.fim.util.FileUtils;
 import org.fim.util.Logger;
 import sun.misc.Cleaner;
 import sun.nio.ch.DirectBuffer;
@@ -99,8 +99,8 @@ class FileHasher implements Runnable
 					stateGenerator.updateProgressOutput(attributes.size());
 
 					FileHash fileHash = hashFile(file, attributes.size());
-					String normalizedFileName = getNormalizedFileName(file);
-					normalizedFileName = getRelativeFileName(rootDir, normalizedFileName);
+					String normalizedFileName = FileUtils.getNormalizedFileName(file);
+					normalizedFileName = FileUtils.getRelativeFileName(rootDir, normalizedFileName);
 
 					fileStates.add(new FileState(normalizedFileName, attributes.size(), attributes.lastModifiedTime().toMillis(), fileHash));
 				}
@@ -115,30 +115,6 @@ class FileHasher implements Runnable
 		{
 			Logger.error(ex);
 		}
-	}
-
-	private String getNormalizedFileName(Path file)
-	{
-		String normalizedFileName = file.toString();
-		if (File.separatorChar != '/')
-		{
-			normalizedFileName = normalizedFileName.replace(File.separatorChar, '/');
-		}
-		return normalizedFileName;
-	}
-
-	protected String getRelativeFileName(String directory, String fileName)
-	{
-		if (fileName.startsWith(directory))
-		{
-			fileName = fileName.substring(directory.length());
-		}
-
-		if (fileName.startsWith("/"))
-		{
-			fileName = fileName.substring(1);
-		}
-		return fileName;
 	}
 
 	protected FileHash hashFile(Path file, long fileSize) throws IOException

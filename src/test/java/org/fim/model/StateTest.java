@@ -20,8 +20,10 @@ package org.fim.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.fim.tooling.BuildableState;
@@ -93,6 +95,26 @@ public class StateTest extends StateAssert
 		assertThat(a1_hash).isEqualTo(a2_hash);
 
 		assertThat(a1_hash).isNotEqualTo(b_hash);
+	}
+
+	@Test
+	public void weCanFilterFilesInside()
+	{
+		State s = a1.addFiles("dir_1/file_1", "dir_1/file_2", "dir_2/file_1", "dir_2/file_2");
+
+		s.filterDirectory(Paths.get("."), Paths.get("dir_1"), true);
+
+		assertThat(toFileNames(s.getFileStates())).isEqualTo(Arrays.asList("dir_1/file_1", "dir_1/file_2"));
+	}
+
+	@Test
+	public void weCanFilterFilesOutside()
+	{
+		State s = a1.addFiles("dir_1/file_1", "dir_1/file_2", "dir_2/file_1", "dir_2/file_2");
+
+		s.filterDirectory(Paths.get("."), Paths.get("dir_1"), false);
+
+		assertThat(toFileNames(s.getFileStates())).isEqualTo(Arrays.asList("dir_2/file_1", "dir_2/file_2", "file_1", "file_2"));
 	}
 
 	private void fixTimeStamps(BuildableState a1) throws ParseException

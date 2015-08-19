@@ -82,7 +82,7 @@ public class LogCommand extends AbstractCommand
 		{
 			return;
 		}
-		
+
 		String message = "";
 		if (modificationCounts.getAdded() > 0)
 		{

@@ -25,6 +25,7 @@ public class Parameters implements Cloneable
 {
 	public static final String DOT_FIM_DIR = ".fim";
 
+	private boolean runInSubDirectory;
 	private Path repositoryRootDir;
 	private boolean verbose;
 	private HashMode hashMode;
@@ -36,6 +37,7 @@ public class Parameters implements Cloneable
 
 	public Parameters()
 	{
+		runInSubDirectory = false;
 		repositoryRootDir = Paths.get(".");
 		verbose = true;
 		hashMode = HashMode.computeAllHash;
@@ -48,6 +50,16 @@ public class Parameters implements Cloneable
 		}
 		masterFimRepositoryDir = null;
 		alwaysYes = false;
+	}
+
+	public boolean isRunInSubDirectory()
+	{
+		return runInSubDirectory;
+	}
+
+	public void setRunInSubDirectory(boolean runInSubDirectory)
+	{
+		this.runInSubDirectory = runInSubDirectory;
 	}
 
 	public Path getRepositoryRootDir()

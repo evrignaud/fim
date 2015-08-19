@@ -61,7 +61,7 @@ public class FindDuplicatesCommand extends AbstractCommand
 		}
 		else
 		{
-			state = new StateGenerator(parameters).generateState("", CURRENT_DIRECTORY);
+			state = new StateGenerator(parameters).generateState("", parameters.getRepositoryRootDir(), CURRENT_DIRECTORY);
 		}
 
 		new DuplicateFinder(parameters).findDuplicates(state).displayDuplicates();
