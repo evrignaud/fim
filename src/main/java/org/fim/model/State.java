@@ -49,9 +49,9 @@ public class State implements Hashable
 	private long timestamp;
 	private String comment;
 	private int fileCount;
+	private HashMode hashMode;
 
-	private ModificationCounts modificationCounts;
-
+	private ModificationCounts modificationCounts; // Not taken in account in equals(), hashCode(), hashObject()
 	private List<FileState> fileStates;
 
 	public State()
@@ -60,6 +60,7 @@ public class State implements Hashable
 		timestamp = System.currentTimeMillis();
 		comment = "";
 		fileCount = 0;
+		hashMode = HashMode.computeAllHash;
 		fileStates = new ArrayList<>();
 	}
 
@@ -141,6 +142,16 @@ public class State implements Hashable
 		// Do nothing
 	}
 
+	public HashMode getHashMode()
+	{
+		return hashMode;
+	}
+
+	public void setHashMode(HashMode hashMode)
+	{
+		this.hashMode = hashMode;
+	}
+
 	public List<FileState> getFileStates()
 	{
 		return fileStates;
@@ -189,13 +200,14 @@ public class State implements Hashable
 				&& Objects.equals(this.timestamp, state.timestamp)
 				&& Objects.equals(this.comment, state.comment)
 				&& Objects.equals(this.fileCount, state.fileCount)
+				&& Objects.equals(this.hashMode, state.hashMode)
 				&& Objects.equals(this.fileStates, state.fileStates);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(modelVersion, timestamp, comment, fileCount, fileStates);
+		return Objects.hash(modelVersion, timestamp, comment, fileCount, hashMode, fileStates);
 	}
 
 	@Override
@@ -206,6 +218,7 @@ public class State implements Hashable
 				.add("timestamp", timestamp)
 				.add("comment", comment)
 				.add("fileCount", fileCount)
+				.add("hashMode", hashMode)
 				.add("fileStates", fileStates)
 				.toString();
 	}
@@ -221,6 +234,8 @@ public class State implements Hashable
 				.putString(comment, Charsets.UTF_8)
 				.putChar(HASH_SEPARATOR)
 				.putInt(fileCount)
+				.putChar(HASH_SEPARATOR)
+				.putString(hashMode.name(), Charsets.UTF_8)
 				.putChar(HASH_SEPARATOR);
 
 		for (FileState fileState : fileStates)
