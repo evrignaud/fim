@@ -78,6 +78,11 @@ public class LogCommand extends AbstractCommand
 
 	private void displayCounts(ModificationCounts modificationCounts)
 	{
+		if (modificationCounts == null)
+		{
+			return;
+		}
+		
 		String message = "";
 		if (modificationCounts.getAdded() > 0)
 		{

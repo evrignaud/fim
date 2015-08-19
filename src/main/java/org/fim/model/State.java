@@ -40,9 +40,12 @@ import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.fim.util.Logger;
 
 public class State implements Hashable
 {
+	public static final String CURRENT_MODEL_VERSION = "2";
+
 	private String stateHash; // Ensure the integrity of the complete State content
 
 	private String modelVersion;
@@ -56,7 +59,7 @@ public class State implements Hashable
 
 	public State()
 	{
-		modelVersion = "1";
+		modelVersion = CURRENT_MODEL_VERSION;
 		timestamp = System.currentTimeMillis();
 		comment = "";
 		fileCount = 0;
@@ -70,7 +73,15 @@ public class State implements Hashable
 		{
 			Gson gson = new Gson();
 			State state = gson.fromJson(reader, State.class);
-			checkIntegrity(state);
+
+			if (!CURRENT_MODEL_VERSION.equals(state.getModelVersion()))
+			{
+				Logger.warning(String.format("State %s use a different model version. Some features will not work completely.", stateFile.getFileName().toString()));
+			}
+			else
+			{
+				checkIntegrity(state);
+			}
 			return state;
 		}
 	}

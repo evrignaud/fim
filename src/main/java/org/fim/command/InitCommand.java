@@ -59,6 +59,12 @@ public class InitCommand extends AbstractCommand
 	@Override
 	public void execute(Parameters parameters) throws Exception
 	{
+		System.out.println("No comment provided. You are going to initialize your repository using the default comment.");
+		if (!confirmAction(parameters, "continue"))
+		{
+			System.exit(0);
+		}
+
 		try
 		{
 			Files.createDirectories(parameters.getRepositoryStatesDir());
@@ -77,12 +83,6 @@ public class InitCommand extends AbstractCommand
 			settingsManager.save();
 
 			System.err.printf("Global hash mode is set to '%s'%n", StateGenerator.hashModeToString(parameters.getHashMode()));
-		}
-
-		System.out.println("No comment provided. You are going to initialize your repository using the default comment.");
-		if (!confirmAction(parameters, "continue"))
-		{
-			System.exit(0);
 		}
 
 		String comment = parameters.getComment();

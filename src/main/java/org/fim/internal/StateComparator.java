@@ -30,6 +30,7 @@ import org.fim.model.HashMode;
 import org.fim.model.Modification;
 import org.fim.model.Parameters;
 import org.fim.model.State;
+import org.fim.util.Logger;
 
 public class StateComparator
 {
@@ -42,6 +43,12 @@ public class StateComparator
 
 	public CompareResult compare(State lastState, State currentState)
 	{
+		if (lastState != null && !lastState.getModelVersion().equals(currentState.getModelVersion()))
+		{
+			Logger.warning("Not able to compare with a State that have a different model version.");
+			lastState = null;
+		}
+
 		CompareResult result = new CompareResult(parameters, lastState);
 
 		List<FileState> previousFileStates = new ArrayList<>();

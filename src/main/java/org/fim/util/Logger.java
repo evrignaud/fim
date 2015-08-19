@@ -38,6 +38,11 @@ public class Logger
 		writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Info  - ").append(message).toString());
 	}
 
+	public static void warning(String message)
+	{
+		writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Warn  - ").append(message).toString());
+	}
+
 	public static void alert(String message)
 	{
 		writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Alert - ").append(message).toString());
