@@ -27,6 +27,7 @@ import org.fim.internal.StateGenerator;
 import org.fim.model.Command;
 import org.fim.model.HashMode;
 import org.fim.model.Parameters;
+import org.fim.util.Logger;
 
 public abstract class AbstractCommand implements Command
 {
@@ -52,7 +53,7 @@ public abstract class AbstractCommand implements Command
 		SettingsManager settingsManager = new SettingsManager(parameters);
 		if (settingsManager.getGlobalHashMode() != HashMode.computeAllHash)
 		{
-			System.out.printf("Global hash mode is '%s' so set hashMode to it%n", StateGenerator.hashModeToString(settingsManager.getGlobalHashMode()));
+			Logger.warning(String.format("This repository use a global hash mode. Hash mode forced to '%s'%n", StateGenerator.hashModeToString(settingsManager.getGlobalHashMode())));
 			parameters.setHashMode(settingsManager.getGlobalHashMode());
 		}
 	}

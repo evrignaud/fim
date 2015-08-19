@@ -29,6 +29,7 @@ import org.fim.model.CompareResult;
 import org.fim.model.HashMode;
 import org.fim.model.Parameters;
 import org.fim.model.State;
+import org.fim.util.Logger;
 
 public class InitCommand extends AbstractCommand
 {
@@ -82,7 +83,7 @@ public class InitCommand extends AbstractCommand
 			settingsManager.setGlobalHashMode(parameters.getHashMode());
 			settingsManager.save();
 
-			System.err.printf("Global hash mode is set to '%s'%n", StateGenerator.hashModeToString(parameters.getHashMode()));
+			Logger.warning(String.format("Global hash mode set to '%s'%n", StateGenerator.hashModeToString(parameters.getHashMode())));
 		}
 
 		String comment = parameters.getComment();
