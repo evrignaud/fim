@@ -49,7 +49,7 @@ public abstract class AbstractCommand implements Command
 
 	protected void checkGlobalHashMode(Parameters parameters)
 	{
-		SettingsManager settingsManager = new SettingsManager();
+		SettingsManager settingsManager = new SettingsManager(parameters);
 		if (settingsManager.getGlobalHashMode() != HashMode.computeAllHash)
 		{
 			System.out.printf("Global hash mode is '%s' so set hashMode to it%n", StateGenerator.hashModeToString(settingsManager.getGlobalHashMode()));

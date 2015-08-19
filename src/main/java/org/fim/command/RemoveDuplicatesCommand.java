@@ -112,12 +112,12 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			System.err.printf("Directory %s is not a Fim repository%n", parameters.getMasterFimRepositoryDir());
 			System.exit(-1);
 		}
+		parameters.setRepositoryRootDir(masterFimRepository);
 
 		System.out.println("Searching for duplicated files using the " + parameters.getMasterFimRepositoryDir() + " directory as master");
 		System.out.println("");
 
-		Path masterStateDir = masterDotFimDir.resolve("states");
-		State masterState = new StateManager(parameters, masterStateDir).loadLastState();
+		State masterState = new StateManager(parameters).loadLastState();
 		Map<FileHash, FileState> masterFilesHash = buildFileHashMap(masterState);
 
 		long totalFilesRemoved = 0;

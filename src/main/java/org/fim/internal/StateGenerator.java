@@ -74,7 +74,7 @@ public class StateGenerator
 	private int fileCount;
 	private long totalFileContentLength;
 
-	private Path fimRepositoryRootDir;
+	private Path rootDir;
 	private BlockingDeque<Path> filesToHash;
 	private boolean hashersStarted;
 	private List<FileHasher> hashers;
@@ -106,9 +106,9 @@ public class StateGenerator
 		throw new IllegalArgumentException("Invalid hash mode " + hashMode);
 	}
 
-	public State generateState(String comment, Path fimRepositoryRootDir) throws NoSuchAlgorithmException
+	public State generateState(String comment, Path rootDir) throws NoSuchAlgorithmException
 	{
-		this.fimRepositoryRootDir = fimRepositoryRootDir;
+		this.rootDir = rootDir;
 
 		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(parameters.getHashMode()), parameters.getThreadCount()));
 		if (displayHashLegend())
@@ -126,7 +126,7 @@ public class StateGenerator
 		filesToHash = new LinkedBlockingDeque<>(FILES_QUEUE_CAPACITY);
 		InitializeFileHashers();
 
-		scanFileTree(filesToHash, fimRepositoryRootDir);
+		scanFileTree(filesToHash, rootDir);
 
 		// In case the FileHashers have not been started
 		startFileHashers();
@@ -161,7 +161,7 @@ public class StateGenerator
 		{
 			for (int index = 0; index < parameters.getThreadCount(); index++)
 			{
-				FileHasher hasher = new FileHasher(this, filesToHash, fimRepositoryRootDir.toString());
+				FileHasher hasher = new FileHasher(this, filesToHash, rootDir.toString());
 				executorService.submit(hasher);
 				hashers.add(hasher);
 			}

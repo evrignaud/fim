@@ -31,6 +31,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.apache.commons.io.FileUtils;
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
 import org.fim.tooling.BuildableParameters;
@@ -49,7 +50,6 @@ public class FileHasherTest extends StateAssert
 
 	private HashMode hashMode;
 	private BuildableParameters parameters;
-	private Path rootDir;
 	private FileHasher cut;
 
 	public FileHasherTest(final HashMode hashMode)
@@ -71,12 +71,16 @@ public class FileHasherTest extends StateAssert
 	@Before
 	public void setup() throws NoSuchAlgorithmException, IOException
 	{
+		Path rootDir = Paths.get("target/" + this.getClass().getSimpleName());
+
 		stateGenerator = mock(StateGenerator.class);
 		parameters = defaultParameters();
 		parameters.setHashMode(hashMode);
+		parameters.setRepositoryRootDir(rootDir);
+
 		when(stateGenerator.getParameters()).thenReturn(parameters);
 
-		rootDir = Paths.get("target/" + this.getClass().getSimpleName());
+		FileUtils.deleteDirectory(rootDir.toFile());
 		Files.createDirectories(rootDir);
 
 		cut = new FileHasher(stateGenerator, null, rootDir.toString());
@@ -202,7 +206,7 @@ public class FileHasherTest extends StateAssert
 		Path license = Paths.get("LICENSE");
 		byte[] content = Files.readAllBytes(license);
 
-		Path newFile = rootDir.resolve("LICENSE_" + fileSize);
+		Path newFile = parameters.getRepositoryRootDir().resolve("LICENSE_" + fileSize);
 		if (Files.exists(newFile))
 		{
 			Files.delete(newFile);

@@ -27,14 +27,12 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.fim.model.HashMode;
 import org.fim.model.Parameters;
 import org.fim.model.Settings;
-import org.fim.util.Logger;
 
 public class SettingsManager
 {
@@ -43,9 +41,9 @@ public class SettingsManager
 	private Path settingsFile;
 	private Settings settings;
 
-	public SettingsManager()
+	public SettingsManager(Parameters parameters)
 	{
-		settingsFile = Paths.get(Parameters.DOT_FIM_DIR, SETTINGS_FILE);
+		settingsFile = parameters.getRepositoryDotFimDir().resolve(SETTINGS_FILE);
 		settings = new Settings();
 
 		if (isSaved())
@@ -68,7 +66,7 @@ public class SettingsManager
 		}
 		catch (IOException ex)
 		{
-			Logger.error("Error reading settings", ex);
+			throw new RuntimeException("Error reading settings", ex);
 		}
 	}
 
@@ -81,7 +79,7 @@ public class SettingsManager
 		}
 		catch (IOException ex)
 		{
-			Logger.error("Error saving settings", ex);
+			throw new RuntimeException("Error saving settings", ex);
 		}
 	}
 

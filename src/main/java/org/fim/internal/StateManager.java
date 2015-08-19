@@ -33,17 +33,10 @@ public class StateManager
 	public static final String STATE_EXTENSION = ".json.gz";
 
 	private final Parameters parameters;
-	private final Path stateDir;
 
 	public StateManager(Parameters parameters)
 	{
-		this(parameters, parameters.getDefaultStateDir());
-	}
-
-	public StateManager(Parameters parameters, Path stateDir)
-	{
 		this.parameters = parameters;
-		this.stateDir = stateDir;
 	}
 
 	public void createNewState(State state) throws IOException
@@ -65,7 +58,7 @@ public class StateManager
 		Path stateFile = getStateFile(stateNumber);
 		if (!Files.exists(stateFile))
 		{
-			throw new IllegalStateException(String.format("Unable to load State file %d from directory %s", stateNumber, stateDir));
+			throw new IllegalStateException(String.format("Unable to load State file %d from directory %s", stateNumber, parameters.getRepositoryStatesDir()));
 		}
 
 		try
@@ -118,13 +111,13 @@ public class StateManager
 	}
 
 	/**
-	 * @return the State file formatted like this: <stateDir>/state_<stateNumber>.json.gz
+	 * @return the State file formatted like this: <statesDir>/state_<stateNumber>.json.gz
 	 */
 	public Path getStateFile(int stateNumber)
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("state_").append(stateNumber).append(STATE_EXTENSION);
-		return stateDir.resolve(builder.toString());
+		return parameters.getRepositoryStatesDir().resolve(builder.toString());
 	}
 
 	public int getLastStateNumber()
@@ -133,7 +126,7 @@ public class StateManager
 		int number;
 		boolean lastStateFileDesynchronized = false;
 
-		SettingsManager settingsManager = new SettingsManager();
+		SettingsManager settingsManager = new SettingsManager(parameters);
 		if (settingsManager.isSaved())
 		{
 			number = settingsManager.getLastStateNumber();
@@ -169,7 +162,7 @@ public class StateManager
 	{
 		if (lastStateNumber != -1)
 		{
-			SettingsManager settingsManager = new SettingsManager();
+			SettingsManager settingsManager = new SettingsManager(parameters);
 			settingsManager.setLastStateNumber(lastStateNumber);
 			settingsManager.save();
 		}

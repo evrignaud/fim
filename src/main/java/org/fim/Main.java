@@ -166,7 +166,7 @@ public class Main
 		FimReposConstraint constraint = command.getFimReposConstraint();
 		if (constraint == FimReposConstraint.MUST_NOT_EXIST)
 		{
-			if (Files.exists(parameters.getDefaultStateDir()))
+			if (Files.exists(parameters.getRepositoryStatesDir()))
 			{
 				System.err.println("Fim repository already exist");
 				System.exit(0);
@@ -174,7 +174,7 @@ public class Main
 		}
 		else if (constraint == FimReposConstraint.MUST_EXIST)
 		{
-			if (!Files.exists(parameters.getDefaultStateDir()))
+			if (!Files.exists(parameters.getRepositoryStatesDir()))
 			{
 				System.err.println("Fim repository does not exist. Please run 'fim init' before.");
 				System.exit(-1);

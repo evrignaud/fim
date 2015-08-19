@@ -45,7 +45,7 @@ class FileHasher implements Runnable
 
 	private final StateGenerator stateGenerator;
 	private final BlockingDeque<Path> filesToHash;
-	private final String fimRepositoryRootDir;
+	private final String rootDir;
 
 	private final List<FileState> fileStates;
 
@@ -56,11 +56,11 @@ class FileHasher implements Runnable
 	private long totalFileContentLength;
 	private long totalBytesHashed;
 
-	public FileHasher(StateGenerator stateGenerator, BlockingDeque<Path> filesToHash, String fimRepositoryRootDir) throws NoSuchAlgorithmException
+	public FileHasher(StateGenerator stateGenerator, BlockingDeque<Path> filesToHash, String rootDir) throws NoSuchAlgorithmException
 	{
 		this.stateGenerator = stateGenerator;
 		this.filesToHash = filesToHash;
-		this.fimRepositoryRootDir = fimRepositoryRootDir;
+		this.rootDir = rootDir;
 
 		this.fileStates = new ArrayList<>();
 
@@ -100,7 +100,7 @@ class FileHasher implements Runnable
 
 					FileHash fileHash = hashFile(file, attributes.size());
 					String normalizedFileName = getNormalizedFileName(file);
-					normalizedFileName = getRelativeFileName(fimRepositoryRootDir, normalizedFileName);
+					normalizedFileName = getRelativeFileName(rootDir, normalizedFileName);
 
 					fileStates.add(new FileState(normalizedFileName, attributes.size(), attributes.lastModifiedTime().toMillis(), fileHash));
 				}

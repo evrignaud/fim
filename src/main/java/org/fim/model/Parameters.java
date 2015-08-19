@@ -25,7 +25,7 @@ public class Parameters implements Cloneable
 {
 	public static final String DOT_FIM_DIR = ".fim";
 
-	private Path defaultStateDir;
+	private Path repositoryRootDir;
 	private boolean verbose;
 	private HashMode hashMode;
 	private String comment;
@@ -36,7 +36,7 @@ public class Parameters implements Cloneable
 
 	public Parameters()
 	{
-		defaultStateDir = Paths.get(DOT_FIM_DIR, "states");
+		repositoryRootDir = Paths.get(".");
 		verbose = true;
 		hashMode = HashMode.computeAllHash;
 		comment = "";
@@ -50,9 +50,24 @@ public class Parameters implements Cloneable
 		alwaysYes = false;
 	}
 
-	public Path getDefaultStateDir()
+	public Path getRepositoryRootDir()
 	{
-		return defaultStateDir;
+		return repositoryRootDir;
+	}
+
+	public void setRepositoryRootDir(Path repositoryRootDir)
+	{
+		this.repositoryRootDir = repositoryRootDir;
+	}
+
+	public Path getRepositoryDotFimDir()
+	{
+		return repositoryRootDir.resolve(DOT_FIM_DIR);
+	}
+
+	public Path getRepositoryStatesDir()
+	{
+		return getRepositoryDotFimDir().resolve("states");
 	}
 
 	public boolean isVerbose()

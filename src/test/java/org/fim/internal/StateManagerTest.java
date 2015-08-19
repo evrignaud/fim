@@ -47,7 +47,6 @@ public class StateManagerTest extends StateAssert
 	private BuildableParameters parameters;
 	private BuildableState s;
 
-	private Path stateDir;
 	private StateManager cut;
 
 	public StateManagerTest(final HashMode hashMode)
@@ -69,17 +68,19 @@ public class StateManagerTest extends StateAssert
 	@Before
 	public void setup() throws IOException
 	{
+		Path rootDir = Paths.get("target/" + this.getClass().getSimpleName());
+
 		parameters = defaultParameters();
 		parameters.setHashMode(hashMode);
+		parameters.setRepositoryRootDir(rootDir);
+
+		Path statesDir = parameters.getRepositoryStatesDir();
+		FileUtils.deleteDirectory(statesDir.toFile());
+		Files.createDirectories(statesDir);
+
 		s = new BuildableState(parameters);
 
-		stateDir = Paths.get("target", this.getClass().getSimpleName());
-
-		FileUtils.deleteDirectory(stateDir.toFile());
-
-		Files.createDirectories(stateDir);
-
-		cut = new StateManager(parameters, stateDir);
+		cut = new StateManager(parameters);
 	}
 
 	@Test

@@ -61,18 +61,18 @@ public class InitCommand extends AbstractCommand
 	{
 		try
 		{
-			Files.createDirectories(parameters.getDefaultStateDir());
+			Files.createDirectories(parameters.getRepositoryStatesDir());
 		}
 		catch (IOException ex)
 		{
 			System.err.printf("Not able to create the '%s' directory that holds the Fim repository: %s %s%n",
-					Parameters.DOT_FIM_DIR, ex.getClass().getSimpleName(), ex.getMessage());
+					parameters.getRepositoryDotFimDir(), ex.getClass().getSimpleName(), ex.getMessage());
 			System.exit(-1);
 		}
 
 		if (parameters.getHashMode() != HashMode.computeAllHash)
 		{
-			SettingsManager settingsManager = new SettingsManager();
+			SettingsManager settingsManager = new SettingsManager(parameters);
 			settingsManager.setGlobalHashMode(parameters.getHashMode());
 			settingsManager.save();
 
