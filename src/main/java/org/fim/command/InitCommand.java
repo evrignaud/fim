@@ -79,6 +79,12 @@ public class InitCommand extends AbstractCommand
 			System.err.printf("Global hash mode is set to '%s'%n", StateGenerator.hashModeToString(parameters.getHashMode()));
 		}
 
+		System.out.println("No comment provided. You are going to initialize your repository using the default comment.");
+		if (!confirmAction(parameters, "continue"))
+		{
+			System.exit(0);
+		}
+
 		String comment = parameters.getComment();
 		if (comment.length() == 0)
 		{

@@ -73,7 +73,7 @@ public class Main
 		options.addOption(createOption("m", "hash-first-mega", false, "Hash the first mega of the files", false));
 		options.addOption(createOption("h", "help", false, "Prints the Fim help", false));
 		options.addOption(createOption("l", "use-last-state", false, "Use the last committed State", false));
-		options.addOption(createOption("c", "comment", true, "Sets that State comment during commit", false));
+		options.addOption(createOption("c", "comment", true, "Sets that State comment during init and commit", false));
 		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
 		options.addOption(createOption("t", "thread-count", true, "Number of thread to use to hash files content in parallel", false));
 		options.addOption(createOption("v", "version", false, "Prints the Fim version", false));

@@ -50,6 +50,12 @@ public class CommitCommand extends AbstractCommand
 	{
 		checkGlobalHashMode(parameters);
 
+		System.out.println("No comment provided. You are going to commit your modifications without any comment.");
+		if (!confirmAction(parameters, "continue"))
+		{
+			System.exit(0);
+		}
+
 		StateManager manager = new StateManager(parameters);
 		State lastState = manager.loadLastState();
 		State currentState = new StateGenerator(parameters).generateState(parameters.getComment(), CURRENT_DIRECTORY);
