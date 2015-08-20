@@ -42,9 +42,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.fim.model.Context;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
-import org.fim.model.Parameters;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
@@ -53,7 +53,7 @@ public class StateGenerator
 	public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
 	public static final int FILES_QUEUE_CAPACITY = 500;
 
-	private static final Set ignoredDirectories = new HashSet<>(Arrays.asList(Parameters.DOT_FIM_DIR, ".git", ".svn", ".cvs"));
+	private static final Set ignoredDirectories = new HashSet<>(Arrays.asList(Context.DOT_FIM_DIR, ".git", ".svn", ".cvs"));
 
 	private static final Pair<Character, Integer>[] hashProgress = new Pair[]
 			{
@@ -66,7 +66,7 @@ public class StateGenerator
 
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
-	private final Parameters parameters;
+	private final Context context;
 	private final ReentrantLock progressLock;
 
 	private ExecutorService executorService;
@@ -80,9 +80,9 @@ public class StateGenerator
 	private List<FileHasher> hashers;
 	private long totalBytesHashed;
 
-	public StateGenerator(Parameters parameters)
+	public StateGenerator(Context context)
 	{
-		this.parameters = parameters;
+		this.context = context;
 		this.progressLock = new ReentrantLock();
 	}
 
@@ -110,7 +110,7 @@ public class StateGenerator
 	{
 		this.rootDir = rootDir;
 
-		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(parameters.getHashMode()), parameters.getThreadCount()));
+		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(context.getHashMode()), context.getThreadCount()));
 		if (displayHashLegend())
 		{
 			System.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgressLegend());
@@ -118,7 +118,7 @@ public class StateGenerator
 
 		State state = new State();
 		state.setComment(comment);
-		state.setHashMode(parameters.getHashMode());
+		state.setHashMode(context.getHashMode());
 
 		long start = System.currentTimeMillis();
 		progressOutputInit();
@@ -152,14 +152,14 @@ public class StateGenerator
 	{
 		hashersStarted = false;
 		hashers = new ArrayList<>();
-		executorService = Executors.newFixedThreadPool(parameters.getThreadCount());
+		executorService = Executors.newFixedThreadPool(context.getThreadCount());
 	}
 
 	private void startFileHashers() throws NoSuchAlgorithmException
 	{
 		if (!hashersStarted)
 		{
-			for (int index = 0; index < parameters.getThreadCount(); index++)
+			for (int index = 0; index < context.getThreadCount(); index++)
 			{
 				FileHasher hasher = new FileHasher(this, filesToHash, rootDir.toString());
 				executorService.submit(hasher);
@@ -199,15 +199,15 @@ public class StateGenerator
 		long globalThroughput = totalBytesHashed / durationSeconds;
 		String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
 
-		if (parameters.getHashMode() == HashMode.dontHashFiles)
+		if (context.getHashMode() == HashMode.dontHashFiles)
 		{
 			Logger.info(String.format("Scanned %d files (%s), during %s, using %d thread%n",
-					state.getFileStates().size(), totalFileContentLengthStr, durationStr, parameters.getThreadCount()));
+					state.getFileStates().size(), totalFileContentLengthStr, durationStr, context.getThreadCount()));
 		}
 		else
 		{
 			Logger.info(String.format("Scanned %d files (%s), hashed %s bytes (avg %s/s), during %s, using %d thread%n",
-					state.getFileStates().size(), totalFileContentLengthStr, totalBytesHashedStr, throughputStr, durationStr, parameters.getThreadCount()));
+					state.getFileStates().size(), totalFileContentLengthStr, totalBytesHashedStr, throughputStr, durationStr, context.getThreadCount()));
 		}
 	}
 
@@ -341,11 +341,11 @@ public class StateGenerator
 
 	private boolean displayHashLegend()
 	{
-		return parameters.isVerbose() && parameters.getHashMode() != HashMode.dontHashFiles;
+		return context.isVerbose() && context.getHashMode() != HashMode.dontHashFiles;
 	}
 
-	public Parameters getParameters()
+	public Context getContext()
 	{
-		return parameters;
+		return context;
 	}
 }

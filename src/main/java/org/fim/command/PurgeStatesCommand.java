@@ -22,7 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.fim.internal.StateManager;
-import org.fim.model.Parameters;
+import org.fim.model.Context;
 
 public class PurgeStatesCommand extends AbstractCommand
 {
@@ -51,9 +51,9 @@ public class PurgeStatesCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Parameters parameters) throws Exception
+	public void execute(Context context) throws Exception
 	{
-		StateManager stateManager = new StateManager(parameters);
+		StateManager stateManager = new StateManager(context);
 
 		int index;
 		Path stateFile;

@@ -25,8 +25,8 @@ import java.util.Scanner;
 import org.fim.internal.SettingsManager;
 import org.fim.internal.StateGenerator;
 import org.fim.model.Command;
+import org.fim.model.Context;
 import org.fim.model.HashMode;
-import org.fim.model.Parameters;
 import org.fim.util.Logger;
 
 public abstract class AbstractCommand implements Command
@@ -39,28 +39,28 @@ public abstract class AbstractCommand implements Command
 		return FimReposConstraint.MUST_EXIST;
 	}
 
-	protected void fileContentHashingMandatory(Parameters parameters)
+	protected void fileContentHashingMandatory(Context context)
 	{
-		if (parameters.getHashMode() == HashMode.dontHashFiles)
+		if (context.getHashMode() == HashMode.dontHashFiles)
 		{
 			System.err.println("File content hashing mandatory for this command.");
 			System.exit(-1);
 		}
 	}
 
-	protected void checkGlobalHashMode(Parameters parameters)
+	protected void checkGlobalHashMode(Context context)
 	{
-		SettingsManager settingsManager = new SettingsManager(parameters);
+		SettingsManager settingsManager = new SettingsManager(context);
 		if (settingsManager.getGlobalHashMode() != HashMode.computeAllHash)
 		{
 			Logger.warning(String.format("This repository use a global hash mode. Hash mode forced to '%s'%n", StateGenerator.hashModeToString(settingsManager.getGlobalHashMode())));
-			parameters.setHashMode(settingsManager.getGlobalHashMode());
+			context.setHashMode(settingsManager.getGlobalHashMode());
 		}
 	}
 
-	protected boolean confirmAction(Parameters parameters, String action)
+	protected boolean confirmAction(Context context, String action)
 	{
-		if (parameters.isAlwaysYes())
+		if (context.isAlwaysYes())
 		{
 			return true;
 		}
@@ -74,7 +74,7 @@ public abstract class AbstractCommand implements Command
 		}
 		else if (str.equals("A"))
 		{
-			parameters.setAlwaysYes(true);
+			context.setAlwaysYes(true);
 			return true;
 		}
 		return false;

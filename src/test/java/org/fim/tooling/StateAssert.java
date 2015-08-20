@@ -30,9 +30,9 @@ import org.fim.model.FileState;
 
 public class StateAssert
 {
-	protected BuildableParameters defaultParameters()
+	protected BuildableContext defaultContext()
 	{
-		return new BuildableParameters();
+		return new BuildableContext();
 	}
 
 	protected void assertNothingModified(CompareResult result)

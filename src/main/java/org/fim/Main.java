@@ -45,8 +45,8 @@ import org.fim.command.ResetDatesCommand;
 import org.fim.command.VersionCommand;
 import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
+import org.fim.model.Context;
 import org.fim.model.HashMode;
-import org.fim.model.Parameters;
 
 public class Main
 {
@@ -103,34 +103,34 @@ public class Main
 		}
 
 		CommandLineParser cmdLineGnuParser = new DefaultParser();
-		Parameters parameters = new Parameters();
+		Context context = new Context();
 
 		try
 		{
 			CommandLine commandLine = cmdLineGnuParser.parse(options, optionArgs);
 
-			parameters.setVerbose(!commandLine.hasOption('q'));
-			parameters.setComment(commandLine.getOptionValue('c', parameters.getComment()));
-			parameters.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "" + parameters.getThreadCount())));
-			parameters.setUseLastState(commandLine.hasOption('l'));
-			parameters.setMasterFimRepositoryDir(commandLine.getOptionValue('a'));
-			parameters.setAlwaysYes(commandLine.hasOption('y'));
+			context.setVerbose(!commandLine.hasOption('q'));
+			context.setComment(commandLine.getOptionValue('c', context.getComment()));
+			context.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "" + context.getThreadCount())));
+			context.setUseLastState(commandLine.hasOption('l'));
+			context.setMasterFimRepositoryDir(commandLine.getOptionValue('a'));
+			context.setAlwaysYes(commandLine.hasOption('y'));
 
 			if (commandLine.hasOption('f'))
 			{
-				parameters.setHashMode(HashMode.dontHashFiles);
+				context.setHashMode(HashMode.dontHashFiles);
 			}
 			else if (commandLine.hasOption('k'))
 			{
-				parameters.setHashMode(HashMode.hashSmallBlock);
+				context.setHashMode(HashMode.hashSmallBlock);
 			}
 			else if (commandLine.hasOption('m'))
 			{
-				parameters.setHashMode(HashMode.hashMediumBlock);
+				context.setHashMode(HashMode.hashMediumBlock);
 			}
 			else
 			{
-				parameters.setHashMode(HashMode.computeAllHash);
+				context.setHashMode(HashMode.computeAllHash);
 			}
 
 			if (commandLine.hasOption('h'))
@@ -155,24 +155,24 @@ public class Main
 			youMustSpecifyACommandToRun();
 		}
 
-		if (parameters.getThreadCount() < 1)
+		if (context.getThreadCount() < 1)
 		{
 			System.err.println("Thread count must be at least one");
 			System.exit(-1);
 		}
 
-		if (parameters.getThreadCount() != 1 && parameters.getHashMode() == HashMode.dontHashFiles)
+		if (context.getThreadCount() != 1 && context.getHashMode() == HashMode.dontHashFiles)
 		{
-			parameters.setThreadCount(1);
+			context.setThreadCount(1);
 			System.out.println("Not hashing file content so thread count forced to 1");
 		}
 
-		setRepositoryRootDir(parameters);
+		setRepositoryRootDir(context);
 
 		FimReposConstraint constraint = command.getFimReposConstraint();
 		if (constraint == FimReposConstraint.MUST_NOT_EXIST)
 		{
-			if (Files.exists(parameters.getRepositoryStatesDir()))
+			if (Files.exists(context.getRepositoryStatesDir()))
 			{
 				System.err.println("Fim repository already exist");
 				System.exit(0);
@@ -180,27 +180,27 @@ public class Main
 		}
 		else if (constraint == FimReposConstraint.MUST_EXIST)
 		{
-			if (!Files.exists(parameters.getRepositoryStatesDir()))
+			if (!Files.exists(context.getRepositoryStatesDir()))
 			{
 				System.err.println("Fim repository does not exist. Please run 'fim init' before.");
 				System.exit(-1);
 			}
 		}
 
-		command.execute((Parameters) parameters.clone());
+		command.execute((Context) context.clone());
 	}
 
-	private static void setRepositoryRootDir(Parameters parameters)
+	private static void setRepositoryRootDir(Context context)
 	{
 		boolean runInSubDirectory = false;
 		Path directory = Paths.get(".").toAbsolutePath().normalize();
 		while (directory != null)
 		{
-			Path dotFimDir = directory.resolve(Parameters.DOT_FIM_DIR);
+			Path dotFimDir = directory.resolve(Context.DOT_FIM_DIR);
 			if (Files.exists(dotFimDir))
 			{
-				parameters.setRepositoryRootDir(directory);
-				parameters.setRunInSubDirectory(runInSubDirectory);
+				context.setRepositoryRootDir(directory);
+				context.setRunInSubDirectory(runInSubDirectory);
 				return;
 			}
 

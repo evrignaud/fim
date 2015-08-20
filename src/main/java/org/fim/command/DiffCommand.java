@@ -21,7 +21,7 @@ package org.fim.command;
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
-import org.fim.model.Parameters;
+import org.fim.model.Context;
 import org.fim.model.State;
 
 public class DiffCommand extends AbstractCommand
@@ -45,18 +45,18 @@ public class DiffCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Parameters parameters) throws Exception
+	public void execute(Context context) throws Exception
 	{
-		checkGlobalHashMode(parameters);
+		checkGlobalHashMode(context);
 
-		State currentState = new StateGenerator(parameters).generateState("", parameters.getRepositoryRootDir(), CURRENT_DIRECTORY);
-		State lastState = new StateManager(parameters).loadLastState();
+		State currentState = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), CURRENT_DIRECTORY);
+		State lastState = new StateManager(context).loadLastState();
 
-		if (parameters.isRunInSubDirectory())
+		if (context.isRunInSubDirectory())
 		{
-			lastState.filterDirectory(parameters.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
+			lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
 		}
 
-		new StateComparator(parameters).compare(lastState, currentState).displayChanges();
+		new StateComparator(context).compare(lastState, currentState).displayChanges();
 	}
 }

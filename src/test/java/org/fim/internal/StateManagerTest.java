@@ -32,7 +32,7 @@ import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.model.State;
-import org.fim.tooling.BuildableParameters;
+import org.fim.tooling.BuildableContext;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
@@ -44,7 +44,7 @@ import org.junit.runners.Parameterized;
 public class StateManagerTest extends StateAssert
 {
 	private HashMode hashMode;
-	private BuildableParameters parameters;
+	private BuildableContext context;
 	private BuildableState s;
 
 	private StateManager cut;
@@ -70,17 +70,17 @@ public class StateManagerTest extends StateAssert
 	{
 		Path rootDir = Paths.get("target/" + this.getClass().getSimpleName());
 
-		parameters = defaultParameters();
-		parameters.setHashMode(hashMode);
-		parameters.setRepositoryRootDir(rootDir);
+		context = defaultContext();
+		context.setHashMode(hashMode);
+		context.setRepositoryRootDir(rootDir);
 
-		Path statesDir = parameters.getRepositoryStatesDir();
+		Path statesDir = context.getRepositoryStatesDir();
 		FileUtils.deleteDirectory(statesDir.toFile());
 		Files.createDirectories(statesDir);
 
-		s = new BuildableState(parameters);
+		s = new BuildableState(context);
 
-		cut = new StateManager(parameters);
+		cut = new StateManager(context);
 	}
 
 	@Test

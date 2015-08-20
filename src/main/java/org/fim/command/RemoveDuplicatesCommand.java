@@ -28,10 +28,10 @@ import java.util.Map;
 import org.fim.Main;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
+import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
-import org.fim.model.Parameters;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
@@ -62,41 +62,41 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Parameters parameters) throws Exception
+	public void execute(Context context) throws Exception
 	{
-		if (parameters.getMasterFimRepositoryDir() == null)
+		if (context.getMasterFimRepositoryDir() == null)
 		{
 			System.err.println("The master Fim directory must be provided");
 			Main.printUsage();
 			System.exit(-1);
 		}
 
-		checkGlobalHashMode(parameters);
+		checkGlobalHashMode(context);
 
-		fileContentHashingMandatory(parameters);
+		fileContentHashingMandatory(context);
 
-		if (parameters.getHashMode() == HashMode.hashSmallBlock)
+		if (context.getHashMode() == HashMode.hashSmallBlock)
 		{
 			System.out.println("You are going to detect duplicates and remove them based only on the hash of the first four kilos of the files.");
-			if (!confirmAction(parameters, "continue"))
+			if (!confirmAction(context, "continue"))
 			{
 				System.exit(0);
 			}
 		}
 
-		if (parameters.getHashMode() == HashMode.hashMediumBlock)
+		if (context.getHashMode() == HashMode.hashMediumBlock)
 		{
 			System.out.println("You are going to detect duplicates and remove them based only on the hash of the first mega of the files.");
-			if (!confirmAction(parameters, "continue"))
+			if (!confirmAction(context, "continue"))
 			{
 				System.exit(0);
 			}
 		}
 
-		Path masterFimRepository = Paths.get(parameters.getMasterFimRepositoryDir());
+		Path masterFimRepository = Paths.get(context.getMasterFimRepositoryDir());
 		if (!Files.exists(masterFimRepository))
 		{
-			System.err.printf("Directory %s does not exist%n", parameters.getMasterFimRepositoryDir());
+			System.err.printf("Directory %s does not exist%n", context.getMasterFimRepositoryDir());
 			System.exit(-1);
 		}
 
@@ -106,30 +106,30 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			System.exit(-1);
 		}
 
-		Path masterDotFimDir = masterFimRepository.resolve(Parameters.DOT_FIM_DIR);
+		Path masterDotFimDir = masterFimRepository.resolve(Context.DOT_FIM_DIR);
 		if (!Files.exists(masterDotFimDir))
 		{
-			System.err.printf("Directory %s is not a Fim repository%n", parameters.getMasterFimRepositoryDir());
+			System.err.printf("Directory %s is not a Fim repository%n", context.getMasterFimRepositoryDir());
 			System.exit(-1);
 		}
-		parameters.setRepositoryRootDir(masterFimRepository);
+		context.setRepositoryRootDir(masterFimRepository);
 
-		System.out.println("Searching for duplicated files using the " + parameters.getMasterFimRepositoryDir() + " directory as master");
+		System.out.println("Searching for duplicated files using the " + context.getMasterFimRepositoryDir() + " directory as master");
 		System.out.println("");
 
-		State masterState = new StateManager(parameters).loadLastState();
+		State masterState = new StateManager(context).loadLastState();
 		Map<FileHash, FileState> masterFilesHash = buildFileHashMap(masterState);
 
 		long totalFilesRemoved = 0;
-		State localState = new StateGenerator(parameters).generateState("", CURRENT_DIRECTORY, CURRENT_DIRECTORY);
+		State localState = new StateGenerator(context).generateState("", CURRENT_DIRECTORY, CURRENT_DIRECTORY);
 		for (FileState localFileState : localState.getFileStates())
 		{
 			FileState masterFileState = masterFilesHash.get(localFileState.getFileHash());
 			if (masterFileState != null)
 			{
 				System.out.printf("'%s' is a duplicate of '%s/%s'%n", localFileState.getFileName(),
-						parameters.getMasterFimRepositoryDir(), masterFileState.getFileName());
-				if (confirmAction(parameters, "remove it"))
+						context.getMasterFimRepositoryDir(), masterFileState.getFileName());
+				if (confirmAction(context, "remove it"))
 				{
 					Path localFile = Paths.get(localFileState.getFileName());
 					try

@@ -23,22 +23,22 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.fim.model.CompareResult;
+import org.fim.model.Context;
 import org.fim.model.Difference;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.model.Modification;
-import org.fim.model.Parameters;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
 public class StateComparator
 {
-	private final Parameters parameters;
+	private final Context context;
 
-	public StateComparator(Parameters parameters)
+	public StateComparator(Context context)
 	{
-		this.parameters = parameters;
+		this.context = context;
 	}
 
 	public CompareResult compare(State lastState, State currentState)
@@ -49,7 +49,7 @@ public class StateComparator
 			lastState = null;
 		}
 
-		CompareResult result = new CompareResult(parameters, lastState);
+		CompareResult result = new CompareResult(context, lastState);
 
 		List<FileState> previousFileStates = new ArrayList<>();
 		List<FileState> notFoundInCurrentFileState = new ArrayList<>();
@@ -121,7 +121,7 @@ public class StateComparator
 		while (iterator.hasNext())
 		{
 			FileState fileState = iterator.next();
-			if (parameters.getHashMode() != HashMode.dontHashFiles &&
+			if (context.getHashMode() != HashMode.dontHashFiles &&
 					(samePreviousHash = findFilesWithSameHash(fileState, previousFileStates)).size() > 0)
 			{
 				FileState originalFileState = samePreviousHash.get(0);

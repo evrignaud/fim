@@ -23,20 +23,20 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
-import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class BuildableState extends State
 {
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
-	private transient final Parameters parameters;
+	private transient final Context context;
 
-	public BuildableState(Parameters parameters)
+	public BuildableState(Context context)
 	{
-		this.parameters = parameters;
+		this.context = context;
 	}
 
 	public BuildableState addFiles(String... fileNames)
@@ -125,7 +125,7 @@ public class BuildableState extends State
 
 	public BuildableState cloneState()
 	{
-		BuildableState newState = new BuildableState(parameters);
+		BuildableState newState = new BuildableState(context);
 		newState.setComment(getComment());
 
 		ArrayList<FileState> newFileStates = new ArrayList<>();
@@ -146,7 +146,7 @@ public class BuildableState extends State
 		String mediumBlockHash = "medium_block_" + content;
 		String fullHash = "full_" + content;
 
-		switch (parameters.getHashMode())
+		switch (context.getHashMode())
 		{
 			case dontHashFiles:
 				smallBlockHash = FileState.NO_HASH;
@@ -177,7 +177,7 @@ public class BuildableState extends State
 		String mediumBlockHash = fileHash.getMediumBlockHash() + "_" + content;
 		String fullHash = fileHash.getFullHash() + "_" + content;
 
-		switch (parameters.getHashMode())
+		switch (context.getHashMode())
 		{
 			case dontHashFiles:
 				smallBlockHash = FileState.NO_HASH;

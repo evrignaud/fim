@@ -18,7 +18,7 @@
  */
 package org.fim.command;
 
-import org.fim.model.Parameters;
+import org.fim.model.Context;
 
 public class VersionCommand extends AbstractCommand
 {
@@ -47,7 +47,7 @@ public class VersionCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Parameters parameters) throws Exception
+	public void execute(Context context) throws Exception
 	{
 		String implementationVersion = this.getClass().getPackage().getImplementationVersion();
 		System.out.println("Fim version " + implementationVersion);

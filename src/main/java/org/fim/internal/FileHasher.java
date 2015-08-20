@@ -119,7 +119,7 @@ class FileHasher implements Runnable
 
 	protected FileHash hashFile(Path file, long fileSize) throws IOException
 	{
-		HashMode hashMode = stateGenerator.getParameters().getHashMode();
+		HashMode hashMode = stateGenerator.getContext().getHashMode();
 
 		if (hashMode == HashMode.dontHashFiles)
 		{

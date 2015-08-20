@@ -24,7 +24,7 @@ import org.junit.Test;
 
 public class StateGeneratorTest extends StateAssert
 {
-	private StateGenerator cut = new StateGenerator(defaultParameters());
+	private StateGenerator cut = new StateGenerator(defaultContext());
 
 	@Test
 	public void weCanGetProgressChar()

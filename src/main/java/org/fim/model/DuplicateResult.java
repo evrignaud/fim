@@ -25,14 +25,14 @@ import org.apache.commons.io.FileUtils;
 
 public class DuplicateResult
 {
-	private final Parameters parameters;
+	private final Context context;
 	private final List<DuplicateSet> duplicateSets;
 	private long duplicatedFilesCount;
 	private long wastedSpace;
 
-	public DuplicateResult(Parameters parameters)
+	public DuplicateResult(Context context)
 	{
-		this.parameters = parameters;
+		this.context = context;
 		this.duplicateSets = new ArrayList<>();
 		this.duplicatedFilesCount = 0;
 		this.wastedSpace = 0;
@@ -55,7 +55,7 @@ public class DuplicateResult
 
 	public DuplicateResult displayDuplicates()
 	{
-		if (parameters.isVerbose())
+		if (context.isVerbose())
 		{
 			for (DuplicateSet duplicateSet : duplicateSets)
 			{

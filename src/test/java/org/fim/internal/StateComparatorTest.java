@@ -24,7 +24,7 @@ import java.util.Collection;
 
 import org.fim.model.CompareResult;
 import org.fim.model.HashMode;
-import org.fim.tooling.BuildableParameters;
+import org.fim.tooling.BuildableContext;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.FileNameDiff;
 import org.fim.tooling.Modification;
@@ -39,7 +39,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class StateComparatorTest extends StateAssert
 {
 	private HashMode hashMode;
-	private BuildableParameters parameters;
+	private BuildableContext context;
 	private StateComparator cut;
 	private BuildableState s1;
 	private BuildableState s2;
@@ -63,10 +63,10 @@ public class StateComparatorTest extends StateAssert
 	@Before
 	public void setup() throws IOException
 	{
-		parameters = defaultParameters();
-		parameters.setHashMode(hashMode);
-		cut = new StateComparator(parameters);
-		s1 = new BuildableState(parameters).addFiles("file_01", "file_02", "file_03", "file_04");
+		context = defaultContext();
+		context.setHashMode(hashMode);
+		cut = new StateComparator(context);
+		s1 = new BuildableState(context).addFiles("file_01", "file_02", "file_03", "file_04");
 	}
 
 	@Test

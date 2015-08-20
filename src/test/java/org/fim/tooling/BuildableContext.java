@@ -18,30 +18,30 @@
  */
 package org.fim.tooling;
 
+import org.fim.model.Context;
 import org.fim.model.HashMode;
-import org.fim.model.Parameters;
 
-public class BuildableParameters extends Parameters
+public class BuildableContext extends Context
 {
-	public BuildableParameters dontHashFiles()
+	public BuildableContext dontHashFiles()
 	{
 		setHashMode(HashMode.dontHashFiles);
 		return this;
 	}
 
-	public BuildableParameters hashSmallBlock()
+	public BuildableContext hashSmallBlock()
 	{
 		setHashMode(HashMode.hashSmallBlock);
 		return this;
 	}
 
-	public BuildableParameters hashMediumBlock()
+	public BuildableContext hashMediumBlock()
 	{
 		setHashMode(HashMode.hashMediumBlock);
 		return this;
 	}
 
-	public BuildableParameters computeAllHash()
+	public BuildableContext computeAllHash()
 	{
 		setHashMode(HashMode.computeAllHash);
 		return this;

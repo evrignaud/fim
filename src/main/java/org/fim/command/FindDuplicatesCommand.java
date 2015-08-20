@@ -21,7 +21,7 @@ package org.fim.command;
 import org.fim.internal.DuplicateFinder;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
-import org.fim.model.Parameters;
+import org.fim.model.Context;
 import org.fim.model.State;
 
 public class FindDuplicatesCommand extends AbstractCommand
@@ -45,25 +45,25 @@ public class FindDuplicatesCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Parameters parameters) throws Exception
+	public void execute(Context context) throws Exception
 	{
-		checkGlobalHashMode(parameters);
+		checkGlobalHashMode(context);
 
-		fileContentHashingMandatory(parameters);
+		fileContentHashingMandatory(context);
 
-		System.out.println("Searching for duplicated files" + (parameters.isUseLastState() ? " from the last committed State" : ""));
+		System.out.println("Searching for duplicated files" + (context.isUseLastState() ? " from the last committed State" : ""));
 		System.out.println("");
 
 		State state;
-		if (parameters.isUseLastState())
+		if (context.isUseLastState())
 		{
-			state = new StateManager(parameters).loadLastState();
+			state = new StateManager(context).loadLastState();
 		}
 		else
 		{
-			state = new StateGenerator(parameters).generateState("", parameters.getRepositoryRootDir(), CURRENT_DIRECTORY);
+			state = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), CURRENT_DIRECTORY);
 		}
 
-		new DuplicateFinder(parameters).findDuplicates(state).displayDuplicates();
+		new DuplicateFinder(context).findDuplicates(state).displayDuplicates();
 	}
 }

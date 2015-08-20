@@ -26,8 +26,8 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 
 import org.fim.internal.StateManager;
+import org.fim.model.Context;
 import org.fim.model.FileState;
-import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class ResetDatesCommand extends AbstractCommand
@@ -51,9 +51,9 @@ public class ResetDatesCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Parameters parameters) throws Exception
+	public void execute(Context context) throws Exception
 	{
-		StateManager manager = new StateManager(parameters);
+		StateManager manager = new StateManager(context);
 		State lastState = manager.loadLastState();
 
 		System.out.println("Reset file modification dates based on the last committed State done " + formatDate(lastState.getTimestamp()));

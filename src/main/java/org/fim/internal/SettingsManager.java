@@ -30,8 +30,8 @@ import java.nio.file.Path;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.fim.model.Context;
 import org.fim.model.HashMode;
-import org.fim.model.Parameters;
 import org.fim.model.Settings;
 
 public class SettingsManager
@@ -41,9 +41,9 @@ public class SettingsManager
 	private Path settingsFile;
 	private Settings settings;
 
-	public SettingsManager(Parameters parameters)
+	public SettingsManager(Context context)
 	{
-		settingsFile = parameters.getRepositoryDotFimDir().resolve(SETTINGS_FILE);
+		settingsFile = context.getRepositoryDotFimDir().resolve(SETTINGS_FILE);
 		settings = new Settings();
 
 		if (isSaved())

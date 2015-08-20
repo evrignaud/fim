@@ -26,8 +26,8 @@ import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
 import org.fim.model.CompareResult;
+import org.fim.model.Context;
 import org.fim.model.HashMode;
-import org.fim.model.Parameters;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
@@ -58,44 +58,44 @@ public class InitCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Parameters parameters) throws Exception
+	public void execute(Context context) throws Exception
 	{
 		System.out.println("No comment provided. You are going to initialize your repository using the default comment.");
-		if (!confirmAction(parameters, "continue"))
+		if (!confirmAction(context, "continue"))
 		{
 			System.exit(0);
 		}
 
 		try
 		{
-			Files.createDirectories(parameters.getRepositoryStatesDir());
+			Files.createDirectories(context.getRepositoryStatesDir());
 		}
 		catch (IOException ex)
 		{
 			System.err.printf("Not able to create the '%s' directory that holds the Fim repository: %s %s%n",
-					parameters.getRepositoryDotFimDir(), ex.getClass().getSimpleName(), ex.getMessage());
+					context.getRepositoryDotFimDir(), ex.getClass().getSimpleName(), ex.getMessage());
 			System.exit(-1);
 		}
 
-		if (parameters.getHashMode() != HashMode.computeAllHash)
+		if (context.getHashMode() != HashMode.computeAllHash)
 		{
-			SettingsManager settingsManager = new SettingsManager(parameters);
-			settingsManager.setGlobalHashMode(parameters.getHashMode());
+			SettingsManager settingsManager = new SettingsManager(context);
+			settingsManager.setGlobalHashMode(context.getHashMode());
 			settingsManager.save();
 
-			Logger.warning(String.format("Global hash mode set to '%s'%n", StateGenerator.hashModeToString(parameters.getHashMode())));
+			Logger.warning(String.format("Global hash mode set to '%s'%n", StateGenerator.hashModeToString(context.getHashMode())));
 		}
 
-		String comment = parameters.getComment();
+		String comment = context.getComment();
 		if (comment.length() == 0)
 		{
 			comment = "Initial State";
 		}
-		State currentState = new StateGenerator(parameters).generateState(comment, CURRENT_DIRECTORY, CURRENT_DIRECTORY);
+		State currentState = new StateGenerator(context).generateState(comment, CURRENT_DIRECTORY, CURRENT_DIRECTORY);
 
-		CompareResult result = new StateComparator(parameters).compare(null, currentState).displayChanges();
+		CompareResult result = new StateComparator(context).compare(null, currentState).displayChanges();
 		currentState.setModificationCounts(result.getModificationCounts());
 
-		new StateManager(parameters).createNewState(currentState);
+		new StateManager(context).createNewState(currentState);
 	}
 }

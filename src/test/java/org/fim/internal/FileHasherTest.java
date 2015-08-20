@@ -34,7 +34,7 @@ import java.util.Collection;
 import org.apache.commons.io.FileUtils;
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
-import org.fim.tooling.BuildableParameters;
+import org.fim.tooling.BuildableContext;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class FileHasherTest extends StateAssert
 	private StateGenerator stateGenerator;
 
 	private HashMode hashMode;
-	private BuildableParameters parameters;
+	private BuildableContext context;
 	private FileHasher cut;
 
 	public FileHasherTest(final HashMode hashMode)
@@ -74,11 +74,11 @@ public class FileHasherTest extends StateAssert
 		Path rootDir = Paths.get("target/" + this.getClass().getSimpleName());
 
 		stateGenerator = mock(StateGenerator.class);
-		parameters = defaultParameters();
-		parameters.setHashMode(hashMode);
-		parameters.setRepositoryRootDir(rootDir);
+		context = defaultContext();
+		context.setHashMode(hashMode);
+		context.setRepositoryRootDir(rootDir);
 
-		when(stateGenerator.getParameters()).thenReturn(parameters);
+		when(stateGenerator.getContext()).thenReturn(context);
 
 		FileUtils.deleteDirectory(rootDir.toFile());
 		Files.createDirectories(rootDir);
@@ -193,7 +193,7 @@ public class FileHasherTest extends StateAssert
 		Path license = Paths.get("LICENSE");
 		byte[] content = Files.readAllBytes(license);
 
-		Path newFile = parameters.getRepositoryRootDir().resolve("LICENSE_" + fileSize);
+		Path newFile = context.getRepositoryRootDir().resolve("LICENSE_" + fileSize);
 		if (Files.exists(newFile))
 		{
 			Files.delete(newFile);

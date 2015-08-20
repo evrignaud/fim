@@ -22,9 +22,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.fim.model.Context;
 import org.fim.model.CorruptedStateException;
 import org.fim.model.FileState;
-import org.fim.model.Parameters;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
@@ -32,11 +32,11 @@ public class StateManager
 {
 	public static final String STATE_EXTENSION = ".json.gz";
 
-	private final Parameters parameters;
+	private final Context context;
 
-	public StateManager(Parameters parameters)
+	public StateManager(Context context)
 	{
-		this.parameters = parameters;
+		this.context = context;
 	}
 
 	public void createNewState(State state) throws IOException
@@ -58,7 +58,7 @@ public class StateManager
 		Path stateFile = getStateFile(stateNumber);
 		if (!Files.exists(stateFile))
 		{
-			throw new IllegalStateException(String.format("Unable to load State file %d from directory %s", stateNumber, parameters.getRepositoryStatesDir()));
+			throw new IllegalStateException(String.format("Unable to load State file %d from directory %s", stateNumber, context.getRepositoryStatesDir()));
 		}
 
 		try
@@ -78,7 +78,7 @@ public class StateManager
 	private void adjustAccordingToHashMode(State state)
 	{
 		// Replace by 'no_hash' accurately to be able to compare the FileState entry
-		switch (parameters.getHashMode())
+		switch (context.getHashMode())
 		{
 			case dontHashFiles:
 				for (FileState fileState : state.getFileStates())
@@ -117,7 +117,7 @@ public class StateManager
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("state_").append(stateNumber).append(STATE_EXTENSION);
-		return parameters.getRepositoryStatesDir().resolve(builder.toString());
+		return context.getRepositoryStatesDir().resolve(builder.toString());
 	}
 
 	public int getLastStateNumber()
@@ -125,7 +125,7 @@ public class StateManager
 		int number;
 		boolean lastStateFileDesynchronized = false;
 
-		SettingsManager settingsManager = new SettingsManager(parameters);
+		SettingsManager settingsManager = new SettingsManager(context);
 		if (settingsManager.isSaved())
 		{
 			number = settingsManager.getLastStateNumber();
@@ -159,7 +159,7 @@ public class StateManager
 	{
 		if (lastStateNumber != -1)
 		{
-			SettingsManager settingsManager = new SettingsManager(parameters);
+			SettingsManager settingsManager = new SettingsManager(context);
 			settingsManager.setLastStateNumber(lastStateNumber);
 			settingsManager.save();
 		}

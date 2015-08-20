@@ -22,7 +22,7 @@ import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
 import org.fim.model.CompareResult;
-import org.fim.model.Parameters;
+import org.fim.model.Context;
 import org.fim.model.State;
 
 public class CommitCommand extends AbstractCommand
@@ -46,35 +46,35 @@ public class CommitCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Parameters parameters) throws Exception
+	public void execute(Context context) throws Exception
 	{
-		checkGlobalHashMode(parameters);
+		checkGlobalHashMode(context);
 
 		System.out.println("No comment provided. You are going to commit your modifications without any comment.");
-		if (!confirmAction(parameters, "continue"))
+		if (!confirmAction(context, "continue"))
 		{
 			System.exit(0);
 		}
 
-		StateManager manager = new StateManager(parameters);
+		StateManager manager = new StateManager(context);
 		State lastState = manager.loadLastState();
-		State currentState = new StateGenerator(parameters).generateState(parameters.getComment(), parameters.getRepositoryRootDir(), CURRENT_DIRECTORY);
+		State currentState = new StateGenerator(context).generateState(context.getComment(), context.getRepositoryRootDir(), CURRENT_DIRECTORY);
 
-		if (parameters.isRunInSubDirectory())
+		if (context.isRunInSubDirectory())
 		{
-			lastState.filterDirectory(parameters.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
+			lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
 		}
 
-		CompareResult result = new StateComparator(parameters).compare(lastState, currentState).displayChanges();
+		CompareResult result = new StateComparator(context).compare(lastState, currentState).displayChanges();
 		if (result.somethingModified())
 		{
 			System.out.println("");
-			if (confirmAction(parameters, "commit"))
+			if (confirmAction(context, "commit"))
 			{
-				if (parameters.isRunInSubDirectory())
+				if (context.isRunInSubDirectory())
 				{
 					lastState = manager.loadLastState();
-					lastState.filterDirectory(parameters.getRepositoryRootDir(), CURRENT_DIRECTORY, false);
+					lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, false);
 
 					currentState.getFileStates().addAll(lastState.getFileStates());
 				}

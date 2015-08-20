@@ -24,8 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.fim.internal.StateManager;
+import org.fim.model.Context;
 import org.fim.model.ModificationCounts;
-import org.fim.model.Parameters;
 import org.fim.model.State;
 
 public class LogCommand extends AbstractCommand
@@ -49,9 +49,9 @@ public class LogCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Parameters parameters) throws Exception
+	public void execute(Context context) throws Exception
 	{
-		StateManager manager = new StateManager(parameters);
+		StateManager manager = new StateManager(context);
 
 		if (manager.getLastStateNumber() == -1)
 		{

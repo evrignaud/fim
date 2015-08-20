@@ -21,7 +21,7 @@ package org.fim.model;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Parameters implements Cloneable
+public class Context implements Cloneable
 {
 	public static final String DOT_FIM_DIR = ".fim";
 
@@ -35,7 +35,7 @@ public class Parameters implements Cloneable
 	private String masterFimRepositoryDir;
 	private boolean alwaysYes;
 
-	public Parameters()
+	public Context()
 	{
 		runInSubDirectory = false;
 		repositoryRootDir = Paths.get(".");

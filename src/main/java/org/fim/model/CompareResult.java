@@ -37,12 +37,12 @@ public class CompareResult
 	private List<Difference> renamed;
 	private List<Difference> deleted;
 
-	private Parameters parameters;
+	private Context context;
 	private State lastState;
 
-	public CompareResult(Parameters parameters, State lastState)
+	public CompareResult(Context context, State lastState)
 	{
-		this.parameters = parameters;
+		this.context = context;
 		this.lastState = lastState;
 
 		added = new ArrayList<>();
@@ -82,7 +82,7 @@ public class CompareResult
 			System.out.println("");
 		}
 
-		if (!parameters.isVerbose())
+		if (!context.isVerbose())
 		{
 			displayCounts();
 			return this;
