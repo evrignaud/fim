@@ -52,7 +52,7 @@ public class DiffCommand extends AbstractCommand
 		State currentState = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), CURRENT_DIRECTORY);
 		State lastState = new StateManager(context).loadLastState();
 
-		if (context.isRunInSubDirectory())
+		if (context.isInvokedFromSubDirectory())
 		{
 			lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
 		}

@@ -60,7 +60,7 @@ public class CommitCommand extends AbstractCommand
 		State lastState = manager.loadLastState();
 		State currentState = new StateGenerator(context).generateState(context.getComment(), context.getRepositoryRootDir(), CURRENT_DIRECTORY);
 
-		if (context.isRunInSubDirectory())
+		if (context.isInvokedFromSubDirectory())
 		{
 			lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
 		}
@@ -71,7 +71,7 @@ public class CommitCommand extends AbstractCommand
 			System.out.println("");
 			if (confirmAction(context, "commit"))
 			{
-				if (context.isRunInSubDirectory())
+				if (context.isInvokedFromSubDirectory())
 				{
 					lastState = manager.loadLastState();
 					lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, false);

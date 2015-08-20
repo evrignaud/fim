@@ -192,7 +192,7 @@ public class Main
 
 	private static void setRepositoryRootDir(Context context)
 	{
-		boolean runInSubDirectory = false;
+		boolean invokedFromSubDirectory = false;
 		Path directory = Paths.get(".").toAbsolutePath().normalize();
 		while (directory != null)
 		{
@@ -200,12 +200,12 @@ public class Main
 			if (Files.exists(dotFimDir))
 			{
 				context.setRepositoryRootDir(directory);
-				context.setRunInSubDirectory(runInSubDirectory);
+				context.setInvokedFromSubDirectory(invokedFromSubDirectory);
 				return;
 			}
 
 			directory = directory.getParent();
-			runInSubDirectory = true;
+			invokedFromSubDirectory = true;
 		}
 	}
 

@@ -25,7 +25,7 @@ public class Context implements Cloneable
 {
 	public static final String DOT_FIM_DIR = ".fim";
 
-	private boolean runInSubDirectory;
+	private boolean invokedFromSubDirectory;
 	private Path repositoryRootDir;
 	private boolean verbose;
 	private HashMode hashMode;
@@ -37,7 +37,7 @@ public class Context implements Cloneable
 
 	public Context()
 	{
-		runInSubDirectory = false;
+		invokedFromSubDirectory = false;
 		repositoryRootDir = Paths.get(".");
 		verbose = true;
 		hashMode = HashMode.computeAllHash;
@@ -52,14 +52,14 @@ public class Context implements Cloneable
 		alwaysYes = false;
 	}
 
-	public boolean isRunInSubDirectory()
+	public boolean isInvokedFromSubDirectory()
 	{
-		return runInSubDirectory;
+		return invokedFromSubDirectory;
 	}
 
-	public void setRunInSubDirectory(boolean runInSubDirectory)
+	public void setInvokedFromSubDirectory(boolean invokedFromSubDirectory)
 	{
-		this.runInSubDirectory = runInSubDirectory;
+		this.invokedFromSubDirectory = invokedFromSubDirectory;
 	}
 
 	public Path getRepositoryRootDir()
