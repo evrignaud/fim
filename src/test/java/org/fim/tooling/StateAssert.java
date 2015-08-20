@@ -20,9 +20,9 @@ package org.fim.tooling;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.fim.model.CompareResult;
 import org.fim.model.Difference;
@@ -157,11 +157,7 @@ public class StateAssert
 
 	protected List<String> toFileNames(List<FileState> fileStates)
 	{
-		List<String> fileNames = new ArrayList<>();
-		for (FileState fileState : fileStates)
-		{
-			fileNames.add(fileState.getFileName());
-		}
+		List<String> fileNames = fileStates.stream().map(FileState::getFileName).collect(Collectors.toList());
 		return fileNames;
 	}
 }
