@@ -139,6 +139,22 @@ public class StateManagerTest extends StateAssert
 		assertThat(cut.getLastStateNumber()).isEqualTo(1);
 	}
 
+	@Test
+	public void weCanRetrieveLastStateNumberWhenThereAreStatesAfterTheLastState() throws IOException
+	{
+		s = s.addFiles("file_1", "file_2");
+		cut.createNewState(s);
+
+		s = s.addFiles("file_3");
+		cut.createNewState(s);
+
+		assertThat(cut.getLastStateNumber()).isEqualTo(2);
+
+		cut.saveLastStateNumber(1);
+
+		assertThat(cut.getLastStateNumber()).isEqualTo(2);
+	}
+
 	private void assertAllFileStatesHaveNoHash(State result, int fileCount)
 	{
 		FileHash noHash = new FileHash(FileState.NO_HASH, FileState.NO_HASH, FileState.NO_HASH);

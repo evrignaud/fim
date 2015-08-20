@@ -122,7 +122,6 @@ public class StateManager
 
 	public int getLastStateNumber()
 	{
-		Path stateFile;
 		int number;
 		boolean lastStateFileDesynchronized = false;
 
@@ -130,8 +129,7 @@ public class StateManager
 		if (settingsManager.isSaved())
 		{
 			number = settingsManager.getLastStateNumber();
-			stateFile = getStateFile(number);
-			if (Files.exists(stateFile))
+			if (Files.exists(getStateFile(number)) && !Files.exists(getStateFile(number + 1)))
 			{
 				return number;
 			}
@@ -144,8 +142,7 @@ public class StateManager
 
 		for (int index = 1; ; index++)
 		{
-			stateFile = getStateFile(index);
-			if (!Files.exists(stateFile))
+			if (!Files.exists(getStateFile(index)))
 			{
 				number = index - 1;
 				if (lastStateFileDesynchronized)
@@ -158,7 +155,7 @@ public class StateManager
 		}
 	}
 
-	private void saveLastStateNumber(int lastStateNumber)
+	public void saveLastStateNumber(int lastStateNumber)
 	{
 		if (lastStateNumber != -1)
 		{
