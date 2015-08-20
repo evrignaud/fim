@@ -40,7 +40,7 @@ public class Context implements Cloneable
 		invokedFromSubDirectory = false;
 		repositoryRootDir = Paths.get(".");
 		verbose = true;
-		hashMode = HashMode.computeAllHash;
+		hashMode = HashMode.hashAll;
 		comment = "";
 		useLastState = false;
 		threadCount = Runtime.getRuntime().availableProcessors() / 2;

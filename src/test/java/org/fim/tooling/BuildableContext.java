@@ -25,7 +25,7 @@ public class BuildableContext extends Context
 {
 	public BuildableContext dontHashFiles()
 	{
-		setHashMode(HashMode.dontHashFiles);
+		setHashMode(HashMode.dontHash);
 		return this;
 	}
 
@@ -43,7 +43,7 @@ public class BuildableContext extends Context
 
 	public BuildableContext computeAllHash()
 	{
-		setHashMode(HashMode.computeAllHash);
+		setHashMode(HashMode.hashAll);
 		return this;
 	}
 }

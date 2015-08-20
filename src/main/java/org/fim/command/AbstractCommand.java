@@ -41,7 +41,7 @@ public abstract class AbstractCommand implements Command
 
 	protected void fileContentHashingMandatory(Context context)
 	{
-		if (context.getHashMode() == HashMode.dontHashFiles)
+		if (context.getHashMode() == HashMode.dontHash)
 		{
 			System.err.println("File content hashing mandatory for this command.");
 			System.exit(-1);
@@ -51,7 +51,7 @@ public abstract class AbstractCommand implements Command
 	protected void checkGlobalHashMode(Context context)
 	{
 		SettingsManager settingsManager = new SettingsManager(context);
-		if (settingsManager.getGlobalHashMode() != HashMode.computeAllHash)
+		if (settingsManager.getGlobalHashMode() != HashMode.hashAll)
 		{
 			Logger.warning(String.format("This repository use a global hash mode. Hash mode forced to '%s'%n", StateGenerator.hashModeToString(settingsManager.getGlobalHashMode())));
 			context.setHashMode(settingsManager.getGlobalHashMode());

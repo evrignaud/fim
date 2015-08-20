@@ -20,7 +20,7 @@ package org.fim.model;
 
 public class Settings
 {
-	private HashMode globalHashMode = HashMode.computeAllHash;
+	private HashMode globalHashMode = HashMode.hashAll;
 	private int lastStateNumber = 0;
 
 	public HashMode getGlobalHashMode()

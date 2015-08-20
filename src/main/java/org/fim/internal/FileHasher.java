@@ -121,7 +121,7 @@ class FileHasher implements Runnable
 	{
 		HashMode hashMode = stateGenerator.getContext().getHashMode();
 
-		if (hashMode == HashMode.dontHashFiles)
+		if (hashMode == HashMode.dontHash)
 		{
 			totalFileContentLength += fileSize;
 			return new FileHash(FileState.NO_HASH, FileState.NO_HASH, FileState.NO_HASH);

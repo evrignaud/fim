@@ -58,10 +58,10 @@ public class StateManagerTest extends StateAssert
 	public static Collection<Object[]> parameters()
 	{
 		return Arrays.asList(new Object[][]{
-				{HashMode.dontHashFiles},
+				{HashMode.dontHash},
 				{HashMode.hashSmallBlock},
 				{HashMode.hashMediumBlock},
-				{HashMode.computeAllHash}
+				{HashMode.hashAll}
 		});
 	}
 
@@ -99,7 +99,7 @@ public class StateManagerTest extends StateAssert
 		assertThat(cut.getLastStateNumber()).isEqualTo(count);
 
 		State result = cut.loadLastState();
-		if (hashMode == HashMode.dontHashFiles)
+		if (hashMode == HashMode.dontHash)
 		{
 			assertAllFileStatesHaveNoHash(result, 30);
 		}
@@ -113,7 +113,7 @@ public class StateManagerTest extends StateAssert
 		assertThat(stateFile.getFileName().toString()).isEqualTo("state_10.json.gz");
 
 		result = cut.loadState(10);
-		if (hashMode == HashMode.dontHashFiles)
+		if (hashMode == HashMode.dontHash)
 		{
 			assertAllFileStatesHaveNoHash(result, 30);
 		}

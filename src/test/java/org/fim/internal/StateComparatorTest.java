@@ -53,10 +53,10 @@ public class StateComparatorTest extends StateAssert
 	public static Collection<Object[]> parameters()
 	{
 		return Arrays.asList(new Object[][]{
-				{HashMode.dontHashFiles},
+				{HashMode.dontHash},
 				{HashMode.hashSmallBlock},
 				{HashMode.hashMediumBlock},
-				{HashMode.computeAllHash}
+				{HashMode.hashAll}
 		});
 	}
 
@@ -87,7 +87,7 @@ public class StateComparatorTest extends StateAssert
 
 		s2 = s1.appendContent("file_01", "append_01");
 		result = cut.compare(s1, s2);
-		if (hashMode == HashMode.dontHashFiles)
+		if (hashMode == HashMode.dontHash)
 		{
 			assertNothingModified(result);
 		}
@@ -98,7 +98,7 @@ public class StateComparatorTest extends StateAssert
 
 		s2 = s1.rename("file_01", "file_06");
 		result = cut.compare(s1, s2);
-		if (hashMode == HashMode.dontHashFiles)
+		if (hashMode == HashMode.dontHash)
 		{
 			assertGotOnlyModifications(result, Modification.ADDED, Modification.DELETED);
 			assertFilesModified(result, Modification.DELETED, "file_01");
@@ -111,7 +111,7 @@ public class StateComparatorTest extends StateAssert
 
 		s2 = s1.copy("file_01", "file_06");
 		result = cut.compare(s1, s2);
-		if (hashMode == HashMode.dontHashFiles)
+		if (hashMode == HashMode.dontHash)
 		{
 			assertOnlyFilesAdded(result, "file_06");
 		}
@@ -132,7 +132,7 @@ public class StateComparatorTest extends StateAssert
 				.copy("file_01", "file_06")
 				.touch("file_01");
 		CompareResult result = cut.compare(s1, s2);
-		if (hashMode == HashMode.dontHashFiles)
+		if (hashMode == HashMode.dontHash)
 		{
 			assertGotOnlyModifications(result, Modification.ADDED, Modification.DATE_MODIFIED);
 			assertFilesModified(result, Modification.ADDED, "file_00", "file_06");
@@ -152,7 +152,7 @@ public class StateComparatorTest extends StateAssert
 				.copy("file_01", "file_06")
 				.appendContent("file_01", "append_01");
 		CompareResult result = cut.compare(s1, s2);
-		if (hashMode == HashMode.dontHashFiles)
+		if (hashMode == HashMode.dontHash)
 		{
 			assertGotOnlyModifications(result, Modification.ADDED);
 			assertFilesModified(result, Modification.ADDED, "file_00", "file_06");

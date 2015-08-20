@@ -68,7 +68,7 @@ public class State implements Hashable
 		timestamp = System.currentTimeMillis();
 		comment = "";
 		fileCount = 0;
-		hashMode = HashMode.computeAllHash;
+		hashMode = HashMode.hashAll;
 		fileStates = new ArrayList<>();
 	}
 

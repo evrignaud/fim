@@ -118,7 +118,7 @@ public class Main
 
 			if (commandLine.hasOption('f'))
 			{
-				context.setHashMode(HashMode.dontHashFiles);
+				context.setHashMode(HashMode.dontHash);
 			}
 			else if (commandLine.hasOption('k'))
 			{
@@ -130,7 +130,7 @@ public class Main
 			}
 			else
 			{
-				context.setHashMode(HashMode.computeAllHash);
+				context.setHashMode(HashMode.hashAll);
 			}
 
 			if (commandLine.hasOption('h'))
@@ -161,7 +161,7 @@ public class Main
 			System.exit(-1);
 		}
 
-		if (context.getThreadCount() != 1 && context.getHashMode() == HashMode.dontHashFiles)
+		if (context.getThreadCount() != 1 && context.getHashMode() == HashMode.dontHash)
 		{
 			context.setThreadCount(1);
 			System.out.println("Not hashing file content so thread count forced to 1");

@@ -148,7 +148,7 @@ public class BuildableState extends State
 
 		switch (context.getHashMode())
 		{
-			case dontHashFiles:
+			case dontHash:
 				smallBlockHash = FileState.NO_HASH;
 				mediumBlockHash = FileState.NO_HASH;
 				fullHash = FileState.NO_HASH;
@@ -163,7 +163,7 @@ public class BuildableState extends State
 				fullHash = FileState.NO_HASH;
 				break;
 
-			case computeAllHash:
+			case hashAll:
 				// Nothing to do
 				break;
 		}
@@ -179,7 +179,7 @@ public class BuildableState extends State
 
 		switch (context.getHashMode())
 		{
-			case dontHashFiles:
+			case dontHash:
 				smallBlockHash = FileState.NO_HASH;
 				mediumBlockHash = FileState.NO_HASH;
 				fullHash = FileState.NO_HASH;
@@ -194,7 +194,7 @@ public class BuildableState extends State
 				fullHash = FileState.NO_HASH;
 				break;
 
-			case computeAllHash:
+			case hashAll:
 				// Nothing to do
 				break;
 		}

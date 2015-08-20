@@ -90,17 +90,17 @@ public class StateGenerator
 	{
 		switch (hashMode)
 		{
-			case dontHashFiles:
-				return "retrieving only file attributes";
+			case dontHash:
+				return "retrieve only file attributes";
 
 			case hashSmallBlock:
-				return "hashing first four kilos";
+				return "hash first four kilos";
 
 			case hashMediumBlock:
-				return "hashing first mega";
+				return "hash first mega";
 
-			case computeAllHash:
-				return "computing all hash";
+			case hashAll:
+				return "hash the complete file";
 		}
 
 		throw new IllegalArgumentException("Invalid hash mode " + hashMode);
@@ -199,7 +199,7 @@ public class StateGenerator
 		long globalThroughput = totalBytesHashed / durationSeconds;
 		String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
 
-		if (context.getHashMode() == HashMode.dontHashFiles)
+		if (context.getHashMode() == HashMode.dontHash)
 		{
 			Logger.info(String.format("Scanned %d files (%s), during %s, using %d thread%n",
 					state.getFileStates().size(), totalFileContentLengthStr, durationStr, context.getThreadCount()));
@@ -341,7 +341,7 @@ public class StateGenerator
 
 	private boolean displayHashLegend()
 	{
-		return context.isVerbose() && context.getHashMode() != HashMode.dontHashFiles;
+		return context.isVerbose() && context.getHashMode() != HashMode.dontHash;
 	}
 
 	public Context getContext()

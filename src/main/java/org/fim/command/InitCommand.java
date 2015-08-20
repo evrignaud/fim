@@ -77,7 +77,7 @@ public class InitCommand extends AbstractCommand
 			System.exit(-1);
 		}
 
-		if (context.getHashMode() != HashMode.computeAllHash)
+		if (context.getHashMode() != HashMode.hashAll)
 		{
 			SettingsManager settingsManager = new SettingsManager(context);
 			settingsManager.setGlobalHashMode(context.getHashMode());

@@ -20,8 +20,8 @@ package org.fim.model;
 
 public enum HashMode
 {
-	dontHashFiles,
+	dontHash,
 	hashSmallBlock,
 	hashMediumBlock,
-	computeAllHash;
+	hashAll;
 }

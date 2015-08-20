@@ -121,7 +121,7 @@ public class StateComparator
 		while (iterator.hasNext())
 		{
 			FileState fileState = iterator.next();
-			if (context.getHashMode() != HashMode.dontHashFiles &&
+			if (context.getHashMode() != HashMode.dontHash &&
 					(samePreviousHash = findFilesWithSameHash(fileState, previousFileStates)).size() > 0)
 			{
 				FileState originalFileState = samePreviousHash.get(0);

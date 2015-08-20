@@ -80,7 +80,7 @@ public class StateManager
 		// Replace by 'no_hash' accurately to be able to compare the FileState entry
 		switch (context.getHashMode())
 		{
-			case dontHashFiles:
+			case dontHash:
 				for (FileState fileState : state.getFileStates())
 				{
 					fileState.getFileHash().setSmallBlockHash(FileState.NO_HASH);
@@ -104,7 +104,7 @@ public class StateManager
 				}
 				break;
 
-			case computeAllHash:
+			case hashAll:
 				// Nothing to do
 				break;
 		}
