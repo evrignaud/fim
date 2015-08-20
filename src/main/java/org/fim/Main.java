@@ -39,6 +39,7 @@ import org.fim.command.FindDuplicatesCommand;
 import org.fim.command.HelpCommand;
 import org.fim.command.InitCommand;
 import org.fim.command.LogCommand;
+import org.fim.command.PurgeStatesCommand;
 import org.fim.command.RemoveDuplicatesCommand;
 import org.fim.command.ResetDatesCommand;
 import org.fim.command.VersionCommand;
@@ -62,6 +63,7 @@ public class Main
 				new FindDuplicatesCommand(),
 				new RemoveDuplicatesCommand(),
 				new LogCommand(),
+				new PurgeStatesCommand(),
 				new HelpCommand(),
 				new VersionCommand());
 	}
