@@ -45,3 +45,5 @@ echo "Total java lines: $totalJavaLines"
 echo "$duplicatedLines duplicated lines ($duplicatePercent% of the meaningful lines)"
 echo ""
 echo "More details in ${uniqDuplicatedLines}"
+
+#-----------------------------------------------------------------------------------------------------------------------
