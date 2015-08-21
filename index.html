@@ -127,18 +127,19 @@ Available commands:
      fdup / find-duplicates     Find local duplicated files in the Fim repository
      rdup / remove-duplicates   Remove duplicated files from local directory based on a remote master Fim repository
      log                        Display States log
+     purge / purge-states       Purge previous States
      help                       Prints the Fim help
      version                    Prints the Fim version
 
 Available options:
      -a,--master-fim-repository <arg>   Fim repository directory that you want to use as remote master.
                                         Only for the remove duplicated files command
-     -c,--comment <arg>                 Sets that State comment during commit
+     -c,--comment <arg>                 Sets that State comment during init and commit
      -f,--fast-mode                     Do not hash file content. Use only filenames and modification dates
      -h,--help                          Prints the Fim help
-     -k,--hash-only-first-four-kilo     Hash only the first four kilo of the files
+     -k,--hash-first-four-kilos         Hash the first four kilos of the files
      -l,--use-last-state                Use the last committed State
-     -m,--hash-only-first-mega          Hash only the first mega of the files
+     -m,--hash-first-mega               Hash the first mega of the files
      -q,--quiet                         Do not display details
      -t,--thread-count <arg>            Number of thread to use to hash files content in parallel
      -v,--version                       Prints the Fim version
