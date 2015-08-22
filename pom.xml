@@ -216,7 +216,7 @@
 						<executions>
 							<execution>
 								<id>check-out-pages</id>
-								<phase>generate-sources</phase>
+								<phase>prepare-package</phase>
 								<goals>
 									<goal>checkout</goal>
 								</goals>
