@@ -161,7 +161,7 @@ Available options:
 - build it by typing the following command:
 
 ```shell
-mvn clean install -Pdistrib
+mvn clean install
 ```
 
 - You can run the jar file generated into the `target` directory using the two shell script files located in the root directory.<br/>
@@ -169,7 +169,19 @@ mvn clean install -Pdistrib
 > `fim` for linux<br/>
 > `fim.bat` for windows
 
-- Two distribution files are generated into the `target/dist` directory.
+<br/>
+<br/>
+
+# Building Fim distribution
+---
+
+In order to generate a Fim distribution, you need to type the following command:
+
+```shell
+mvn clean install -Pdistrib
+```
+
+It generates two distribution files are generated into the `target/dist` directory.
 
 ```shell
 $ ls -a1 target/dist/
