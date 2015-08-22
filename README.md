@@ -9,8 +9,13 @@ Fim manage the integrity of a complete file tree.
   * [Presentation](http://evrignaud.github.io/fim/#presentation)
   * [Fim workflow](http://evrignaud.github.io/fim/#fim-workflow)
   * [Fim usage](http://evrignaud.github.io/fim/#fim-usage)
+  * [Building Fim](http://evrignaud.github.io/fim/#building-fim)
+  * [Building Fim distribution](http://evrignaud.github.io/fim/#building-fim-distribution)
   * [Simple example](http://evrignaud.github.io/fim/#simple-example)
   * [Real life example](http://evrignaud.github.io/fim/#real-life-example)
+  * [Dealing with duplicates](http://evrignaud.github.io/fim/#dealing-with-duplicates)
+  * [How many threads should I use?](http://evrignaud.github.io/fim/#how-many-threads-should-i-use-)
+  * [Fim requirements](http://evrignaud.github.io/fim/#fim-requirements)
   * [Changelog](http://evrignaud.github.io/fim/Changelog.html)
   * [License](http://evrignaud.github.io/fim/LICENSE.html)
 
