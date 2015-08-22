@@ -47,6 +47,13 @@
 			</includes>
 		</fileSet>
 		<fileSet>
+			<directory>target/gh-pages/images</directory>
+			<outputDirectory>images</outputDirectory>
+			<includes>
+				<include>*.png</include>
+			</includes>
+		</fileSet>
+		<fileSet>
 			<directory>target/gh-pages/strapdown</directory>
 			<outputDirectory>strapdown</outputDirectory>
 			<includes>
