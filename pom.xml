@@ -160,63 +160,6 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-scm-plugin</artifactId>
-				<version>${maven-scm-plugin.version}</version>
-				<configuration>
-					<goals>checkout</goals>
-					<scmVersionType>branch</scmVersionType>
-					<scmVersion>gh-pages</scmVersion>
-					<checkoutDirectory>target/gh-pages</checkoutDirectory>
-				</configuration>
-				<executions>
-					<execution>
-						<id>check-out-pages</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>checkout</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>${maven-source-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${maven-assembly-plugin.version}</version>
-				<configuration>
-					<outputDirectory>${project.build.directory}/dist</outputDirectory>
-					<descriptors>
-						<descriptor>src/main/assembly/assembly-dist.xml</descriptor>
-					</descriptors>
-					<finalName>${project.artifactId}-${project.version}</finalName>
-				</configuration>
-				<executions>
-					<execution>
-						<id>dist</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
 				<version>${maven-release-plugin.version}</version>
 				<configuration>
@@ -252,5 +195,74 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<!-- Profiles -->
+	<profiles>
+
+		<profile>
+			<id>distrib</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-scm-plugin</artifactId>
+						<version>${maven-scm-plugin.version}</version>
+						<configuration>
+							<goals>checkout</goals>
+							<scmVersionType>branch</scmVersionType>
+							<scmVersion>gh-pages</scmVersion>
+							<checkoutDirectory>target/gh-pages</checkoutDirectory>
+						</configuration>
+						<executions>
+							<execution>
+								<id>check-out-pages</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>checkout</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>${maven-source-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>${maven-assembly-plugin.version}</version>
+						<configuration>
+							<outputDirectory>${project.build.directory}/dist</outputDirectory>
+							<descriptors>
+								<descriptor>src/main/assembly/assembly-dist.xml</descriptor>
+							</descriptors>
+							<finalName>${project.artifactId}-${project.version}</finalName>
+						</configuration>
+						<executions>
+							<execution>
+								<id>dist</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
 
 </project>
