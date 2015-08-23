@@ -43,7 +43,7 @@ import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.fim.util.FileUtils;
+import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 
 public class State implements Hashable
@@ -116,9 +116,9 @@ public class State implements Hashable
 
 	public void filterDirectory(Path repositoryRootDir, Path currentDirectory, boolean keepFilesInside)
 	{
-		String rootDir = FileUtils.getNormalizedFileName(repositoryRootDir);
-		String curDir = FileUtils.getNormalizedFileName(currentDirectory);
-		String subDirectory = FileUtils.getRelativeFileName(rootDir, curDir);
+		String rootDir = FileUtil.getNormalizedFileName(repositoryRootDir);
+		String curDir = FileUtil.getNormalizedFileName(currentDirectory);
+		String subDirectory = FileUtil.getRelativeFileName(rootDir, curDir);
 
 		Iterator<FileState> iterator = fileStates.iterator();
 		while (iterator.hasNext())

@@ -21,7 +21,7 @@ package org.fim.util;
 import java.io.File;
 import java.nio.file.Path;
 
-public class FileUtils
+public class FileUtil
 {
 	public static String getNormalizedFileName(Path file)
 	{
@@ -35,15 +35,16 @@ public class FileUtils
 
 	public static String getRelativeFileName(String directory, String fileName)
 	{
-		if (fileName.startsWith(directory))
+		String relativeFileName = fileName;
+		if (relativeFileName.startsWith(directory))
 		{
-			fileName = fileName.substring(directory.length());
+			relativeFileName = relativeFileName.substring(directory.length());
 		}
 
-		if (fileName.startsWith("/"))
+		if (relativeFileName.startsWith("/"))
 		{
-			fileName = fileName.substring(1);
+			relativeFileName = relativeFileName.substring(1);
 		}
-		return fileName;
+		return relativeFileName;
 	}
 }

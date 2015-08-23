@@ -46,6 +46,7 @@ import org.fim.model.Context;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.model.State;
+import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 
 public class StateGenerator
@@ -158,9 +159,10 @@ public class StateGenerator
 	{
 		if (!hashersStarted)
 		{
+			String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
 			for (int index = 0; index < context.getThreadCount(); index++)
 			{
-				FileHasher hasher = new FileHasher(this, filesToHash, rootDir.toString());
+				FileHasher hasher = new FileHasher(this, filesToHash, normalizedRootDir);
 				executorService.submit(hasher);
 				hashers.add(hasher);
 			}

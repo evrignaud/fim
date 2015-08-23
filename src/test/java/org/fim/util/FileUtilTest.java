@@ -22,18 +22,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-public class FileUtilsTest
+public class FileUtilTest
 {
 	@Test
 	public void weCanGetTheRelativeFileName()
 	{
-		String relativeFileName = FileUtils.getRelativeFileName("/dir1/dir2/dir3", "/dir1/dir2/dir3/dir4/file1");
+		String relativeFileName = FileUtil.getRelativeFileName("/dir1/dir2/dir3", "/dir1/dir2/dir3/dir4/file1");
 		assertThat(relativeFileName).isEqualTo("dir4/file1");
 
-		relativeFileName = FileUtils.getRelativeFileName("/dir5/dir6/dir7", "/dir1/dir2/dir3/dir4/file1");
+		relativeFileName = FileUtil.getRelativeFileName("/dir5/dir6/dir7", "/dir1/dir2/dir3/dir4/file1");
 		assertThat(relativeFileName).isEqualTo("dir1/dir2/dir3/dir4/file1");
 
-		relativeFileName = FileUtils.getRelativeFileName("/dir1/dir2/dir3", "dir4/file1");
+		relativeFileName = FileUtil.getRelativeFileName("/dir1/dir2/dir3", "dir4/file1");
 		assertThat(relativeFileName).isEqualTo("dir4/file1");
 	}
 }

@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
-import org.fim.util.FileUtils;
+import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 import sun.misc.Cleaner;
 import sun.nio.ch.DirectBuffer;
@@ -99,10 +99,10 @@ class FileHasher implements Runnable
 					stateGenerator.updateProgressOutput(attributes.size());
 
 					FileHash fileHash = hashFile(file, attributes.size());
-					String normalizedFileName = FileUtils.getNormalizedFileName(file);
-					normalizedFileName = FileUtils.getRelativeFileName(rootDir, normalizedFileName);
+					String normalizedFileName = FileUtil.getNormalizedFileName(file);
+					String relativeFileName = FileUtil.getRelativeFileName(rootDir, normalizedFileName);
 
-					fileStates.add(new FileState(normalizedFileName, attributes.size(), attributes.lastModifiedTime().toMillis(), fileHash));
+					fileStates.add(new FileState(relativeFileName, attributes.size(), attributes.lastModifiedTime().toMillis(), fileHash));
 				}
 				catch (Exception ex)
 				{
