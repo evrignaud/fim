@@ -20,10 +20,30 @@ package org.fim.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.nio.file.Paths;
+
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 
 public class FileUtilTest
 {
+	@Test
+	public void weCanNormalizeAFileName()
+	{
+		String normalizedFileName;
+
+		if (SystemUtils.IS_OS_WINDOWS)
+		{
+			normalizedFileName = FileUtil.getNormalizedFileName(Paths.get("C:\\dir1\\dir2"));
+			assertThat(normalizedFileName).isEqualTo("C:/dir1/dir2");
+		}
+		else
+		{
+			normalizedFileName = FileUtil.getNormalizedFileName(Paths.get("/dir1/dir2"));
+			assertThat(normalizedFileName).isEqualTo("/dir1/dir2");
+		}
+	}
+
 	@Test
 	public void weCanGetTheRelativeFileName()
 	{
