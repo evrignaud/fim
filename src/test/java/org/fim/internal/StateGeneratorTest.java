@@ -29,6 +29,8 @@ public class StateGeneratorTest extends StateAssert
 	@Test
 	public void weCanGetProgressChar()
 	{
+		Assertions.assertThat(cut.getProgressChar(-1)).isEqualTo(' ');
+
 		Assertions.assertThat(cut.getProgressChar(0)).isEqualTo('.');
 
 		Assertions.assertThat(cut.getProgressChar(10 * 1024 * 1024)).isEqualTo('.');

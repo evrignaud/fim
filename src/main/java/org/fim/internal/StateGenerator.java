@@ -55,14 +55,13 @@ public class StateGenerator
 
 	private static final Set ignoredDirectories = new HashSet<>(Arrays.asList(Context.DOT_FIM_DIR, ".git", ".svn", ".cvs"));
 
-	private static final Pair<Character, Integer>[] hashProgress = new Pair[]
-			{
-					Pair.of('.', 0),
-					Pair.of('o', FileState.SIZE_20_MB),
-					Pair.of('O', FileState.SIZE_50_MB),
-					Pair.of('@', FileState.SIZE_100_MB),
-					Pair.of('#', FileState.SIZE_200_MB)
-			};
+	private static final List<Pair<Character, Integer>> hashProgress = Arrays.asList(
+			Pair.of('.', 0),
+			Pair.of('o', FileState.SIZE_20_MB),
+			Pair.of('O', FileState.SIZE_50_MB),
+			Pair.of('@', FileState.SIZE_100_MB),
+			Pair.of('#', FileState.SIZE_200_MB)
+	);
 
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
@@ -294,12 +293,13 @@ public class StateGenerator
 	private String hashProgressLegend()
 	{
 		StringBuilder sb = new StringBuilder();
-		for (int progressIndex = hashProgress.length - 1; progressIndex >= 0; progressIndex--)
+		for (int progressIndex = hashProgress.size() - 1; progressIndex >= 0; progressIndex--)
 		{
-			char marker = hashProgress[progressIndex].getLeft();
+			Pair<Character, Integer> progressPair = hashProgress.get(progressIndex);
+			char marker = progressPair.getLeft();
 			sb.append(marker);
 
-			int fileLength = hashProgress[progressIndex].getRight();
+			int fileLength = progressPair.getRight();
 			if (fileLength == 0)
 			{
 				sb.append(" otherwise");
@@ -318,14 +318,16 @@ public class StateGenerator
 	protected char getProgressChar(long fileLength)
 	{
 		int progressIndex;
-		for (progressIndex = hashProgress.length - 1; progressIndex >= 0; progressIndex--)
+		for (progressIndex = hashProgress.size() - 1; progressIndex >= 0; progressIndex--)
 		{
-			if (fileLength >= hashProgress[progressIndex].getRight())
+			Pair<Character, Integer> progressPair = hashProgress.get(progressIndex);
+			if (fileLength >= progressPair.getRight())
 			{
-				break;
+				return progressPair.getLeft();
 			}
 		}
-		return hashProgress[progressIndex].getLeft();
+
+		return ' ';
 	}
 
 	private void progressOutputStop()
