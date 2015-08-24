@@ -47,7 +47,7 @@ public class FindDuplicatesCommand extends AbstractCommand
 	@Override
 	public void execute(Context context) throws Exception
 	{
-		checkGlobalHashMode(context);
+		checkHashMode(context);
 
 		fileContentHashingMandatory(context);
 

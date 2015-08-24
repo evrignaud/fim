@@ -48,13 +48,18 @@ public abstract class AbstractCommand implements Command
 		}
 	}
 
-	protected void checkGlobalHashMode(Context context)
+	protected void checkHashMode(Context context)
 	{
 		SettingsManager settingsManager = new SettingsManager(context);
 		if (settingsManager.getGlobalHashMode() != HashMode.hashAll)
 		{
 			Logger.warning(String.format("This repository use a global hash mode. Hash mode forced to '%s'%n", StateGenerator.hashModeToString(settingsManager.getGlobalHashMode())));
 			context.setHashMode(settingsManager.getGlobalHashMode());
+		}
+		else if (context.getHashMode() != HashMode.hashAll)
+		{
+			System.err.println("Computing all hash is mandatory");
+			System.exit(-1);
 		}
 	}
 
