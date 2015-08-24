@@ -50,10 +50,13 @@ public class CommitCommand extends AbstractCommand
 	{
 		checkGlobalHashMode(context);
 
-		System.out.println("No comment provided. You are going to commit your modifications without any comment.");
-		if (!confirmAction(context, "continue"))
+		if (context.getComment().length() == 0)
 		{
-			System.exit(0);
+			System.out.println("No comment provided. You are going to commit your modifications without any comment.");
+			if (!confirmAction(context, "continue"))
+			{
+				System.exit(0);
+			}
 		}
 
 		StateManager manager = new StateManager(context);

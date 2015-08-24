@@ -60,12 +60,15 @@ public class InitCommand extends AbstractCommand
 	@Override
 	public void execute(Context context) throws Exception
 	{
-		System.out.println("No comment provided. You are going to initialize your repository using the default comment.");
-		if (!confirmAction(context, "continue"))
+		if (context.getComment().length() == 0)
 		{
-			System.exit(0);
+			System.out.println("No comment provided. You are going to initialize your repository using the default comment.");
+			if (!confirmAction(context, "continue"))
+			{
+				System.exit(0);
+			}
 		}
-
+		
 		try
 		{
 			Files.createDirectories(context.getRepositoryStatesDir());
