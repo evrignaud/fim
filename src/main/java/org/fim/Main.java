@@ -167,8 +167,6 @@ public class Main
 			System.out.println("Not hashing file content so thread count forced to 1");
 		}
 
-		setRepositoryRootDir(context);
-
 		FimReposConstraint constraint = command.getFimReposConstraint();
 		if (constraint == FimReposConstraint.MUST_NOT_EXIST)
 		{
@@ -180,6 +178,8 @@ public class Main
 		}
 		else if (constraint == FimReposConstraint.MUST_EXIST)
 		{
+			findRepositoryRootDir(context);
+
 			if (!Files.exists(context.getRepositoryStatesDir()))
 			{
 				System.err.println("Fim repository does not exist. Please run 'fim init' before.");
@@ -190,7 +190,7 @@ public class Main
 		command.execute((Context) context.clone());
 	}
 
-	private static void setRepositoryRootDir(Context context)
+	private static void findRepositoryRootDir(Context context)
 	{
 		boolean invokedFromSubDirectory = false;
 		Path directory = Paths.get(".").toAbsolutePath().normalize();
