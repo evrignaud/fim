@@ -278,27 +278,31 @@ drwxrwxr-x   3  4096 août  24 23:00 .fim
 ## Do some modifications
 
 ```shell
-~/sample$ mkdir dir1
+~/sample$ mkdir dir01
 
-~/sample$ mv file01 dir1
+# Move file01 to dir01
+~/sample$ mv file01 dir01
 
 # Change the file02 modification date
 ~/sample$ touch file02
 
+# Duplicate twice file03
 ~/sample$ cp file03 file03.dup1
-
 ~/sample$ cp file03 file03.dup2
 
 # Add content to file04
 ~/sample$ echo foo >> file04
 
+# Copy file05
 ~/sample$ cp file05 file11
 
-# Add content to file05
+# And add content to it
 ~/sample$ echo bar >> file05
 
+# Remove file06
 ~/sample$ rm file06
 
+# Duplicate once file07
 ~/sample$ cp file07 file07.dup1
 
 # Create the new file12
@@ -308,7 +312,7 @@ drwxrwxr-x   3  4096 août  24 23:00 .fim
 total 76
 drwxrwxr-x   4  4096 août  24 23:00 .
 drwxr-xr-x 108 12288 août  24 22:18 ..
-drwxrwxr-x   2  4096 août  24 23:00 dir1
+drwxrwxr-x   2  4096 août  24 23:00 dir01
 -rw-rw-r--   1    12 août  24 23:00 file02
 -rw-rw-r--   1    12 août  24 23:00 file03
 -rw-rw-r--   1    12 août  24 23:00 file03.dup1
@@ -323,7 +327,8 @@ drwxrwxr-x   2  4096 août  24 23:00 dir1
 -rw-rw-r--   1    12 août  24 23:00 file11
 -rw-rw-r--   1    12 août  24 23:00 file12
 drwxrwxr-x   3  4096 août  24 23:00 .fim
-~/sample$ ls -la dir1/
+
+~/sample$ ls -la dir01/
 total 12
 drwxrwxr-x 2 4096 août  24 23:00 .
 drwxrwxr-x 4 4096 août  24 23:00 ..
@@ -352,7 +357,7 @@ Duplicated:       file07.dup1 = file07
 Date modified:    file02 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
 Content modified: file04 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
 Content modified: file05 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
-Renamed:          file01 -> dir1/file01
+Renamed:          file01 -> dir01/file01
 Deleted:          file06
 
 1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 1 renamed, 1 deleted
@@ -387,11 +392,13 @@ Searching for duplicated files
 
 <br/>
 
-## From the dir1 sub-directory
+## From the dir01 sub-directory
 
 ```shell
-~/sample$ cd dir1
+~/sample$ cd dir01
+```
 
+```shell
 ~/sample$ fim diff
 2015/08/24 23:00:29 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
@@ -400,10 +407,12 @@ Searching for duplicated files
 Comparing with the last committed state from 2015/08/24 23:00:27
 Comment: First State
 
-Added:            dir1/file01
+Added:            dir01/file01
 
 1 added
+```
 
+```shell
 ~/sample$ fim fdup
 Searching for duplicated files
 
@@ -412,8 +421,10 @@ Searching for duplicated files
 2015/08/24 23:00:31 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
 
 0 duplicated files spread in 0 duplicate sets, 0 bytes of wasted space
+```
 
-~/sample$ fim ci -c modifications from dir1 -y
+```shell
+~/sample$ fim ci -c modifications from dir01 -y
 2015/08/24 23:00:31 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 2015/08/24 23:00:32 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
@@ -421,20 +432,24 @@ Searching for duplicated files
 Comparing with the last committed state from 2015/08/24 23:00:27
 Comment: First State
 
-Added:            dir1/file01
+Added:            dir01/file01
 
 1 added
+```
 
+```shell
 ~/sample$ fim diff
 2015/08/24 23:00:32 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 2015/08/24 23:00:33 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
 
 Comparing with the last committed state from 2015/08/24 23:00:31
-Comment: modifications from dir1
+Comment: modifications from dir01
 
 Nothing modified
+```
 
+```shell
 ~/sample$ cd ..
 ```
 
@@ -448,7 +463,7 @@ Nothing modified
 2015/08/24 23:00:33 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes bytes (avg 176 bytes/s), during 00:00:00, using 2 thread
 
 Comparing with the last committed state from 2015/08/24 23:00:31
-Comment: modifications from dir1
+Comment: modifications from dir01
 
 Added:            file12
 Copied:           file11 	(was file05)
@@ -492,7 +507,7 @@ State #1: 2015/08/24 23:00:27 (10 files)
 	10 added
 
 State #2: 2015/08/24 23:00:31 (11 files)
-	Comment: modifications from dir1
+	Comment: modifications from dir01
 	1 added
 
 State #3: 2015/08/24 23:00:33 (14 files)
