@@ -211,19 +211,19 @@ For the purpose of this example we use small files.
 ~/sample$ for i in {01..10} ; do echo "New File $i" > file$i ; done
 
 ~/sample$ ls -la
-total 48
-drwxrwxr-x 2 4096 juil. 21 22:24 .
-drwxrwxr-x 7 4096 juil. 20 22:00 ..
--rw-rw-r-- 1   12 juil. 21 22:24 file01
--rw-rw-r-- 1   12 juil. 21 22:24 file02
--rw-rw-r-- 1   12 juil. 21 22:24 file03
--rw-rw-r-- 1   12 juil. 21 22:24 file04
--rw-rw-r-- 1   12 juil. 21 22:24 file05
--rw-rw-r-- 1   12 juil. 21 22:24 file06
--rw-rw-r-- 1   12 juil. 21 22:24 file07
--rw-rw-r-- 1   12 juil. 21 22:24 file08
--rw-rw-r-- 1   12 juil. 21 22:24 file09
--rw-rw-r-- 1   12 juil. 21 22:24 file10
+total 56
+drwxrwxr-x   2  4096 août  24 23:00 .
+drwxr-xr-x 108 12288 août  24 22:18 ..
+-rw-rw-r--   1    12 août  24 23:00 file01
+-rw-rw-r--   1    12 août  24 23:00 file02
+-rw-rw-r--   1    12 août  24 23:00 file03
+-rw-rw-r--   1    12 août  24 23:00 file04
+-rw-rw-r--   1    12 août  24 23:00 file05
+-rw-rw-r--   1    12 août  24 23:00 file06
+-rw-rw-r--   1    12 août  24 23:00 file07
+-rw-rw-r--   1    12 août  24 23:00 file08
+-rw-rw-r--   1    12 août  24 23:00 file09
+-rw-rw-r--   1    12 août  24 23:00 file10
 ```
 
 <br/>
@@ -231,10 +231,11 @@ drwxrwxr-x 7 4096 juil. 20 22:00 ..
 ## Initialize the Fim repository
 
 ```shell
-~/sample$ fim init
-2015/07/21 22:25:02 - Info  - Scanning recursively local files, computing all hash, using 2 thread
+~/sample$ fim init -c "First State"
+2015/08/24 23:00:27 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
-.2015/07/21 22:25:05 - Info  - Scanned 10 files (120 bytes), hashed 120 bytes bytes (avg 120 bytes/s), during 00:00:03, using 2 thread
+.
+2015/08/24 23:00:27 - Info  - Scanned 10 files (120 bytes), hashed 120 bytes bytes (avg 120 bytes/s), during 00:00:00, using 2 thread
 
 Added:            file01
 Added:            file02
@@ -256,20 +257,20 @@ Added:            file10
 
 ```shell
 ~/sample$ ls -la
-total 52
-drwxrwxr-x 3 4096 juil. 21 22:25 .
-drwxrwxr-x 7 4096 juil. 20 22:00 ..
--rw-rw-r-- 1   12 juil. 21 22:24 file01
--rw-rw-r-- 1   12 juil. 21 22:24 file02
--rw-rw-r-- 1   12 juil. 21 22:24 file03
--rw-rw-r-- 1   12 juil. 21 22:24 file04
--rw-rw-r-- 1   12 juil. 21 22:24 file05
--rw-rw-r-- 1   12 juil. 21 22:24 file06
--rw-rw-r-- 1   12 juil. 21 22:24 file07
--rw-rw-r-- 1   12 juil. 21 22:24 file08
--rw-rw-r-- 1   12 juil. 21 22:24 file09
--rw-rw-r-- 1   12 juil. 21 22:24 file10
-drwxrwxr-x 3 4096 juil. 21 22:25 .fim
+total 60
+drwxrwxr-x   3  4096 août  24 23:00 .
+drwxr-xr-x 108 12288 août  24 22:18 ..
+-rw-rw-r--   1    12 août  24 23:00 file01
+-rw-rw-r--   1    12 août  24 23:00 file02
+-rw-rw-r--   1    12 août  24 23:00 file03
+-rw-rw-r--   1    12 août  24 23:00 file04
+-rw-rw-r--   1    12 août  24 23:00 file05
+-rw-rw-r--   1    12 août  24 23:00 file06
+-rw-rw-r--   1    12 août  24 23:00 file07
+-rw-rw-r--   1    12 août  24 23:00 file08
+-rw-rw-r--   1    12 août  24 23:00 file09
+-rw-rw-r--   1    12 août  24 23:00 file10
+drwxrwxr-x   3  4096 août  24 23:00 .fim
 ```
 
 <br/>
@@ -284,44 +285,49 @@ drwxrwxr-x 3 4096 juil. 21 22:25 .fim
 # Change the file02 modification date
 ~/sample$ touch file02
 
-~/sample$ cp file03 file11
+~/sample$ cp file03 file03.dup1
+
+~/sample$ cp file03 file03.dup2
 
 # Add content to file04
 ~/sample$ echo foo >> file04
 
-~/sample$ cp file05 file12
+~/sample$ cp file05 file11
 
 # Add content to file05
 ~/sample$ echo bar >> file05
 
 ~/sample$ rm file06
 
-# Create the new file13
-~/sample$ echo "New File 13" > file13
+~/sample$ cp file07 file07.dup1
+
+# Create the new file12
+~/sample$ echo "New File 12" > file12
 
 ~/sample$ ls -la
-total 60
-drwxrwxr-x 4 4096 juil. 21 22:26 .
-drwxrwxr-x 7 4096 juil. 20 22:00 ..
-drwxrwxr-x 2 4096 juil. 21 22:25 dir1
--rw-rw-r-- 1   12 juil. 21 22:25 file02
--rw-rw-r-- 1   12 juil. 21 22:24 file03
--rw-rw-r-- 1   16 juil. 21 22:26 file04
--rw-rw-r-- 1   16 juil. 21 22:26 file05
--rw-rw-r-- 1   12 juil. 21 22:24 file07
--rw-rw-r-- 1   12 juil. 21 22:24 file08
--rw-rw-r-- 1   12 juil. 21 22:24 file09
--rw-rw-r-- 1   12 juil. 21 22:24 file10
--rw-rw-r-- 1   12 juil. 21 22:25 file11
--rw-rw-r-- 1   12 juil. 21 22:26 file12
--rw-rw-r-- 1   12 juil. 21 22:26 file13
-drwxrwxr-x 3 4096 juil. 21 22:25 .fim
-
+total 76
+drwxrwxr-x   4  4096 août  24 23:00 .
+drwxr-xr-x 108 12288 août  24 22:18 ..
+drwxrwxr-x   2  4096 août  24 23:00 dir1
+-rw-rw-r--   1    12 août  24 23:00 file02
+-rw-rw-r--   1    12 août  24 23:00 file03
+-rw-rw-r--   1    12 août  24 23:00 file03.dup1
+-rw-rw-r--   1    12 août  24 23:00 file03.dup2
+-rw-rw-r--   1    16 août  24 23:00 file04
+-rw-rw-r--   1    16 août  24 23:00 file05
+-rw-rw-r--   1    12 août  24 23:00 file07
+-rw-rw-r--   1    12 août  24 23:00 file07.dup1
+-rw-rw-r--   1    12 août  24 23:00 file08
+-rw-rw-r--   1    12 août  24 23:00 file09
+-rw-rw-r--   1    12 août  24 23:00 file10
+-rw-rw-r--   1    12 août  24 23:00 file11
+-rw-rw-r--   1    12 août  24 23:00 file12
+drwxrwxr-x   3  4096 août  24 23:00 .fim
 ~/sample$ ls -la dir1/
 total 12
-drwxrwxr-x 2 4096 juil. 21 22:25 .
-drwxrwxr-x 4 4096 juil. 21 22:26 ..
--rw-rw-r-- 1   12 juil. 21 22:24 file01
+drwxrwxr-x 2 4096 août  24 23:00 .
+drwxrwxr-x 4 4096 août  24 23:00 ..
+-rw-rw-r-- 1   12 août  24 23:00 file01
 ```
 
 <br/>
@@ -330,24 +336,26 @@ drwxrwxr-x 4 4096 juil. 21 22:26 ..
 
 ```shell
 ~/sample$ fim diff
-2015/07/21 22:27:41 - Info  - Scanning recursively local files, computing all hash, using 2 thread
+2015/08/24 23:00:28 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 .
-2015/07/21 22:27:44 - Info  - Scanned 12 files (152 bytes), hashed 152 bytes bytes (avg 152 bytes/s), during 00:00:03, using 2 thread
+2015/08/24 23:00:28 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes bytes (avg 176 bytes/s), during 00:00:00, using 2 thread
 
-Comparing with the last committed state from 2015/07/21 22:25:02
-Comment: Initial State
+Comparing with the last committed state from 2015/08/24 23:00:27
+Comment: First State
 
-Added:            file13
-Copied:           file12  (was file05)
-Duplicated:       file11 = file03
-Date modified:    file02  2015/07/21 22:24:08 -> 2015/07/21 22:25:55
-Content modified: file04  2015/07/21 22:24:08 -> 2015/07/21 22:26:07
-Content modified: file05  2015/07/21 22:24:08 -> 2015/07/21 22:26:15
+Added:            file12
+Copied:           file11 	(was file05)
+Duplicated:       file03.dup1 = file03
+Duplicated:       file03.dup2 = file03
+Duplicated:       file07.dup1 = file07
+Date modified:    file02 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
+Content modified: file04 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
+Content modified: file05 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
 Renamed:          file01 -> dir1/file01
 Deleted:          file06
 
-1 added, 1 copied, 1 duplicated, 1 date modified, 2 content modified, 1 renamed, 1 deleted
+1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 1 renamed, 1 deleted
 ```
 
 <br/>
@@ -358,45 +366,102 @@ Deleted:          file06
 ~/sample$ fim fdup
 Searching for duplicated files
 
-2015/07/21 22:28:07 - Info  - Scanning recursively local files, computing all hash, using 2 thread
+2015/08/24 23:00:29 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 .
-2015/07/21 22:28:10 - Info  - Scanned 12 files (152 bytes), hashed 152 bytes bytes (avg 152 bytes/s), during 00:00:03, using 2 thread
+2015/08/24 23:00:29 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes bytes (avg 176 bytes/s), during 00:00:00, using 2 thread
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 - Duplicate set #1
-  file03 duplicated 1 times
-      file11
+  file07 duplicated 1 times
+      12 bytes - file07.dup1
 
-1 duplicated files spread in 1 duplicate sets, 12 bytes of wasted space
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+- Duplicate set #2
+  file03 duplicated 2 times
+      12 bytes - file03.dup1
+      12 bytes - file03.dup2
+
+3 duplicated files spread in 2 duplicate sets, 36 bytes of wasted space
 ```
 
 <br/>
 
+## From the dir1 sub-directory
+
+```shell
+~/sample$ cd dir1
+
+~/sample$ fim diff
+2015/08/24 23:00:29 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
+(Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
+2015/08/24 23:00:30 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
+
+Comparing with the last committed state from 2015/08/24 23:00:27
+Comment: First State
+
+Added:            dir1/file01
+
+1 added
+
+~/sample$ fim fdup
+Searching for duplicated files
+
+2015/08/24 23:00:30 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
+(Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
+2015/08/24 23:00:31 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
+
+0 duplicated files spread in 0 duplicate sets, 0 bytes of wasted space
+
+~/sample$ fim ci -c modifications from dir1 -y
+2015/08/24 23:00:31 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
+(Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
+2015/08/24 23:00:32 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
+
+Comparing with the last committed state from 2015/08/24 23:00:27
+Comment: First State
+
+Added:            dir1/file01
+
+1 added
+
+~/sample$ fim diff
+2015/08/24 23:00:32 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
+(Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
+2015/08/24 23:00:33 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
+
+Comparing with the last committed state from 2015/08/24 23:00:31
+Comment: modifications from dir1
+
+Nothing modified
+
+~/sample$ cd ..
+```
+
 ## Commit the modifications
 
 ```shell
-~/sample$ fim ci -c "After modifications"
-2015/07/21 22:28:38 - Info  - Scanning recursively local files, computing all hash, using 2 thread
+~/sample$ fim ci -c All modifications -y
+2015/08/24 23:00:33 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 .
-2015/07/21 22:28:41 - Info  - Scanned 12 files (152 bytes), hashed 152 bytes bytes (avg 152 bytes/s), during 00:00:03, using 2 thread
+2015/08/24 23:00:33 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes bytes (avg 176 bytes/s), during 00:00:00, using 2 thread
 
-Comparing with the last committed state from 2015/07/21 22:25:02
-Comment: Initial State
+Comparing with the last committed state from 2015/08/24 23:00:31
+Comment: modifications from dir1
 
-Added:            file13
-Copied:           file12  (was file05)
-Duplicated:       file11 = file03
-Date modified:    file02  2015/07/21 22:24:08 -> 2015/07/21 22:25:55
-Content modified: file04  2015/07/21 22:24:08 -> 2015/07/21 22:26:07
-Content modified: file05  2015/07/21 22:24:08 -> 2015/07/21 22:26:15
-Renamed:          file01 -> dir1/file01
+Added:            file12
+Copied:           file11 	(was file05)
+Duplicated:       file03.dup1 = file03
+Duplicated:       file03.dup2 = file03
+Duplicated:       file07.dup1 = file07
+Date modified:    file02 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
+Content modified: file04 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
+Content modified: file05 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
+Deleted:          file01
 Deleted:          file06
 
-1 added, 1 copied, 1 duplicated, 1 date modified, 2 content modified, 1 renamed, 1 deleted
-
-Do you really want to commit (y/n/A)? y
+1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 2 deleted
 ```
 
 <br/>
@@ -405,13 +470,13 @@ Do you really want to commit (y/n/A)? y
 
 ```shell
 ~/sample$ fim diff
-2015/07/21 22:30:32 - Info  - Scanning recursively local files, computing all hash, using 2 thread
+2015/08/24 23:00:34 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 .
-2015/07/21 22:30:35 - Info  - Scanned 12 files (152 bytes), hashed 152 bytes bytes (avg 152 bytes/s), during 00:00:03, using 2 thread
+2015/08/24 23:00:34 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes bytes (avg 176 bytes/s), during 00:00:00, using 2 thread
 
-Comparing with the last committed state from 2015/07/21 22:28:38
-Comment: After modifications
+Comparing with the last committed state from 2015/08/24 23:00:33
+Comment: All modifications
 
 Nothing modified
 ```
@@ -422,14 +487,17 @@ Nothing modified
 
 ```shell
 ~/sample$ fim log
-State #1: 2015/07/21 22:25:02
-  Comment: Initial State
-  Contains 10 files
+State #1: 2015/08/24 23:00:27 (10 files)
+	Comment: First State
+	10 added
 
-State #2: 2015/07/21 22:28:38
-  Comment: After modifications
-  Contains 12 files
+State #2: 2015/08/24 23:00:31 (11 files)
+	Comment: modifications from dir1
+	1 added
 
+State #3: 2015/08/24 23:00:33 (14 files)
+	Comment: All modifications
+	1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 2 deleted
 ```
 
 <br/>
