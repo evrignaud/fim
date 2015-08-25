@@ -47,7 +47,7 @@ public class DiffCommand extends AbstractCommand
 	@Override
 	public void execute(Context context) throws Exception
 	{
-		checkHashMode(context, true);
+		checkHashMode(context, Option.ALLOW_COMPATIBLE);
 
 		State currentState = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), CURRENT_DIRECTORY);
 		State lastState = new StateManager(context).loadLastState();

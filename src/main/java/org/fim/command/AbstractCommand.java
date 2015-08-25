@@ -20,6 +20,8 @@ package org.fim.command;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 import org.fim.internal.SettingsManager;
@@ -48,14 +50,15 @@ public abstract class AbstractCommand implements Command
 		}
 	}
 
-	protected void checkHashMode(Context context, boolean allowCompatible)
+	protected void checkHashMode(Context context, Option... options)
 	{
+		List<Option> optionList = Arrays.asList(options);
 		SettingsManager settingsManager = new SettingsManager(context);
 		if (settingsManager.getGlobalHashMode() != HashMode.hashAll)
 		{
 			if (isCompatible(settingsManager.getGlobalHashMode(), context.getHashMode()))
 			{
-				if (allowCompatible)
+				if (optionList.contains(Option.ALLOW_COMPATIBLE))
 				{
 					Logger.info(String.format("Using global hash mode '%s' that is compatible with the current one", StateGenerator.hashModeToString(settingsManager.getGlobalHashMode())));
 				}
@@ -74,8 +77,11 @@ public abstract class AbstractCommand implements Command
 		}
 		else if (context.getHashMode() != HashMode.hashAll)
 		{
-			System.err.println("Computing all hash is mandatory");
-			System.exit(-1);
+			if (optionList.contains(Option.ALL_HASH_MANDATORY))
+			{
+				System.err.println("Computing all hash is mandatory");
+				System.exit(-1);
+			}
 		}
 	}
 
@@ -131,5 +137,11 @@ public abstract class AbstractCommand implements Command
 			return true;
 		}
 		return false;
+	}
+
+	protected static enum Option
+	{
+		ALLOW_COMPATIBLE,
+		ALL_HASH_MANDATORY
 	}
 }
