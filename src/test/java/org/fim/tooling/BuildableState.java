@@ -18,11 +18,11 @@
  */
 package org.fim.tooling;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+import com.rits.cloning.Cloner;
 import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
@@ -30,7 +30,9 @@ import org.fim.model.State;
 
 public class BuildableState extends State
 {
-	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
+	private static final Cloner CLONER = new Cloner();
+
+	private static final Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
 	private transient final Context context;
 
@@ -41,7 +43,7 @@ public class BuildableState extends State
 
 	public BuildableState addFiles(String... fileNames)
 	{
-		BuildableState newState = cloneState();
+		BuildableState newState = clone();
 		for (String fileName : fileNames)
 		{
 			if (findFileState(newState, fileName, false) != null)
@@ -59,7 +61,7 @@ public class BuildableState extends State
 
 	public BuildableState copy(String sourceFileName, String targetFileName)
 	{
-		BuildableState newState = cloneState();
+		BuildableState newState = clone();
 		if (findFileState(newState, targetFileName, false) != null)
 		{
 			throw new IllegalArgumentException("Copy: File already exist " + targetFileName);
@@ -74,7 +76,7 @@ public class BuildableState extends State
 
 	public BuildableState rename(String sourceFileName, String targetFileName)
 	{
-		BuildableState newState = cloneState();
+		BuildableState newState = clone();
 		if (findFileState(newState, targetFileName, false) != null)
 		{
 			throw new IllegalArgumentException("Rename: File already exist " + targetFileName);
@@ -88,7 +90,7 @@ public class BuildableState extends State
 
 	public BuildableState delete(String fileName)
 	{
-		BuildableState newState = cloneState();
+		BuildableState newState = clone();
 		FileState fileState = findFileState(newState, fileName, true);
 		newState.getFileStates().remove(fileState);
 		return newState;
@@ -96,7 +98,7 @@ public class BuildableState extends State
 
 	public BuildableState touch(String fileName)
 	{
-		BuildableState newState = cloneState();
+		BuildableState newState = clone();
 		FileState fileState = findFileState(newState, fileName, true);
 		long now = getNow();
 		if (now <= fileState.getLastModified())
@@ -109,7 +111,7 @@ public class BuildableState extends State
 
 	public BuildableState setContent(String fileName, String fileContent)
 	{
-		BuildableState newState = cloneState();
+		BuildableState newState = clone();
 		FileState fileState = findFileState(newState, fileName, true);
 		fileState.setFileHash(createHash(fileContent));
 		return newState;
@@ -117,26 +119,9 @@ public class BuildableState extends State
 
 	public BuildableState appendContent(String fileName, String fileContent)
 	{
-		BuildableState newState = cloneState();
+		BuildableState newState = clone();
 		FileState fileState = findFileState(newState, fileName, true);
 		fileState.setFileHash(appendHash(fileState.getFileHash(), fileContent));
-		return newState;
-	}
-
-	public BuildableState cloneState()
-	{
-		BuildableState newState = new BuildableState(context);
-		newState.setComment(getComment());
-
-		ArrayList<FileState> newFileStates = new ArrayList<>();
-		for (FileState fileState : getFileStates())
-		{
-			FileState newFileState = new FileState(fileState.getFileName(), fileState.getFileLength(), fileState.getLastModified(), new FileHash(fileState.getFileHash()));
-			newFileStates.add(newFileState);
-		}
-		newState.setFileStates(newFileStates);
-		sortFileStates(newState);
-
 		return newState;
 	}
 
@@ -228,5 +213,10 @@ public class BuildableState extends State
 	private long getNow()
 	{
 		return new Date().getTime();
+	}
+
+	public BuildableState clone()
+	{
+		return CLONER.deepClone(this);
 	}
 }

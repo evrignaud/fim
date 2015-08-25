@@ -43,7 +43,7 @@ public class StateTest extends StateAssert
 	public void setup()
 	{
 		a1 = new BuildableState(defaultContext()).addFiles("file_1", "file_2");
-		a2 = a1.cloneState();
+		a2 = a1.clone();
 		a2.setTimestamp(a1.getTimestamp());
 
 		b = a1.delete("file_2").addFiles("file_3");

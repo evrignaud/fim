@@ -21,9 +21,13 @@ package org.fim.model;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Context implements Cloneable
+import com.rits.cloning.Cloner;
+
+public class Context
 {
 	public static final String DOT_FIM_DIR = ".fim";
+
+	private static final Cloner CLONER = new Cloner();
 
 	private boolean invokedFromSubDirectory;
 	private Path repositoryRootDir;
@@ -152,8 +156,8 @@ public class Context implements Cloneable
 		this.threadCount = threadCount;
 	}
 
-	public Object clone() throws CloneNotSupportedException
+	public Context clone()
 	{
-		return super.clone();
+		return CLONER.deepClone(this);
 	}
 }

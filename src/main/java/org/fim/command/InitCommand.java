@@ -68,7 +68,7 @@ public class InitCommand extends AbstractCommand
 				System.exit(0);
 			}
 		}
-		
+
 		try
 		{
 			Files.createDirectories(context.getRepositoryStatesDir());

@@ -187,7 +187,7 @@ public class Main
 			}
 		}
 
-		command.execute((Context) context.clone());
+		command.execute(context.clone());
 	}
 
 	private static void findRepositoryRootDir(Context context)
