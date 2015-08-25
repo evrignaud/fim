@@ -72,14 +72,14 @@ public class Main
 	{
 		Options options = new Options();
 		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as remote master.\nOnly for the remove duplicated files command", false));
-		options.addOption(createOption("f", "fast-mode", false, "Do not hash file content. Use only filenames and modification dates", false));
+		options.addOption(createOption("f", "fast-mode", false, "Do not hash file content. Use only file names and modification dates", false));
 		options.addOption(createOption("k", "hash-first-four-kilos", false, "Hash the first four kilos of the files", false));
 		options.addOption(createOption("m", "hash-first-mega", false, "Hash the first mega of the files", false));
 		options.addOption(createOption("h", "help", false, "Prints the Fim help", false));
 		options.addOption(createOption("l", "use-last-state", false, "Use the last committed State", false));
 		options.addOption(createOption("c", "comment", true, "Sets that State comment during init and commit", false));
 		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
-		options.addOption(createOption("t", "thread-count", true, "Number of thread to use to hash files content in parallel", false));
+		options.addOption(createOption("t", "thread-count", true, "Number of thread used to hash files content in parallel", false));
 		options.addOption(createOption("v", "version", false, "Prints the Fim version", false));
 		options.addOption(createOption("y", "always-yes", false, "Always yes to every questions", false));
 		return options;
