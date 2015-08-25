@@ -48,7 +48,7 @@ public class CommitCommand extends AbstractCommand
 	@Override
 	public void execute(Context context) throws Exception
 	{
-		checkHashMode(context);
+		checkHashMode(context, false);
 
 		if (context.getComment().length() == 0)
 		{

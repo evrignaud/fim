@@ -48,19 +48,67 @@ public abstract class AbstractCommand implements Command
 		}
 	}
 
-	protected void checkHashMode(Context context)
+	protected void checkHashMode(Context context, boolean allowCompatible)
 	{
 		SettingsManager settingsManager = new SettingsManager(context);
 		if (settingsManager.getGlobalHashMode() != HashMode.hashAll)
 		{
-			Logger.warning(String.format("This repository use a global hash mode. Hash mode forced to '%s'%n", StateGenerator.hashModeToString(settingsManager.getGlobalHashMode())));
-			context.setHashMode(settingsManager.getGlobalHashMode());
+			if (isCompatible(settingsManager.getGlobalHashMode(), context.getHashMode()))
+			{
+				if (allowCompatible)
+				{
+					Logger.info(String.format("Using global hash mode '%s' that is compatible with the current one", StateGenerator.hashModeToString(settingsManager.getGlobalHashMode())));
+				}
+				else
+				{
+					Logger.warning(String.format("Using global hash mode '%s' that is compatible with the current one, but is not allowed by this command. Hash mode forced",
+							StateGenerator.hashModeToString(settingsManager.getGlobalHashMode())));
+					context.setHashMode(settingsManager.getGlobalHashMode());
+				}
+			}
+			else
+			{
+				Logger.warning(String.format("Using global hash mode '%s' that is not compatible with the current one. Hash mode forced", StateGenerator.hashModeToString(settingsManager.getGlobalHashMode())));
+				context.setHashMode(settingsManager.getGlobalHashMode());
+			}
 		}
 		else if (context.getHashMode() != HashMode.hashAll)
 		{
 			System.err.println("Computing all hash is mandatory");
 			System.exit(-1);
 		}
+	}
+
+	private boolean isCompatible(HashMode globalHashMode, HashMode hashMode)
+	{
+		switch (globalHashMode)
+		{
+			case hashAll:
+				return true;
+
+			case hashMediumBlock:
+				if (hashMode == HashMode.hashAll)
+				{
+					return false;
+				}
+				return true;
+
+			case hashSmallBlock:
+				if (hashMode == HashMode.hashAll || hashMode == HashMode.hashMediumBlock)
+				{
+					return false;
+				}
+				return true;
+
+			case dontHash:
+				if (hashMode != HashMode.dontHash)
+				{
+					return false;
+				}
+				return true;
+		}
+
+		return false;
 	}
 
 	protected boolean confirmAction(Context context, String action)
