@@ -152,8 +152,18 @@ Available options:
 <br/>
 <br/>
 
-# Building Fim
+# Using Fim
 ---
+
+## Fim releases
+
+You can find prebuilt releases of Fim [here](https://github.com/evrignaud/fim/releases)
+
+<br/>
+
+## Build Fim
+
+You can build yourself Fim to try the master version.
 
 - Get the code
 
@@ -173,18 +183,16 @@ mvn clean install
 > `fim.bat` for Windows
 
 <br/>
-<br/>
 
-# Building Fim distribution
----
+## Build a Fim distribution
 
-In order to generate a Fim distribution, you need to type the following command:
+If you want to generate a Fim distribution type the following command:
 
 ```shell
 mvn clean install -Pdistrib
 ```
 
-It generates two distribution files are generated into the `target/dist` directory.
+It generates two distribution files into the `target/dist` directory.
 
 ```shell
 $ ls -a1 target/dist/
