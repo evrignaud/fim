@@ -10,16 +10,16 @@ Fim manage the integrity of a complete file tree.
   * [Fim workflow](http://evrignaud.github.io/fim/#fim-workflow)
   * [Fim usage](http://evrignaud.github.io/fim/#fim-usage)
   * [Using Fim](http://evrignaud.github.io/fim/#using-fim)
+  * [Changelog](http://evrignaud.github.io/fim/Changelog.html)
   * [Simple example](http://evrignaud.github.io/fim/#simple-example)
   * [Real life example](http://evrignaud.github.io/fim/#real-life-example)
   * [FAQ](http://evrignaud.github.io/fim/#faq)
   * [Fim requirements](http://evrignaud.github.io/fim/#fim-requirements)
-  * [Changelog](http://evrignaud.github.io/fim/Changelog.html)
   * [License](http://evrignaud.github.io/fim/LICENSE.html)
 
 ## Fim releases
 
-You can download binary distributions of Fim from [here](https://github.com/evrignaud/fim/releases/latest)
+You can download Fim binary distributions from [here](https://github.com/evrignaud/fim/releases/latest)
 
 ## Fim requirements
 
