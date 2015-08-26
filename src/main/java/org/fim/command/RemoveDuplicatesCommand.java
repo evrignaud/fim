@@ -101,9 +101,18 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			System.exit(-1);
 		}
 
-		if (masterFimRepository.normalize().equals(CURRENT_DIRECTORY.normalize()))
+		Path normalizedMasterFimRepository = masterFimRepository.toAbsolutePath().normalize();
+		Path normalizedCurrentDir = CURRENT_DIRECTORY.toAbsolutePath().normalize();
+
+		if (normalizedMasterFimRepository.equals(normalizedCurrentDir))
 		{
-			Logger.error("Cannot remove duplicates from the current directory");
+			Logger.error("Cannot remove duplicates into the master directory");
+			System.exit(-1);
+		}
+
+		if (normalizedCurrentDir.startsWith(normalizedMasterFimRepository))
+		{
+			Logger.error("Cannot remove duplicates into a sub-directory of the master directory");
 			System.exit(-1);
 		}
 
