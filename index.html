@@ -742,7 +742,7 @@ This time in my case, **it takes 3 seconds**.
 
 <br/>
 
-## I want to run Fim commands from a sub-directory
+## Run Fim commands from a sub-directory
 
 You can run all the Fim commands from every directory inside the Fim repository.
 It allows you to:
@@ -800,13 +800,21 @@ After you will be able to run the following commands:
 
 <br/>
 
-## How many threads should I use?
+## Hash files in multi-thread
 
 Fim hash files using several threads.<br/>
 This allow taking advantage of the computer resources and maximize the overall performances of file hashing.
 By default, Fim use an arbitrary thread count that is the number of CPU cores divided by two.<br/>
 You can specify the number of thread to be used for file hashing.<br/>
 The best value depend on the kind of hard disk you have. The more throughput you have, the more thread you can use.
+
+<br/>
+
+## State integrity
+
+All the States contains a hash of the State content.<br/>
+If something is modified in the State, the hash of the State content will change and the State will be reported as corrupted.<br/>
+Fim won't use it.
 
 <br/>
 <br/>
