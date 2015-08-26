@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.fim.util.Console;
 
 public class DuplicateResult
 {
@@ -73,10 +74,10 @@ public class DuplicateResult
 						System.out.printf("      %s - %s%n", FileUtils.byteCountToDisplaySize(fileState.getFileLength()), fileState.getFileName());
 					}
 				}
-				System.out.println("");
+				Console.newLine();
 			}
 		}
-		System.out.printf("%d duplicated files spread in %d duplicate sets, %s of wasted space%n%n",
+		System.out.printf("%d duplicated files spread in %d duplicate sets, %s of wasted space%n",
 				duplicatedFilesCount, duplicateSets.size(), FileUtils.byteCountToDisplaySize(wastedSpace));
 
 		return this;

@@ -23,6 +23,8 @@ import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
 import org.fim.model.State;
+import org.fim.util.Console;
+import org.fim.util.Logger;
 
 public class FindDuplicatesCommand extends AbstractCommand
 {
@@ -51,8 +53,8 @@ public class FindDuplicatesCommand extends AbstractCommand
 
 		fileContentHashingMandatory(context);
 
-		System.out.println("Searching for duplicated files" + (context.isUseLastState() ? " from the last committed State" : ""));
-		System.out.println("");
+		Logger.info(String.format("Searching for duplicated files%s", context.isUseLastState() ? " from the last committed State" : ""));
+		Console.newLine();
 
 		State state;
 		if (context.isUseLastState())

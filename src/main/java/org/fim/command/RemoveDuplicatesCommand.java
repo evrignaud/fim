@@ -33,6 +33,7 @@ import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.model.State;
+import org.fim.util.Console;
 import org.fim.util.Logger;
 
 public class RemoveDuplicatesCommand extends AbstractCommand
@@ -114,8 +115,8 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		}
 		context.setRepositoryRootDir(masterFimRepository);
 
-		System.out.println("Searching for duplicated files using the " + context.getMasterFimRepositoryDir() + " directory as master");
-		System.out.println("");
+		Logger.info(String.format("Searching for duplicated files using the %s directory as master", context.getMasterFimRepositoryDir()));
+		Console.newLine();
 
 		State masterState = new StateManager(context).loadLastState();
 		Map<FileHash, FileState> masterFilesHash = buildFileHashMap(masterState);
@@ -146,7 +147,8 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			}
 		}
 
-		System.out.printf("%nRemoved %d duplicated files%n", totalFilesRemoved);
+		Console.newLine();
+		Logger.info(String.format("Removed %d duplicated files", totalFilesRemoved));
 	}
 
 	private Map<FileHash, FileState> buildFileHashMap(State state)

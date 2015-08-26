@@ -24,6 +24,8 @@ import org.fim.internal.StateManager;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.State;
+import org.fim.util.Console;
+import org.fim.util.Logger;
 
 public class CommitCommand extends AbstractCommand
 {
@@ -71,7 +73,7 @@ public class CommitCommand extends AbstractCommand
 		CompareResult result = new StateComparator(context).compare(lastState, currentState).displayChanges();
 		if (result.somethingModified())
 		{
-			System.out.println("");
+			Console.newLine();
 			if (confirmAction(context, "commit"))
 			{
 				if (context.isInvokedFromSubDirectory())
@@ -87,7 +89,7 @@ public class CommitCommand extends AbstractCommand
 			}
 			else
 			{
-				System.out.println("Nothing committed");
+				Logger.info("Nothing committed");
 			}
 		}
 	}

@@ -46,6 +46,7 @@ import org.fim.model.Context;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.model.State;
+import org.fim.util.Console;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 
@@ -249,7 +250,7 @@ public class StateGenerator
 		}
 		catch (IOException ex)
 		{
-			System.out.println("");
+			Console.newLine();
 			Logger.error("Skipping - Error scanning directory", ex);
 		}
 	}
@@ -282,7 +283,7 @@ public class StateGenerator
 			{
 				if (displayHashLegend())
 				{
-					System.out.println("");
+					Console.newLine();
 				}
 			}
 		}
@@ -338,7 +339,7 @@ public class StateGenerator
 		{
 			if (fileCount >= PROGRESS_DISPLAY_FILE_COUNT)
 			{
-				System.out.println("");
+				Console.newLine();
 			}
 		}
 	}

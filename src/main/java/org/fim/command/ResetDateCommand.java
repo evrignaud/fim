@@ -28,6 +28,8 @@ import org.fim.internal.StateManager;
 import org.fim.model.Context;
 import org.fim.model.FileState;
 import org.fim.model.State;
+import org.fim.util.Console;
+import org.fim.util.Logger;
 
 public class ResetDateCommand extends AbstractCommand
 {
@@ -55,12 +57,12 @@ public class ResetDateCommand extends AbstractCommand
 		StateManager manager = new StateManager(context);
 		State lastState = manager.loadLastState();
 
-		System.out.println("Reset files modification date based on the last committed State done " + formatDate(lastState.getTimestamp()));
+		Logger.info(String.format("Reset files modification date based on the last committed State done %s", formatDate(lastState.getTimestamp())));
 		if (lastState.getComment().length() > 0)
 		{
 			System.out.println("Comment: " + lastState.getComment());
 		}
-		System.out.println("");
+		Console.newLine();
 
 		if (context.isInvokedFromSubDirectory())
 		{
@@ -86,11 +88,12 @@ public class ResetDateCommand extends AbstractCommand
 
 		if (dateResetCount == 0)
 		{
-			System.out.printf("No file modification date have been reset%n");
+			Logger.info("No file modification date have been reset");
 		}
 		else
 		{
-			System.out.printf("%n%d files modification date have been reset%n", dateResetCount);
+			Console.newLine();
+			Logger.info(String.format("%d files modification date have been reset", dateResetCount));
 		}
 	}
 }

@@ -47,6 +47,7 @@ import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
 import org.fim.model.Context;
 import org.fim.model.HashMode;
+import org.fim.util.Console;
 import org.fim.util.Logger;
 
 public class Main
@@ -165,7 +166,7 @@ public class Main
 		if (context.getThreadCount() != 1 && context.getHashMode() == HashMode.dontHash)
 		{
 			context.setThreadCount(1);
-			System.out.println("Not hashing file content so thread count forced to 1");
+			Logger.info("Not hashing file content so thread count forced to 1");
 		}
 
 		FimReposConstraint constraint = command.getFimReposConstraint();
@@ -256,10 +257,6 @@ public class Main
 
 	public static void printUsage()
 	{
-		System.out.println("");
-		PrintWriter writer = new PrintWriter(System.out);
-		HelpFormatter helpFormatter = new HelpFormatter();
-
 		StringBuilder usage = new StringBuilder();
 		usage.append("\n");
 		usage.append("File Integrity Checker\n");
@@ -282,8 +279,12 @@ public class Main
 		usage.append("\n");
 		usage.append("Available options:\n");
 
+		PrintWriter writer = new PrintWriter(System.out);
+		HelpFormatter helpFormatter = new HelpFormatter();
+
+		Console.newLine();
 		helpFormatter.printHelp(writer, 120, "fim <command>", usage.toString(), options, 5, 3, "", true);
 		writer.flush();
-		System.out.println("");
+		Console.newLine();
 	}
 }

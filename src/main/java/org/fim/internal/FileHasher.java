@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
+import org.fim.util.Console;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 import sun.misc.Cleaner;
@@ -106,7 +107,7 @@ class FileHasher implements Runnable
 				}
 				catch (Exception ex)
 				{
-					System.out.println("");
+					Console.newLine();
 					Logger.error("Skipping - Error hashing file", ex);
 				}
 			}

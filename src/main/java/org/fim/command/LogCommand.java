@@ -27,6 +27,8 @@ import org.fim.internal.StateManager;
 import org.fim.model.Context;
 import org.fim.model.ModificationCounts;
 import org.fim.model.State;
+import org.fim.util.Console;
+import org.fim.util.Logger;
 
 public class LogCommand extends AbstractCommand
 {
@@ -55,7 +57,7 @@ public class LogCommand extends AbstractCommand
 
 		if (manager.getLastStateNumber() == -1)
 		{
-			System.out.println("No State found");
+			Logger.error("No State found");
 			return;
 		}
 
@@ -71,7 +73,7 @@ public class LogCommand extends AbstractCommand
 					System.out.printf("\tComment: %s%n", state.getComment());
 				}
 				displayCounts(state.getModificationCounts());
-				System.out.println("");
+				Console.newLine();
 			}
 		}
 	}

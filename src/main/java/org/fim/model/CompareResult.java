@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.fim.util.Console;
+
 public class CompareResult
 {
 	private static Comparator<Difference> fileNameComparator = new Difference.FileNameComparator();
@@ -74,12 +76,12 @@ public class CompareResult
 	{
 		if (lastState != null)
 		{
-			System.out.println("Comparing with the last committed state from " + formatDate(lastState.getTimestamp()));
+			System.out.printf("Comparing with the last committed state from %s%n", formatDate(lastState.getTimestamp()));
 			if (lastState.getComment().length() > 0)
 			{
 				System.out.println("Comment: " + lastState.getComment());
 			}
-			System.out.println("");
+			Console.newLine();
 		}
 
 		if (!context.isVerbose())
@@ -127,7 +129,7 @@ public class CompareResult
 
 		if (somethingModified())
 		{
-			System.out.println("");
+			Console.newLine();
 		}
 
 		displayCounts();
