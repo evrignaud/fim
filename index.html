@@ -125,7 +125,7 @@ Available commands:
      init                       Initialize a Fim repository
      ci / commit                Commit the current directory State
      diff                       Compare the current directory State with the previous one
-     rdates / reset-dates       Reset the file modification dates like it is stored in the last committed State
+     rdate / reset-date         Reset the files modification date like it is stored in the last committed State
      fdup / find-duplicates     Find local duplicated files in the Fim repository
      rdup / remove-duplicates   Remove duplicated files from local directory based on a remote master Fim repository
      log                        Display States log
@@ -739,32 +739,70 @@ This time in my case, **it takes 3 seconds**.
 <br/>
 
 
-# Dealing with duplicates
+# FAQ
 ---
+
+<br/>
+
+## I want to run Fim commands from a sub-directory
+
+You can run all the Fim commands from every directory inside the Fim repository.
+It allows you to:
+- Quickly find the modifications done in this directory. You will hash only the files contained inside and not the complete file tree
+- Quickly commit the modifications done in this directory
+- Quickly find the duplicated files contained in this directory
+- Quickly reset the date of files contained in this directory
+
+All the other commands will run as if you were on the top of the repository.
+
+<br/>
+
+## Dealing with duplicates
 
 Duplicated files are addressed by Fim in two different ways.
 
-## Duplicates inside a Fim repository
+### Duplicates inside a Fim repository
 
 Fim allow you to detect duplicates using the `fdup` command.<br/>
 If you want to remove them, Fim cannot do it. It does not provide a smart way to remove those duplicates.
 
 <br/>
 
-## Duplicates that are outside
+### Duplicates that are outside
 
 You can use Fim to remove duplicated files that are located outside a Fim repository using the `rdup` command.<br/>
 It can be useful if you want to cleanup old backups that are no more synchronized and you want to be sure to not loose any files that could have been modified or added.
 
 <br/>
-<br/>
-<br/>
-<br/>
+
+## Changing default hash mode
+
+If you never want to hash the complete content of your files you can set a global hash mode that will indicate the maximum hash mode you want to use for this repository.
+You can specify this to the init command:
+- `-f`: means always don't hash anything
+- `-k`: You will be able to use `-f` or `-k` after
+- `-m`: You will be able to use `-f`, `-k` or `-m` after
+
+Example:
+```shell
+~/sample$ fim init -m
+```
+
+It sets a global hash mode for the complete repository to `-m`.<br/>
+All the Fim commands that you use after will use `-m` hash mode (or less if specified) and you won't be able to hash the full file content.
+After you will be able to run the following commands:
+
+```shell
+~/sample$ fim diff # will run using -m
+
+~/sample$ fim diff -k
+
+~/sample$ fim diff -f
+```
+
 <br/>
 
-
-# How many threads should I use?
----
+## How many threads should I use?
 
 Fim hash files using several threads.<br/>
 This allow taking advantage of the computer resources and maximize the overall performances of file hashing.
