@@ -66,7 +66,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 	{
 		if (context.getMasterFimRepositoryDir() == null)
 		{
-			System.err.println("The master Fim directory must be provided");
+			Logger.error("The master Fim directory must be provided");
 			Main.printUsage();
 			System.exit(-1);
 		}
@@ -96,20 +96,20 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		Path masterFimRepository = Paths.get(context.getMasterFimRepositoryDir());
 		if (!Files.exists(masterFimRepository))
 		{
-			System.err.printf("Directory %s does not exist%n", context.getMasterFimRepositoryDir());
+			Logger.error(String.format("Directory %s does not exist", context.getMasterFimRepositoryDir()));
 			System.exit(-1);
 		}
 
 		if (masterFimRepository.normalize().equals(CURRENT_DIRECTORY.normalize()))
 		{
-			System.err.printf("Cannot remove duplicates from the current directory%n");
+			Logger.error("Cannot remove duplicates from the current directory");
 			System.exit(-1);
 		}
 
 		Path masterDotFimDir = masterFimRepository.resolve(Context.DOT_FIM_DIR);
 		if (!Files.exists(masterDotFimDir))
 		{
-			System.err.printf("Directory %s is not a Fim repository%n", context.getMasterFimRepositoryDir());
+			Logger.error(String.format("Directory %s is not a Fim repository", context.getMasterFimRepositoryDir()));
 			System.exit(-1);
 		}
 		context.setRepositoryRootDir(masterFimRepository);

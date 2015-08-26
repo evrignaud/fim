@@ -45,7 +45,7 @@ public abstract class AbstractCommand implements Command
 	{
 		if (context.getHashMode() == HashMode.dontHash)
 		{
-			System.err.println("File content hashing mandatory for this command.");
+			Logger.error("File content hashing mandatory for this command.");
 			System.exit(-1);
 		}
 	}
@@ -79,7 +79,7 @@ public abstract class AbstractCommand implements Command
 		{
 			if (optionList.contains(Option.ALL_HASH_MANDATORY))
 			{
-				System.err.println("Computing all hash is mandatory");
+				Logger.error("Computing all hash is mandatory");
 				System.exit(-1);
 			}
 		}

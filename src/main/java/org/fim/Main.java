@@ -41,12 +41,13 @@ import org.fim.command.InitCommand;
 import org.fim.command.LogCommand;
 import org.fim.command.PurgeStatesCommand;
 import org.fim.command.RemoveDuplicatesCommand;
-import org.fim.command.ResetDatesCommand;
+import org.fim.command.ResetDateCommand;
 import org.fim.command.VersionCommand;
 import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
 import org.fim.model.Context;
 import org.fim.model.HashMode;
+import org.fim.util.Logger;
 
 public class Main
 {
@@ -59,7 +60,7 @@ public class Main
 				new InitCommand(),
 				new CommitCommand(),
 				new DiffCommand(),
-				new ResetDatesCommand(),
+				new ResetDateCommand(),
 				new FindDuplicatesCommand(),
 				new RemoveDuplicatesCommand(),
 				new LogCommand(),
@@ -145,7 +146,7 @@ public class Main
 		}
 		catch (Exception ex)
 		{
-			System.err.println(ex.getMessage());
+			Logger.error(ex.getMessage());
 			printUsage();
 			System.exit(-1);
 		}
@@ -157,7 +158,7 @@ public class Main
 
 		if (context.getThreadCount() < 1)
 		{
-			System.err.println("Thread count must be at least one");
+			Logger.error("Thread count must be at least one");
 			System.exit(-1);
 		}
 
@@ -172,7 +173,7 @@ public class Main
 		{
 			if (Files.exists(context.getRepositoryStatesDir()))
 			{
-				System.err.println("Fim repository already exist");
+				Logger.error("Fim repository already exist");
 				System.exit(0);
 			}
 		}
@@ -182,7 +183,7 @@ public class Main
 
 			if (!Files.exists(context.getRepositoryStatesDir()))
 			{
-				System.err.println("Fim repository does not exist. Please run 'fim init' before.");
+				Logger.error("Fim repository does not exist. Please run 'fim init' before.");
 				System.exit(-1);
 			}
 		}
@@ -248,7 +249,7 @@ public class Main
 
 	private static void youMustSpecifyACommandToRun()
 	{
-		System.err.println("You must specify the command to run");
+		Logger.error("You must specify the command to run");
 		printUsage();
 		System.exit(-1);
 	}
