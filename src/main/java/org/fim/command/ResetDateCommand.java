@@ -22,7 +22,6 @@ import static org.fim.util.FormatUtil.formatDate;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 
 import org.fim.internal.StateManager;
@@ -30,24 +29,24 @@ import org.fim.model.Context;
 import org.fim.model.FileState;
 import org.fim.model.State;
 
-public class ResetDatesCommand extends AbstractCommand
+public class ResetDateCommand extends AbstractCommand
 {
 	@Override
 	public String getCmdName()
 	{
-		return "reset-dates";
+		return "reset-date";
 	}
 
 	@Override
 	public String getShortCmdName()
 	{
-		return "rdates";
+		return "rdate";
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Reset the file modification dates like it is stored in the last committed State";
+		return "Reset the files modification date like it is stored in the last committed State";
 	}
 
 	@Override
@@ -56,17 +55,22 @@ public class ResetDatesCommand extends AbstractCommand
 		StateManager manager = new StateManager(context);
 		State lastState = manager.loadLastState();
 
-		System.out.println("Reset file modification dates based on the last committed State done " + formatDate(lastState.getTimestamp()));
+		System.out.println("Reset files modification date based on the last committed State done " + formatDate(lastState.getTimestamp()));
 		if (lastState.getComment().length() > 0)
 		{
 			System.out.println("Comment: " + lastState.getComment());
 		}
 		System.out.println("");
 
+		if (context.isInvokedFromSubDirectory())
+		{
+			lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
+		}
+
 		int dateResetCount = 0;
 		for (FileState fileState : lastState.getFileStates())
 		{
-			Path file = Paths.get(fileState.getFileName());
+			Path file = context.getRepositoryRootDir().resolve(fileState.getFileName());
 			if (Files.exists(file))
 			{
 				long lastModified = Files.getLastModifiedTime(file).toMillis();
@@ -86,7 +90,7 @@ public class ResetDatesCommand extends AbstractCommand
 		}
 		else
 		{
-			System.out.printf("%d file modification dates have been reset%n", dateResetCount);
+			System.out.printf("%n%d files modification date have been reset%n", dateResetCount);
 		}
 	}
 }
