@@ -64,7 +64,7 @@ public class Hasher
 	{
 		if (active)
 		{
-			if (sizeToHash != FileState.SIZE_UNLIMITED && fileSize >= (sizeToHash * 2))
+			if ((sizeToHash != FileState.SIZE_UNLIMITED) && (fileSize >= (sizeToHash * 2)))
 			{
 				// File size is at least twice the size we want to hash.
 				// So skip the first block to ensure that the headers don't increase the collision probability when doing a rapid check.
@@ -81,7 +81,7 @@ public class Hasher
 
 	public void update(long position, MappedByteBuffer buffer)
 	{
-		if (active && position >= startPosition && (sizeToHash == FileState.SIZE_UNLIMITED || position < (startPosition + sizeToHash)))
+		if (active && (position >= startPosition) && ((sizeToHash == FileState.SIZE_UNLIMITED) || (position < (startPosition + sizeToHash))))
 		{
 			digest.update(buffer);
 			buffer.flip(); // Reset the buffer to be usable after

@@ -144,7 +144,7 @@ class FileHasher implements Runnable
 			// If the file size is at least 8 KB we can skip the header, so hash once again 4 KB for the smallBlock hash
 			hashBlock(channel, min(remainder, SIZE_4_KB), hashers);
 
-			if (position >= fileSize || hashMode == HashMode.hashSmallBlock)
+			if ((position >= fileSize) || (hashMode == HashMode.hashSmallBlock))
 			{
 				return hashers.getFileHash();
 			}
@@ -177,9 +177,7 @@ class FileHasher implements Runnable
 				buffer = channel.map(FileChannel.MapMode.READ_ONLY, position, blockSize);
 				int bufferSize = buffer.limit();
 
-				hashers.getSmallBlockHasher().update(position, buffer);
-				hashers.getMediumBlockHasher().update(position, buffer);
-				hashers.getFullHasher().update(position, buffer);
+				hashers.update(position, buffer);
 
 				position += bufferSize;
 				remainder -= bufferSize;

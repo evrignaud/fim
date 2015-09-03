@@ -25,6 +25,7 @@ import static org.fim.model.HashMode.hashAll;
 import static org.fim.model.HashMode.hashMediumBlock;
 import static org.fim.model.HashMode.hashSmallBlock;
 
+import java.nio.MappedByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
 import org.fim.model.FileHash;
@@ -50,23 +51,15 @@ public class Hashers
 		fullHasher.reset(fileSize);
 	}
 
+	public void update(long position, MappedByteBuffer buffer)
+	{
+		smallBlockHasher.update(position, buffer);
+		mediumBlockHasher.update(position, buffer);
+		fullHasher.update(position, buffer);
+	}
+
 	public FileHash getFileHash()
 	{
 		return new FileHash(smallBlockHasher.getHash(), mediumBlockHasher.getHash(), fullHasher.getHash());
-	}
-
-	public Hasher getSmallBlockHasher()
-	{
-		return smallBlockHasher;
-	}
-
-	public Hasher getMediumBlockHasher()
-	{
-		return mediumBlockHasher;
-	}
-
-	public Hasher getFullHasher()
-	{
-		return fullHasher;
 	}
 }
