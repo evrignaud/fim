@@ -16,32 +16,41 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim.model;
+package org.fim.tooling;
 
-import static org.fim.model.HashMode.hashAll;
-
-public class Settings
+public class ExpectedHash
 {
-	private HashMode globalHashMode = hashAll;
-	private int lastStateNumber = 0;
+	private String smallBlockHash;
+	private String mediumBlockHash;
+	private String fullFileHash;
 
-	public HashMode getGlobalHashMode()
+	public String getSmallBlockHash()
 	{
-		return globalHashMode;
+		return smallBlockHash;
 	}
 
-	public void setGlobalHashMode(HashMode globalHashMode)
+	public void setSmallBlockHash(String smallBlockHash)
 	{
-		this.globalHashMode = globalHashMode;
+		this.smallBlockHash = smallBlockHash;
 	}
 
-	public int getLastStateNumber()
+	public String getMediumBlockHash()
 	{
-		return lastStateNumber;
+		return mediumBlockHash;
 	}
 
-	public void setLastStateNumber(int lastStateNumber)
+	public void setMediumBlockHash(String mediumBlockHash)
 	{
-		this.lastStateNumber = lastStateNumber;
+		this.mediumBlockHash = mediumBlockHash;
+	}
+
+	public String getFullFileHash()
+	{
+		return fullFileHash;
+	}
+
+	public void setFullFileHash(String fullFileHash)
+	{
+		this.fullFileHash = fullFileHash;
 	}
 }

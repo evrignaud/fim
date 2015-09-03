@@ -18,6 +18,8 @@
  */
 package org.fim.model;
 
+import static org.fim.model.HashMode.hashAll;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,7 +50,7 @@ import org.fim.util.Logger;
 
 public class State implements Hashable
 {
-	public static final String CURRENT_MODEL_VERSION = "2";
+	public static final String CURRENT_MODEL_VERSION = "3";
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
 	private String stateHash; // Ensure the integrity of the complete State content
@@ -68,7 +70,7 @@ public class State implements Hashable
 		timestamp = System.currentTimeMillis();
 		comment = "";
 		fileCount = 0;
-		hashMode = HashMode.hashAll;
+		hashMode = hashAll;
 		fileStates = new ArrayList<>();
 	}
 

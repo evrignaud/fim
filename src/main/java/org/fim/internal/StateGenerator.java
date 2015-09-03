@@ -18,6 +18,8 @@
  */
 package org.fim.internal;
 
+import static org.fim.model.HashMode.dontHash;
+
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -201,7 +203,7 @@ public class StateGenerator
 		long globalThroughput = totalBytesHashed / durationSeconds;
 		String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
 
-		if (context.getHashMode() == HashMode.dontHash)
+		if (context.getHashMode() == dontHash)
 		{
 			Logger.info(String.format("Scanned %d files (%s), during %s, using %d thread%n",
 					state.getFileStates().size(), totalFileContentLengthStr, durationStr, context.getThreadCount()));
@@ -346,7 +348,7 @@ public class StateGenerator
 
 	private boolean displayHashLegend()
 	{
-		return context.isVerbose() && context.getHashMode() != HashMode.dontHash;
+		return context.isVerbose() && context.getHashMode() != dontHash;
 	}
 
 	public Context getContext()

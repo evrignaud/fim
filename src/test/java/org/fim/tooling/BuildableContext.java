@@ -18,32 +18,36 @@
  */
 package org.fim.tooling;
 
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
+
 import org.fim.model.Context;
-import org.fim.model.HashMode;
 
 public class BuildableContext extends Context
 {
 	public BuildableContext dontHashFiles()
 	{
-		setHashMode(HashMode.dontHash);
+		setHashMode(dontHash);
 		return this;
 	}
 
 	public BuildableContext hashSmallBlock()
 	{
-		setHashMode(HashMode.hashSmallBlock);
+		setHashMode(hashSmallBlock);
 		return this;
 	}
 
 	public BuildableContext hashMediumBlock()
 	{
-		setHashMode(HashMode.hashMediumBlock);
+		setHashMode(hashMediumBlock);
 		return this;
 	}
 
 	public BuildableContext computeAllHash()
 	{
-		setHashMode(HashMode.hashAll);
+		setHashMode(hashAll);
 		return this;
 	}
 }

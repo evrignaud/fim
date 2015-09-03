@@ -18,13 +18,18 @@
  */
 package org.fim.internal;
 
+import static java.lang.Math.min;
+import static org.fim.model.FileState.NO_HASH;
+import static org.fim.model.FileState.SIZE_1_MB;
+import static org.fim.model.FileState.SIZE_4_KB;
+import static org.fim.model.HashMode.dontHash;
+
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,17 +47,16 @@ import sun.nio.ch.DirectBuffer;
 
 class FileHasher implements Runnable
 {
-	public static final String HASH_ALGORITHM = "SHA-512";
-
 	private final StateGenerator stateGenerator;
 	private final BlockingDeque<Path> filesToHash;
 	private final String rootDir;
 
 	private final List<FileState> fileStates;
 
-	private final MessageDigest smallBlockDigest;
-	private final MessageDigest mediumBlockDigest;
-	private final MessageDigest fullDigest;
+	private final Hashers hashers;
+
+	private long remainder;
+	private long position;
 
 	private long totalFileContentLength;
 	private long totalBytesHashed;
@@ -65,9 +69,8 @@ class FileHasher implements Runnable
 
 		this.fileStates = new ArrayList<>();
 
-		this.smallBlockDigest = MessageDigest.getInstance(HASH_ALGORITHM);
-		this.mediumBlockDigest = MessageDigest.getInstance(HASH_ALGORITHM);
-		this.fullDigest = MessageDigest.getInstance(HASH_ALGORITHM);
+		HashMode hashMode = stateGenerator.getContext().getHashMode();
+		hashers = new Hashers(hashMode);
 	}
 
 	public List<FileState> getFileStates()
@@ -122,87 +125,79 @@ class FileHasher implements Runnable
 	{
 		HashMode hashMode = stateGenerator.getContext().getHashMode();
 
-		if (hashMode == HashMode.dontHash)
+		if (hashMode == dontHash)
 		{
 			totalFileContentLength += fileSize;
-			return new FileHash(FileState.NO_HASH, FileState.NO_HASH, FileState.NO_HASH);
+			return new FileHash(NO_HASH, NO_HASH, NO_HASH);
 		}
 
-		smallBlockDigest.reset();
-		mediumBlockDigest.reset();
-		fullDigest.reset();
+		hashers.reset(fileSize);
 
-		MappedByteBuffer buffer = null;
-		long remainder = fileSize;
-		long position = 0;
+		remainder = fileSize;
+		position = 0;
 
 		try (final FileChannel channel = FileChannel.open(file))
 		{
-			long size = Math.min(remainder, FileState.SIZE_4_KB);
-			buffer = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
-			position += buffer.limit();
-			remainder -= buffer.limit();
+			// Start hashing 4 KB for the smallBlock hash
+			hashBlock(channel, min(remainder, SIZE_4_KB), hashers);
 
-			smallBlockDigest.update(buffer);
-			if (hashMode == HashMode.hashSmallBlock)
+			// If the file size is at least 8 KB we can skip the header, so hash once again 4 KB for the smallBlock hash
+			hashBlock(channel, min(remainder, SIZE_4_KB), hashers);
+
+			if (position >= fileSize || hashMode == HashMode.hashSmallBlock)
 			{
-				return new FileHash(getHash(smallBlockDigest), FileState.NO_HASH, FileState.NO_HASH);
+				return hashers.getFileHash();
 			}
 
-			buffer.flip();
-			mediumBlockDigest.update(buffer);
+			// Hash the remaining part of the 1 MB block for the mediumBlock hash
+			hashBlock(channel, min(remainder, SIZE_1_MB - position), hashers);
 
-			buffer.flip();
-			fullDigest.update(buffer);
-
-			if (position < fileSize)
+			// If the file size is at least 2 MB we can skip the header, so in the loop we will hash again 1 MB for the mediumBlock hash
+			while (position < fileSize)
 			{
-				size = Math.min(remainder, FileState.SIZE_1_MB - position);
-				unmap(buffer);
-				buffer = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
-				position += buffer.limit();
-				remainder -= buffer.limit();
-
-				mediumBlockDigest.update(buffer);
-				if (hashMode == HashMode.hashMediumBlock)
-				{
-					return new FileHash(getHash(smallBlockDigest), getHash(mediumBlockDigest), FileState.NO_HASH);
-				}
-
-				buffer.flip();
-				fullDigest.update(buffer);
-
-				while (position < fileSize)
-				{
-					size = Math.min(remainder, FileState.SIZE_1_MB);
-					unmap(buffer);
-					buffer = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
-					position += buffer.limit();
-					remainder -= buffer.limit();
-
-					fullDigest.update(buffer);
-				}
+				hashBlock(channel, min(remainder, SIZE_1_MB), hashers);
 			}
 		}
 		finally
 		{
-			unmap(buffer);
 			totalFileContentLength += fileSize;
 			totalBytesHashed += position;
 		}
 
-		if (hashMode == HashMode.hashMediumBlock)
-		{
-			return new FileHash(getHash(smallBlockDigest), getHash(mediumBlockDigest), FileState.NO_HASH);
-		}
+		return hashers.getFileHash();
+	}
 
-		return new FileHash(getHash(smallBlockDigest), getHash(mediumBlockDigest), getHash(fullDigest));
+	private int hashBlock(FileChannel channel, long blockSize, Hashers hashers) throws IOException
+	{
+		if (blockSize > 0)
+		{
+			MappedByteBuffer buffer = null;
+			try
+			{
+				buffer = channel.map(FileChannel.MapMode.READ_ONLY, position, blockSize);
+				int bufferSize = buffer.limit();
+
+				hashers.getSmallBlockHasher().update(position, buffer);
+				hashers.getMediumBlockHasher().update(position, buffer);
+				hashers.getFullHasher().update(position, buffer);
+
+				position += bufferSize;
+				remainder -= bufferSize;
+
+				return bufferSize;
+			}
+			finally
+			{
+				unmap(buffer);
+			}
+		}
+		return 0;
 	}
 
 	/**
 	 * Comes from here: http://stackoverflow.com/questions/8553158/prevent-outofmemory-when-using-java-nio-mappedbytebuffer
 	 */
-	public void unmap(MappedByteBuffer bb)
+	private void unmap(MappedByteBuffer bb)
 	{
 		if (bb == null)
 		{
@@ -213,23 +208,5 @@ class FileHasher implements Runnable
 		{
 			cleaner.clean();
 		}
-	}
-
-	private String getHash(MessageDigest digest)
-	{
-		byte[] digestBytes = digest.digest();
-		return toHexString(digestBytes);
-	}
-
-	protected String toHexString(byte[] digestBytes)
-	{
-		StringBuilder hexString = new StringBuilder();
-		for (byte b : digestBytes)
-		{
-			hexString.append(Character.forDigit((b >> 4) & 0xF, 16));
-			hexString.append(Character.forDigit((b & 0xF), 16));
-		}
-
-		return hexString.toString();
 	}
 }

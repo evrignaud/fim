@@ -19,6 +19,13 @@
 package org.fim.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.fim.model.FileState.SIZE_100_MB;
+import static org.fim.model.FileState.SIZE_1_MB;
+import static org.fim.model.FileState.SIZE_4_KB;
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,12 +38,17 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
 
+import com.google.common.hash.HashCode;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 import org.apache.commons.io.FileUtils;
 import org.fim.model.FileHash;
+import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.tooling.BuildableContext;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -45,6 +57,19 @@ import org.junit.runners.Parameterized;
 public class FileHasherTest extends StateAssert
 {
 	public static final String NO_HASH = "no_hash";
+
+	private static byte contentBytes[];
+	private static Path rootDir = Paths.get("target/" + FileHasherTest.class.getSimpleName());
+
+	static
+	{
+		StringBuilder builder = new StringBuilder();
+		for (char c = 33; c < 126; c++)
+		{
+			builder.append(c);
+		}
+		contentBytes = builder.toString().getBytes();
+	}
 
 	private StateGenerator stateGenerator;
 
@@ -61,18 +86,23 @@ public class FileHasherTest extends StateAssert
 	public static Collection<Object[]> parameters()
 	{
 		return Arrays.asList(new Object[][]{
-				{HashMode.dontHash},
-				{HashMode.hashSmallBlock},
-				{HashMode.hashMediumBlock},
-				{HashMode.hashAll}
+				{dontHash},
+				{hashSmallBlock},
+				{hashMediumBlock},
+				{hashAll}
 		});
+	}
+
+	@BeforeClass
+	public static void setupOnce() throws NoSuchAlgorithmException, IOException
+	{
+		FileUtils.deleteDirectory(rootDir.toFile());
+		Files.createDirectories(rootDir);
 	}
 
 	@Before
 	public void setup() throws NoSuchAlgorithmException, IOException
 	{
-		Path rootDir = Paths.get("target/" + this.getClass().getSimpleName());
-
 		stateGenerator = mock(StateGenerator.class);
 		context = defaultContext();
 		context.setHashMode(hashMode);
@@ -80,85 +110,98 @@ public class FileHasherTest extends StateAssert
 
 		when(stateGenerator.getContext()).thenReturn(context);
 
-		FileUtils.deleteDirectory(rootDir.toFile());
-		Files.createDirectories(rootDir);
-
 		cut = new FileHasher(stateGenerator, null, rootDir.toString());
 	}
 
 	@Test
-	public void weCanConvertToHexa()
+	public void hashAn_Empty_File() throws IOException
 	{
-		byte[] bytes = new byte[]{(byte) 0xa4, (byte) 0xb0, (byte) 0xe5, (byte) 0xfd};
-		String hexString = cut.toHexString(bytes);
-		assertThat(hexString).isEqualTo("a4b0e5fd");
+		checkFileHash(0);
 	}
 
 	@Test
-	public void weCanConvertToHexaWithZero()
+	public void hashA_2KB_File() throws IOException
 	{
-		byte[] bytes = new byte[]{(byte) 0xa0, 0x40, 0x0b, 0x00, (byte) 0xe0, 0x05, 0x0f, 0x0d};
-		String hexString = cut.toHexString(bytes);
-		assertThat(hexString).isEqualTo("a0400b00e0050f0d");
+		checkFileHash(2 * 1024);
 	}
 
 	@Test
-	public void weCanHashAn_Empty_File() throws IOException
+	public void hashA_4KB_File() throws IOException
 	{
-		String smallBlockHash = "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e";
-		String mediumBlockHash = smallBlockHash;
-		String fullFileHash = smallBlockHash;
+		checkFileHash(4 * 1024);
+	}
 
-		Path fileToHash = createFileWithSize(0);
+	@Test
+	public void hashA_6KB_File() throws IOException
+	{
+		checkFileHash(6 * 1024);
+	}
+
+	@Test
+	public void hashA_8KB_File() throws IOException
+	{
+		checkFileHash(8 * 1024);
+	}
+
+
+	@Test
+	public void hashA_10KB_File() throws IOException
+	{
+		checkFileHash(10 * 1024);
+	}
+
+	@Test
+	public void hashA_30KB_File() throws IOException
+	{
+		checkFileHash(30 * 1024);
+	}
+
+	@Test
+	public void hashA_1MB_File() throws IOException
+	{
+		checkFileHash(1 * 1024 * 1024);
+	}
+
+	@Test
+	public void hashA_2MB_File() throws IOException
+	{
+		checkFileHash(2 * 1024 * 1024);
+	}
+
+	@Test
+	public void hashA_3MB_File() throws IOException
+	{
+		checkFileHash(3 * 1024 * 1024);
+	}
+
+	@Test
+	public void hashA_60MB_File() throws IOException
+	{
+		checkFileHash(60 * 1024 * 1024);
+	}
+
+	private void checkFileHash(int fileSize) throws IOException
+	{
+		Path fileToHash = createFileWithSize(fileSize);
+		FileHash expectedHash = computeExpectedHash(fileToHash);
 
 		FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
 
-		assertFileHash(fileHash, smallBlockHash, mediumBlockHash, fullFileHash);
+		// displayFileHash(fileSize, fileHash);
+
+		assertFileHash(expectedHash, fileHash);
 	}
 
-	@Test
-	public void weCanHashA_2KB_File() throws IOException
+	private void displayFileHash(int fileSize, FileHash fileHash)
 	{
-		String smallBlockHash = "76b1e87b9f5df5d1584c5684432005d533196532439edbbf25ba9c7e82b7b0f7652c66e20ab07d854b950c8eeb5e2f65a03054f68d093fa75927ab2041bd8f74";
-		String mediumBlockHash = smallBlockHash;
-		String fullFileHash = smallBlockHash;
-
-		Path fileToHash = createFileWithSize(2 * 1024);
-
-		FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
-
-		assertFileHash(fileHash, smallBlockHash, mediumBlockHash, fullFileHash);
+		System.out.println("File " + FileUtils.byteCountToDisplaySize(fileSize));
+		System.out.println("\tsmallBlockHash=" + fileHash.getSmallBlockHash());
+		System.out.println("\tmediumBlockHash=" + fileHash.getMediumBlockHash());
+		System.out.println("\tfullHash=" + fileHash.getFullHash());
+		System.out.println("");
 	}
 
-	@Test
-	public void weCanHashA_30KB_File() throws IOException
-	{
-		String smallBlockHash = "757af34fe2d75e895caf4e479e77e5b2ba97510140933c89facc0399eb92063e83d7833d5d3285d35ee310b6d599aa8f8cafbd480cb797bbb2d8b8b47880d2ba";
-		String mediumBlockHash = "f66f942e45d12bda1224a7644e7b157a67e0cb66dc48e36d92cfbf8febf3fdae2d567a0906f1c3684f19e0902460513cf9f5fba285ce9d8f61fd1ea4772d79c3";
-		String fullFileHash = mediumBlockHash;
-
-		Path fileToHash = createFileWithSize(30 * 1024);
-
-		FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
-
-		assertFileHash(fileHash, smallBlockHash, mediumBlockHash, fullFileHash);
-	}
-
-	@Test
-	public void weCanHashA_60MB_File() throws IOException
-	{
-		String smallBlockHash = "757af34fe2d75e895caf4e479e77e5b2ba97510140933c89facc0399eb92063e83d7833d5d3285d35ee310b6d599aa8f8cafbd480cb797bbb2d8b8b47880d2ba";
-		String mediumBlockHash = "733e3c1c2e1a71086637cecfe168a47d35c10cda2b792ff645befef7eaf86b96ecaf357b775dd323d5ab2a638c90c81abcae89372500dd8da60160508486bf4d";
-		String fullFileHash = "e891a71e312bc6e34f549664706951516c42f660face62756bb155301c5e06ba79db94f83dedd43467530021935f5b427a58d7a5bd245ea1b2b0db8d7b08ee7a";
-
-		Path fileToHash = createFileWithSize(60 * 1024 * 1024);
-
-		FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
-
-		assertFileHash(fileHash, smallBlockHash, mediumBlockHash, fullFileHash);
-	}
-
-	private void assertFileHash(FileHash fileHash, String smallBlockHash, String mediumBlockHash, String fullFileHash)
+	private void assertFileHash(FileHash expectedFileHash, FileHash fileHash)
 	{
 		switch (hashMode)
 		{
@@ -169,31 +212,28 @@ public class FileHasherTest extends StateAssert
 				break;
 
 			case hashSmallBlock:
-				assertThat(fileHash.getSmallBlockHash()).isEqualTo(smallBlockHash);
+				assertThat(fileHash.getSmallBlockHash()).isEqualTo(expectedFileHash.getSmallBlockHash());
 				assertThat(fileHash.getMediumBlockHash()).isEqualTo(NO_HASH);
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
 				break;
 
 			case hashMediumBlock:
-				assertThat(fileHash.getSmallBlockHash()).isEqualTo(smallBlockHash);
-				assertThat(fileHash.getMediumBlockHash()).isEqualTo(mediumBlockHash);
+				assertThat(fileHash.getSmallBlockHash()).isEqualTo(expectedFileHash.getSmallBlockHash());
+				assertThat(fileHash.getMediumBlockHash()).isEqualTo(expectedFileHash.getMediumBlockHash());
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
 				break;
 
 			case hashAll:
-				assertThat(fileHash.getSmallBlockHash()).isEqualTo(smallBlockHash);
-				assertThat(fileHash.getMediumBlockHash()).isEqualTo(mediumBlockHash);
-				assertThat(fileHash.getFullHash()).isEqualTo(fullFileHash);
+				assertThat(fileHash.getSmallBlockHash()).isEqualTo(expectedFileHash.getSmallBlockHash());
+				assertThat(fileHash.getMediumBlockHash()).isEqualTo(expectedFileHash.getMediumBlockHash());
+				assertThat(fileHash.getFullHash()).isEqualTo(expectedFileHash.getFullHash());
 				break;
 		}
 	}
 
 	private Path createFileWithSize(long fileSize) throws IOException
 	{
-		Path license = Paths.get("LICENSE");
-		byte[] content = Files.readAllBytes(license);
-
-		Path newFile = context.getRepositoryRootDir().resolve("LICENSE_" + fileSize);
+		Path newFile = context.getRepositoryRootDir().resolve("file_" + fileSize);
 		if (Files.exists(newFile))
 		{
 			Files.delete(newFile);
@@ -205,16 +245,87 @@ public class FileHasherTest extends StateAssert
 			return newFile;
 		}
 
-		if (content.length > fileSize)
+		int contentSize = FileState.SIZE_1_KB / 4;
+		for (int sequenceCount = 0, size = 0; size < fileSize; size += contentSize, sequenceCount++)
 		{
-			content = Arrays.copyOf(content, (int) fileSize);
-		}
-
-		for (int size = 0; size < fileSize; size += content.length)
-		{
+			byte[] content = generateContent(sequenceCount, contentSize);
 			Files.write(newFile, content, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 		}
 
 		return newFile;
+	}
+
+	private byte[] generateContent(int sequenceCount, int contentSize)
+	{
+		byte[] content = new byte[contentSize];
+		for (int index = 0; index < contentSize; index += 2)
+		{
+			content[index] = getContentByte(sequenceCount, false);
+			content[index + 1] = getContentByte(sequenceCount, true);
+		}
+		return content;
+	}
+
+	private byte getContentByte(int sequenceCount, boolean fromTheEnd)
+	{
+		int index = sequenceCount % contentBytes.length;
+		if (fromTheEnd)
+		{
+			index = contentBytes.length - 1 - index;
+		}
+		return contentBytes[index];
+	}
+
+	private FileHash computeExpectedHash(Path fileToHash) throws IOException
+	{
+		byte[] fullContent = Files.readAllBytes(fileToHash);
+		String smallBlockHash = generateSmallBlockHash(fullContent);
+		String mediumBlockHash = generateMediumBlockHash(fullContent);
+		String fullHash = generateFullHash(fullContent);
+
+		return new FileHash(smallBlockHash, mediumBlockHash, fullHash);
+	}
+
+	private String generateSmallBlockHash(byte[] fullContent) throws IOException
+	{
+		if (fullContent.length >= 2 * SIZE_4_KB)
+		{
+			return hashContent(extractBlock(fullContent, SIZE_4_KB, SIZE_4_KB));
+		}
+		else
+		{
+			return hashContent(extractBlock(fullContent, 0, SIZE_4_KB));
+		}
+	}
+
+	private String generateMediumBlockHash(byte[] fullContent) throws IOException
+	{
+		if (fullContent.length >= 2 * SIZE_1_MB)
+		{
+			return hashContent(extractBlock(fullContent, SIZE_1_MB, SIZE_1_MB));
+		}
+		else
+		{
+			return hashContent(extractBlock(fullContent, 0, SIZE_1_MB));
+		}
+	}
+
+	private String generateFullHash(byte[] fullContent)
+	{
+		return hashContent(fullContent);
+	}
+
+	private byte[] extractBlock(byte[] fullContent, int startPosition, int size)
+	{
+		return Arrays.copyOfRange(fullContent, startPosition, Math.min(fullContent.length, startPosition + size));
+	}
+
+	private String hashContent(byte[] content)
+	{
+		HashFunction hashFunction = Hashing.sha512();
+		com.google.common.hash.Hasher hasher = hashFunction.newHasher(SIZE_100_MB);
+		hasher.putBytes(content);
+		HashCode hash = hasher.hash();
+		return hash.toString();
 	}
 }

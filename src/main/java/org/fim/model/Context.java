@@ -18,6 +18,8 @@
  */
 package org.fim.model;
 
+import static org.fim.model.HashMode.hashAll;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -44,7 +46,7 @@ public class Context
 		invokedFromSubDirectory = false;
 		repositoryRootDir = Paths.get(".");
 		verbose = true;
-		hashMode = HashMode.hashAll;
+		hashMode = hashAll;
 		comment = "";
 		useLastState = false;
 		threadCount = Runtime.getRuntime().availableProcessors() / 2;

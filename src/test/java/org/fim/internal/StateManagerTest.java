@@ -19,6 +19,10 @@
 package org.fim.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -58,10 +62,10 @@ public class StateManagerTest extends StateAssert
 	public static Collection<Object[]> parameters()
 	{
 		return Arrays.asList(new Object[][]{
-				{HashMode.dontHash},
-				{HashMode.hashSmallBlock},
-				{HashMode.hashMediumBlock},
-				{HashMode.hashAll}
+				{dontHash},
+				{hashSmallBlock},
+				{hashMediumBlock},
+				{hashAll}
 		});
 	}
 
@@ -99,7 +103,7 @@ public class StateManagerTest extends StateAssert
 		assertThat(cut.getLastStateNumber()).isEqualTo(count);
 
 		State result = cut.loadLastState();
-		if (hashMode == HashMode.dontHash)
+		if (hashMode == dontHash)
 		{
 			assertAllFileStatesHaveNoHash(result, 30);
 		}
@@ -113,7 +117,7 @@ public class StateManagerTest extends StateAssert
 		assertThat(stateFile.getFileName().toString()).isEqualTo("state_10.json.gz");
 
 		result = cut.loadState(10);
-		if (hashMode == HashMode.dontHash)
+		if (hashMode == dontHash)
 		{
 			assertAllFileStatesHaveNoHash(result, 30);
 		}

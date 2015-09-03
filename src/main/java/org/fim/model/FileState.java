@@ -37,6 +37,8 @@ public class FileState implements Hashable
 	public static final int SIZE_100_MB = 100 * SIZE_1_MB;
 	public static final int SIZE_200_MB = 200 * SIZE_1_MB;
 
+	public static final int SIZE_UNLIMITED = -1;
+
 	public static final String NO_HASH = "no_hash";
 
 	private String fileName;

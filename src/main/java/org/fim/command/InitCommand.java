@@ -18,6 +18,8 @@
  */
 package org.fim.command;
 
+import static org.fim.model.HashMode.hashAll;
+
 import java.io.IOException;
 import java.nio.file.Files;
 
@@ -27,7 +29,6 @@ import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
-import org.fim.model.HashMode;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
@@ -80,7 +81,7 @@ public class InitCommand extends AbstractCommand
 			System.exit(-1);
 		}
 
-		if (context.getHashMode() != HashMode.hashAll)
+		if (context.getHashMode() != hashAll)
 		{
 			SettingsManager settingsManager = new SettingsManager(context);
 			settingsManager.setGlobalHashMode(context.getHashMode());

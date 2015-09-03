@@ -18,6 +18,8 @@
  */
 package org.fim.internal;
 
+import static org.fim.model.HashMode.dontHash;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +29,6 @@ import org.fim.model.Context;
 import org.fim.model.Difference;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
-import org.fim.model.HashMode;
 import org.fim.model.Modification;
 import org.fim.model.State;
 import org.fim.util.Logger;
@@ -121,8 +122,8 @@ public class StateComparator
 		while (iterator.hasNext())
 		{
 			FileState fileState = iterator.next();
-			if (context.getHashMode() != HashMode.dontHash &&
-					(samePreviousHash = findFilesWithSameHash(fileState, previousFileStates)).size() > 0)
+			if ((context.getHashMode() != dontHash) &&
+					((samePreviousHash = findFilesWithSameHash(fileState, previousFileStates)).size() > 0))
 			{
 				FileState originalFileState = samePreviousHash.get(0);
 				if (notFoundInCurrentFileState.contains(originalFileState))

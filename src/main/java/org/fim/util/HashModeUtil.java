@@ -16,32 +16,45 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim.model;
+package org.fim.util;
 
+import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
 
-public class Settings
+import org.fim.model.HashMode;
+
+public class HashModeUtil
 {
-	private HashMode globalHashMode = hashAll;
-	private int lastStateNumber = 0;
-
-	public HashMode getGlobalHashMode()
+	public static boolean isCompatible(HashMode hashMode, HashMode toCheck)
 	{
-		return globalHashMode;
-	}
+		switch (hashMode)
+		{
+			case hashAll:
+				return true;
 
-	public void setGlobalHashMode(HashMode globalHashMode)
-	{
-		this.globalHashMode = globalHashMode;
-	}
+			case hashMediumBlock:
+				if (toCheck == hashAll)
+				{
+					return false;
+				}
+				return true;
 
-	public int getLastStateNumber()
-	{
-		return lastStateNumber;
-	}
+			case hashSmallBlock:
+				if (toCheck == hashAll || toCheck == hashMediumBlock)
+				{
+					return false;
+				}
+				return true;
 
-	public void setLastStateNumber(int lastStateNumber)
-	{
-		this.lastStateNumber = lastStateNumber;
+			case dontHash:
+				if (toCheck != dontHash)
+				{
+					return false;
+				}
+				return true;
+		}
+
+		return false;
 	}
 }

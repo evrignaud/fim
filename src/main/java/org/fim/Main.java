@@ -18,6 +18,11 @@
  */
 package org.fim;
 
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
+
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,7 +51,6 @@ import org.fim.command.VersionCommand;
 import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
 import org.fim.model.Context;
-import org.fim.model.HashMode;
 import org.fim.util.Console;
 import org.fim.util.Logger;
 
@@ -120,19 +124,19 @@ public class Main
 
 			if (commandLine.hasOption('f'))
 			{
-				context.setHashMode(HashMode.dontHash);
+				context.setHashMode(dontHash);
 			}
 			else if (commandLine.hasOption('k'))
 			{
-				context.setHashMode(HashMode.hashSmallBlock);
+				context.setHashMode(hashSmallBlock);
 			}
 			else if (commandLine.hasOption('m'))
 			{
-				context.setHashMode(HashMode.hashMediumBlock);
+				context.setHashMode(hashMediumBlock);
 			}
 			else
 			{
-				context.setHashMode(HashMode.hashAll);
+				context.setHashMode(hashAll);
 			}
 
 			if (commandLine.hasOption('h'))
@@ -163,7 +167,7 @@ public class Main
 			System.exit(-1);
 		}
 
-		if (context.getThreadCount() != 1 && context.getHashMode() == HashMode.dontHash)
+		if (context.getThreadCount() != 1 && context.getHashMode() == dontHash)
 		{
 			context.setThreadCount(1);
 			Logger.info("Not hashing file content so thread count forced to 1");

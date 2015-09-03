@@ -18,6 +18,9 @@
  */
 package org.fim.command;
 
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -28,7 +31,7 @@ import org.fim.internal.SettingsManager;
 import org.fim.internal.StateGenerator;
 import org.fim.model.Command;
 import org.fim.model.Context;
-import org.fim.model.HashMode;
+import org.fim.util.HashModeUtil;
 import org.fim.util.Logger;
 
 public abstract class AbstractCommand implements Command
@@ -43,7 +46,7 @@ public abstract class AbstractCommand implements Command
 
 	protected void fileContentHashingMandatory(Context context)
 	{
-		if (context.getHashMode() == HashMode.dontHash)
+		if (context.getHashMode() == dontHash)
 		{
 			Logger.error("File content hashing mandatory for this command.");
 			System.exit(-1);
@@ -54,9 +57,9 @@ public abstract class AbstractCommand implements Command
 	{
 		List<Option> optionList = Arrays.asList(options);
 		SettingsManager settingsManager = new SettingsManager(context);
-		if (settingsManager.getGlobalHashMode() != HashMode.hashAll)
+		if (settingsManager.getGlobalHashMode() != hashAll)
 		{
-			if (isCompatible(settingsManager.getGlobalHashMode(), context.getHashMode()))
+			if (HashModeUtil.isCompatible(settingsManager.getGlobalHashMode(), context.getHashMode()))
 			{
 				if (optionList.contains(Option.ALLOW_COMPATIBLE))
 				{
@@ -75,7 +78,7 @@ public abstract class AbstractCommand implements Command
 				context.setHashMode(settingsManager.getGlobalHashMode());
 			}
 		}
-		else if (context.getHashMode() != HashMode.hashAll)
+		else if (context.getHashMode() != hashAll)
 		{
 			if (optionList.contains(Option.ALL_HASH_MANDATORY))
 			{
@@ -83,38 +86,6 @@ public abstract class AbstractCommand implements Command
 				System.exit(-1);
 			}
 		}
-	}
-
-	private boolean isCompatible(HashMode globalHashMode, HashMode hashMode)
-	{
-		switch (globalHashMode)
-		{
-			case hashAll:
-				return true;
-
-			case hashMediumBlock:
-				if (hashMode == HashMode.hashAll)
-				{
-					return false;
-				}
-				return true;
-
-			case hashSmallBlock:
-				if (hashMode == HashMode.hashAll || hashMode == HashMode.hashMediumBlock)
-				{
-					return false;
-				}
-				return true;
-
-			case dontHash:
-				if (hashMode != HashMode.dontHash)
-				{
-					return false;
-				}
-				return true;
-		}
-
-		return false;
 	}
 
 	protected boolean confirmAction(Context context, String action)
