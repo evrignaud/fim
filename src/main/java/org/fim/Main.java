@@ -79,8 +79,8 @@ public class Main
 		Options options = new Options();
 		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as remote master.\nOnly for the remove duplicated files command", false));
 		options.addOption(createOption("f", "fast-mode", false, "Do not hash file content. Use only file names and modification dates", false));
-		options.addOption(createOption("k", "hash-first-four-kilos", false, "Hash the first four kilos of the files", false));
-		options.addOption(createOption("m", "hash-first-mega", false, "Hash the first mega of the files", false));
+		options.addOption(createOption("k", "hash-second-4-kb-block", false, "Hash the second 4 KB block of the files", false));
+		options.addOption(createOption("m", "hash-second-1-mb-block", false, "Hash the second 1 MB block of the files", false));
 		options.addOption(createOption("h", "help", false, "Prints the Fim help", false));
 		options.addOption(createOption("l", "use-last-state", false, "Use the last committed State.\nOnly for the find local duplicated files command", false));
 		options.addOption(createOption("c", "comment", true, "Sets that State comment during init and commit", false));

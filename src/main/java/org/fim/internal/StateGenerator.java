@@ -97,10 +97,10 @@ public class StateGenerator
 				return "retrieve only file attributes";
 
 			case hashSmallBlock:
-				return "hash first four kilos";
+				return "hash second 4 KB block";
 
 			case hashMediumBlock:
-				return "hash first mega";
+				return "hash second 1 MB block";
 
 			case hashAll:
 				return "hash the complete file";

@@ -78,7 +78,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 
 		if (context.getHashMode() == HashMode.hashSmallBlock)
 		{
-			System.out.println("You are going to detect duplicates and remove them based only on the hash of the first four kilos of the files.");
+			System.out.println("You are going to detect duplicates and remove them based only on the hash of the second 4 KB block of the files.");
 			if (!confirmAction(context, "continue"))
 			{
 				System.exit(0);
@@ -87,7 +87,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 
 		if (context.getHashMode() == HashMode.hashMediumBlock)
 		{
-			System.out.println("You are going to detect duplicates and remove them based only on the hash of the first mega of the files.");
+			System.out.println("You are going to detect duplicates and remove them based only on the hash of the second 1 MB block of the files.");
 			if (!confirmAction(context, "continue"))
 			{
 				System.exit(0);
