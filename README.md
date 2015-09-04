@@ -1,4 +1,4 @@
-# Fim
+# ![Logo](http://evrignaud.github.io/fim/images/logo.png) Fim
 
 ## File Integrity Manager
 
