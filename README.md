@@ -1,4 +1,4 @@
-<img src="http://evrignaud.github.io/fim/images/logo.png" alt="Logo" style="width: 128px;"/>
+# ![Logo](http://evrignaud.github.io/fim/images/logo-128.png)
 
 ## File Integrity Manager
 
