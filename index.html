@@ -42,9 +42,12 @@ The solution provided by Fim is to manage an index of the files that contains fo
 - file name
 - file length
 - modification date
-- hash of the first four kilobytes of the file content
-- hash of the first megabyte of the file content
+- hash of the second 4 KB block of the file content
+- hash of the second 1 MB block of the file content
 - hash of the full file content
+
+Most of the files contains headers, so to produce accurate hash of 4 KB / 1 MB blocs we skip the first block and hash the second one,<br/>
+**but when the file size is less than twice the block size we hash the first block**.
 
 The hash algorithm that is used is SHA-512.
 
@@ -82,13 +85,13 @@ You can do a full diff that will compare the hash of all the files. It can be ve
 $ fim diff
 ```
 
-You can compare quickly asking to hash only the first megabyte of the files. **Using this option can produce an inaccurate result.**
+You can compare quickly asking to hash only the second 1 MB block of the files. **Using this option can produce an inaccurate result.**
 
 ```shell
 $ fim diff -m
 ```
 
-You can compare quicker asking to hash only the first four kilobytes of the files. **Using this option can produce an inaccurate result.**
+You can compare quicker asking to hash only the second 4 KB block of the files. **Using this option can produce an inaccurate result.**
 
 ```shell
 $ fim diff -k
@@ -139,10 +142,10 @@ Available options:
      -c,--comment <arg>                 Sets that State comment during init and commit
      -f,--fast-mode                     Do not hash file content. Use only file names and modification dates
      -h,--help                          Prints the Fim help
-     -k,--hash-first-four-kilos         Hash the first four kilos of the files
+     -k,--hash-second-4-kb-block        Hash the second 4 KB block of the files
      -l,--use-last-state                Use the last committed State.
                                         Only for the find local duplicated files command
-     -m,--hash-first-mega               Hash the first mega of the files
+     -m,--hash-second-1-mb-block        Hash the second 1 MB block of the files
      -q,--quiet                         Do not display details
      -t,--thread-count <arg>            Number of thread used to hash files content in parallel
      -v,--version                       Prints the Fim version
@@ -614,12 +617,12 @@ oooooooooooooooooo#ooooooooooo..oo@...ooooo#o
 
 ## Check quickly for differences
 
-It is possible to check the differences very quickly using the `-k` option that will check only the first four kilobytes.<br/>
+It is possible to check the differences very quickly using the `-k` option that will check only the second 4 KB block.<br/>
 In my case **it takes 4 minutes :=)**.
 
 ```shell
 ~/Photos_Videos$ fim diff -k
-2015/07/21 08:49:21 - Info  - Scanning recursively local files, hash first four kilos, using 2 thread
+2015/07/21 08:49:21 - Info  - Scanning recursively local files, hash second 4 KB block, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 .o#...........................................o@o...............OO.oO.......O.......................
 @....o.......oo......................o..................Oo..........................................
@@ -677,12 +680,12 @@ Nothing modified
 
 This quick diff can be inaccurate.<br/>
 To increase accuracy, you can use the `-m` option. This result is more accurate,
-but it cannot be completely accurate as only the hash of the first megabyte of the files are computed.<br/>
+but it cannot be completely accurate as only the hash of the second 1 MB block of the files are computed.<br/>
 This time in my case, **it takes 20 minutes** to check the differences.
 
 ```shell
 ~/Photos_Videos$ fim diff -m
-2015/07/21 12:45:24 - Info  - Scanning recursively local files, hash first mega, using 2 thread
+2015/07/21 12:45:24 - Info  - Scanning recursively local files, hash second 1 MB block, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 .o#...........................................o@o...............OO.oO.......O.......................
 @....o.......oo......................o..................Oo..........................................
