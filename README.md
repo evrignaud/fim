@@ -10,7 +10,7 @@ Fim manage the integrity of a complete file tree.
   * [How does it works](http://evrignaud.github.io/fim/#how-does-it-works)
   * [Fim workflow](http://evrignaud.github.io/fim/#fim-workflow)
   * [Fim usage](http://evrignaud.github.io/fim/#fim-usage)
-  * [How can I try Fim](http://evrignaud.github.io/fim/#how-can-i-try-fim)
+  * [How can I use Fim](http://evrignaud.github.io/fim/#how-can-i-use-fim)
   * [Changelog](http://evrignaud.github.io/fim/Changelog.html)
   * [Simple example](http://evrignaud.github.io/fim/#simple-example)
   * [Real life example](http://evrignaud.github.io/fim/#real-life-example)
