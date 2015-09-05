@@ -18,8 +18,11 @@
  */
 package org.fim.internal;
 
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.FileState.SIZE_100_MB;
+import static org.fim.model.FileState.SIZE_1_KB;
 import static org.fim.model.FileState.SIZE_1_MB;
 import static org.fim.model.FileState.SIZE_4_KB;
 import static org.fim.model.HashMode.dontHash;
@@ -33,11 +36,11 @@ import static org.fim.tooling.BlockNumber4kb._4KB_Block_2;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,7 +50,6 @@ import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import org.apache.commons.io.FileUtils;
 import org.fim.model.FileHash;
-import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.tooling.BlockNumber1mb;
 import org.fim.tooling.BlockNumber4kb;
@@ -237,7 +239,7 @@ public class FileHasherTest extends StateAssert
 		}
 	}
 
-	private Path createFileWithSize(long fileSize) throws IOException
+	private Path createFileWithSize(int fileSize) throws IOException
 	{
 		Path newFile = context.getRepositoryRootDir().resolve("file_" + fileSize);
 		if (Files.exists(newFile))
@@ -251,11 +253,18 @@ public class FileHasherTest extends StateAssert
 			return newFile;
 		}
 
-		int contentSize = FileState.SIZE_1_KB / 4;
-		for (int sequenceCount = 0, size = 0; size < fileSize; size += contentSize, sequenceCount++)
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream(fileSize))
 		{
-			byte[] content = generateContent(sequenceCount, contentSize);
-			Files.write(newFile, content, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+			int contentSize = SIZE_1_KB / 4;
+			for (int sequenceCount = 0, size = 0; size < fileSize; size += contentSize, sequenceCount++)
+			{
+				byte[] content = generateContent(sequenceCount, contentSize);
+				out.write(content);
+			}
+
+			byte[] fileContent = out.toByteArray();
+			assertThat(fileContent.length).isEqualTo(fileSize);
+			Files.write(newFile, fileContent, CREATE, APPEND);
 		}
 
 		return newFile;
