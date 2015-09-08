@@ -49,7 +49,7 @@ public class InitCommand extends AbstractCommand
 	@Override
 	public String getDescription()
 	{
-		return "Initialize a Fim repository";
+		return "Initialize a Fim repository and create the first State";
 	}
 
 	@Override
