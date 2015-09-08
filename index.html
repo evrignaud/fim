@@ -29,12 +29,12 @@
 ---
 
 Fim allow you to quickly get the status of all kind of files.<br/>
-It can be photos, videos or a complete disk tree. You can manage them like you could do with a VCS like Git.
+It can be photos, videos or a complete disk tree. You can manage them with a spirit that looks like Git.
 
 On a daily workflow, you can know the files that have been added, modified, removed, moved, renamed, duplicated.<br/>
 When you are working with files and you are also very busy, it's difficult to remind what are the files you were working on previously.<br/>
 A VCS can help you find it.<br/>
-Unfortunately when you are working with photos or videos, or other kind of big binary files you cannot manage them with a VCS like Git.<br/>
+Unfortunately when you are working with photos or videos, or other kind of big binary files you cannot manage them with a tool like Git.<br/>
 Fim is here for that.
 
 Each time you have a stable state you can commit to store it and be able to compare it with the next state later.
@@ -135,13 +135,14 @@ usage: fim <command> [-a <arg>] [-c <arg>] [-f] [-h] [-k] [-l] [-m] [-q] [-t <ar
 File Integrity Checker
 
 Available commands:
-     init                       Initialize a Fim repository
+     init                       Initialize a Fim repository and create the first State
      ci / commit                Commit the current directory State
-     diff                       Compare the current directory State with the previous one
+     diff                       Compare the current directory State with the previous one.
+                                You can get a quick result by using the -m or -k or -f options
      rdate / reset-date         Reset the files modification date like it is stored in the last committed State
      fdup / find-duplicates     Find local duplicated files in the Fim repository
      rdup / remove-duplicates   Remove duplicated files from local directory based on a remote master Fim repository
-     log                        Display States log
+     log                        Display the history of the States and a summary of the changes that were made
      purge / purge-states       Purge previous States
      help                       Prints the Fim help
      version                    Prints the Fim version
