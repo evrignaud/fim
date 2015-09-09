@@ -220,6 +220,22 @@ fim-1.0.0-SNAPSHOT-distribution.zip
 <br/>
 <br/>
 
+# Use case example
+---
+
+Fim can be used for different kind of use cases.<br/>
+Personally I use Fim to manage my photos and videos.<br/>
+When I have new photos, I put them at the right place in my pictures folder and then I do `fim ci` from the subdirectory containing the new photos to record a new State. As I could do with Git.<br/>
+As I do this from a sub-directory the commit is fast because Fim hash only the files that I added and create a new State by merging the previous State and the new hash.
+
+The `fim diff` command lets me know when I want (even super quickly) if something changed in my pictures folder.
+
+I can easily identify and delete the pictures I have duplicated on my drive or other computer with the command `fim rdup`. For this, I just need to copy the `.fim` directory on the other computer.
+
+
+<br/>
+<br/>
+
 # Changelog
 ---
 
@@ -775,19 +791,6 @@ This time in my case, **it takes 3 seconds**.
 
 <br/>
 
-## My personal use case
-
-Fim can be used for different kind of use cases.<br/>
-Personally I use Fim to manage my photos and videos.<br/>
-When I have new photos, I put them at the right place in my pictures folder and then I do `fim ci` from the subdirectory containing the new photos to record a new State. As I could do with Git.<br/>
-As I do this from a sub-directory the commit is fast because Fim hash only the files that I added and create a new State by merging the previous State and the new hash.
-
-The `fim diff` command lets me know when I want (even super quickly) if something changed in my pictures folder.
-
-I can easily identify and delete the pictures I have duplicated on my drive or other computer with the command `fim rdup`. For this, I just need to copy the `.fim` directory on the other computer.
-
-<br/>
-
 ## Run Fim commands from a sub-directory
 
 You can run all the Fim commands from every directory inside the Fim repository.
@@ -863,6 +866,14 @@ If something is modified in the State, the hash of the State content will change
 Fim won't use it.
 
 <br/>
+
+## Cross Platform Compatibility
+
+The same Fim repository can be used by either on Linux and on Windows.<br/>
+State content is normalized and the same State content can be loaded either on Linux and Windows.
+
+
+<br/>
 <br/>
 <br/>
 <br/>
@@ -880,6 +891,23 @@ You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.
 <br/>
 <br/>
 
+# Tested Platforms
+
+Currently Fim is tested on Linux and Windows.<br/>
+Contribution is welcome to test it on OS X.
+
+<br/>
+<br/>
+
+# They talked about it
+
+* Korben.info: [Vérifier l’intégrité de très nombreux fichiers](http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html)
+
+> Fim (File Integrity Manager) est un outil vraiment excellent qui permet de gérer l'intégrité de nombreux fichiers.<br/>
+> [...](http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html)
+
+<br/>
+<br/>
 
 # About
 ---
