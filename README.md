@@ -18,9 +18,9 @@ Fim manage the integrity of a complete file tree.
   * [Fim requirements](http://evrignaud.github.io/fim/#fim-requirements)
   * [License](http://evrignaud.github.io/fim/LICENSE.html)
 
-## My personal use case
+## Use case example
 
-[Follow here](http://evrignaud.github.io/fim/#my-personal-use-case)
+[Follow here](http://evrignaud.github.io/fim/#use-case-example)
 
 ## Fim releases
 
