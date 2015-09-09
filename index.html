@@ -28,6 +28,9 @@
 # ![Logo](images/logo-64.png) Presentation
 ---
 
+The purpose of Fim is to manage a workspace and be able to know where we are in the work we are doing.<br/>
+When we do a lot of stuff at the same time, things take time and we lose the thread.
+
 Fim allow you to quickly get the status of all kind of files.<br/>
 It can be photos, videos or a complete disk tree. You can manage them with a spirit that looks like Git.
 
@@ -769,6 +772,19 @@ This time in my case, **it takes 3 seconds**.
 
 # FAQ
 ---
+
+<br/>
+
+## What can I do with Fim
+
+Fim can be used for different kind of use cases.<br/>
+Personally I use Fim to manage my photos and videos.<br/>
+When I have new photos, I put them at the right place in my pictures folder and then I do `fim ci` from the subdirectory containing the new photos to record a new State. As I could do with Git.<br/>
+As I do this from a sub-directory the commit is fast because Fim hash only the files that I added and create a new State by merging the previous State and the new hash.
+
+The `fim diff` command lets me know when I want (even super quickly) if something changed in my pictures folder.
+
+I can easily identify and delete the pictures I have duplicated on my drive or other computer with the command `fim rdup`. For this, I just need to copy the `.fim` directory on the other computer.
 
 <br/>
 
