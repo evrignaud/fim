@@ -201,6 +201,44 @@ mvn clean install
 
 <br/>
 
+## Step by step procedure
+
+*This procedure is a contribution done by [El Titi](http://linuxfr.org/nodes/106724/comments/1622498)*
+
+First, it install maven. If you already have it you can skip the 2 first lines.<br/>
+`/usr/local/bin/mvn` should be replaced with the path where `mvn` is installed.
+
+### For OS X
+
+```shell
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install maven
+cd
+mkdir git
+cd git 
+git clone https://github.com/evrignaud/fim.git
+cd fim/
+/usr/local/bin/mvn clean install
+./fim
+```
+
+### For Linux
+
+
+```shell
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/linuxbrew/go/install)"
+brew install maven
+cd
+mkdir git
+cd git 
+git clone https://github.com/evrignaud/fim.git
+cd fim/
+/usr/local/bin/mvn clean install
+./fim
+```
+
+<br/>
+
 ## Build a Fim distribution
 
 If you want to generate a Fim distribution type the following command:
