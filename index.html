@@ -215,7 +215,7 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 brew install maven
 cd
 mkdir git
-cd git 
+cd git
 git clone https://github.com/evrignaud/fim.git
 cd fim/
 /usr/local/bin/mvn clean install
@@ -230,7 +230,7 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/linuxbrew/go/in
 brew install maven
 cd
 mkdir git
-cd git 
+cd git
 git clone https://github.com/evrignaud/fim.git
 cd fim/
 /usr/local/bin/mvn clean install
@@ -298,7 +298,7 @@ For the purpose of this example we use small files.
 ~$ cd sample/
 
 # Creates 10 files
-~/sample$ for i in {01..10} ; do echo "New File $i" > file$i ; done
+~/sample$ for i in 01 02 03 04 05 06 07 08 09 10 ; do echo "New File $i" > file$i ; done
 
 ~/sample$ ls -la
 total 56
@@ -522,7 +522,7 @@ Searching for duplicated files
 Commit only the local modifications done inside this directory.
 
 ```shell
-~/sample/dir01$ fim ci -c modifications from dir01 -y
+~/sample/dir01$ fim ci -c "modifications from dir01" -y
 2015/08/24 23:00:31 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 2015/08/24 23:00:32 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
@@ -556,7 +556,7 @@ Nothing modified
 ## Commit the modifications
 
 ```shell
-~/sample$ fim ci -c All modifications -y
+~/sample$ fim ci -c "All modifications" -y
 2015/08/24 23:00:33 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 .
