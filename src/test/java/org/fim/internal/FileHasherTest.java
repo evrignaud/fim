@@ -129,61 +129,61 @@ public class FileHasherTest extends StateAssert
 	@Test
 	public void hashA_2KB_File() throws IOException
 	{
-		checkFileHash(2 * 1024, _4KB_Block_1, _1MB_Block_1);
+		checkFileHash((2 * 1024) + 157, _4KB_Block_1, _1MB_Block_1);
 	}
 
 	@Test
 	public void hashA_4KB_File() throws IOException
 	{
-		checkFileHash(4 * 1024, _4KB_Block_1, _1MB_Block_1);
+		checkFileHash((4 * 1024) + 201, _4KB_Block_1, _1MB_Block_1);
 	}
 
 	@Test
 	public void hashA_6KB_File() throws IOException
 	{
-		checkFileHash(6 * 1024, _4KB_Block_1, _1MB_Block_1);
+		checkFileHash((6 * 1024) + 323, _4KB_Block_1, _1MB_Block_1);
 	}
 
 	@Test
 	public void hashA_8KB_File() throws IOException
 	{
-		checkFileHash(8 * 1024, _4KB_Block_2, _1MB_Block_1);
+		checkFileHash((8 * 1024) + 723, _4KB_Block_2, _1MB_Block_1);
 	}
 
 	@Test
 	public void hashA_10KB_File() throws IOException
 	{
-		checkFileHash(10 * 1024, _4KB_Block_2, _1MB_Block_1);
+		checkFileHash((10 * 1024) + 671, _4KB_Block_2, _1MB_Block_1);
 	}
 
 	@Test
 	public void hashA_30KB_File() throws IOException
 	{
-		checkFileHash(30 * 1024, _4KB_Block_2, _1MB_Block_1);
+		checkFileHash((30 * 1024) + 257, _4KB_Block_2, _1MB_Block_1);
 	}
 
 	@Test
 	public void hashA_1MB_File() throws IOException
 	{
-		checkFileHash(1 * 1024 * 1024, _4KB_Block_2, _1MB_Block_1);
+		checkFileHash((1 * 1024 * 1024) + 91, _4KB_Block_2, _1MB_Block_1);
 	}
 
 	@Test
 	public void hashA_2MB_File() throws IOException
 	{
-		checkFileHash(2 * 1024 * 1024, _4KB_Block_2, _1MB_Block_2);
+		checkFileHash((2 * 1024 * 1024) + 51, _4KB_Block_2, _1MB_Block_2);
 	}
 
 	@Test
 	public void hashA_3MB_File() throws IOException
 	{
-		checkFileHash(3 * 1024 * 1024, _4KB_Block_2, _1MB_Block_2);
+		checkFileHash((3 * 1024 * 1024) + 101, _4KB_Block_2, _1MB_Block_2);
 	}
 
 	@Test
 	public void hashA_60MB_File() throws IOException
 	{
-		checkFileHash(60 * 1024 * 1024, _4KB_Block_2, _1MB_Block_2);
+		checkFileHash((60 * 1024 * 1024) + 291, _4KB_Block_2, _1MB_Block_2);
 	}
 
 	private void checkFileHash(int fileSize, BlockNumber4kb blockNumber4kb, BlockNumber1mb blockNumber1mb) throws IOException
@@ -256,9 +256,12 @@ public class FileHasherTest extends StateAssert
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream(fileSize))
 		{
 			int contentSize = SIZE_1_KB / 4;
-			for (int sequenceCount = 0, size = 0; size < fileSize; size += contentSize, sequenceCount++)
+			int remaining = fileSize;
+			for (int sequenceCount = 0; remaining > 0; sequenceCount++)
 			{
-				byte[] content = generateContent(sequenceCount, contentSize);
+				int size = Math.min(contentSize, remaining);
+				byte[] content = generateContent(sequenceCount, size);
+				remaining -= size;
 				out.write(content);
 			}
 
@@ -276,7 +279,10 @@ public class FileHasherTest extends StateAssert
 		for (int index = 0; index < contentSize; index += 2)
 		{
 			content[index] = getContentByte(sequenceCount, false);
-			content[index + 1] = getContentByte(sequenceCount, true);
+			if (index + 1 < contentSize)
+			{
+				content[index + 1] = getContentByte(sequenceCount, true);
+			}
 		}
 		return content;
 	}
