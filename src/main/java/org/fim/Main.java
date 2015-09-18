@@ -47,6 +47,7 @@ import org.fim.command.LogCommand;
 import org.fim.command.PurgeStatesCommand;
 import org.fim.command.RemoveDuplicatesCommand;
 import org.fim.command.ResetDateCommand;
+import org.fim.command.RollbackCommand;
 import org.fim.command.VersionCommand;
 import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
@@ -69,6 +70,7 @@ public class Main
 				new FindDuplicatesCommand(),
 				new RemoveDuplicatesCommand(),
 				new LogCommand(),
+				new RollbackCommand(),
 				new PurgeStatesCommand(),
 				new HelpCommand(),
 				new VersionCommand());
