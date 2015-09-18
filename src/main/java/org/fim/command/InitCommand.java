@@ -70,6 +70,23 @@ public class InitCommand extends AbstractCommand
 			}
 		}
 
+		String comment = context.getComment();
+		if (comment.length() == 0)
+		{
+			comment = "Initial State";
+		}
+		State currentState = new StateGenerator(context).generateState(comment, CURRENT_DIRECTORY, CURRENT_DIRECTORY);
+
+		CompareResult result = new StateComparator(context).compare(null, currentState).displayChanges();
+		currentState.setModificationCounts(result.getModificationCounts());
+
+		createRepository(context);
+
+		new StateManager(context).createNewState(currentState);
+	}
+
+	private void createRepository(Context context)
+	{
 		try
 		{
 			Files.createDirectories(context.getRepositoryStatesDir());
@@ -89,17 +106,5 @@ public class InitCommand extends AbstractCommand
 
 			Logger.warning(String.format("Global hash mode set to '%s'%n", StateGenerator.hashModeToString(context.getHashMode())));
 		}
-
-		String comment = context.getComment();
-		if (comment.length() == 0)
-		{
-			comment = "Initial State";
-		}
-		State currentState = new StateGenerator(context).generateState(comment, CURRENT_DIRECTORY, CURRENT_DIRECTORY);
-
-		CompareResult result = new StateComparator(context).compare(null, currentState).displayChanges();
-		currentState.setModificationCounts(result.getModificationCounts());
-
-		new StateManager(context).createNewState(currentState);
 	}
 }
