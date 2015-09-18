@@ -114,7 +114,14 @@ public class CompareResult
 
 		for (Difference diff : contentModified)
 		{
-			System.out.printf(stateFormat + "%s \t%s -> %s%n", "Content modified:", diff.getFileState().getFileName(), formatDate(diff.getPreviousFileState()), formatDate(diff.getFileState()));
+			if (diff.getPreviousFileState().getLastModified() != diff.getFileState().getLastModified())
+			{
+				System.out.printf(stateFormat + "%s \t%s -> %s%n", "Content modified:", diff.getFileState().getFileName(), formatDate(diff.getPreviousFileState()), formatDate(diff.getFileState()));
+			}
+			else
+			{
+				System.out.printf(stateFormat + "%s%n", "Content modified:", diff.getFileState().getFileName());
+			}
 		}
 
 		for (Difference diff : renamed)
