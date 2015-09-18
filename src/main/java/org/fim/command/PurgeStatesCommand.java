@@ -20,6 +20,8 @@ package org.fim.command;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
@@ -55,6 +57,8 @@ public class PurgeStatesCommand extends AbstractCommand
 	{
 		StateManager stateManager = new StateManager(context);
 
+		List<Path> filesToDelete = new ArrayList<>();
+
 		int index;
 		Path stateFile;
 		Path nextStateFile;
@@ -67,13 +71,22 @@ public class PurgeStatesCommand extends AbstractCommand
 			}
 
 			stateFile = stateManager.getStateFile(index);
-			Files.delete(stateFile);
+			filesToDelete.add(stateFile);
 		}
 
-		stateFile = stateManager.getStateFile(index);
-		Path newStateFile = stateManager.getStateFile(1);
-		Files.move(stateFile, newStateFile);
+		System.out.printf("You are going to delete the %d previous State files, keeping only the last one%n", filesToDelete.size());
+		if (confirmAction(context, "remove them"))
+		{
+			for (Path fileToDelete : filesToDelete)
+			{
+				Files.delete(fileToDelete);
+			}
 
-		stateManager.saveLastStateNumber(1);
+			stateFile = stateManager.getStateFile(index);
+			Path newStateFile = stateManager.getStateFile(1);
+			Files.move(stateFile, newStateFile);
+
+			stateManager.saveLastStateNumber(1);
+		}
 	}
 }
