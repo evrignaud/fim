@@ -67,6 +67,12 @@ public class CommitCommand extends AbstractCommand
 
 		if (context.isInvokedFromSubDirectory())
 		{
+			if (!lastState.getModelVersion().equals(currentState.getModelVersion()))
+			{
+				Logger.error("Not able to incrementally commit into the last State that use a different model version.");
+				System.exit(-1);
+			}
+
 			lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
 		}
 
@@ -78,7 +84,7 @@ public class CommitCommand extends AbstractCommand
 			{
 				if (context.isInvokedFromSubDirectory())
 				{
-					lastState = manager.loadLastState();
+					lastState = manager.loadLastState(); // Reload the lastState
 					lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, false);
 
 					currentState.getFileStates().addAll(lastState.getFileStates());
