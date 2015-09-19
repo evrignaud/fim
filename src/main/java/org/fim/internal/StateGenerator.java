@@ -40,6 +40,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Matcher;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -54,6 +55,8 @@ import org.fim.util.Logger;
 
 public class StateGenerator
 {
+	public static final String DOT_FIM_IGNORE = ".fimignore";
+
 	public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
 	public static final int FILES_QUEUE_CAPACITY = 500;
 
@@ -78,7 +81,7 @@ public class StateGenerator
 	private long totalFileContentLength;
 
 	private Path rootDir;
-	private BlockingDeque<Path> filesToHash;
+	private BlockingDeque<Path> filesToHashQueue;
 	private boolean hashersStarted;
 	private List<FileHasher> hashers;
 	private long totalBytesHashed;
@@ -126,12 +129,12 @@ public class StateGenerator
 		long start = System.currentTimeMillis();
 		progressOutputInit();
 
-		filesToHash = new LinkedBlockingDeque<>(FILES_QUEUE_CAPACITY);
+		filesToHashQueue = new LinkedBlockingDeque<>(FILES_QUEUE_CAPACITY);
 		InitializeFileHashers();
 
-		scanFileTree(filesToHash, dirToScan);
+		scanFileTree(filesToHashQueue, dirToScan);
 
-		// In case the FileHashers have not been started
+		// In case the FileHashers have not already been started
 		startFileHashers();
 
 		waitAllFilesToBeHashed();
@@ -165,7 +168,7 @@ public class StateGenerator
 			String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
 			for (int index = 0; index < context.getThreadCount(); index++)
 			{
-				FileHasher hasher = new FileHasher(this, filesToHash, normalizedRootDir);
+				FileHasher hasher = new FileHasher(this, filesToHashQueue, normalizedRootDir);
 				executorService.submit(hasher);
 				hashers.add(hasher);
 			}
@@ -215,38 +218,30 @@ public class StateGenerator
 		}
 	}
 
-	private void scanFileTree(BlockingDeque<Path> filesToHash, Path directory) throws NoSuchAlgorithmException
+	private void scanFileTree(BlockingDeque<Path> filesToHashQueue, Path directory) throws NoSuchAlgorithmException
 	{
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory))
 		{
+			List<FileToIgnore> localIgnore = loadLocalIgnore(directory);
+
 			for (Path file : stream)
 			{
-				if (!hashersStarted && filesToHash.size() > FILES_QUEUE_CAPACITY / 2)
+				if (!hashersStarted && filesToHashQueue.size() > FILES_QUEUE_CAPACITY / 2)
 				{
 					startFileHashers();
 				}
 
 				BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
-				if (attributes.isRegularFile())
+				if (!isIgnored(file, attributes, localIgnore))
 				{
-					try
+					if (attributes.isRegularFile())
 					{
-						filesToHash.offer(file, 120, TimeUnit.MINUTES);
+						enqueueFile(filesToHashQueue, file);
 					}
-					catch (InterruptedException ex)
+					else if (attributes.isDirectory())
 					{
-						Logger.error(ex);
+						scanFileTree(filesToHashQueue, file);
 					}
-				}
-				else if (attributes.isDirectory())
-				{
-					String fileName = file.getFileName().toString();
-					if (ignoredDirectories.contains(fileName))
-					{
-						continue;
-					}
-
-					scanFileTree(filesToHash, file);
 				}
 			}
 		}
@@ -254,6 +249,73 @@ public class StateGenerator
 		{
 			Console.newLine();
 			Logger.error("Skipping - Error scanning directory", ex);
+		}
+	}
+
+	protected List<FileToIgnore> loadLocalIgnore(Path directory)
+	{
+		List<FileToIgnore> localIgnore = new ArrayList<>();
+
+		Path dotFimIgnore = directory.resolve(DOT_FIM_IGNORE);
+		if (Files.exists(dotFimIgnore))
+		{
+			List<String> allLines = null;
+			try
+			{
+				allLines = Files.readAllLines(dotFimIgnore);
+			}
+			catch (IOException e)
+			{
+				Logger.error(String.format("Unable to read file %s: %s", dotFimIgnore, e.getMessage()));
+				return localIgnore;
+			}
+
+			for (String line : allLines)
+			{
+				FileToIgnore fileToIgnore = new FileToIgnore(line);
+				localIgnore.add(fileToIgnore);
+			}
+		}
+
+		return localIgnore;
+	}
+
+	protected boolean isIgnored(Path file, BasicFileAttributes attributes, List<FileToIgnore> localIgnore)
+	{
+		String fileName = file.getFileName().toString();
+		if (attributes.isDirectory() && ignoredDirectories.contains(fileName))
+		{
+			return true;
+		}
+
+		for (FileToIgnore fileToIgnore : localIgnore)
+		{
+			if (fileToIgnore.getCompiledFilename() != null)
+			{
+				Matcher matcher = fileToIgnore.getCompiledFilename().matcher(fileName);
+				if (matcher.find())
+				{
+					return true;
+				}
+			}
+			else if (fileToIgnore.getRegexpFileName().equals(fileName))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private void enqueueFile(BlockingDeque<Path> filesToHashQueue, Path file)
+	{
+		try
+		{
+			filesToHashQueue.offer(file, 120, TimeUnit.MINUTES);
+		}
+		catch (InterruptedException ex)
+		{
+			Logger.error(ex);
 		}
 	}
 

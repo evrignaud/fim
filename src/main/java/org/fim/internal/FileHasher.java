@@ -48,7 +48,7 @@ import sun.nio.ch.DirectBuffer;
 class FileHasher implements Runnable
 {
 	private final StateGenerator stateGenerator;
-	private final BlockingDeque<Path> filesToHash;
+	private final BlockingDeque<Path> filesToHashQueue;
 	private final String rootDir;
 
 	private final List<FileState> fileStates;
@@ -61,10 +61,10 @@ class FileHasher implements Runnable
 	private long totalFileContentLength;
 	private long totalBytesHashed;
 
-	public FileHasher(StateGenerator stateGenerator, BlockingDeque<Path> filesToHash, String rootDir) throws NoSuchAlgorithmException
+	public FileHasher(StateGenerator stateGenerator, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException
 	{
 		this.stateGenerator = stateGenerator;
-		this.filesToHash = filesToHash;
+		this.filesToHashQueue = filesToHashQueue;
 		this.rootDir = rootDir;
 
 		this.fileStates = new ArrayList<>();
@@ -94,7 +94,7 @@ class FileHasher implements Runnable
 		try
 		{
 			Path file;
-			while ((file = filesToHash.poll(500, TimeUnit.MILLISECONDS)) != null)
+			while ((file = filesToHashQueue.poll(500, TimeUnit.MILLISECONDS)) != null)
 			{
 				try
 				{

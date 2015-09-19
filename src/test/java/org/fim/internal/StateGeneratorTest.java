@@ -18,25 +18,81 @@
  */
 package org.fim.internal;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.fim.tooling.StateAssert;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class StateGeneratorTest extends StateAssert
 {
 	private StateGenerator cut = new StateGenerator(defaultContext());
 
+	private BasicFileAttributes fileAttributes;
+
 	@Test
 	public void weCanGetProgressChar()
 	{
-		Assertions.assertThat(cut.getProgressChar(-1)).isEqualTo(' ');
+		assertThat(cut.getProgressChar(-1)).isEqualTo(' ');
 
-		Assertions.assertThat(cut.getProgressChar(0)).isEqualTo('.');
+		assertThat(cut.getProgressChar(0)).isEqualTo('.');
 
-		Assertions.assertThat(cut.getProgressChar(10 * 1024 * 1024)).isEqualTo('.');
+		assertThat(cut.getProgressChar(10 * 1024 * 1024)).isEqualTo('.');
 
-		Assertions.assertThat(cut.getProgressChar(20 * 1024 * 1024)).isEqualTo('o');
+		assertThat(cut.getProgressChar(20 * 1024 * 1024)).isEqualTo('o');
 
-		Assertions.assertThat(cut.getProgressChar(30 * 1024 * 1024)).isEqualTo('o');
+		assertThat(cut.getProgressChar(30 * 1024 * 1024)).isEqualTo('o');
+	}
+
+	@Test
+	public void filesCanBeIgnored()
+	{
+		fileAttributes = Mockito.mock(BasicFileAttributes.class);
+		Mockito.when(fileAttributes.isDirectory()).thenReturn(false);
+
+		List<FileToIgnore> ignoreList = new ArrayList<>();
+		ignoreFile(ignoreList, "foo");
+		ignoreFile(ignoreList, "bar*");
+		ignoreFile(ignoreList, "*baz*");
+		ignoreFile(ignoreList, "*.mp3");
+		ignoreFile(ignoreList, "$Data[1]|2(3)*");
+		ignoreFile(ignoreList, "****qux****");
+
+		assertFileIgnored("foo", ignoreList);
+		assertFileNotIgnored("a_foo", ignoreList);
+
+		assertFileIgnored("bar_yes", ignoreList);
+		assertFileNotIgnored("yes_bar", ignoreList);
+
+		assertFileIgnored("no_baz_yes", ignoreList);
+
+		assertFileIgnored("track12.mp3", ignoreList);
+		assertFileNotIgnored("track12_mp3", ignoreList);
+
+		assertFileIgnored("$Data[1]|2(3)_file", ignoreList);
+
+		assertFileIgnored("****qux****", ignoreList);
+	}
+
+	private void assertFileIgnored(String fileName, List<FileToIgnore> ignoreList)
+	{
+		assertThat(cut.isIgnored(Paths.get(fileName), fileAttributes, ignoreList)).isTrue();
+	}
+
+	private void assertFileNotIgnored(String fileName, List<FileToIgnore> ignoreList)
+	{
+		assertThat(cut.isIgnored(Paths.get(fileName), fileAttributes, ignoreList)).isFalse();
+	}
+
+	private void ignoreFile(List<FileToIgnore> localIgnore, String regexp)
+	{
+		FileToIgnore fileToIgnore;
+		fileToIgnore = new FileToIgnore(regexp);
+		localIgnore.add(fileToIgnore);
 	}
 }
