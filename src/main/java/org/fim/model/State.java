@@ -74,6 +74,7 @@ public class State implements Hashable
 		comment = "";
 		fileCount = 0;
 		hashMode = hashAll;
+		modificationCounts = new ModificationCounts();
 		fileStates = new ArrayList<>();
 	}
 

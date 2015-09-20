@@ -98,6 +98,17 @@ public class StateTest extends StateAssert
 	}
 
 	@Test
+	public void aStateCanBeCloned()
+	{
+		State s = a1.clone();
+		assertThat(s.hashState()).isEqualTo(a1.hashState());
+
+		s.getModificationCounts().setAdded(1);
+		State clone = s.clone();
+		assertThat(clone.getModificationCounts().getAdded()).isEqualTo(1);
+	}
+
+	@Test
 	public void weCanFilterFilesInside()
 	{
 		State s = a1.addFiles("dir_1/file_1", "dir_1/file_2", "dir_2/file_1", "dir_2/file_2");
