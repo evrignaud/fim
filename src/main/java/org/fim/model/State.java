@@ -45,12 +45,15 @@ import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.rits.cloning.Cloner;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 
 public class State implements Hashable
 {
 	public static final String CURRENT_MODEL_VERSION = "3";
+
+	private static final Cloner CLONER = new Cloner();
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
 	private String stateHash; // Ensure the integrity of the complete State content
@@ -116,13 +119,15 @@ public class State implements Hashable
 		}
 	}
 
-	public void filterDirectory(Path repositoryRootDir, Path currentDirectory, boolean keepFilesInside)
+	public State filterDirectory(Path repositoryRootDir, Path currentDirectory, boolean keepFilesInside)
 	{
+		State filteredState = clone();
+
 		String rootDir = FileUtil.getNormalizedFileName(repositoryRootDir);
 		String curDir = FileUtil.getNormalizedFileName(currentDirectory);
 		String subDirectory = FileUtil.getRelativeFileName(rootDir, curDir);
 
-		Iterator<FileState> iterator = fileStates.iterator();
+		Iterator<FileState> iterator = filteredState.getFileStates().iterator();
 		while (iterator.hasNext())
 		{
 			FileState fileState = iterator.next();
@@ -131,6 +136,8 @@ public class State implements Hashable
 				iterator.remove();
 			}
 		}
+
+		return filteredState;
 	}
 
 	public void updateFileCount()
@@ -282,5 +289,10 @@ public class State implements Hashable
 			fileState.hashObject(hasher);
 			hasher.putChar(HASH_SEPARATOR);
 		}
+	}
+
+	public State clone()
+	{
+		return CLONER.deepClone(this);
 	}
 }

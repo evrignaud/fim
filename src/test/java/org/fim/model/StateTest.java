@@ -102,9 +102,9 @@ public class StateTest extends StateAssert
 	{
 		State s = a1.addFiles("dir_1/file_1", "dir_1/file_2", "dir_2/file_1", "dir_2/file_2");
 
-		s.filterDirectory(Paths.get("."), Paths.get("dir_1"), true);
+		State filteredState = s.filterDirectory(Paths.get("."), Paths.get("dir_1"), true);
 
-		assertThat(toFileNames(s.getFileStates())).isEqualTo(Arrays.asList("dir_1/file_1", "dir_1/file_2"));
+		assertThat(toFileNames(filteredState.getFileStates())).isEqualTo(Arrays.asList("dir_1/file_1", "dir_1/file_2"));
 	}
 
 	@Test
@@ -112,9 +112,9 @@ public class StateTest extends StateAssert
 	{
 		State s = a1.addFiles("dir_1/file_1", "dir_1/file_2", "dir_2/file_1", "dir_2/file_2");
 
-		s.filterDirectory(Paths.get("."), Paths.get("dir_1"), false);
+		State filteredState = s.filterDirectory(Paths.get("."), Paths.get("dir_1"), false);
 
-		assertThat(toFileNames(s.getFileStates())).isEqualTo(Arrays.asList("dir_2/file_1", "dir_2/file_2", "file_1", "file_2"));
+		assertThat(toFileNames(filteredState.getFileStates())).isEqualTo(Arrays.asList("dir_2/file_1", "dir_2/file_2", "file_1", "file_2"));
 	}
 
 	private void fixTimeStamps(BuildableState a1) throws ParseException

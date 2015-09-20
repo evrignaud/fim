@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
-import com.rits.cloning.Cloner;
 import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
@@ -30,8 +29,6 @@ import org.fim.model.State;
 
 public class BuildableState extends State
 {
-	private static final Cloner CLONER = new Cloner();
-
 	private static final Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
 	private transient final Context context;
@@ -215,8 +212,9 @@ public class BuildableState extends State
 		return new Date().getTime();
 	}
 
+	@Override
 	public BuildableState clone()
 	{
-		return CLONER.deepClone(this);
+		return (BuildableState) super.clone();
 	}
 }
