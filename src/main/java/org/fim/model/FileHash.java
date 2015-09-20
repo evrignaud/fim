@@ -133,6 +133,8 @@ public class FileHash implements Comparable<FileHash>, Hashable
 	public void hashObject(Hasher hasher)
 	{
 		hasher
+				.putString("FileHash", Charsets.UTF_8)
+				.putChar(HASH_SEPARATOR)
 				.putString(smallBlockHash, Charsets.UTF_8)
 				.putChar(HASH_SEPARATOR)
 				.putString(mediumBlockHash, Charsets.UTF_8)

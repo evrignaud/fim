@@ -174,6 +174,8 @@ public class FileState implements Hashable
 	public void hashObject(Hasher hasher)
 	{
 		hasher
+				.putString("FileState", Charsets.UTF_8)
+				.putChar(HASH_SEPARATOR)
 				.putString(fileName, Charsets.UTF_8)
 				.putChar(HASH_SEPARATOR)
 				.putLong(fileLength)

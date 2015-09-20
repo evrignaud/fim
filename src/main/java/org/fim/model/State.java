@@ -264,6 +264,8 @@ public class State implements Hashable
 	public void hashObject(Hasher hasher)
 	{
 		hasher
+				.putString("State", Charsets.UTF_8)
+				.putChar(HASH_SEPARATOR)
 				.putString(modelVersion, Charsets.UTF_8)
 				.putChar(HASH_SEPARATOR)
 				.putLong(timestamp)
