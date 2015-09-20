@@ -168,14 +168,38 @@ public class StateComparator
 					notModifiedCount, result.modifiedCount(), currentState.getFileCount()));
 		}
 
-		for (FileState notFound : notFoundInCurrentFileState)
-		{
-			result.getDeleted().add(new Difference(null, notFound));
-		}
+		notFoundInCurrentFileState.stream().
+				filter(notFound -> !isFileIgnored(notFound, currentState.getIgnoredFiles())).
+				forEach(notFound -> {
+					result.getDeleted().add(new Difference(null, notFound));
+				});
 
 		result.sortResults();
 
 		return result;
+	}
+
+	private boolean isFileIgnored(FileState fileState, List<String> ignoredFiles)
+	{
+		for (String ignoredFile : ignoredFiles)
+		{
+			String fileName = fileState.getFileName();
+			if (ignoredFile.endsWith("/"))
+			{
+				if (fileName.startsWith(ignoredFile))
+				{
+					return true;
+				}
+			}
+			else
+			{
+				if (fileName.equals(ignoredFile))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private boolean contentChanged(FileState fileState)

@@ -108,6 +108,7 @@ public class CommitCommand extends AbstractCommand
 		State consolidatedState = currentState.clone();
 		consolidatedState.getFileStates().addAll(filteredState.getFileStates());
 		consolidatedState.getModificationCounts().add(filteredState.getModificationCounts());
+		consolidatedState.getIgnoredFiles().addAll(lastState.getIgnoredFiles());
 
 		return consolidatedState;
 	}

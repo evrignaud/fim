@@ -134,11 +134,11 @@ public class FileHash implements Comparable<FileHash>, Hashable
 	{
 		hasher
 				.putString("FileHash", Charsets.UTF_8)
-				.putChar(HASH_SEPARATOR)
+				.putChar(HASH_FIELD_SEPARATOR)
 				.putString(smallBlockHash, Charsets.UTF_8)
-				.putChar(HASH_SEPARATOR)
+				.putChar(HASH_FIELD_SEPARATOR)
 				.putString(mediumBlockHash, Charsets.UTF_8)
-				.putChar(HASH_SEPARATOR)
+				.putChar(HASH_FIELD_SEPARATOR)
 				.putString(fullHash, Charsets.UTF_8);
 	}
 }

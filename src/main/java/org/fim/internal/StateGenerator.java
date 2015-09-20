@@ -85,11 +85,14 @@ public class StateGenerator
 	private boolean hashersStarted;
 	private List<FileHasher> hashers;
 	private long totalBytesHashed;
+	private String repositoryRootDirString;
+	private List<String> ignoredFiles;
 
 	public StateGenerator(Context context)
 	{
 		this.context = context;
 		this.progressLock = new ReentrantLock();
+		this.repositoryRootDirString = context.getRepositoryRootDir().toString();
 	}
 
 	public static String hashModeToString(HashMode hashMode)
@@ -115,6 +118,8 @@ public class StateGenerator
 	public State generateState(String comment, Path rootDir, Path dirToScan) throws NoSuchAlgorithmException
 	{
 		this.rootDir = rootDir;
+
+		ignoredFiles = new ArrayList<>();
 
 		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(context.getHashMode()), context.getThreadCount()));
 		if (displayHashLegend())
@@ -147,6 +152,8 @@ public class StateGenerator
 		}
 
 		Collections.sort(state.getFileStates(), fileNameComparator);
+
+		state.setIgnoredFiles(ignoredFiles);
 
 		progressOutputStop();
 		displayStatistics(start, state);
@@ -232,7 +239,11 @@ public class StateGenerator
 				}
 
 				BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
-				if (!isIgnored(file, attributes, localIgnore))
+				if (isIgnored(file, attributes, localIgnore))
+				{
+					addToIgnoredFiles(file, attributes);
+				}
+				else
 				{
 					if (attributes.isRegularFile())
 					{
@@ -250,6 +261,18 @@ public class StateGenerator
 			Console.newLine();
 			Logger.error("Skipping - Error scanning directory", ex);
 		}
+	}
+
+	private void addToIgnoredFiles(Path file, BasicFileAttributes attributes)
+	{
+		String normalizedFileName = FileUtil.getNormalizedFileName(file);
+		if (attributes.isDirectory())
+		{
+			normalizedFileName = normalizedFileName + "/";
+		}
+
+		String relativeFileName = FileUtil.getRelativeFileName(repositoryRootDirString, normalizedFileName);
+		ignoredFiles.add(relativeFileName);
 	}
 
 	protected List<FileToIgnore> loadLocalIgnore(Path directory)

@@ -22,7 +22,8 @@ import com.google.common.hash.Hasher;
 
 public interface Hashable
 {
-	char HASH_SEPARATOR = '_';
+	char HASH_OBJECT_SEPARATOR = '|';
+	char HASH_FIELD_SEPARATOR = '_';
 
 	void hashObject(Hasher hasher);
 }

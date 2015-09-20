@@ -175,14 +175,14 @@ public class FileState implements Hashable
 	{
 		hasher
 				.putString("FileState", Charsets.UTF_8)
-				.putChar(HASH_SEPARATOR)
+				.putChar(HASH_FIELD_SEPARATOR)
 				.putString(fileName, Charsets.UTF_8)
-				.putChar(HASH_SEPARATOR)
+				.putChar(HASH_FIELD_SEPARATOR)
 				.putLong(fileLength)
-				.putChar(HASH_SEPARATOR)
-				.putLong(lastModified)
-				.putChar(HASH_SEPARATOR);
+				.putChar(HASH_FIELD_SEPARATOR)
+				.putLong(lastModified);
 
+		hasher.putChar(HASH_OBJECT_SEPARATOR);
 		fileHash.hashObject(hasher);
 	}
 

@@ -51,7 +51,7 @@ import org.fim.util.Logger;
 
 public class State implements Hashable
 {
-	public static final String CURRENT_MODEL_VERSION = "3";
+	public static final String CURRENT_MODEL_VERSION = "4";
 
 	private static final Cloner CLONER = new Cloner();
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
@@ -65,6 +65,7 @@ public class State implements Hashable
 	private HashMode hashMode;
 
 	private ModificationCounts modificationCounts; // Not taken in account in equals(), hashCode(), hashObject()
+	private List<String> ignoredFiles;
 	private List<FileState> fileStates;
 
 	public State()
@@ -75,6 +76,7 @@ public class State implements Hashable
 		fileCount = 0;
 		hashMode = hashAll;
 		modificationCounts = new ModificationCounts();
+		ignoredFiles = new ArrayList<>();
 		fileStates = new ArrayList<>();
 	}
 
@@ -197,6 +199,16 @@ public class State implements Hashable
 		this.hashMode = hashMode;
 	}
 
+	public List<String> getIgnoredFiles()
+	{
+		return ignoredFiles;
+	}
+
+	public void setIgnoredFiles(List<String> ignoredFiles)
+	{
+		this.ignoredFiles = ignoredFiles;
+	}
+
 	public List<FileState> getFileStates()
 	{
 		return fileStates;
@@ -246,13 +258,14 @@ public class State implements Hashable
 				&& Objects.equals(this.comment, state.comment)
 				&& Objects.equals(this.fileCount, state.fileCount)
 				&& Objects.equals(this.hashMode, state.hashMode)
+				&& Objects.equals(this.ignoredFiles, state.ignoredFiles)
 				&& Objects.equals(this.fileStates, state.fileStates);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(modelVersion, timestamp, comment, fileCount, hashMode, fileStates);
+		return Objects.hash(modelVersion, timestamp, comment, fileCount, hashMode, ignoredFiles, fileStates);
 	}
 
 	@Override
@@ -264,6 +277,7 @@ public class State implements Hashable
 				.add("comment", comment)
 				.add("fileCount", fileCount)
 				.add("hashMode", hashMode)
+				.add("ignoredFiles", ignoredFiles)
 				.add("fileStates", fileStates)
 				.toString();
 	}
@@ -273,22 +287,30 @@ public class State implements Hashable
 	{
 		hasher
 				.putString("State", Charsets.UTF_8)
-				.putChar(HASH_SEPARATOR)
+				.putChar(HASH_FIELD_SEPARATOR)
 				.putString(modelVersion, Charsets.UTF_8)
-				.putChar(HASH_SEPARATOR)
+				.putChar(HASH_FIELD_SEPARATOR)
 				.putLong(timestamp)
-				.putChar(HASH_SEPARATOR)
+				.putChar(HASH_FIELD_SEPARATOR)
 				.putString(comment, Charsets.UTF_8)
-				.putChar(HASH_SEPARATOR)
+				.putChar(HASH_FIELD_SEPARATOR)
 				.putInt(fileCount)
-				.putChar(HASH_SEPARATOR)
-				.putString(hashMode.name(), Charsets.UTF_8)
-				.putChar(HASH_SEPARATOR);
+				.putChar(HASH_FIELD_SEPARATOR)
+				.putString(hashMode.name(), Charsets.UTF_8);
 
+		hasher.putChar(HASH_OBJECT_SEPARATOR);
+		for (String ignoredFile : ignoredFiles)
+		{
+			hasher
+					.putString(ignoredFile, Charsets.UTF_8)
+					.putChar(HASH_OBJECT_SEPARATOR);
+		}
+
+		hasher.putChar(HASH_OBJECT_SEPARATOR);
 		for (FileState fileState : fileStates)
 		{
 			fileState.hashObject(hasher);
-			hasher.putChar(HASH_SEPARATOR);
+			hasher.putChar(HASH_OBJECT_SEPARATOR);
 		}
 	}
 
