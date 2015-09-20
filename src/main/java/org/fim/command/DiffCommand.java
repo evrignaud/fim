@@ -55,7 +55,7 @@ public class DiffCommand extends AbstractCommand
 
 		if (context.isInvokedFromSubDirectory())
 		{
-			lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
+			lastState = lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
 		}
 
 		new StateComparator(context).compare(lastState, currentState).displayChanges();

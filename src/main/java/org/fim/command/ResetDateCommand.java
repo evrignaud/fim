@@ -66,7 +66,7 @@ public class ResetDateCommand extends AbstractCommand
 
 		if (context.isInvokedFromSubDirectory())
 		{
-			lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
+			lastState = lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
 		}
 
 		int dateResetCount = 0;

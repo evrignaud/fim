@@ -97,4 +97,15 @@ public class ModificationCounts
 	{
 		this.deleted = deleted;
 	}
+
+	public void add(ModificationCounts modificationCounts)
+	{
+		added += modificationCounts.getAdded();
+		copied += modificationCounts.getCopied();
+		duplicated += modificationCounts.getDuplicated();
+		dateModified += modificationCounts.getDateModified();
+		contentModified += modificationCounts.getContentModified();
+		renamed += modificationCounts.getRenamed();
+		deleted += modificationCounts.getDeleted();
+	}
 }

@@ -18,6 +18,8 @@
  */
 package org.fim.command;
 
+import java.io.IOException;
+
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
@@ -63,6 +65,7 @@ public class CommitCommand extends AbstractCommand
 
 		StateManager manager = new StateManager(context);
 		State lastState = manager.loadLastState();
+		State lastStateToCompare = lastState;
 		State currentState = new StateGenerator(context).generateState(context.getComment(), context.getRepositoryRootDir(), CURRENT_DIRECTORY);
 
 		if (context.isInvokedFromSubDirectory())
@@ -73,24 +76,22 @@ public class CommitCommand extends AbstractCommand
 				System.exit(-1);
 			}
 
-			lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
+			lastStateToCompare = lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
 		}
 
-		CompareResult result = new StateComparator(context).compare(lastState, currentState).displayChanges();
+		CompareResult result = new StateComparator(context).compare(lastStateToCompare, currentState).displayChanges();
 		if (result.somethingModified())
 		{
 			Console.newLine();
 			if (confirmAction(context, "commit"))
 			{
+				currentState.setModificationCounts(result.getModificationCounts());
+
 				if (context.isInvokedFromSubDirectory())
 				{
-					lastState = manager.loadLastState(); // Reload the lastState
-					lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, false);
-
-					currentState.getFileStates().addAll(lastState.getFileStates());
+					currentState = createConsolidatedState(context, lastState, currentState);
 				}
 
-				currentState.setModificationCounts(result.getModificationCounts());
 				manager.createNewState(currentState);
 			}
 			else
@@ -98,5 +99,16 @@ public class CommitCommand extends AbstractCommand
 				Logger.info("Nothing committed");
 			}
 		}
+	}
+
+	private State createConsolidatedState(Context context, State lastState, State currentState) throws IOException
+	{
+		State filteredState = lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, false);
+
+		State consolidatedState = currentState.clone();
+		consolidatedState.getFileStates().addAll(filteredState.getFileStates());
+		consolidatedState.getModificationCounts().add(filteredState.getModificationCounts());
+
+		return consolidatedState;
 	}
 }
