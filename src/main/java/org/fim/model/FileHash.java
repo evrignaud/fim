@@ -92,7 +92,6 @@ public class FileHash implements Comparable<FileHash>, Hashable
 		return Objects.equals(this.smallBlockHash, otherFileHash.smallBlockHash)
 				&& Objects.equals(this.mediumBlockHash, otherFileHash.mediumBlockHash)
 				&& Objects.equals(this.fullHash, otherFileHash.fullHash);
-
 	}
 
 	@Override

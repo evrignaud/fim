@@ -76,12 +76,12 @@ public class ResetDateCommand extends AbstractCommand
 			if (Files.exists(file))
 			{
 				long lastModified = Files.getLastModifiedTime(file).toMillis();
-				if (lastModified != fileState.getLastModified())
+				if (lastModified != fileState.getFileTime().getLastModified())
 				{
 					dateResetCount++;
-					Files.setLastModifiedTime(file, FileTime.fromMillis(fileState.getLastModified()));
+					Files.setLastModifiedTime(file, FileTime.fromMillis(fileState.getFileTime().getLastModified()));
 					System.out.printf("Set file modification: %s\t%s -> %s%n", fileState.getFileName(),
-							formatDate(lastModified), formatDate(fileState.getLastModified()));
+							formatDate(lastModified), formatDate(fileState.getFileTime().getLastModified()));
 				}
 			}
 		}

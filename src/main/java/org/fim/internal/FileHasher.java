@@ -106,7 +106,7 @@ class FileHasher implements Runnable
 					String normalizedFileName = FileUtil.getNormalizedFileName(file);
 					String relativeFileName = FileUtil.getRelativeFileName(rootDir, normalizedFileName);
 
-					fileStates.add(new FileState(relativeFileName, attributes.size(), attributes.lastModifiedTime().toMillis(), fileHash));
+					fileStates.add(new FileState(relativeFileName, attributes, fileHash));
 				}
 				catch (Exception ex)
 				{

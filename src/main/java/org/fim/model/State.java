@@ -186,7 +186,7 @@ public class State implements Hashable
 
 	protected void setFileCount(int fileCount)
 	{
-		// Do nothing
+		// This value is computed dynamically when getFileCount() is called
 	}
 
 	public HashMode getHashMode()

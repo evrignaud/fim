@@ -78,7 +78,7 @@ public class StateTest extends StateAssert
 		fixTimeStamps(a1);
 
 		String a1_hash = a1.hashState();
-		assertThat(a1_hash).isEqualTo("5d8abaed991813eceae4d2b4c16e16109b4d99aef74642af081832bfc9546783333e7475ff210e1e673a0629fb12ce79528e1502d04fcc5639d33e1a41dc6a4a");
+		assertThat(a1_hash).isEqualTo("a79f7f611b5fa63338a51c4d7d29a2bdc42c058c04b1226298df9752a617063a93415fcaad5c7a480d39c8611fa3e2d58b888d168911e8d70024462f8d4f03b9");
 	}
 
 	@Test
@@ -138,7 +138,7 @@ public class StateTest extends StateAssert
 		a1.setTimestamp(timestamp);
 		for (FileState fileState : a1.getFileStates())
 		{
-			fileState.setLastModified(timestamp);
+			fileState.getFileTime().reset(timestamp);
 		}
 	}
 }

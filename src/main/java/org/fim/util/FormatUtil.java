@@ -29,7 +29,7 @@ public class FormatUtil
 
 	public static String formatDate(FileState fileState)
 	{
-		return dateFormat.format(new Date(fileState.getLastModified()));
+		return dateFormat.format(new Date(fileState.getFileTime().getLastModified()));
 	}
 
 	public static String formatDate(long timestamp)

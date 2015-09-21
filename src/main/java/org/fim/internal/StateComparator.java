@@ -98,7 +98,7 @@ public class StateComparator
 			if ((previousFileState = findFileWithSameFileName(fileState, notFoundInCurrentFileState)) != null)
 			{
 				notFoundInCurrentFileState.remove(previousFileState);
-				if (previousFileState.getFileHash().equals(fileState.getFileHash()) && previousFileState.getLastModified() != fileState.getLastModified())
+				if (previousFileState.getFileHash().equals(fileState.getFileHash()) && false == previousFileState.getFileTime().equals(fileState.getFileTime()))
 				{
 					result.getDateModified().add(new Difference(previousFileState, fileState));
 					fileState.setModification(Modification.dateModified);

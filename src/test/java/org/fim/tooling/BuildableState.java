@@ -25,6 +25,7 @@ import java.util.Date;
 import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
+import org.fim.model.FileTime;
 import org.fim.model.State;
 
 public class BuildableState extends State
@@ -49,7 +50,7 @@ public class BuildableState extends State
 			}
 
 			// By default put the fileName as fileContent that will be the hash
-			FileState fileState = new FileState(fileName, fileName.length(), getNow(), createHash(fileName));
+			FileState fileState = new FileState(fileName, fileName.length(), new FileTime(getNow()), createHash(fileName));
 			newState.getFileStates().add(fileState);
 		}
 		sortFileStates(newState);
@@ -65,7 +66,7 @@ public class BuildableState extends State
 		}
 
 		FileState sourceFileState = findFileState(newState, sourceFileName, true);
-		FileState targetFileState = new FileState(targetFileName, sourceFileState.getFileLength(), sourceFileState.getLastModified(), new FileHash(sourceFileState.getFileHash()));
+		FileState targetFileState = new FileState(targetFileName, sourceFileState.getFileLength(), new FileTime(sourceFileState.getFileTime()), new FileHash(sourceFileState.getFileHash()));
 		newState.getFileStates().add(targetFileState);
 		sortFileStates(newState);
 		return newState;
@@ -98,11 +99,11 @@ public class BuildableState extends State
 		BuildableState newState = clone();
 		FileState fileState = findFileState(newState, fileName, true);
 		long now = getNow();
-		if (now <= fileState.getLastModified())
+		if (now <= fileState.getFileTime().getLastModified())
 		{
-			now = fileState.getLastModified() + 1;
+			now = fileState.getFileTime().getLastModified() + 1;
 		}
-		fileState.setLastModified(now);
+		fileState.getFileTime().setLastModified(now);
 		return newState;
 	}
 

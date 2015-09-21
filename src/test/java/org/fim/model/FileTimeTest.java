@@ -23,19 +23,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FileStateTest
+public class FileTimeTest
 {
-	private FileState a1;
-	private FileState a2;
-	private FileState b;
+	private FileTime a1;
+	private FileTime a2;
+	private FileTime b;
 
 	@Before
 	public void setup()
 	{
-		a1 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"));
-		a2 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"));
+		a1 = new FileTime(1L, 2L);
+		a2 = new FileTime(1L, 2L);
 
-		b = new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"));
+		b = new FileTime(2L, 3L);
 	}
 
 	@Test
@@ -58,15 +58,5 @@ public class FileStateTest
 		assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
 
 		assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
-	}
-
-	@Test
-	public void allTheFileTimesAreTakenInAccount()
-	{
-		a1 = new FileState("file_1", 1L, new FileTime(10L, 20L), new FileHash("1", "11", "111"));
-		a2 = new FileState("file_1", 1L, new FileTime(11L, 20L), new FileHash("1", "11", "111"));
-
-		assertThat(a1).isNotEqualTo(a2);
-		assertThat(a1.hashCode()).isNotEqualTo(a2.hashCode());
 	}
 }

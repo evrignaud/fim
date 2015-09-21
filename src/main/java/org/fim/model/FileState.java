@@ -18,6 +18,7 @@
  */
 package org.fim.model;
 
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -43,13 +44,13 @@ public class FileState implements Hashable
 
 	private String fileName;
 	private long fileLength;
-	private long lastModified;
+	private FileTime fileTime;
 	private Modification modification;
 	private FileHash fileHash;
 
 	private transient FileHash newFileHash; // Used by StateComparator to detect accurately duplicates
 
-	public FileState(String fileName, long fileLength, long lastModified, FileHash fileHash)
+	public FileState(String fileName, long fileLength, FileTime fileTime, FileHash fileHash)
 	{
 		if (fileName == null)
 		{
@@ -60,49 +61,15 @@ public class FileState implements Hashable
 			throw new IllegalArgumentException("Invalid null hash");
 		}
 
-		this.setFileName(fileName);
-		this.setFileLength(fileLength);
-		this.setLastModified(lastModified);
-		this.setFileHash(fileHash);
+		setFileName(fileName);
+		setFileLength(fileLength);
+		setFileTime(fileTime);
+		setFileHash(fileHash);
 	}
 
-	@Override
-	public boolean equals(Object other)
+	public FileState(String fileName, BasicFileAttributes attributes, FileHash fileHash)
 	{
-		if (this == other)
-		{
-			return true;
-		}
-
-		if (other == null || !(other instanceof FileState))
-		{
-			return false;
-		}
-
-		FileState otherFileState = (FileState) other;
-
-		return Objects.equals(this.fileName, otherFileState.fileName)
-				&& Objects.equals(this.fileLength, otherFileState.fileLength)
-				&& Objects.equals(this.lastModified, otherFileState.lastModified)
-				&& Objects.equals(this.fileHash, otherFileState.fileHash);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(fileName, fileLength, lastModified, fileHash);
-	}
-
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(this)
-				.add("fileName", fileName)
-				.add("fileLength", fileLength)
-				.add("lastModified", lastModified)
-				.add("fileHash", fileHash)
-				.add("newFileHash", newFileHash)
-				.toString();
+		this(fileName, attributes.size(), new FileTime(attributes), fileHash);
 	}
 
 	public String getFileName()
@@ -125,14 +92,14 @@ public class FileState implements Hashable
 		this.fileLength = fileLength;
 	}
 
-	public long getLastModified()
+	public FileTime getFileTime()
 	{
-		return lastModified;
+		return fileTime;
 	}
 
-	public void setLastModified(long lastModified)
+	public void setFileTime(FileTime fileTime)
 	{
-		this.lastModified = lastModified;
+		this.fileTime = fileTime;
 	}
 
 	public Modification getModification()
@@ -171,6 +138,45 @@ public class FileState implements Hashable
 	}
 
 	@Override
+	public boolean equals(Object other)
+	{
+		if (this == other)
+		{
+			return true;
+		}
+
+		if (other == null || !(other instanceof FileState))
+		{
+			return false;
+		}
+
+		FileState otherFileState = (FileState) other;
+
+		return Objects.equals(this.fileName, otherFileState.fileName)
+				&& Objects.equals(this.fileLength, otherFileState.fileLength)
+				&& Objects.equals(this.fileTime, otherFileState.fileTime)
+				&& Objects.equals(this.fileHash, otherFileState.fileHash);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(fileName, fileLength, fileTime, fileHash);
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(this)
+				.add("fileName", fileName)
+				.add("fileLength", fileLength)
+				.add("fileTime", fileTime)
+				.add("fileHash", fileHash)
+				.add("newFileHash", newFileHash)
+				.toString();
+	}
+
+	@Override
 	public void hashObject(Hasher hasher)
 	{
 		hasher
@@ -178,9 +184,10 @@ public class FileState implements Hashable
 				.putChar(HASH_FIELD_SEPARATOR)
 				.putString(fileName, Charsets.UTF_8)
 				.putChar(HASH_FIELD_SEPARATOR)
-				.putLong(fileLength)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putLong(lastModified);
+				.putLong(fileLength);
+
+		hasher.putChar(HASH_OBJECT_SEPARATOR);
+		fileTime.hashObject(hasher);
 
 		hasher.putChar(HASH_OBJECT_SEPARATOR);
 		fileHash.hashObject(hasher);
