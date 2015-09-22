@@ -20,7 +20,7 @@ Fim manage the integrity of a complete file tree.
 
 ## Use case example
 
-[Follow here](http://evrignaud.github.io/fim/#use-case-example)
+You can find some use case example [here](http://evrignaud.github.io/fim/#use-case-example)
 
 ## Fim releases
 
@@ -43,10 +43,19 @@ State content is normalized and the same State content can be loaded either on L
 
 ## They talked about it
 
-* Korben.info: [Vérifier l’intégrité de très nombreux fichiers](http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html)
+### &bull; ![Korben.info](http://evrignaud.github.io/fim/images/logo-korben.info.png)&nbsp;&nbsp;[Vérifier l’intégrité de très nombreux fichiers](http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html)
 
-> Fim (File Integrity Manager) est un outil vraiment excellent qui permet de gérer l'intégrité de nombreux fichiers.<br/>
-> [...](http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html)
+> **Fim (File Integrity Manager)** est un outil vraiment excellent qui permet de gérer l'intégrité de nombreux fichiers.<br/>
+> [+ Read more](http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html)
+
+### &bull; ![01net.com](http://evrignaud.github.io/fim/images/logo-01net.com.png)&nbsp;&nbsp;[Fim (File Integrity Manager)](http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html)
+
+> **Fim (File Integrity Manager)** est un outil open source qui vous permet de vérifier l'intégrité de tous vos fichiers après les avoir manipulés en lots.<br/>
+> [+ Read more for&nbsp;&nbsp;![Linux](http://evrignaud.github.io/fim/images/logo-linux.png)](http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[+ Read more for&nbsp;&nbsp;![Windows](http://evrignaud.github.io/fim/images/logo-windows.png)](http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html)
+
+### &bull; ![linuxfr.org](http://evrignaud.github.io/fim/images/logo-linuxfr.org.png)
+
+#### [Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers](https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers)
 
 
 ![Analytics](https://ga-beacon.appspot.com/UA-65759837-1/fim/README.md?pixel)
