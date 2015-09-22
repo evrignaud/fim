@@ -55,7 +55,8 @@ State content is normalized and the same State content can be loaded either on L
 
 ### &bull; ![linuxfr.org](http://evrignaud.github.io/fim/images/logo-linuxfr.org.png)
 
-#### [Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers](https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers)
+> &mdash; [Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers](https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers)<br/>
+> <br/>
 
 
 ![Analytics](https://ga-beacon.appspot.com/UA-65759837-1/fim/README.md?pixel)
