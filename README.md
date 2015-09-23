@@ -59,4 +59,9 @@ State content is normalized and the same State content can be loaded either on L
 > <br/>
 
 
+## About
+
+> Forged by Etienne Vrignaud.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[![Twitter icon](http://evrignaud.github.io/fim/images/logo-twitter.png) Follow @evrignaud](https://twitter.com/evrignaud)
+
+
 ![Analytics](https://ga-beacon.appspot.com/UA-65759837-1/fim/README.md?pixel)
