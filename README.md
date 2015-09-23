@@ -43,20 +43,27 @@ State content is normalized and the same State content can be loaded either on L
 
 ## They talked about it
 
-### &bull; ![Korben.info](http://evrignaud.github.io/fim/images/logo-korben.info.png)&nbsp;&nbsp;[Vérifier l’intégrité de très nombreux fichiers](http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html)
+### &bull; ![Korben.info](http://evrignaud.github.io/fim/images/logo-korben.info.png) &nbsp;&nbsp; [Vérifier l’intégrité de très nombreux fichiers](http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html)
 
 > **Fim (File Integrity Manager)** est un outil vraiment excellent qui permet de gérer l'intégrité de nombreux fichiers.<br/>
-> [+ Read more](http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html)
+> [+ Lire la suite](http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html)
+>
+>> ![English version](http://evrignaud.github.io/fim/images/english.png) &nbsp; [Check integrity of many files](http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html)<br/>
+>> **Fim (File Integrity Manager)** is a really great tool for managing the integrity of many files.<br/>
+>> [+ Read more](http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html)
 
-### &bull; ![01net.com](http://evrignaud.github.io/fim/images/logo-01net.com.png)&nbsp;&nbsp;[Fim (File Integrity Manager)](http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html)
+### &bull; ![01net.com](http://evrignaud.github.io/fim/images/logo-01net.com.png) &nbsp;&nbsp; [Fim (File Integrity Manager)](http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html)
 
 > **Fim (File Integrity Manager)** est un outil open source qui vous permet de vérifier l'intégrité de tous vos fichiers après les avoir manipulés en lots.<br/>
-> [+ Read more for&nbsp;&nbsp;![Linux](http://evrignaud.github.io/fim/images/logo-linux.png)](http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[+ Read more for&nbsp;&nbsp;![Windows](http://evrignaud.github.io/fim/images/logo-windows.png)](http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html)
+> [+ Lire la suite pour ![Linux](http://evrignaud.github.io/fim/images/logo-linux.png)](http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [+ Lire la suite pour ![Windows](http://evrignaud.github.io/fim/images/logo-windows.png)](http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html)<br/>
+>
+>> ![English version](http://evrignaud.github.io/fim/images/english.png) &nbsp; **Fim (File Integrity Manager)** is an open source tool which allows you to check the integrity of all your files after have handled them bulk.<br/>
+>> [+ Read more for ![Linux](http://evrignaud.github.io/fim/images/logo-linux.png)](http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Flinux%2FUtilitaires%2Ffiches%2F132315.html) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [+ Read more for ![Windows](http://evrignaud.github.io/fim/images/logo-windows.png)](http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Fwindows%2FUtilitaire%2Fmanipulation_de_fichier%2Ffiches%2F132314.html)
 
-### &bull; ![linuxfr.org](http://evrignaud.github.io/fim/images/logo-linuxfr.org.png)
+### &bull; ![linuxfr.org](http://evrignaud.github.io/fim/images/logo-linuxfr.org.png) &nbsp;&nbsp; LinuxFr.org
 
-> &mdash; [Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers](https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers)<br/>
-> <br/>
+> &mdash; [Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers](https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers)
+>> [![English version](http://evrignaud.github.io/fim/images/english.png) &nbsp; Fim release 1.0.2, that verifies the integrity of your files](http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Fsortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers)
 
 
 ## About
