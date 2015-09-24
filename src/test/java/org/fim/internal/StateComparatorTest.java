@@ -45,7 +45,6 @@ public class StateComparatorTest extends StateAssert
 {
 	private HashMode hashMode;
 	private BuildableContext context;
-	private StateComparator cut;
 	private BuildableState s1;
 	private BuildableState s2;
 
@@ -70,7 +69,6 @@ public class StateComparatorTest extends StateAssert
 	{
 		context = defaultContext();
 		context.setHashMode(hashMode);
-		cut = new StateComparator(context);
 		s1 = new BuildableState(context).addFiles("file_01", "file_02", "file_03", "file_04");
 	}
 
@@ -79,19 +77,19 @@ public class StateComparatorTest extends StateAssert
 	{
 		// Set the same file content
 		s2 = s1.setContent("file_01", "file_01");
-		CompareResult result = cut.compare(s1, s2);
+		CompareResult result = new StateComparator(context, s1, s2).compare();
 		assertNothingModified(result);
 
 		s2 = s1.addFiles("file_05");
-		result = cut.compare(s1, s2);
+		result = new StateComparator(context, s1, s2).compare();
 		assertOnlyFilesAdded(result, "file_05");
 
 		s2 = s1.touch("file_01");
-		result = cut.compare(s1, s2);
+		result = new StateComparator(context, s1, s2).compare();
 		assertOnlyDatesModified(result, "file_01");
 
 		s2 = s1.appendContent("file_01", "append_01");
-		result = cut.compare(s1, s2);
+		result = new StateComparator(context, s1, s2).compare();
 		if (hashMode == dontHash)
 		{
 			assertNothingModified(result);
@@ -102,7 +100,7 @@ public class StateComparatorTest extends StateAssert
 		}
 
 		s2 = s1.rename("file_01", "file_06");
-		result = cut.compare(s1, s2);
+		result = new StateComparator(context, s1, s2).compare();
 		if (hashMode == dontHash)
 		{
 			assertGotOnlyModifications(result, Modification.ADDED, Modification.DELETED);
@@ -115,7 +113,7 @@ public class StateComparatorTest extends StateAssert
 		}
 
 		s2 = s1.copy("file_01", "file_06");
-		result = cut.compare(s1, s2);
+		result = new StateComparator(context, s1, s2).compare();
 		if (hashMode == dontHash)
 		{
 			assertOnlyFilesAdded(result, "file_06");
@@ -126,7 +124,7 @@ public class StateComparatorTest extends StateAssert
 		}
 
 		s2 = s1.delete("file_01");
-		result = cut.compare(s1, s2);
+		result = new StateComparator(context, s1, s2).compare();
 		assertOnlyFileDeleted(result, "file_01");
 	}
 
@@ -136,7 +134,7 @@ public class StateComparatorTest extends StateAssert
 		s2 = s1.copy("file_01", "file_00")
 				.copy("file_01", "file_06")
 				.touch("file_01");
-		CompareResult result = cut.compare(s1, s2);
+		CompareResult result = new StateComparator(context, s1, s2).compare();
 		if (hashMode == dontHash)
 		{
 			assertGotOnlyModifications(result, Modification.ADDED, Modification.DATE_MODIFIED);
@@ -156,7 +154,7 @@ public class StateComparatorTest extends StateAssert
 		s2 = s1.copy("file_01", "file_00")
 				.copy("file_01", "file_06")
 				.appendContent("file_01", "append_01");
-		CompareResult result = cut.compare(s1, s2);
+		CompareResult result = new StateComparator(context, s1, s2).compare();
 		if (hashMode == dontHash)
 		{
 			assertGotOnlyModifications(result, Modification.ADDED);

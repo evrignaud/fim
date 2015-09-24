@@ -77,7 +77,7 @@ public class InitCommand extends AbstractCommand
 		}
 		State currentState = new StateGenerator(context).generateState(comment, CURRENT_DIRECTORY, CURRENT_DIRECTORY);
 
-		CompareResult result = new StateComparator(context).compare(null, currentState).displayChanges();
+		CompareResult result = new StateComparator(context, null, currentState).compare().displayChanges();
 		currentState.setModificationCounts(result.getModificationCounts());
 
 		createRepository(context);

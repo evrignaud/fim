@@ -37,12 +37,26 @@ public class StateComparator
 {
 	private final Context context;
 
-	public StateComparator(Context context)
+	private State lastState;
+	private State currentState;
+
+	private List<FileState> previousFileStates;
+	private List<FileState> notFoundInCurrentFileState;
+	private List<FileState> addedOrModified;
+	private int notModifiedCount;
+
+	private CompareResult result;
+
+	public StateComparator(Context context, State lastState, State currentState)
 	{
 		this.context = context;
+		this.lastState = lastState;
+		this.currentState = currentState;
+
+		init();
 	}
 
-	public CompareResult compare(State lastState, State currentState)
+	private void init()
 	{
 		if (lastState != null && !lastState.getModelVersion().equals(currentState.getModelVersion()))
 		{
@@ -50,12 +64,28 @@ public class StateComparator
 			lastState = null;
 		}
 
-		CompareResult result = new CompareResult(context, lastState);
+		result = new CompareResult(context, lastState);
 
-		List<FileState> previousFileStates = new ArrayList<>();
-		List<FileState> notFoundInCurrentFileState = new ArrayList<>();
-		List<FileState> addedOrModified = new ArrayList<>();
+		previousFileStates = new ArrayList<>();
+		notFoundInCurrentFileState = new ArrayList<>();
+		addedOrModified = new ArrayList<>();
+	}
 
+	public CompareResult compare()
+	{
+		searchForAddedOrModified();
+		searchForSameFileNames();
+		searchForDifferences();
+		checkAllFilesManagedCorrectly();
+
+		searchForDeleted();
+
+		result.sortResults();
+		return result;
+	}
+
+	private void searchForAddedOrModified()
+	{
 		if (lastState != null)
 		{
 			logDebug("---------------------------------------------------------------------",
@@ -73,7 +103,7 @@ public class StateComparator
 
 		notFoundInCurrentFileState.addAll(previousFileStates);
 
-		int notModifiedCount = 0;
+		notModifiedCount = 0;
 		for (FileState fileState : currentState.getFileStates())
 		{
 			if (notFoundInCurrentFileState.remove(fileState))
@@ -87,10 +117,11 @@ public class StateComparator
 		}
 
 		logDebug("Built addedOrModified", "notFoundInCurrentFileState", notFoundInCurrentFileState, "addedOrModified", addedOrModified);
+	}
 
+	private void searchForSameFileNames()
+	{
 		FileState previousFileState;
-		List<FileState> samePreviousHash;
-
 		Iterator<FileState> iterator = addedOrModified.iterator();
 		while (iterator.hasNext())
 		{
@@ -116,9 +147,13 @@ public class StateComparator
 			}
 		}
 
-		logDebug("Search done using sameFileNames", "notFoundInCurrentFileState", notFoundInCurrentFileState, "addedOrModified", addedOrModified);
+		logDebug("Search done for same FileNames", "notFoundInCurrentFileState", notFoundInCurrentFileState, "addedOrModified", addedOrModified);
+	}
 
-		iterator = addedOrModified.iterator();
+	private void searchForDifferences()
+	{
+		List<FileState> samePreviousHash;
+		Iterator<FileState> iterator = addedOrModified.iterator();
 		while (iterator.hasNext())
 		{
 			FileState fileState = iterator.next();
@@ -156,7 +191,10 @@ public class StateComparator
 				iterator.remove();
 			}
 		}
+	}
 
+	private void checkAllFilesManagedCorrectly()
+	{
 		if (addedOrModified.size() != 0)
 		{
 			throw new IllegalStateException(String.format("Comparison algorithm error: addedOrModified size=%d", addedOrModified.size()));
@@ -167,21 +205,20 @@ public class StateComparator
 			throw new IllegalStateException(String.format("Comparison algorithm error: notModifiedCount=%d modifiedCount=%d currentStateFileCount=%d",
 					notModifiedCount, result.modifiedCount(), currentState.getFileCount()));
 		}
-
-		notFoundInCurrentFileState.stream().
-				filter(notFound -> !isFileIgnored(notFound, currentState.getIgnoredFiles())).
-				forEach(notFound -> {
-					result.getDeleted().add(new Difference(null, notFound));
-				});
-
-		result.sortResults();
-
-		return result;
 	}
 
-	private boolean isFileIgnored(FileState fileState, List<String> ignoredFiles)
+	private void searchForDeleted()
 	{
-		for (String ignoredFile : ignoredFiles)
+		notFoundInCurrentFileState.stream().
+				filter(fileState -> !isFileIgnored(fileState)).
+				forEach(fileState -> {
+					result.getDeleted().add(new Difference(null, fileState));
+				});
+	}
+
+	private boolean isFileIgnored(FileState fileState)
+	{
+		for (String ignoredFile : currentState.getIgnoredFiles())
 		{
 			String fileName = fileState.getFileName();
 			if (ignoredFile.endsWith("/"))

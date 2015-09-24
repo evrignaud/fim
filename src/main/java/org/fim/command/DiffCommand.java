@@ -58,6 +58,6 @@ public class DiffCommand extends AbstractCommand
 			lastState = lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
 		}
 
-		new StateComparator(context).compare(lastState, currentState).displayChanges();
+		new StateComparator(context, lastState, currentState).compare().displayChanges();
 	}
 }
