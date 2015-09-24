@@ -22,6 +22,13 @@ import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
 import static org.fim.model.HashMode.hashMediumBlock;
 import static org.fim.model.HashMode.hashSmallBlock;
+import static org.fim.model.Modification.added;
+import static org.fim.model.Modification.contentModified;
+import static org.fim.model.Modification.copied;
+import static org.fim.model.Modification.corrupted;
+import static org.fim.model.Modification.dateModified;
+import static org.fim.model.Modification.deleted;
+import static org.fim.model.Modification.duplicated;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -32,7 +39,6 @@ import org.fim.model.HashMode;
 import org.fim.tooling.BuildableContext;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.FileNameDiff;
-import org.fim.tooling.Modification;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.Test;
@@ -103,9 +109,9 @@ public class StateComparatorTest extends StateAssert
 		result = new StateComparator(context, s1, s2).compare();
 		if (hashMode == dontHash)
 		{
-			assertGotOnlyModifications(result, Modification.ADDED, Modification.DELETED);
-			assertFilesModified(result, Modification.DELETED, "file_01");
-			assertFilesModified(result, Modification.ADDED, "file_06");
+			assertGotOnlyModifications(result, added, deleted);
+			assertFilesModified(result, deleted, "file_01");
+			assertFilesModified(result, added, "file_06");
 		}
 		else
 		{
@@ -137,15 +143,15 @@ public class StateComparatorTest extends StateAssert
 		CompareResult result = new StateComparator(context, s1, s2).compare();
 		if (hashMode == dontHash)
 		{
-			assertGotOnlyModifications(result, Modification.ADDED, Modification.DATE_MODIFIED);
-			assertFilesModified(result, Modification.ADDED, "file_00", "file_06");
+			assertGotOnlyModifications(result, added, dateModified);
+			assertFilesModified(result, added, "file_00", "file_06");
 		}
 		else
 		{
-			assertGotOnlyModifications(result, Modification.DUPLICATED, Modification.DATE_MODIFIED);
-			assertFilesModified(result, Modification.DUPLICATED, new FileNameDiff("file_01", "file_00"), new FileNameDiff("file_01", "file_06"));
+			assertGotOnlyModifications(result, duplicated, dateModified);
+			assertFilesModified(result, duplicated, new FileNameDiff("file_01", "file_00"), new FileNameDiff("file_01", "file_06"));
 		}
-		assertFilesModified(result, Modification.DATE_MODIFIED, "file_01");
+		assertFilesModified(result, dateModified, "file_01");
 	}
 
 	@Test
@@ -157,14 +163,14 @@ public class StateComparatorTest extends StateAssert
 		CompareResult result = new StateComparator(context, s1, s2).compare();
 		if (hashMode == dontHash)
 		{
-			assertGotOnlyModifications(result, Modification.ADDED);
-			assertFilesModified(result, Modification.ADDED, "file_00", "file_06");
+			assertGotOnlyModifications(result, added);
+			assertFilesModified(result, added, "file_00", "file_06");
 		}
 		else
 		{
-			assertGotOnlyModifications(result, Modification.COPIED, Modification.CONTENT_MODIFIED);
-			assertFilesModified(result, Modification.COPIED, new FileNameDiff("file_01", "file_00"), new FileNameDiff("file_01", "file_06"));
-			assertFilesModified(result, Modification.CONTENT_MODIFIED, "file_01");
+			assertGotOnlyModifications(result, copied, contentModified);
+			assertFilesModified(result, copied, new FileNameDiff("file_01", "file_00"), new FileNameDiff("file_01", "file_06"));
+			assertFilesModified(result, contentModified, "file_01");
 		}
 	}
 
@@ -183,11 +189,13 @@ public class StateComparatorTest extends StateAssert
 
 		s2 = s2.setContent("file_01", "XXXX");
 		result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
-		assertFilesModified(result, Modification.CORRUPTED, "file_01");
+		assertGotOnlyModifications(result, corrupted);
+		assertFilesModified(result, corrupted, "file_01");
 
 		// file_02 is deleted and file_05 is added, they are not detected as corrupted
 		s2 = s2.delete("file_02").addFiles("file_05");
 		result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
-		assertFilesModified(result, Modification.CORRUPTED, "file_01");
+		assertGotOnlyModifications(result, corrupted);
+		assertFilesModified(result, corrupted, "file_01");
 	}
 }

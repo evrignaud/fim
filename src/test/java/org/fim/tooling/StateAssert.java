@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import org.fim.model.CompareResult;
 import org.fim.model.Difference;
 import org.fim.model.FileState;
+import org.fim.model.Modification;
 
 public class StateAssert
 {
@@ -42,44 +43,44 @@ public class StateAssert
 
 	protected void assertOnlyFilesAdded(CompareResult result, String... fileNames)
 	{
-		assertGotOnlyModifications(result, Modification.ADDED);
-		assertFilesModified(result, Modification.ADDED, fileNames);
+		assertGotOnlyModifications(result, Modification.added);
+		assertFilesModified(result, Modification.added, fileNames);
 	}
 
 	protected void assertOnlyFileCopied(CompareResult result, FileNameDiff... fileNameDiffs)
 	{
-		assertGotOnlyModifications(result, Modification.COPIED);
-		assertFilesModified(result, Modification.COPIED, fileNameDiffs);
+		assertGotOnlyModifications(result, Modification.copied);
+		assertFilesModified(result, Modification.copied, fileNameDiffs);
 	}
 
 	protected void assertOnlyFileDuplicated(CompareResult result, FileNameDiff... fileNameDiffs)
 	{
-		assertGotOnlyModifications(result, Modification.DUPLICATED);
-		assertFilesModified(result, Modification.DUPLICATED, fileNameDiffs);
+		assertGotOnlyModifications(result, Modification.duplicated);
+		assertFilesModified(result, Modification.duplicated, fileNameDiffs);
 	}
 
 	protected void assertOnlyDatesModified(CompareResult result, String... fileNames)
 	{
-		assertGotOnlyModifications(result, Modification.DATE_MODIFIED);
-		assertFilesModified(result, Modification.DATE_MODIFIED, fileNames);
+		assertGotOnlyModifications(result, Modification.dateModified);
+		assertFilesModified(result, Modification.dateModified, fileNames);
 	}
 
 	protected void assertOnlyContentModified(CompareResult result, String... fileNames)
 	{
-		assertGotOnlyModifications(result, Modification.CONTENT_MODIFIED);
-		assertFilesModified(result, Modification.CONTENT_MODIFIED, fileNames);
+		assertGotOnlyModifications(result, Modification.contentModified);
+		assertFilesModified(result, Modification.contentModified, fileNames);
 	}
 
 	protected void assertOnlyFileRenamed(CompareResult result, FileNameDiff... fileNameDiffs)
 	{
-		assertGotOnlyModifications(result, Modification.RENAMED);
-		assertFilesModified(result, Modification.RENAMED, fileNameDiffs);
+		assertGotOnlyModifications(result, Modification.renamed);
+		assertFilesModified(result, Modification.renamed, fileNameDiffs);
 	}
 
 	protected void assertOnlyFileDeleted(CompareResult result, String... fileNames)
 	{
-		assertGotOnlyModifications(result, Modification.DELETED);
-		assertFilesModified(result, Modification.DELETED, fileNames);
+		assertGotOnlyModifications(result, Modification.deleted);
+		assertFilesModified(result, Modification.deleted, fileNames);
 	}
 
 	protected void assertGotOnlyModifications(CompareResult result, Modification... modifications)
@@ -130,28 +131,28 @@ public class StateAssert
 	{
 		switch (modification)
 		{
-			case ADDED:
+			case added:
 				return result.getAdded();
 
-			case COPIED:
+			case copied:
 				return result.getCopied();
 
-			case DUPLICATED:
+			case duplicated:
 				return result.getDuplicated();
 
-			case DATE_MODIFIED:
+			case dateModified:
 				return result.getDateModified();
 
-			case CONTENT_MODIFIED:
+			case contentModified:
 				return result.getContentModified();
 
-			case RENAMED:
+			case renamed:
 				return result.getRenamed();
 
-			case DELETED:
+			case deleted:
 				return result.getDeleted();
 
-			case CORRUPTED:
+			case corrupted:
 				return result.getCorrupted();
 		}
 
