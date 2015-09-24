@@ -71,14 +71,24 @@ public class StateComparator
 		addedOrModified = new ArrayList<>();
 	}
 
+	public StateComparator searchForHardwareCorruption()
+	{
+		result.setSearchForHardwareCorruption(true);
+		return this;
+	}
+
 	public CompareResult compare()
 	{
 		searchForAddedOrModified();
 		searchForSameFileNames();
-		searchForDifferences();
-		checkAllFilesManagedCorrectly();
 
-		searchForDeleted();
+		if (!result.isSearchForHardwareCorruption())
+		{
+			searchForDifferences();
+			checkAllFilesManagedCorrectly();
+
+			searchForDeleted();
+		}
 
 		result.sortResults();
 		return result;
@@ -129,20 +139,34 @@ public class StateComparator
 			if ((previousFileState = findFileWithSameFileName(fileState, notFoundInCurrentFileState)) != null)
 			{
 				notFoundInCurrentFileState.remove(previousFileState);
-				if (previousFileState.getFileHash().equals(fileState.getFileHash()) && false == previousFileState.getFileTime().equals(fileState.getFileTime()))
+
+				if (result.isSearchForHardwareCorruption())
 				{
-					result.getDateModified().add(new Difference(previousFileState, fileState));
-					fileState.setModification(Modification.dateModified);
-					iterator.remove();
+					if (false == previousFileState.getFileHash().equals(fileState.getFileHash()) &&
+							previousFileState.getFileTime().equals(fileState.getFileTime()))
+					{
+						result.getCorrupted().add(new Difference(previousFileState, fileState));
+						fileState.setModification(Modification.corrupted);
+						iterator.remove();
+					}
 				}
 				else
 				{
-					result.getContentModified().add(new Difference(previousFileState, fileState));
-					fileState.setModification(Modification.contentModified);
-					iterator.remove();
+					if (previousFileState.getFileHash().equals(fileState.getFileHash()) && false == previousFileState.getFileTime().equals(fileState.getFileTime()))
+					{
+						result.getDateModified().add(new Difference(previousFileState, fileState));
+						fileState.setModification(Modification.dateModified);
+						iterator.remove();
+					}
+					else
+					{
+						result.getContentModified().add(new Difference(previousFileState, fileState));
+						fileState.setModification(Modification.contentModified);
+						iterator.remove();
 
-					// File has been modified so set the new hash for accurate duplicate detection
-					previousFileState.setNewFileHash(new FileHash(fileState.getFileHash()));
+						// File has been modified so set the new hash for accurate duplicate detection
+						previousFileState.setNewFileHash(new FileHash(fileState.getFileHash()));
+					}
 				}
 			}
 		}

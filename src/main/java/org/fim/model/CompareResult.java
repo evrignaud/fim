@@ -18,7 +18,9 @@
  */
 package org.fim.model;
 
+import static org.fim.util.FormatUtil.formatCreationTime;
 import static org.fim.util.FormatUtil.formatDate;
+import static org.fim.util.FormatUtil.formatLastModified;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,14 +40,17 @@ public class CompareResult
 	private List<Difference> contentModified;
 	private List<Difference> renamed;
 	private List<Difference> deleted;
+	private List<Difference> corrupted;
 
 	private Context context;
 	private State lastState;
+	private boolean searchForHardwareCorruption;
 
 	public CompareResult(Context context, State lastState)
 	{
 		this.context = context;
 		this.lastState = lastState;
+		this.searchForHardwareCorruption = false;
 
 		added = new ArrayList<>();
 		copied = new ArrayList<>();
@@ -54,6 +59,17 @@ public class CompareResult
 		contentModified = new ArrayList<>();
 		renamed = new ArrayList<>();
 		deleted = new ArrayList<>();
+		corrupted = new ArrayList<>();
+	}
+
+	public boolean isSearchForHardwareCorruption()
+	{
+		return searchForHardwareCorruption;
+	}
+
+	public void setSearchForHardwareCorruption(boolean searchForHardwareCorruption)
+	{
+		this.searchForHardwareCorruption = searchForHardwareCorruption;
 	}
 
 	public void sortResults()
@@ -65,6 +81,7 @@ public class CompareResult
 		sortDifferences(contentModified);
 		sortDifferences(renamed);
 		sortDifferences(deleted);
+		sortDifferences(corrupted);
 	}
 
 	private void sortDifferences(List<Difference> differences)
@@ -109,14 +126,14 @@ public class CompareResult
 
 		for (Difference diff : dateModified)
 		{
-			System.out.printf(stateFormat + "%s \t%s -> %s%n", "Date modified:", diff.getFileState().getFileName(), formatDate(diff.getPreviousFileState()), formatDate(diff.getFileState()));
+			System.out.printf(stateFormat + "%s \t%s -> %s%n", "Date modified:", diff.getFileState().getFileName(), formatLastModified(diff.getPreviousFileState()), formatLastModified(diff.getFileState()));
 		}
 
 		for (Difference diff : contentModified)
 		{
-			if (diff.getPreviousFileState().getFileTime().getLastModified() != diff.getFileState().getFileTime().getLastModified())
+			if (diff.isLastModifiedChanged())
 			{
-				System.out.printf(stateFormat + "%s \t%s -> %s%n", "Content modified:", diff.getFileState().getFileName(), formatDate(diff.getPreviousFileState()), formatDate(diff.getFileState()));
+				System.out.printf(stateFormat + "%s \t%s -> %s%n", "Content modified:", diff.getFileState().getFileName(), formatLastModified(diff.getPreviousFileState()), formatLastModified(diff.getFileState()));
 			}
 			else
 			{
@@ -132,6 +149,21 @@ public class CompareResult
 		for (Difference diff : deleted)
 		{
 			System.out.printf(stateFormat + "%s%n", "Deleted:", diff.getFileState().getFileName());
+		}
+
+		for (Difference diff : corrupted)
+		{
+			String modification = "";
+			if (diff.isCreationTimeChanged())
+			{
+				modification += String.format(" creationTime: %s -> %s", formatCreationTime(diff.getPreviousFileState()), formatCreationTime(diff.getFileState()));
+			}
+			if (diff.isLastModifiedChanged())
+			{
+				modification += String.format(" lastModified: %s -> %s", formatLastModified(diff.getPreviousFileState()), formatLastModified(diff.getFileState()));
+			}
+
+			System.out.printf(stateFormat + "%s \t%s%n", "Corrupted?:", diff.getFileState().getFileName(), modification);
 		}
 
 		if (somethingModified())
@@ -184,12 +216,24 @@ public class CompareResult
 				message += "" + deleted.size() + " deleted, ";
 			}
 
+			if (!corrupted.isEmpty())
+			{
+				message += "" + corrupted.size() + " corrupted, ";
+			}
+
 			message = message.replaceAll(", $", "");
 			System.out.println(message);
 		}
 		else
 		{
-			System.out.println("Nothing modified");
+			if (isSearchForHardwareCorruption())
+			{
+				System.out.println("Nothing corrupted");
+			}
+			else
+			{
+				System.out.println("Nothing modified");
+			}
 		}
 
 		return this;
@@ -202,7 +246,7 @@ public class CompareResult
 
 	public int modifiedCount()
 	{
-		return added.size() + copied.size() + duplicated.size() + dateModified.size() + contentModified.size() + renamed.size() + deleted.size();
+		return added.size() + copied.size() + duplicated.size() + dateModified.size() + contentModified.size() + renamed.size() + deleted.size() + corrupted.size();
 	}
 
 	public ModificationCounts getModificationCounts()
@@ -252,6 +296,11 @@ public class CompareResult
 	public List<Difference> getDeleted()
 	{
 		return deleted;
+	}
+
+	public List<Difference> getCorrupted()
+	{
+		return corrupted;
 	}
 }
 

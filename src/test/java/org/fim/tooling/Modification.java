@@ -26,5 +26,6 @@ public enum Modification
 	DATE_MODIFIED,
 	CONTENT_MODIFIED,
 	RENAMED,
-	DELETED
+	DELETED,
+	CORRUPTED;
 }

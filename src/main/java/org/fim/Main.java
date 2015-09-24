@@ -39,6 +39,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.fim.command.AbstractCommand;
 import org.fim.command.CommitCommand;
+import org.fim.command.CorruptCommand;
 import org.fim.command.DiffCommand;
 import org.fim.command.FindDuplicatesCommand;
 import org.fim.command.HelpCommand;
@@ -67,6 +68,7 @@ public class Main
 				new CommitCommand(),
 				new DiffCommand(),
 				new ResetDateCommand(),
+				new CorruptCommand(),
 				new FindDuplicatesCommand(),
 				new RemoveDuplicatesCommand(),
 				new LogCommand(),

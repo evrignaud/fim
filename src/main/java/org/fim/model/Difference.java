@@ -51,6 +51,16 @@ public class Difference
 		this.fileState = fileState;
 	}
 
+	public boolean isCreationTimeChanged()
+	{
+		return previousFileState.getFileTime().getCreationTime() != fileState.getFileTime().getCreationTime();
+	}
+
+	public boolean isLastModifiedChanged()
+	{
+		return previousFileState.getFileTime().getLastModified() != fileState.getFileTime().getLastModified();
+	}
+
 	public static class FileNameComparator implements Comparator<Difference>
 	{
 		@Override

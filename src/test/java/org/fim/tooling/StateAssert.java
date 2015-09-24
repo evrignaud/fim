@@ -150,6 +150,9 @@ public class StateAssert
 
 			case DELETED:
 				return result.getDeleted();
+
+			case CORRUPTED:
+				return result.getCorrupted();
 		}
 
 		throw new IllegalArgumentException("Invalid Modification " + modification);

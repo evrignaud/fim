@@ -27,9 +27,14 @@ public class FormatUtil
 {
 	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-	public static String formatDate(FileState fileState)
+	public static String formatCreationTime(FileState fileState)
 	{
-		return dateFormat.format(new Date(fileState.getFileTime().getLastModified()));
+		return formatDate(fileState.getFileTime().getCreationTime());
+	}
+
+	public static String formatLastModified(FileState fileState)
+	{
+		return formatDate(fileState.getFileTime().getLastModified());
 	}
 
 	public static String formatDate(long timestamp)

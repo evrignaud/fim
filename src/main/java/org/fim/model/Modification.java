@@ -25,5 +25,6 @@ public enum Modification
 	duplicated,
 	dateModified,
 	contentModified,
-	renamed;
+	renamed,
+	corrupted;
 }

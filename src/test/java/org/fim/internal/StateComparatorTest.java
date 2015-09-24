@@ -167,4 +167,27 @@ public class StateComparatorTest extends StateAssert
 			assertFilesModified(result, Modification.CONTENT_MODIFIED, "file_01");
 		}
 	}
+
+
+	@Test
+	public void weCanDetectHardwareCorruption()
+	{
+		if (hashMode == dontHash)
+		{
+			return;
+		}
+
+		s2 = s1.clone();
+		CompareResult result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
+		assertNothingModified(result);
+
+		s2 = s2.setContent("file_01", "XXXX");
+		result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
+		assertFilesModified(result, Modification.CORRUPTED, "file_01");
+
+		// file_02 is deleted and file_05 is added, they are not detected as corrupted
+		s2 = s2.delete("file_02").addFiles("file_05");
+		result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
+		assertFilesModified(result, Modification.CORRUPTED, "file_01");
+	}
 }
