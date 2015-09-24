@@ -20,8 +20,11 @@ package org.fim.command;
 
 import static org.fim.util.FormatUtil.formatDate;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 
 import org.fim.internal.StateManager;
@@ -75,13 +78,32 @@ public class ResetDateCommand extends AbstractCommand
 			Path file = context.getRepositoryRootDir().resolve(fileState.getFileName());
 			if (Files.exists(file))
 			{
-				long lastModified = Files.getLastModifiedTime(file).toMillis();
-				if (lastModified != fileState.getFileTime().getLastModified())
+				BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
+
+				long creationTime = attributes.creationTime().toMillis();
+				long lastModified = attributes.lastModifiedTime().toMillis();
+
+				long previousCreationTime = fileState.getFileTime().getCreationTime();
+				long previousLastModified = fileState.getFileTime().getLastModified();
+
+				boolean dateReset = false;
+				if (creationTime != previousCreationTime)
+				{
+					dateReset = true;
+					setCreationTime(file, FileTime.fromMillis(previousCreationTime));
+					System.out.printf("Set creation Time: %s \t%s -> %s%n", fileState.getFileName(), formatDate(creationTime), formatDate(previousCreationTime));
+				}
+
+				if (lastModified != previousLastModified)
+				{
+					dateReset = true;
+					Files.setLastModifiedTime(file, FileTime.fromMillis(previousLastModified));
+					System.out.printf("Set last modified: %s \t%s -> %s%n", fileState.getFileName(), formatDate(lastModified), formatDate(previousLastModified));
+				}
+
+				if (dateReset)
 				{
 					dateResetCount++;
-					Files.setLastModifiedTime(file, FileTime.fromMillis(fileState.getFileTime().getLastModified()));
-					System.out.printf("Set file modification: %s\t%s -> %s%n", fileState.getFileName(),
-							formatDate(lastModified), formatDate(fileState.getFileTime().getLastModified()));
 				}
 			}
 		}
@@ -93,7 +115,12 @@ public class ResetDateCommand extends AbstractCommand
 		else
 		{
 			Console.newLine();
-			Logger.info(String.format("%d files modification date have been reset", dateResetCount));
+			Logger.info(String.format("%d file modification dates have been reset", dateResetCount));
 		}
+	}
+
+	private void setCreationTime(Path file, FileTime creationTime) throws IOException
+	{
+		Files.getFileAttributeView(file, BasicFileAttributeView.class).setTimes(null, null, creationTime);
 	}
 }
