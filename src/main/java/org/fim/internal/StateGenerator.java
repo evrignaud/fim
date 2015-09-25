@@ -18,6 +18,7 @@
  */
 package org.fim.internal;
 
+import static org.fim.internal.HashProgress.PROGRESS_DISPLAY_FILE_COUNT;
 import static org.fim.model.HashMode.dontHash;
 
 import java.io.IOException;
@@ -29,7 +30,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -38,11 +38,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.fim.model.Context;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
@@ -53,26 +51,15 @@ import org.fim.util.Logger;
 
 public class StateGenerator
 {
-	public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
 	public static final int FILES_QUEUE_CAPACITY = 500;
-
-	private static final List<Pair<Character, Integer>> hashProgress = Arrays.asList(
-			Pair.of('.', 0),
-			Pair.of('o', FileState.SIZE_20_MB),
-			Pair.of('O', FileState.SIZE_50_MB),
-			Pair.of('@', FileState.SIZE_100_MB),
-			Pair.of('#', FileState.SIZE_200_MB)
-	);
 
 	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
 	private final Context context;
-	private final ReentrantLock progressLock;
+	private final HashProgress hashProgress;
 	private final FimIgnoreManager fimIgnoreManager;
 
 	private ExecutorService executorService;
-	private long summedFileLength;
-	private int fileCount;
 	private long totalFileContentLength;
 
 	private Path rootDir;
@@ -84,7 +71,7 @@ public class StateGenerator
 	public StateGenerator(Context context)
 	{
 		this.context = context;
-		this.progressLock = new ReentrantLock();
+		this.hashProgress = new HashProgress(context);
 		this.fimIgnoreManager = new FimIgnoreManager(context);
 	}
 
@@ -113,9 +100,9 @@ public class StateGenerator
 		this.rootDir = rootDir;
 
 		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(context.getHashMode()), context.getThreadCount()));
-		if (displayHashLegend())
+		if (hashProgress.isProgressDisplayed())
 		{
-			System.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgressLegend());
+			System.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgress.hashProgressLegend());
 		}
 
 		State state = new State();
@@ -123,7 +110,7 @@ public class StateGenerator
 		state.setHashMode(context.getHashMode());
 
 		long start = System.currentTimeMillis();
-		progressOutputInit();
+		hashProgress.progressOutputInit();
 
 		filesToHashQueue = new LinkedBlockingDeque<>(FILES_QUEUE_CAPACITY);
 		initializeFileHashers();
@@ -148,7 +135,7 @@ public class StateGenerator
 
 		state.setIgnoredFiles(fimIgnoreManager.getIgnoredFiles());
 
-		progressOutputStop();
+		hashProgress.progressOutputStop();
 		displayStatistics(start, state);
 
 		return state;
@@ -168,7 +155,7 @@ public class StateGenerator
 			String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
 			for (int index = 0; index < context.getThreadCount(); index++)
 			{
-				FileHasher hasher = new FileHasher(this, filesToHashQueue, normalizedRootDir);
+				FileHasher hasher = new FileHasher(hashProgress, filesToHashQueue, normalizedRootDir);
 				executorService.submit(hasher);
 				hashers.add(hasher);
 			}
@@ -268,104 +255,5 @@ public class StateGenerator
 		{
 			Logger.error(ex);
 		}
-	}
-
-	private void progressOutputInit()
-	{
-		summedFileLength = 0;
-		fileCount = 0;
-	}
-
-	public void updateProgressOutput(long fileSize) throws IOException
-	{
-		progressLock.lock();
-		try
-		{
-			fileCount++;
-
-			if (displayHashLegend())
-			{
-				summedFileLength += fileSize;
-
-				if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0)
-				{
-					System.out.print(getProgressChar(summedFileLength));
-					summedFileLength = 0;
-				}
-			}
-
-			if (fileCount % (100 * PROGRESS_DISPLAY_FILE_COUNT) == 0)
-			{
-				if (displayHashLegend())
-				{
-					Console.newLine();
-				}
-			}
-		}
-		finally
-		{
-			progressLock.unlock();
-		}
-	}
-
-	private String hashProgressLegend()
-	{
-		StringBuilder sb = new StringBuilder();
-		for (int progressIndex = hashProgress.size() - 1; progressIndex >= 0; progressIndex--)
-		{
-			Pair<Character, Integer> progressPair = hashProgress.get(progressIndex);
-			char marker = progressPair.getLeft();
-			sb.append(marker);
-
-			int fileLength = progressPair.getRight();
-			if (fileLength == 0)
-			{
-				sb.append(" otherwise");
-			}
-			else
-			{
-				sb.append(" > ").append(FileUtils.byteCountToDisplaySize(fileLength));
-			}
-			sb.append(", ");
-		}
-		String legend = sb.toString();
-		legend = legend.substring(0, legend.length() - 2);
-		return legend;
-	}
-
-	protected char getProgressChar(long fileLength)
-	{
-		int progressIndex;
-		for (progressIndex = hashProgress.size() - 1; progressIndex >= 0; progressIndex--)
-		{
-			Pair<Character, Integer> progressPair = hashProgress.get(progressIndex);
-			if (fileLength >= progressPair.getRight())
-			{
-				return progressPair.getLeft();
-			}
-		}
-
-		return ' ';
-	}
-
-	private void progressOutputStop()
-	{
-		if (displayHashLegend())
-		{
-			if (fileCount >= PROGRESS_DISPLAY_FILE_COUNT)
-			{
-				Console.newLine();
-			}
-		}
-	}
-
-	private boolean displayHashLegend()
-	{
-		return context.isVerbose() && context.getHashMode() != dontHash;
-	}
-
-	public Context getContext()
-	{
-		return context;
 	}
 }

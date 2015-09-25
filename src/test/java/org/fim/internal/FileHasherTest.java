@@ -79,7 +79,7 @@ public class FileHasherTest extends StateAssert
 		contentBytes = builder.toString().getBytes();
 	}
 
-	private StateGenerator stateGenerator;
+	private HashProgress hashProgress;
 	private HashMode hashMode;
 	private BuildableContext context;
 	private FileHasher cut;
@@ -110,14 +110,14 @@ public class FileHasherTest extends StateAssert
 	@Before
 	public void setup() throws NoSuchAlgorithmException, IOException
 	{
-		stateGenerator = mock(StateGenerator.class);
+		hashProgress = mock(HashProgress.class);
 		context = defaultContext();
 		context.setHashMode(hashMode);
 		context.setRepositoryRootDir(rootDir);
 
-		when(stateGenerator.getContext()).thenReturn(context);
+		when(hashProgress.getContext()).thenReturn(context);
 
-		cut = new FileHasher(stateGenerator, null, rootDir.toString());
+		cut = new FileHasher(hashProgress, null, rootDir.toString());
 	}
 
 	@Test

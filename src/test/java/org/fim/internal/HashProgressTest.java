@@ -23,9 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.fim.tooling.StateAssert;
 import org.junit.Test;
 
-public class StateGeneratorTest extends StateAssert
+public class HashProgressTest extends StateAssert
 {
-	private StateGenerator cut = new StateGenerator(defaultContext());
+	private HashProgress cut = new HashProgress(defaultContext());
 
 	@Test
 	public void weCanGetProgressChar()

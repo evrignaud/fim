@@ -47,7 +47,7 @@ import sun.nio.ch.DirectBuffer;
 
 class FileHasher implements Runnable
 {
-	private final StateGenerator stateGenerator;
+	private final HashProgress hashProgress;
 	private final BlockingDeque<Path> filesToHashQueue;
 	private final String rootDir;
 
@@ -61,15 +61,15 @@ class FileHasher implements Runnable
 	private long totalFileContentLength;
 	private long totalBytesHashed;
 
-	public FileHasher(StateGenerator stateGenerator, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException
+	public FileHasher(HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException
 	{
-		this.stateGenerator = stateGenerator;
+		this.hashProgress = hashProgress;
 		this.filesToHashQueue = filesToHashQueue;
 		this.rootDir = rootDir;
 
 		this.fileStates = new ArrayList<>();
 
-		HashMode hashMode = stateGenerator.getContext().getHashMode();
+		HashMode hashMode = hashProgress.getContext().getHashMode();
 		hashers = new Hashers(hashMode);
 	}
 
@@ -100,7 +100,7 @@ class FileHasher implements Runnable
 				{
 					BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
 
-					stateGenerator.updateProgressOutput(attributes.size());
+					hashProgress.updateProgressOutput(attributes.size());
 
 					FileHash fileHash = hashFile(file, attributes.size());
 					String normalizedFileName = FileUtil.getNormalizedFileName(file);
@@ -123,7 +123,7 @@ class FileHasher implements Runnable
 
 	protected FileHash hashFile(Path file, long fileSize) throws IOException
 	{
-		HashMode hashMode = stateGenerator.getContext().getHashMode();
+		HashMode hashMode = hashProgress.getContext().getHashMode();
 
 		if (hashMode == dontHash)
 		{
