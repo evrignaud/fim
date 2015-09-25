@@ -27,5 +27,5 @@ public enum Modification
 	contentModified,
 	renamed,
 	deleted,
-	corrupted;
+	corrupted
 }

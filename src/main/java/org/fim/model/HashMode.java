@@ -23,5 +23,5 @@ public enum HashMode
 	dontHash,
 	hashSmallBlock,
 	hashMediumBlock,
-	hashAll;
+	hashAll
 }

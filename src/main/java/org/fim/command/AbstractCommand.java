@@ -110,7 +110,7 @@ public abstract class AbstractCommand implements Command
 		return false;
 	}
 
-	protected static enum Option
+	protected enum Option
 	{
 		ALLOW_COMPATIBLE,
 		ALL_HASH_MANDATORY

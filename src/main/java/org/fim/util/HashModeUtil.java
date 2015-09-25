@@ -54,25 +54,13 @@ public class HashModeUtil
 				return true;
 
 			case hashMediumBlock:
-				if (toCheck == hashAll)
-				{
-					return false;
-				}
-				return true;
+				return toCheck != hashAll;
 
 			case hashSmallBlock:
-				if (toCheck == hashAll || toCheck == hashMediumBlock)
-				{
-					return false;
-				}
-				return true;
+				return toCheck != hashAll && toCheck != hashMediumBlock;
 
 			case dontHash:
-				if (toCheck != dontHash)
-				{
-					return false;
-				}
-				return true;
+				return toCheck == dontHash;
 		}
 
 		return false;
