@@ -100,7 +100,7 @@ class FileHasher implements Runnable
 				{
 					BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
 
-					hashProgress.updateProgressOutput(attributes.size());
+					hashProgress.updateOutput(attributes.size());
 
 					FileHash fileHash = hashFile(file, attributes.size());
 					String normalizedFileName = FileUtil.getNormalizedFileName(file);

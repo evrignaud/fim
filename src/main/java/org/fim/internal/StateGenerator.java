@@ -83,7 +83,7 @@ public class StateGenerator
 		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(context.getHashMode()), context.getThreadCount()));
 		if (hashProgress.isProgressDisplayed())
 		{
-			System.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgress.hashProgressLegend());
+			System.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgress.hashLegend());
 		}
 
 		State state = new State();
@@ -91,7 +91,7 @@ public class StateGenerator
 		state.setHashMode(context.getHashMode());
 
 		long start = System.currentTimeMillis();
-		hashProgress.progressOutputInit();
+		hashProgress.outputInit();
 
 		filesToHashQueue = new LinkedBlockingDeque<>(FILES_QUEUE_CAPACITY);
 		initializeFileHashers();
@@ -116,7 +116,7 @@ public class StateGenerator
 
 		state.setIgnoredFiles(fimIgnoreManager.getIgnoredFiles());
 
-		hashProgress.progressOutputStop();
+		hashProgress.outputStop();
 		displayStatistics(start, state);
 
 		return state;

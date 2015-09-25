@@ -54,13 +54,13 @@ public class HashProgress
 		this.progressLock = new ReentrantLock();
 	}
 
-	public void progressOutputInit()
+	public void outputInit()
 	{
 		summedFileLength = 0;
 		fileCount = 0;
 	}
 
-	public void updateProgressOutput(long fileSize) throws IOException
+	public void updateOutput(long fileSize) throws IOException
 	{
 		progressLock.lock();
 		try
@@ -92,7 +92,7 @@ public class HashProgress
 		}
 	}
 
-	public String hashProgressLegend()
+	public String hashLegend()
 	{
 		StringBuilder sb = new StringBuilder();
 		for (int progressIndex = hashProgress.size() - 1; progressIndex >= 0; progressIndex--)
@@ -132,7 +132,7 @@ public class HashProgress
 		return ' ';
 	}
 
-	public void progressOutputStop()
+	public void outputStop()
 	{
 		if (isProgressDisplayed())
 		{
