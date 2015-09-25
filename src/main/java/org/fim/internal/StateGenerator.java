@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -97,7 +98,7 @@ public class StateGenerator
 		initializeFileHashers();
 
 		Path userDir = Paths.get(System.getProperty("user.dir"));
-		List<FileToIgnore> globalIgnore = fimIgnoreManager.loadFimIgnore(userDir);
+		Set<FileToIgnore> globalIgnore = fimIgnoreManager.loadFimIgnore(userDir);
 		scanFileTree(filesToHashQueue, dirToScan, globalIgnore);
 
 		// In case the FileHashers have not already been started
@@ -186,13 +187,13 @@ public class StateGenerator
 		}
 	}
 
-	private void scanFileTree(BlockingDeque<Path> filesToHashQueue, Path directory, List<FileToIgnore> thisDirectoryIgnoreList) throws NoSuchAlgorithmException
+	private void scanFileTree(BlockingDeque<Path> filesToHashQueue, Path directory, Set<FileToIgnore> thisDirectoryIgnoreSet) throws NoSuchAlgorithmException
 	{
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory))
 		{
-			List<FileToIgnore> currentIgnoreList = fimIgnoreManager.loadFimIgnore(directory);
-			List<FileToIgnore> subDirectoriesIgnoreList = fimIgnoreManager.buildSubDirectoriesIgnoreList(thisDirectoryIgnoreList, currentIgnoreList);
-			currentIgnoreList.addAll(subDirectoriesIgnoreList);
+			Set<FileToIgnore> currentIgnoreSet = fimIgnoreManager.loadFimIgnore(directory);
+			Set<FileToIgnore> subDirectoriesIgnoreSet = fimIgnoreManager.buildSubDirectoriesIgnoreSet(thisDirectoryIgnoreSet, currentIgnoreSet);
+			currentIgnoreSet.addAll(subDirectoriesIgnoreSet);
 
 			for (Path file : stream)
 			{
@@ -202,7 +203,7 @@ public class StateGenerator
 				}
 
 				BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
-				if (fimIgnoreManager.isIgnored(file, attributes, currentIgnoreList))
+				if (fimIgnoreManager.isIgnored(file, attributes, currentIgnoreSet))
 				{
 					fimIgnoreManager.addToIgnoredFiles(file, attributes);
 				}
@@ -214,7 +215,7 @@ public class StateGenerator
 					}
 					else if (attributes.isDirectory())
 					{
-						scanFileTree(filesToHashQueue, file, subDirectoriesIgnoreList);
+						scanFileTree(filesToHashQueue, file, subDirectoriesIgnoreSet);
 					}
 				}
 			}

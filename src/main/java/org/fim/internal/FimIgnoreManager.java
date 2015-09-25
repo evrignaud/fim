@@ -50,9 +50,9 @@ public class FimIgnoreManager
 		this.ignoredFiles = new ArrayList<>();
 	}
 
-	public List<FileToIgnore> loadFimIgnore(Path directory)
+	public Set<FileToIgnore> loadFimIgnore(Path directory)
 	{
-		List<FileToIgnore> localIgnore = new ArrayList<>();
+		Set<FileToIgnore> localIgnoreSet = new HashSet<>();
 
 		Path dotFimIgnore = directory.resolve(DOT_FIM_IGNORE);
 		if (Files.exists(dotFimIgnore))
@@ -63,7 +63,7 @@ public class FimIgnoreManager
 				for (String line : allLines)
 				{
 					FileToIgnore fileToIgnore = new FileToIgnore(line);
-					localIgnore.add(fileToIgnore);
+					localIgnoreSet.add(fileToIgnore);
 				}
 			}
 			catch (IOException e)
@@ -72,21 +72,21 @@ public class FimIgnoreManager
 			}
 		}
 
-		return localIgnore;
+		return localIgnoreSet;
 	}
 
-	public List<FileToIgnore> buildSubDirectoriesIgnoreList(List<FileToIgnore> thisDirectoryIgnoreList, List<FileToIgnore> currentIgnoreList)
+	public Set<FileToIgnore> buildSubDirectoriesIgnoreSet(Set<FileToIgnore> thisDirectoryIgnoreList, Set<FileToIgnore> currentIgnoreSet)
 	{
-		List<FileToIgnore> subDirectoriesIgnoreList = new ArrayList<>(thisDirectoryIgnoreList);
-		for (FileToIgnore fileToIgnore : currentIgnoreList)
+		Set<FileToIgnore> subDirectoriesIgnoreSet = new HashSet<>(thisDirectoryIgnoreList);
+		for (FileToIgnore fileToIgnore : currentIgnoreSet)
 		{
 			if (fileToIgnore.getRegexpFileName().startsWith(SUBDIRECTORY_MATCH))
 			{
 				String regexpFileName = fileToIgnore.getRegexpFileName().substring(SUBDIRECTORY_MATCH.length());
-				subDirectoriesIgnoreList.add(new FileToIgnore(regexpFileName));
+				subDirectoriesIgnoreSet.add(new FileToIgnore(regexpFileName));
 			}
 		}
-		return subDirectoriesIgnoreList;
+		return subDirectoriesIgnoreSet;
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ public class FimIgnoreManager
 		ignoredFiles.add(relativeFileName);
 	}
 
-	public boolean isIgnored(Path file, BasicFileAttributes attributes, List<FileToIgnore> localIgnore)
+	public boolean isIgnored(Path file, BasicFileAttributes attributes, Set<FileToIgnore> filesToIgnore)
 	{
 		String fileName = file.getFileName().toString();
 		if (attributes.isDirectory() && IGNORED_DIRECTORIES.contains(fileName))
@@ -111,7 +111,7 @@ public class FimIgnoreManager
 			return true;
 		}
 
-		for (FileToIgnore fileToIgnore : localIgnore)
+		for (FileToIgnore fileToIgnore : filesToIgnore)
 		{
 			if (fileToIgnore.getCompiledFilename() != null)
 			{

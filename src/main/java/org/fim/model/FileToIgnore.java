@@ -18,6 +18,7 @@
  */
 package org.fim.model;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -75,5 +76,26 @@ public class FileToIgnore
 	public Pattern getCompiledFilename()
 	{
 		return compiledFilename;
+	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		if (this == other)
+		{
+			return true;
+		}
+		if (other == null || getClass() != other.getClass())
+		{
+			return false;
+		}
+		FileToIgnore that = (FileToIgnore) other;
+		return Objects.equals(compiledFilename.toString(), that.compiledFilename.toString());
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(compiledFilename.toString());
 	}
 }

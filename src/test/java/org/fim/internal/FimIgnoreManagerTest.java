@@ -22,8 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.fim.model.FileToIgnore;
 import org.fim.tooling.StateAssert;
@@ -42,7 +42,7 @@ public class FimIgnoreManagerTest extends StateAssert
 		fileAttributes = Mockito.mock(BasicFileAttributes.class);
 		Mockito.when(fileAttributes.isDirectory()).thenReturn(false);
 
-		List<FileToIgnore> ignoreList = new ArrayList<>();
+		Set<FileToIgnore> ignoreList = new HashSet<>();
 		ignoreFile(ignoreList, "foo");
 		ignoreFile(ignoreList, "bar*");
 		ignoreFile(ignoreList, "*baz*");
@@ -66,17 +66,17 @@ public class FimIgnoreManagerTest extends StateAssert
 		assertFileIgnored("****qux****", ignoreList);
 	}
 
-	private void assertFileIgnored(String fileName, List<FileToIgnore> ignoreList)
+	private void assertFileIgnored(String fileName, Set<FileToIgnore> ignoreList)
 	{
 		assertThat(cut.isIgnored(Paths.get(fileName), fileAttributes, ignoreList)).isTrue();
 	}
 
-	private void assertFileNotIgnored(String fileName, List<FileToIgnore> ignoreList)
+	private void assertFileNotIgnored(String fileName, Set<FileToIgnore> ignoreList)
 	{
 		assertThat(cut.isIgnored(Paths.get(fileName), fileAttributes, ignoreList)).isFalse();
 	}
 
-	private void ignoreFile(List<FileToIgnore> localIgnore, String regexp)
+	private void ignoreFile(Set<FileToIgnore> localIgnore, String regexp)
 	{
 		FileToIgnore fileToIgnore;
 		fileToIgnore = new FileToIgnore(regexp);
