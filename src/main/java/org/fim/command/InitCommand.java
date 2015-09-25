@@ -19,6 +19,7 @@
 package org.fim.command;
 
 import static org.fim.model.HashMode.hashAll;
+import static org.fim.util.HashModeUtil.hashModeToString;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -104,7 +105,7 @@ public class InitCommand extends AbstractCommand
 			settingsManager.setGlobalHashMode(context.getHashMode());
 			settingsManager.save();
 
-			Logger.warning(String.format("Global hash mode set to '%s'%n", StateGenerator.hashModeToString(context.getHashMode())));
+			Logger.warning(String.format("Global hash mode set to '%s'%n", hashModeToString(context.getHashMode())));
 		}
 	}
 }

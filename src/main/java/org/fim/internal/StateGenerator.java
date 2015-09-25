@@ -20,6 +20,7 @@ package org.fim.internal;
 
 import static org.fim.internal.HashProgress.PROGRESS_DISPLAY_FILE_COUNT;
 import static org.fim.model.HashMode.dontHash;
+import static org.fim.util.HashModeUtil.hashModeToString;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -43,7 +44,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.fim.model.Context;
 import org.fim.model.FileState;
-import org.fim.model.HashMode;
 import org.fim.model.State;
 import org.fim.util.Console;
 import org.fim.util.FileUtil;
@@ -73,26 +73,6 @@ public class StateGenerator
 		this.context = context;
 		this.hashProgress = new HashProgress(context);
 		this.fimIgnoreManager = new FimIgnoreManager(context);
-	}
-
-	public static String hashModeToString(HashMode hashMode)
-	{
-		switch (hashMode)
-		{
-			case dontHash:
-				return "retrieve only file attributes";
-
-			case hashSmallBlock:
-				return "hash second 4 KB block";
-
-			case hashMediumBlock:
-				return "hash second 1 MB block";
-
-			case hashAll:
-				return "hash the complete file";
-		}
-
-		throw new IllegalArgumentException("Invalid hash mode " + hashMode);
 	}
 
 	public State generateState(String comment, Path rootDir, Path dirToScan) throws NoSuchAlgorithmException

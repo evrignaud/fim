@@ -20,6 +20,7 @@ package org.fim.command;
 
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
+import static org.fim.util.HashModeUtil.hashModeToString;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,7 +29,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.fim.internal.SettingsManager;
-import org.fim.internal.StateGenerator;
 import org.fim.model.Command;
 import org.fim.model.Context;
 import org.fim.util.HashModeUtil;
@@ -63,18 +63,18 @@ public abstract class AbstractCommand implements Command
 			{
 				if (optionList.contains(Option.ALLOW_COMPATIBLE))
 				{
-					Logger.info(String.format("Using global hash mode '%s' that is compatible with the current one", StateGenerator.hashModeToString(settingsManager.getGlobalHashMode())));
+					Logger.info(String.format("Using global hash mode '%s' that is compatible with the current one", hashModeToString(settingsManager.getGlobalHashMode())));
 				}
 				else
 				{
 					Logger.warning(String.format("Using global hash mode '%s' that is compatible with the current one, but is not allowed by this command. Hash mode forced",
-							StateGenerator.hashModeToString(settingsManager.getGlobalHashMode())));
+							hashModeToString(settingsManager.getGlobalHashMode())));
 					context.setHashMode(settingsManager.getGlobalHashMode());
 				}
 			}
 			else
 			{
-				Logger.warning(String.format("Using global hash mode '%s' that is not compatible with the current one. Hash mode forced", StateGenerator.hashModeToString(settingsManager.getGlobalHashMode())));
+				Logger.warning(String.format("Using global hash mode '%s' that is not compatible with the current one. Hash mode forced", hashModeToString(settingsManager.getGlobalHashMode())));
 				context.setHashMode(settingsManager.getGlobalHashMode());
 			}
 		}

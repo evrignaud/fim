@@ -26,6 +26,26 @@ import org.fim.model.HashMode;
 
 public class HashModeUtil
 {
+	public static String hashModeToString(HashMode hashMode)
+	{
+		switch (hashMode)
+		{
+			case dontHash:
+				return "retrieve only file attributes";
+
+			case hashSmallBlock:
+				return "hash second 4 KB block";
+
+			case hashMediumBlock:
+				return "hash second 1 MB block";
+
+			case hashAll:
+				return "hash the complete file";
+		}
+
+		throw new IllegalArgumentException("Invalid hash mode " + hashMode);
+	}
+
 	public static boolean isCompatible(HashMode hashMode, HashMode toCheck)
 	{
 		switch (hashMode)
