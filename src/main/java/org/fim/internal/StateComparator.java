@@ -142,8 +142,7 @@ public class StateComparator
 
 				if (result.isSearchForHardwareCorruption())
 				{
-					if (false == previousFileState.getFileHash().equals(fileState.getFileHash()) &&
-							previousFileState.getFileTime().equals(fileState.getFileTime()))
+					if (false == previousFileState.getFileHash().equals(fileState.getFileHash()) && previousFileState.getFileTime().equals(fileState.getFileTime()))
 					{
 						result.getCorrupted().add(new Difference(previousFileState, fileState));
 						fileState.setModification(Modification.corrupted);

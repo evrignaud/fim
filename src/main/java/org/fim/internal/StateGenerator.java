@@ -25,22 +25,20 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Matcher;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -55,12 +53,8 @@ import org.fim.util.Logger;
 
 public class StateGenerator
 {
-	public static final String DOT_FIM_IGNORE = ".fimignore";
-
 	public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
 	public static final int FILES_QUEUE_CAPACITY = 500;
-
-	private static final Set ignoredDirectories = new HashSet<>(Arrays.asList(Context.DOT_FIM_DIR, ".git", ".svn", ".cvs"));
 
 	private static final List<Pair<Character, Integer>> hashProgress = Arrays.asList(
 			Pair.of('.', 0),
@@ -74,6 +68,7 @@ public class StateGenerator
 
 	private final Context context;
 	private final ReentrantLock progressLock;
+	private final FimIgnoreManager fimIgnoreManager;
 
 	private ExecutorService executorService;
 	private long summedFileLength;
@@ -85,14 +80,12 @@ public class StateGenerator
 	private boolean hashersStarted;
 	private List<FileHasher> hashers;
 	private long totalBytesHashed;
-	private String repositoryRootDirString;
-	private List<String> ignoredFiles;
 
 	public StateGenerator(Context context)
 	{
 		this.context = context;
 		this.progressLock = new ReentrantLock();
-		this.repositoryRootDirString = context.getRepositoryRootDir().toString();
+		this.fimIgnoreManager = new FimIgnoreManager(context);
 	}
 
 	public static String hashModeToString(HashMode hashMode)
@@ -119,8 +112,6 @@ public class StateGenerator
 	{
 		this.rootDir = rootDir;
 
-		ignoredFiles = new ArrayList<>();
-
 		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(context.getHashMode()), context.getThreadCount()));
 		if (displayHashLegend())
 		{
@@ -135,9 +126,11 @@ public class StateGenerator
 		progressOutputInit();
 
 		filesToHashQueue = new LinkedBlockingDeque<>(FILES_QUEUE_CAPACITY);
-		InitializeFileHashers();
+		initializeFileHashers();
 
-		scanFileTree(filesToHashQueue, dirToScan);
+		Path userDir = Paths.get(System.getProperty("user.dir"));
+		List<FileToIgnore> globalIgnore = fimIgnoreManager.loadFimIgnore(userDir);
+		scanFileTree(filesToHashQueue, dirToScan, globalIgnore);
 
 		// In case the FileHashers have not already been started
 		startFileHashers();
@@ -153,7 +146,7 @@ public class StateGenerator
 
 		Collections.sort(state.getFileStates(), fileNameComparator);
 
-		state.setIgnoredFiles(ignoredFiles);
+		state.setIgnoredFiles(fimIgnoreManager.getIgnoredFiles());
 
 		progressOutputStop();
 		displayStatistics(start, state);
@@ -161,7 +154,7 @@ public class StateGenerator
 		return state;
 	}
 
-	private void InitializeFileHashers()
+	private void initializeFileHashers()
 	{
 		hashersStarted = false;
 		hashers = new ArrayList<>();
@@ -225,11 +218,13 @@ public class StateGenerator
 		}
 	}
 
-	private void scanFileTree(BlockingDeque<Path> filesToHashQueue, Path directory) throws NoSuchAlgorithmException
+	private void scanFileTree(BlockingDeque<Path> filesToHashQueue, Path directory, List<FileToIgnore> thisDirectoryIgnoreList) throws NoSuchAlgorithmException
 	{
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory))
 		{
-			List<FileToIgnore> localIgnore = loadLocalIgnore(directory);
+			List<FileToIgnore> currentIgnoreList = fimIgnoreManager.loadFimIgnore(directory);
+			List<FileToIgnore> subDirectoriesIgnoreList = fimIgnoreManager.buildSubDirectoriesIgnoreList(thisDirectoryIgnoreList, currentIgnoreList);
+			currentIgnoreList.addAll(subDirectoriesIgnoreList);
 
 			for (Path file : stream)
 			{
@@ -239,9 +234,9 @@ public class StateGenerator
 				}
 
 				BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
-				if (isIgnored(file, attributes, localIgnore))
+				if (fimIgnoreManager.isIgnored(file, attributes, currentIgnoreList))
 				{
-					addToIgnoredFiles(file, attributes);
+					fimIgnoreManager.addToIgnoredFiles(file, attributes);
 				}
 				else
 				{
@@ -251,7 +246,7 @@ public class StateGenerator
 					}
 					else if (attributes.isDirectory())
 					{
-						scanFileTree(filesToHashQueue, file);
+						scanFileTree(filesToHashQueue, file, subDirectoriesIgnoreList);
 					}
 				}
 			}
@@ -261,73 +256,6 @@ public class StateGenerator
 			Console.newLine();
 			Logger.error("Skipping - Error scanning directory", ex);
 		}
-	}
-
-	private void addToIgnoredFiles(Path file, BasicFileAttributes attributes)
-	{
-		String normalizedFileName = FileUtil.getNormalizedFileName(file);
-		if (attributes.isDirectory())
-		{
-			normalizedFileName = normalizedFileName + "/";
-		}
-
-		String relativeFileName = FileUtil.getRelativeFileName(repositoryRootDirString, normalizedFileName);
-		ignoredFiles.add(relativeFileName);
-	}
-
-	protected List<FileToIgnore> loadLocalIgnore(Path directory)
-	{
-		List<FileToIgnore> localIgnore = new ArrayList<>();
-
-		Path dotFimIgnore = directory.resolve(DOT_FIM_IGNORE);
-		if (Files.exists(dotFimIgnore))
-		{
-			List<String> allLines = null;
-			try
-			{
-				allLines = Files.readAllLines(dotFimIgnore);
-			}
-			catch (IOException e)
-			{
-				Logger.error(String.format("Unable to read file %s: %s", dotFimIgnore, e.getMessage()));
-				return localIgnore;
-			}
-
-			for (String line : allLines)
-			{
-				FileToIgnore fileToIgnore = new FileToIgnore(line);
-				localIgnore.add(fileToIgnore);
-			}
-		}
-
-		return localIgnore;
-	}
-
-	protected boolean isIgnored(Path file, BasicFileAttributes attributes, List<FileToIgnore> localIgnore)
-	{
-		String fileName = file.getFileName().toString();
-		if (attributes.isDirectory() && ignoredDirectories.contains(fileName))
-		{
-			return true;
-		}
-
-		for (FileToIgnore fileToIgnore : localIgnore)
-		{
-			if (fileToIgnore.getCompiledFilename() != null)
-			{
-				Matcher matcher = fileToIgnore.getCompiledFilename().matcher(fileName);
-				if (matcher.find())
-				{
-					return true;
-				}
-			}
-			else if (fileToIgnore.getRegexpFileName().equals(fileName))
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private void enqueueFile(BlockingDeque<Path> filesToHashQueue, Path file)
