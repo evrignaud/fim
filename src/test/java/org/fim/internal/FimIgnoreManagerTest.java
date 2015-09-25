@@ -25,6 +25,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fim.model.FileToIgnore;
 import org.fim.tooling.StateAssert;
 import org.junit.Test;
 import org.mockito.Mockito;

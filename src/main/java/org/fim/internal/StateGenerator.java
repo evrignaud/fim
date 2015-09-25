@@ -44,6 +44,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.fim.model.Context;
 import org.fim.model.FileState;
+import org.fim.model.FileToIgnore;
 import org.fim.model.State;
 import org.fim.util.Console;
 import org.fim.util.FileUtil;

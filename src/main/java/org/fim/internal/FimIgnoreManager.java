@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import org.fim.model.Context;
+import org.fim.model.FileToIgnore;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 
