@@ -22,10 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.fim.model.FileToIgnore;
+import org.fim.model.FimIgnore;
 import org.fim.tooling.StateAssert;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -42,44 +41,44 @@ public class FimIgnoreManagerTest extends StateAssert
 		fileAttributes = Mockito.mock(BasicFileAttributes.class);
 		Mockito.when(fileAttributes.isDirectory()).thenReturn(false);
 
-		Set<FileToIgnore> ignoreList = new HashSet<>();
-		ignoreFile(ignoreList, "foo");
-		ignoreFile(ignoreList, "bar*");
-		ignoreFile(ignoreList, "*baz*");
-		ignoreFile(ignoreList, "*.mp3");
-		ignoreFile(ignoreList, "$Data[1]|2(3)*");
-		ignoreFile(ignoreList, "****qux****");
+		FimIgnore fimIgnore = new FimIgnore();
+		ignoreFile(fimIgnore, "foo");
+		ignoreFile(fimIgnore, "bar*");
+		ignoreFile(fimIgnore, "*baz*");
+		ignoreFile(fimIgnore, "*.mp3");
+		ignoreFile(fimIgnore, "$Data[1]|2(3)*");
+		ignoreFile(fimIgnore, "****qux****");
 
-		assertFileIgnored("foo", ignoreList);
-		assertFileNotIgnored("a_foo", ignoreList);
+		assertFileIgnored("foo", fimIgnore);
+		assertFileNotIgnored("a_foo", fimIgnore);
 
-		assertFileIgnored("bar_yes", ignoreList);
-		assertFileNotIgnored("yes_bar", ignoreList);
+		assertFileIgnored("bar_yes", fimIgnore);
+		assertFileNotIgnored("yes_bar", fimIgnore);
 
-		assertFileIgnored("no_baz_yes", ignoreList);
+		assertFileIgnored("no_baz_yes", fimIgnore);
 
-		assertFileIgnored("track12.mp3", ignoreList);
-		assertFileNotIgnored("track12_mp3", ignoreList);
+		assertFileIgnored("track12.mp3", fimIgnore);
+		assertFileNotIgnored("track12_mp3", fimIgnore);
 
-		assertFileIgnored("$Data[1]|2(3)_file", ignoreList);
+		assertFileIgnored("$Data[1]|2(3)_file", fimIgnore);
 
-		assertFileIgnored("****qux****", ignoreList);
+		assertFileIgnored("****qux****", fimIgnore);
 	}
 
-	private void assertFileIgnored(String fileName, Set<FileToIgnore> ignoreList)
+	private void assertFileIgnored(String fileName, FimIgnore fimIgnore)
 	{
-		assertThat(cut.isIgnored(Paths.get(fileName), fileAttributes, ignoreList)).isTrue();
+		assertThat(cut.isIgnored(Paths.get(fileName), fileAttributes, fimIgnore)).isTrue();
 	}
 
-	private void assertFileNotIgnored(String fileName, Set<FileToIgnore> ignoreList)
+	private void assertFileNotIgnored(String fileName, FimIgnore fimIgnore)
 	{
-		assertThat(cut.isIgnored(Paths.get(fileName), fileAttributes, ignoreList)).isFalse();
+		assertThat(cut.isIgnored(Paths.get(fileName), fileAttributes, fimIgnore)).isFalse();
 	}
 
-	private void ignoreFile(Set<FileToIgnore> localIgnore, String regexp)
+	private void ignoreFile(FimIgnore fimIgnore, String fileNamePattern)
 	{
 		FileToIgnore fileToIgnore;
-		fileToIgnore = new FileToIgnore(regexp);
-		localIgnore.add(fileToIgnore);
+		fileToIgnore = new FileToIgnore(fileNamePattern);
+		fimIgnore.getFilesToIgnoreLocally().add(fileToIgnore);
 	}
 }

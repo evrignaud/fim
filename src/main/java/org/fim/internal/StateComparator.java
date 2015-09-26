@@ -234,7 +234,8 @@ public class StateComparator
 	{
 		notFoundInCurrentFileState.stream().
 				filter(fileState -> !isFileIgnored(fileState)).
-				forEach(fileState -> {
+				forEach(fileState ->
+				{
 					result.getDeleted().add(new Difference(null, fileState));
 				});
 	}

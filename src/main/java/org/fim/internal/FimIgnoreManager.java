@@ -21,6 +21,7 @@ package org.fim.internal;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,13 +32,14 @@ import java.util.regex.Matcher;
 
 import org.fim.model.Context;
 import org.fim.model.FileToIgnore;
+import org.fim.model.FimIgnore;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 
 public class FimIgnoreManager
 {
 	public static final String DOT_FIM_IGNORE = ".fimignore";
-	public static final String SUBDIRECTORY_MATCH = "**/";
+	public static final String ALL_DIRECTORIES_PATTERN = "**/";
 
 	public static final Set IGNORED_DIRECTORIES = new HashSet<>(Arrays.asList(Context.DOT_FIM_DIR, ".git", ".svn", ".cvs"));
 
@@ -50,9 +52,22 @@ public class FimIgnoreManager
 		this.ignoredFiles = new ArrayList<>();
 	}
 
-	public Set<FileToIgnore> loadFimIgnore(Path directory)
+	public FimIgnore loadGlobalFimIgnore()
 	{
-		Set<FileToIgnore> localIgnoreSet = new HashSet<>();
+		Path userDir = Paths.get(System.getProperty("user.dir"));
+		return loadFimIgnore(userDir);
+	}
+
+	public FimIgnore loadLocalIgnore(Path directory, FimIgnore parentFimIgnore)
+	{
+		FimIgnore fimIgnore = loadFimIgnore(directory);
+		fimIgnore.getFilesToIgnoreInAllDirectories().addAll(parentFimIgnore.getFilesToIgnoreInAllDirectories());
+		return fimIgnore;
+	}
+
+	protected FimIgnore loadFimIgnore(Path directory)
+	{
+		FimIgnore fimIgnore = new FimIgnore();
 
 		Path dotFimIgnore = directory.resolve(DOT_FIM_IGNORE);
 		if (Files.exists(dotFimIgnore))
@@ -62,8 +77,17 @@ public class FimIgnoreManager
 				List<String> allLines = Files.readAllLines(dotFimIgnore);
 				for (String line : allLines)
 				{
-					FileToIgnore fileToIgnore = new FileToIgnore(line);
-					localIgnoreSet.add(fileToIgnore);
+					if (line.startsWith(ALL_DIRECTORIES_PATTERN))
+					{
+						String fileNamePattern = line.substring(ALL_DIRECTORIES_PATTERN.length());
+						FileToIgnore fileToIgnore = new FileToIgnore(fileNamePattern);
+						fimIgnore.getFilesToIgnoreInAllDirectories().add(fileToIgnore);
+					}
+					else
+					{
+						FileToIgnore fileToIgnore = new FileToIgnore(line);
+						fimIgnore.getFilesToIgnoreLocally().add(fileToIgnore);
+					}
 				}
 			}
 			catch (IOException e)
@@ -72,26 +96,12 @@ public class FimIgnoreManager
 			}
 		}
 
-		return localIgnoreSet;
-	}
-
-	public Set<FileToIgnore> buildSubDirectoriesIgnoreSet(Set<FileToIgnore> thisDirectoryIgnoreList, Set<FileToIgnore> currentIgnoreSet)
-	{
-		Set<FileToIgnore> subDirectoriesIgnoreSet = new HashSet<>(thisDirectoryIgnoreList);
-		for (FileToIgnore fileToIgnore : currentIgnoreSet)
-		{
-			if (fileToIgnore.getRegexpFileName().startsWith(SUBDIRECTORY_MATCH))
-			{
-				String regexpFileName = fileToIgnore.getRegexpFileName().substring(SUBDIRECTORY_MATCH.length());
-				subDirectoriesIgnoreSet.add(new FileToIgnore(regexpFileName));
-			}
-		}
-		return subDirectoriesIgnoreSet;
+		return fimIgnore;
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	public void addToIgnoredFiles(Path file, BasicFileAttributes attributes)
+	public void ignoreThisFiles(Path file, BasicFileAttributes attributes)
 	{
 		String normalizedFileName = FileUtil.getNormalizedFileName(file);
 		if (attributes.isDirectory())
@@ -103,7 +113,7 @@ public class FimIgnoreManager
 		ignoredFiles.add(relativeFileName);
 	}
 
-	public boolean isIgnored(Path file, BasicFileAttributes attributes, Set<FileToIgnore> filesToIgnore)
+	public boolean isIgnored(Path file, BasicFileAttributes attributes, FimIgnore fimIgnore)
 	{
 		String fileName = file.getFileName().toString();
 		if (attributes.isDirectory() && IGNORED_DIRECTORIES.contains(fileName))
@@ -111,22 +121,36 @@ public class FimIgnoreManager
 			return true;
 		}
 
+		if (isIgnored(fileName, fimIgnore.getFilesToIgnoreInAllDirectories()))
+		{
+			return true;
+		}
+
+		if (isIgnored(fileName, fimIgnore.getFilesToIgnoreLocally()))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean isIgnored(String fileName, Set<FileToIgnore> filesToIgnore)
+	{
 		for (FileToIgnore fileToIgnore : filesToIgnore)
 		{
-			if (fileToIgnore.getCompiledFilename() != null)
+			if (fileToIgnore.getCompiledPattern() != null)
 			{
-				Matcher matcher = fileToIgnore.getCompiledFilename().matcher(fileName);
+				Matcher matcher = fileToIgnore.getCompiledPattern().matcher(fileName);
 				if (matcher.find())
 				{
 					return true;
 				}
 			}
-			else if (fileToIgnore.getRegexpFileName().equals(fileName))
+			else if (fileToIgnore.getFileNamePattern().equals(fileName))
 			{
 				return true;
 			}
 		}
-
 		return false;
 	}
 
