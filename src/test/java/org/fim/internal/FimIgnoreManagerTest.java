@@ -65,6 +65,16 @@ public class FimIgnoreManagerTest extends StateAssert
 		assertFileIgnored("****qux****", fimIgnore);
 	}
 
+	@Test
+	public void fileToIgnoreListDontAllowDuplicates()
+	{
+		FimIgnore fimIgnore = new FimIgnore();
+		ignoreFile(fimIgnore, "foo");
+		ignoreFile(fimIgnore, "foo");
+
+		assertThat(fimIgnore.getFilesToIgnoreLocally().size()).isEqualTo(1);
+	}
+
 	private void assertFileIgnored(String fileName, FimIgnore fimIgnore)
 	{
 		assertThat(cut.isIgnored(Paths.get(fileName), fileAttributes, fimIgnore)).isTrue();
