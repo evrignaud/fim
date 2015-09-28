@@ -22,6 +22,8 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import com.google.common.base.MoreObjects;
+
 public class FileToIgnore
 {
 	private String fileNamePattern;
@@ -98,5 +100,14 @@ public class FileToIgnore
 	public int hashCode()
 	{
 		return Objects.hash(fileNamePattern, compiledPattern.toString());
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(this)
+				.add("fileNamePattern", fileNamePattern)
+				.add("compiledPattern", compiledPattern)
+				.toString();
 	}
 }

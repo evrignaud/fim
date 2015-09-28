@@ -18,22 +18,39 @@
  */
 package org.fim.internal;
 
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.io.FileUtils;
 import org.fim.model.FileToIgnore;
 import org.fim.model.FimIgnore;
 import org.fim.tooling.StateAssert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 public class FimIgnoreManagerTest extends StateAssert
 {
+	private static Path rootDir = Paths.get("target/" + FileHasherTest.class.getSimpleName());
+
 	private FimIgnoreManager cut = new FimIgnoreManager(defaultContext());
 
 	private BasicFileAttributes fileAttributes;
+
+	@BeforeClass
+	public static void setupOnce() throws NoSuchAlgorithmException, IOException
+	{
+		FileUtils.deleteDirectory(rootDir.toFile());
+		Files.createDirectories(rootDir);
+	}
 
 	@Test
 	public void filesCanBeIgnored()
@@ -73,6 +90,31 @@ public class FimIgnoreManagerTest extends StateAssert
 		ignoreFile(fimIgnore, "foo");
 
 		assertThat(fimIgnore.getFilesToIgnoreLocally().size()).isEqualTo(1);
+	}
+
+	@Test
+	public void weCanLoadCorrectlyAFimIgnore() throws IOException
+	{
+		FimIgnore fimIgnore = cut.loadFimIgnore(rootDir);
+		assertThat(fimIgnore.getFilesToIgnoreLocally().size()).isEqualTo(0);
+		assertThat(fimIgnore.getFilesToIgnoreInAllDirectories().size()).isEqualTo(0);
+
+		String fileContent = "**/*.mp3\n" +
+				"*.mp4\n" +
+				"**/.git\n" +
+				"foo\n" +
+				"**/bar";
+		Files.write(rootDir.resolve(".fimignore"), fileContent.getBytes(), CREATE, APPEND);
+
+		fimIgnore = cut.loadFimIgnore(rootDir);
+		assertThat(fimIgnore.getFilesToIgnoreLocally().toString()).isEqualTo(
+				"[FileToIgnore{fileNamePattern=foo, compiledPattern=^foo$}," +
+						" FileToIgnore{fileNamePattern=*.mp4, compiledPattern=^.*\\.mp4$}]");
+
+		assertThat(fimIgnore.getFilesToIgnoreInAllDirectories().toString()).isEqualTo(
+				"[FileToIgnore{fileNamePattern=bar, compiledPattern=^bar$}," +
+						" FileToIgnore{fileNamePattern=.git, compiledPattern=^\\.git$}," +
+						" FileToIgnore{fileNamePattern=*.mp3, compiledPattern=^.*\\.mp3$}]");
 	}
 
 	private void assertFileIgnored(String fileName, FimIgnore fimIgnore)
