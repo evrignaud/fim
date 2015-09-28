@@ -31,9 +31,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -65,7 +67,7 @@ public class State implements Hashable
 	private HashMode hashMode;
 
 	private ModificationCounts modificationCounts; // Not taken in account in equals(), hashCode(), hashObject()
-	private List<String> ignoredFiles;
+	private Set<String> ignoredFiles;
 	private List<FileState> fileStates;
 
 	public State()
@@ -76,7 +78,7 @@ public class State implements Hashable
 		fileCount = 0;
 		hashMode = hashAll;
 		modificationCounts = new ModificationCounts();
-		ignoredFiles = new ArrayList<>();
+		ignoredFiles = new HashSet<>();
 		fileStates = new ArrayList<>();
 	}
 
@@ -199,12 +201,12 @@ public class State implements Hashable
 		this.hashMode = hashMode;
 	}
 
-	public List<String> getIgnoredFiles()
+	public Set<String> getIgnoredFiles()
 	{
 		return ignoredFiles;
 	}
 
-	public void setIgnoredFiles(List<String> ignoredFiles)
+	public void setIgnoredFiles(Set<String> ignoredFiles)
 	{
 		this.ignoredFiles = ignoredFiles;
 	}

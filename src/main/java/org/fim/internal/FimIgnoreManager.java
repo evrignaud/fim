@@ -23,7 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -46,13 +45,13 @@ public class FimIgnoreManager
 	private final Context context;
 
 	private String repositoryRootDirString;
-	private List<String> ignoredFiles;
+	private Set<String> ignoredFiles;
 
 	public FimIgnoreManager(Context context)
 	{
 		this.context = context;
 		this.repositoryRootDirString = this.context.getRepositoryRootDir().toString();
-		this.ignoredFiles = new ArrayList<>();
+		this.ignoredFiles = new HashSet<>();
 	}
 
 	public FimIgnore loadInitialFimIgnore()
@@ -171,7 +170,7 @@ public class FimIgnoreManager
 		return false;
 	}
 
-	public List<String> getIgnoredFiles()
+	public Set<String> getIgnoredFiles()
 	{
 		return ignoredFiles;
 	}
