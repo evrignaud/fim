@@ -95,8 +95,8 @@ public class StateGenerator
 		filesToHashQueue = new LinkedBlockingDeque<>(FILES_QUEUE_CAPACITY);
 		initializeFileHashers();
 
-		FimIgnore globalFimIgnore = fimIgnoreManager.loadGlobalFimIgnore();
-		scanFileTree(filesToHashQueue, dirToScan, globalFimIgnore);
+		FimIgnore initialFimIgnore = fimIgnoreManager.loadInitialFimIgnore();
+		scanFileTree(filesToHashQueue, dirToScan, initialFimIgnore);
 
 		// In case the FileHashers have not already been started
 		startFileHashers();

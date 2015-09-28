@@ -43,13 +43,30 @@ public class FimIgnoreManager
 
 	public static final Set IGNORED_DIRECTORIES = new HashSet<>(Arrays.asList(Context.DOT_FIM_DIR, ".git", ".svn", ".cvs"));
 
+	private final Context context;
+
 	private String repositoryRootDirString;
 	private List<String> ignoredFiles;
 
 	public FimIgnoreManager(Context context)
 	{
-		this.repositoryRootDirString = context.getRepositoryRootDir().toString();
+		this.context = context;
+		this.repositoryRootDirString = this.context.getRepositoryRootDir().toString();
 		this.ignoredFiles = new ArrayList<>();
+	}
+
+	public FimIgnore loadInitialFimIgnore()
+	{
+		FimIgnore initialFimIgnore = loadGlobalFimIgnore();
+
+		Path directory = Paths.get(".").toAbsolutePath().normalize();
+		while (false == directory.equals(context.getRepositoryRootDir()))
+		{
+			directory = directory.getParent();
+			FimIgnore fimIgnore = loadFimIgnore(directory);
+			initialFimIgnore.getFilesToIgnoreInAllDirectories().addAll(fimIgnore.getFilesToIgnoreInAllDirectories());
+		}
+		return initialFimIgnore;
 	}
 
 	public FimIgnore loadGlobalFimIgnore()
