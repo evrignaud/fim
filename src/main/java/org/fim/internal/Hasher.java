@@ -34,6 +34,8 @@ public class Hasher
 	private final boolean active;
 
 	private MessageDigest digest;
+	private long bytesHashed;
+	private long totalBytesHashed;
 	private long startPosition;
 
 	public Hasher(long sizeToHash, HashMode hashMode, HashMode blockHashMode) throws NoSuchAlgorithmException
@@ -41,10 +43,22 @@ public class Hasher
 		this.sizeToHash = sizeToHash;
 		this.active = HashModeUtil.isCompatible(hashMode, blockHashMode);
 
+		this.totalBytesHashed = 0;
+
 		if (this.active)
 		{
 			this.digest = MessageDigest.getInstance(HASH_ALGORITHM);
 		}
+	}
+
+	public long getBytesHashed()
+	{
+		return bytesHashed;
+	}
+
+	public long getTotalBytesHashed()
+	{
+		return totalBytesHashed;
 	}
 
 	public String getHash()
@@ -76,6 +90,7 @@ public class Hasher
 			}
 
 			digest.reset();
+			bytesHashed = 0;
 		}
 	}
 
@@ -83,8 +98,11 @@ public class Hasher
 	{
 		if (active && (position >= startPosition) && ((sizeToHash == FileState.SIZE_UNLIMITED) || (position < (startPosition + sizeToHash))))
 		{
+			int limit = buffer.limit();
 			digest.update(buffer);
 			buffer.flip(); // Reset the buffer to be usable after
+			bytesHashed += limit;
+			totalBytesHashed += limit;
 		}
 	}
 

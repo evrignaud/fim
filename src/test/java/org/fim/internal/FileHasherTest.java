@@ -18,6 +18,7 @@
  */
 package org.fim.internal;
 
+import static java.lang.Math.min;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -197,7 +198,7 @@ public class FileHasherTest extends StateAssert
 
 		// displayFileHash(fileSize, fileHash);
 
-		assertFileHash(expectedHash, fileHash);
+		assertFileHash(fileSize, expectedHash, fileHash);
 	}
 
 	private void displayFileHash(int fileSize, FileHash fileHash)
@@ -209,7 +210,7 @@ public class FileHasherTest extends StateAssert
 		System.out.println("");
 	}
 
-	private void assertFileHash(FileHash expectedFileHash, FileHash fileHash)
+	private void assertFileHash(int fileSize, FileHash expectedFileHash, FileHash fileHash)
 	{
 		switch (hashMode)
 		{
@@ -217,26 +218,57 @@ public class FileHasherTest extends StateAssert
 				assertThat(fileHash.getSmallBlockHash()).isEqualTo(NO_HASH);
 				assertThat(fileHash.getMediumBlockHash()).isEqualTo(NO_HASH);
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
+
+				assertSmallBlockBytesHashedEqualsTo(0);
+				assertMediumBlockBytesHashedEqualsTo(0);
+				assertFullBytesHashedEqualsTo(0);
 				break;
 
 			case hashSmallBlock:
 				assertThat(fileHash.getSmallBlockHash()).isEqualTo(expectedFileHash.getSmallBlockHash());
 				assertThat(fileHash.getMediumBlockHash()).isEqualTo(NO_HASH);
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
+
+				assertSmallBlockBytesHashedEqualsTo(min(fileSize, SIZE_4_KB));
+				assertMediumBlockBytesHashedEqualsTo(0);
+				assertFullBytesHashedEqualsTo(0);
 				break;
 
 			case hashMediumBlock:
 				assertThat(fileHash.getSmallBlockHash()).isEqualTo(expectedFileHash.getSmallBlockHash());
 				assertThat(fileHash.getMediumBlockHash()).isEqualTo(expectedFileHash.getMediumBlockHash());
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
+
+				assertSmallBlockBytesHashedEqualsTo(min(fileSize, SIZE_4_KB));
+				assertMediumBlockBytesHashedEqualsTo(min(fileSize, SIZE_1_MB));
+				assertFullBytesHashedEqualsTo(0);
 				break;
 
 			case hashAll:
 				assertThat(fileHash.getSmallBlockHash()).isEqualTo(expectedFileHash.getSmallBlockHash());
 				assertThat(fileHash.getMediumBlockHash()).isEqualTo(expectedFileHash.getMediumBlockHash());
 				assertThat(fileHash.getFullHash()).isEqualTo(expectedFileHash.getFullHash());
+
+				assertSmallBlockBytesHashedEqualsTo(min(fileSize, SIZE_4_KB));
+				assertMediumBlockBytesHashedEqualsTo(min(fileSize, SIZE_1_MB));
+				assertFullBytesHashedEqualsTo(fileSize);
 				break;
 		}
+	}
+
+	private void assertSmallBlockBytesHashedEqualsTo(int size)
+	{
+		assertThat(cut.getHashers().getSmallBlockHasher().getBytesHashed()).isEqualTo(size);
+	}
+
+	private void assertMediumBlockBytesHashedEqualsTo(int size)
+	{
+		assertThat(cut.getHashers().getMediumBlockHasher().getBytesHashed()).isEqualTo(size);
+	}
+
+	private void assertFullBytesHashedEqualsTo(int size)
+	{
+		assertThat(cut.getHashers().getFullHasher().getBytesHashed()).isEqualTo(size);
 	}
 
 	private Path createFileWithSize(int fileSize) throws IOException
@@ -259,7 +291,7 @@ public class FileHasherTest extends StateAssert
 			int remaining = fileSize;
 			for (int sequenceCount = 0; remaining > 0; sequenceCount++)
 			{
-				int size = Math.min(contentSize, remaining);
+				int size = min(contentSize, remaining);
 				byte[] content = generateContent(sequenceCount, size);
 				remaining -= size;
 				out.write(content);
@@ -344,7 +376,7 @@ public class FileHasherTest extends StateAssert
 
 	private byte[] extractBlock(byte[] fullContent, int startPosition, int size)
 	{
-		return Arrays.copyOfRange(fullContent, startPosition, Math.min(fullContent.length, startPosition + size));
+		return Arrays.copyOfRange(fullContent, startPosition, min(fullContent.length, startPosition + size));
 	}
 
 	private String hashContent(byte[] content)

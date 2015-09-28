@@ -64,9 +64,9 @@ public class StateGenerator
 
 	private Path rootDir;
 	private BlockingDeque<Path> filesToHashQueue;
-	private boolean hashersStarted;
-	private List<FileHasher> hashers;
-	private long totalBytesHashed;
+	private boolean fileHashersStarted;
+	private List<FileHasher> fileHashers;
+	private long overallTotalBytesHashed;
 
 	public StateGenerator(Context context)
 	{
@@ -103,11 +103,12 @@ public class StateGenerator
 
 		waitAllFilesToBeHashed();
 
-		for (FileHasher hasher : hashers)
+		overallTotalBytesHashed = 0;
+		for (FileHasher fileHasher : fileHashers)
 		{
-			state.getFileStates().addAll(hasher.getFileStates());
-			totalFileContentLength += hasher.getTotalFileContentLength();
-			totalBytesHashed += hasher.getTotalBytesHashed();
+			state.getFileStates().addAll(fileHasher.getFileStates());
+			totalFileContentLength += fileHasher.getTotalFileContentLength();
+			overallTotalBytesHashed += fileHasher.getHashers().getTotalBytesHashed();
 		}
 
 		Collections.sort(state.getFileStates(), fileNameComparator);
@@ -122,23 +123,23 @@ public class StateGenerator
 
 	private void initializeFileHashers()
 	{
-		hashersStarted = false;
-		hashers = new ArrayList<>();
+		fileHashersStarted = false;
+		fileHashers = new ArrayList<>();
 		executorService = Executors.newFixedThreadPool(context.getThreadCount());
 	}
 
 	private void startFileHashers() throws NoSuchAlgorithmException
 	{
-		if (!hashersStarted)
+		if (!fileHashersStarted)
 		{
 			String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
 			for (int index = 0; index < context.getThreadCount(); index++)
 			{
 				FileHasher hasher = new FileHasher(hashProgress, filesToHashQueue, normalizedRootDir);
 				executorService.submit(hasher);
-				hashers.add(hasher);
+				fileHashers.add(hasher);
 			}
-			hashersStarted = true;
+			fileHashersStarted = true;
 		}
 	}
 
@@ -160,7 +161,7 @@ public class StateGenerator
 		long duration = System.currentTimeMillis() - start;
 
 		String totalFileContentLengthStr = FileUtils.byteCountToDisplaySize(totalFileContentLength);
-		String totalBytesHashedStr = FileUtils.byteCountToDisplaySize(totalBytesHashed);
+		String totalBytesHashedStr = FileUtils.byteCountToDisplaySize(overallTotalBytesHashed);
 		String durationStr = DurationFormatUtils.formatDuration(duration, "HH:mm:ss");
 
 		long durationSeconds = duration / 1000;
@@ -169,7 +170,7 @@ public class StateGenerator
 			durationSeconds = 1;
 		}
 
-		long globalThroughput = totalBytesHashed / durationSeconds;
+		long globalThroughput = overallTotalBytesHashed / durationSeconds;
 		String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
 
 		if (context.getHashMode() == dontHash)
@@ -192,7 +193,7 @@ public class StateGenerator
 
 			for (Path file : stream)
 			{
-				if (!hashersStarted && filesToHashQueue.size() > FILES_QUEUE_CAPACITY / 2)
+				if (!fileHashersStarted && filesToHashQueue.size() > FILES_QUEUE_CAPACITY / 2)
 				{
 					startFileHashers();
 				}

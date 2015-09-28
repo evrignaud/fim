@@ -18,6 +18,7 @@
  */
 package org.fim.internal;
 
+import static java.lang.Math.max;
 import static org.fim.model.FileState.SIZE_1_MB;
 import static org.fim.model.FileState.SIZE_4_KB;
 import static org.fim.model.FileState.SIZE_UNLIMITED;
@@ -33,14 +34,17 @@ import org.fim.model.HashMode;
 
 public class Hashers
 {
+	public static final int SMALL_BLOCK_SIZE = SIZE_4_KB;
+	public static final int MEDIUM_BLOCK_SIZE = SIZE_1_MB;
+
 	private final Hasher smallBlockHasher;
 	private final Hasher mediumBlockHasher;
 	private final Hasher fullHasher;
 
 	public Hashers(HashMode hashMode) throws NoSuchAlgorithmException
 	{
-		this.smallBlockHasher = new Hasher(SIZE_4_KB, hashMode, hashSmallBlock);
-		this.mediumBlockHasher = new Hasher(SIZE_1_MB, hashMode, hashMediumBlock);
+		this.smallBlockHasher = new Hasher(SMALL_BLOCK_SIZE, hashMode, hashSmallBlock);
+		this.mediumBlockHasher = new Hasher(MEDIUM_BLOCK_SIZE, hashMode, hashMediumBlock);
 		this.fullHasher = new Hasher(SIZE_UNLIMITED, hashMode, hashAll);
 	}
 
@@ -58,8 +62,41 @@ public class Hashers
 		fullHasher.update(position, buffer);
 	}
 
+	public long getTotalBytesHashed()
+	{
+		long totalBytesHashed =
+				max(smallBlockHasher.getTotalBytesHashed(),
+						max(mediumBlockHasher.getTotalBytesHashed(), fullHasher.getTotalBytesHashed()));
+		return totalBytesHashed;
+	}
+
+	public boolean isSmallBlockHashed()
+	{
+		return smallBlockHasher.getBytesHashed() == SMALL_BLOCK_SIZE;
+	}
+
+	public boolean isMediumBlockHashed()
+	{
+		return mediumBlockHasher.getBytesHashed() == MEDIUM_BLOCK_SIZE;
+	}
+
 	public FileHash getFileHash()
 	{
 		return new FileHash(smallBlockHasher.getHash(), mediumBlockHasher.getHash(), fullHasher.getHash());
+	}
+
+	public Hasher getSmallBlockHasher()
+	{
+		return smallBlockHasher;
+	}
+
+	public Hasher getMediumBlockHasher()
+	{
+		return mediumBlockHasher;
+	}
+
+	public Hasher getFullHasher()
+	{
+		return fullHasher;
 	}
 }

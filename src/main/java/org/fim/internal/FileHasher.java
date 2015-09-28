@@ -23,6 +23,8 @@ import static org.fim.model.FileState.NO_HASH;
 import static org.fim.model.FileState.SIZE_1_MB;
 import static org.fim.model.FileState.SIZE_4_KB;
 import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
 
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
@@ -59,7 +61,6 @@ class FileHasher implements Runnable
 	private long position;
 
 	private long totalFileContentLength;
-	private long totalBytesHashed;
 
 	public FileHasher(HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException
 	{
@@ -78,14 +79,14 @@ class FileHasher implements Runnable
 		return fileStates;
 	}
 
+	public Hashers getHashers()
+	{
+		return hashers;
+	}
+
 	public long getTotalFileContentLength()
 	{
 		return totalFileContentLength;
-	}
-
-	public long getTotalBytesHashed()
-	{
-		return totalBytesHashed;
 	}
 
 	@Override
@@ -144,7 +145,7 @@ class FileHasher implements Runnable
 			// If the file size is at least 8 KB we can skip the header, so hash once again 4 KB for the smallBlock hash
 			hashBlock(channel, min(remainder, SIZE_4_KB), hashers);
 
-			if ((position >= fileSize) || (hashMode == HashMode.hashSmallBlock))
+			if (hashMode == hashSmallBlock && hashers.isSmallBlockHashed())
 			{
 				return hashers.getFileHash();
 			}
@@ -156,12 +157,16 @@ class FileHasher implements Runnable
 			while (position < fileSize)
 			{
 				hashBlock(channel, min(remainder, SIZE_1_MB), hashers);
+
+				if (hashMode == hashMediumBlock && hashers.isMediumBlockHashed())
+				{
+					break;
+				}
 			}
 		}
 		finally
 		{
 			totalFileContentLength += fileSize;
-			totalBytesHashed += position;
 		}
 
 		return hashers.getFileHash();

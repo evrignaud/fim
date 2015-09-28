@@ -18,6 +18,9 @@
  */
 package org.fim.command;
 
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,7 +34,6 @@ import org.fim.internal.StateManager;
 import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
-import org.fim.model.HashMode;
 import org.fim.model.State;
 import org.fim.util.Console;
 import org.fim.util.Logger;
@@ -76,7 +78,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 
 		fileContentHashingMandatory(context);
 
-		if (context.getHashMode() == HashMode.hashSmallBlock)
+		if (context.getHashMode() == hashSmallBlock)
 		{
 			System.out.println("You are going to detect duplicates and remove them based only on the hash of the second 4 KB block of the files.");
 			if (!confirmAction(context, "continue"))
@@ -85,7 +87,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			}
 		}
 
-		if (context.getHashMode() == HashMode.hashMediumBlock)
+		if (context.getHashMode() == hashMediumBlock)
 		{
 			System.out.println("You are going to detect duplicates and remove them based only on the hash of the second 1 MB block of the files.");
 			if (!confirmAction(context, "continue"))
