@@ -18,11 +18,31 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="logo.svg"
-   inkscape:export-filename="/extend/evrignaud/Documents-Perso/Projects/fim-gh-pages/images/logo-512.png"
-   inkscape:export-xdpi="240"
-   inkscape:export-ydpi="240">
+   inkscape:export-filename="/extend/evrignaud/Documents-Perso/Projects/fim-gh-pages/images/logo-32.png"
+   inkscape:export-xdpi="15"
+   inkscape:export-ydpi="15">
   <defs
      id="defs4">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4155">
+      <stop
+         style="stop-color:#003000;stop-opacity:1"
+         offset="0"
+         id="stop4157" />
+      <stop
+         id="stop4159"
+         offset="0.49700797"
+         style="stop-color:#007200;stop-opacity:0.8" />
+      <stop
+         id="stop4161"
+         offset="0.50763631"
+         style="stop-color:#007200;stop-opacity:1" />
+      <stop
+         style="stop-color:#003000;stop-opacity:1"
+         offset="1"
+         id="stop4163" />
+    </linearGradient>
     <linearGradient
        inkscape:collect="always"
        id="linearGradient4160">
@@ -117,14 +137,14 @@
        gradientTransform="matrix(-10.141021,1.0099945e-6,-8.0593594e-7,-8.0921364,1729.4217,2671.4142)" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient4150"
+       xlink:href="#linearGradient4155"
        id="linearGradient4208"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(1.1397457,0,0,1.1397457,-68.48521,-100.22388)"
-       x1="238.25455"
-       y1="308.23337"
-       x2="238.25455"
-       y2="422.04395" />
+       x1="207.22462"
+       y1="432.61899"
+       x2="257.95969"
+       y2="334.63889" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -133,9 +153,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="6.6193059"
-     inkscape:cy="515.05882"
+     inkscape:zoom="1.979899"
+     inkscape:cx="87.71851"
+     inkscape:cy="699.6568"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
