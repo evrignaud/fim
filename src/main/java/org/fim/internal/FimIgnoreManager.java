@@ -57,21 +57,8 @@ public class FimIgnoreManager
 	public FimIgnore loadInitialFimIgnore()
 	{
 		FimIgnore initialFimIgnore = loadGlobalFimIgnore();
-
-		Path directory = Paths.get(".").toAbsolutePath().normalize();
-		while (false == directory.equals(context.getRepositoryRootDir()))
-		{
-			directory = directory.getParent();
-			FimIgnore fimIgnore = loadFimIgnore(directory);
-			initialFimIgnore.getFilesToIgnoreInAllDirectories().addAll(fimIgnore.getFilesToIgnoreInAllDirectories());
-		}
+		addParentFimIgnore(initialFimIgnore);
 		return initialFimIgnore;
-	}
-
-	public FimIgnore loadGlobalFimIgnore()
-	{
-		Path userDir = Paths.get(System.getProperty("user.dir"));
-		return loadFimIgnore(userDir);
 	}
 
 	public FimIgnore loadLocalIgnore(Path directory, FimIgnore parentFimIgnore)
@@ -79,6 +66,26 @@ public class FimIgnoreManager
 		FimIgnore fimIgnore = loadFimIgnore(directory);
 		fimIgnore.getFilesToIgnoreInAllDirectories().addAll(parentFimIgnore.getFilesToIgnoreInAllDirectories());
 		return fimIgnore;
+	}
+
+	/**
+	 * If Fim is started from a sub-directory, it loads the parent .fimignore files and merge all the filesToIgnoreInAllDirectories.
+	 */
+	private void addParentFimIgnore(FimIgnore initialFimIgnore)
+	{
+		Path directory = Paths.get(".").toAbsolutePath().normalize();
+		while (false == directory.equals(context.getRepositoryRootDir()))
+		{
+			directory = directory.getParent();
+			FimIgnore fimIgnore = loadFimIgnore(directory);
+			initialFimIgnore.getFilesToIgnoreInAllDirectories().addAll(fimIgnore.getFilesToIgnoreInAllDirectories());
+		}
+	}
+
+	private FimIgnore loadGlobalFimIgnore()
+	{
+		Path userDir = Paths.get(System.getProperty("user.dir"));
+		return loadFimIgnore(userDir);
 	}
 
 	protected FimIgnore loadFimIgnore(Path directory)
