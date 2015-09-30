@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim.internal;
+package org.fim.internal.hash;
 
 import static java.lang.Math.min;
 import static org.fim.model.FileState.NO_HASH;
@@ -46,7 +46,7 @@ import org.fim.util.Logger;
 import sun.misc.Cleaner;
 import sun.nio.ch.DirectBuffer;
 
-class FileHasher implements Runnable
+public class FileHasher implements Runnable
 {
 	private final HashProgress hashProgress;
 	private final BlockingDeque<Path> filesToHashQueue;

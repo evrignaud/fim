@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim.internal;
+package org.fim.internal.hash;
 
 import static java.lang.Math.max;
 import static org.fim.model.HashMode.hashAll;
@@ -26,9 +26,6 @@ import static org.fim.model.HashMode.hashSmallBlock;
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
-import org.fim.internal.hash.FullHasher;
-import org.fim.internal.hash.MediumBlockHasher;
-import org.fim.internal.hash.SmallBlockHasher;
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
 

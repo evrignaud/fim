@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim.internal;
+package org.fim.internal.hash;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.hashAll;

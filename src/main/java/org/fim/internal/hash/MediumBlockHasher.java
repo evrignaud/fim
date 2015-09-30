@@ -21,7 +21,6 @@ package org.fim.internal.hash;
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
-import org.fim.internal.Hasher;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
 

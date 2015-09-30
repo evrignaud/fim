@@ -18,7 +18,7 @@
  */
 package org.fim.internal;
 
-import static org.fim.internal.HashProgress.PROGRESS_DISPLAY_FILE_COUNT;
+import static org.fim.internal.hash.HashProgress.PROGRESS_DISPLAY_FILE_COUNT;
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.util.HashModeUtil.hashModeToString;
 
@@ -41,6 +41,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.fim.internal.hash.FileHasher;
+import org.fim.internal.hash.HashProgress;
 import org.fim.model.Context;
 import org.fim.model.FileState;
 import org.fim.model.FimIgnore;
