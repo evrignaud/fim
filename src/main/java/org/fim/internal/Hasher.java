@@ -30,6 +30,7 @@ public class Hasher
 {
 	public static final String HASH_ALGORITHM = "SHA-512";
 
+	private final HashMode blockHashMode;
 	private final long sizeToHash;
 	private final boolean active;
 
@@ -38,10 +39,28 @@ public class Hasher
 	private long totalBytesHashed;
 	private long startPosition;
 
-	public Hasher(long sizeToHash, HashMode hashMode, HashMode blockHashMode) throws NoSuchAlgorithmException
+	public Hasher(HashMode hashMode, HashMode blockHashMode) throws NoSuchAlgorithmException
 	{
-		this.sizeToHash = sizeToHash;
+		this.blockHashMode = blockHashMode;
 		this.active = HashModeUtil.isCompatible(hashMode, blockHashMode);
+
+		switch (blockHashMode)
+		{
+			case hashSmallBlock:
+				this.sizeToHash = FileState.SIZE_4_KB;
+				break;
+
+			case hashMediumBlock:
+				this.sizeToHash = FileState.SIZE_1_MB;
+				break;
+
+			case hashAll:
+				this.sizeToHash = FileState.SIZE_UNLIMITED;
+				break;
+
+			default:
+				throw new RuntimeException("Invalid blockHashMode");
+		}
 
 		this.totalBytesHashed = 0;
 
@@ -116,5 +135,10 @@ public class Hasher
 		}
 
 		return hexString.toString();
+	}
+
+	public boolean isHashComplete()
+	{
+		return getBytesHashed() == sizeToHash;
 	}
 }

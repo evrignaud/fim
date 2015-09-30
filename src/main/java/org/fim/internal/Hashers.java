@@ -19,9 +19,6 @@
 package org.fim.internal;
 
 import static java.lang.Math.max;
-import static org.fim.model.FileState.SIZE_1_MB;
-import static org.fim.model.FileState.SIZE_4_KB;
-import static org.fim.model.FileState.SIZE_UNLIMITED;
 import static org.fim.model.HashMode.hashAll;
 import static org.fim.model.HashMode.hashMediumBlock;
 import static org.fim.model.HashMode.hashSmallBlock;
@@ -34,18 +31,15 @@ import org.fim.model.HashMode;
 
 public class Hashers
 {
-	public static final int SMALL_BLOCK_SIZE = SIZE_4_KB;
-	public static final int MEDIUM_BLOCK_SIZE = SIZE_1_MB;
-
 	private final Hasher smallBlockHasher;
 	private final Hasher mediumBlockHasher;
 	private final Hasher fullHasher;
 
 	public Hashers(HashMode hashMode) throws NoSuchAlgorithmException
 	{
-		this.smallBlockHasher = new Hasher(SMALL_BLOCK_SIZE, hashMode, hashSmallBlock);
-		this.mediumBlockHasher = new Hasher(MEDIUM_BLOCK_SIZE, hashMode, hashMediumBlock);
-		this.fullHasher = new Hasher(SIZE_UNLIMITED, hashMode, hashAll);
+		this.smallBlockHasher = new Hasher(hashMode, hashSmallBlock);
+		this.mediumBlockHasher = new Hasher(hashMode, hashMediumBlock);
+		this.fullHasher = new Hasher(hashMode, hashAll);
 	}
 
 	public void reset(long fileSize)
@@ -72,12 +66,12 @@ public class Hashers
 
 	public boolean isSmallBlockHashed()
 	{
-		return smallBlockHasher.getBytesHashed() == SMALL_BLOCK_SIZE;
+		return smallBlockHasher.isHashComplete();
 	}
 
 	public boolean isMediumBlockHashed()
 	{
-		return mediumBlockHasher.getBytesHashed() == MEDIUM_BLOCK_SIZE;
+		return mediumBlockHasher.isHashComplete();
 	}
 
 	public FileHash getFileHash()

@@ -20,7 +20,6 @@ package org.fim.internal;
 
 import static java.lang.Math.min;
 import static org.fim.model.FileState.NO_HASH;
-import static org.fim.model.FileState.SIZE_1_MB;
 import static org.fim.model.FileState.SIZE_4_KB;
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashMediumBlock;
@@ -139,26 +138,12 @@ class FileHasher implements Runnable
 
 		try (final FileChannel channel = FileChannel.open(file))
 		{
-			// Start hashing 4 KB for the smallBlock hash
-			hashBlock(channel, min(remainder, SIZE_4_KB), hashers);
-
-			// If the file size is at least 8 KB we can skip the header, so hash once again 4 KB for the smallBlock hash
-			hashBlock(channel, min(remainder, SIZE_4_KB), hashers);
-
-			if (hashMode == hashSmallBlock && hashers.isSmallBlockHashed())
-			{
-				return hashers.getFileHash();
-			}
-
-			// Hash the remaining part of the 1 MB block for the mediumBlock hash
-			hashBlock(channel, min(remainder, SIZE_1_MB - position), hashers);
-
-			// If the file size is at least 2 MB we can skip the header, so in the loop we will hash again 1 MB for the mediumBlock hash
 			while (position < fileSize)
 			{
-				hashBlock(channel, min(remainder, SIZE_1_MB), hashers);
+				hashBlock(channel);
 
-				if (hashMode == hashMediumBlock && hashers.isMediumBlockHashed())
+				if ((hashMode == hashSmallBlock && hashers.isSmallBlockHashed())
+						|| (hashMode == hashMediumBlock && hashers.isMediumBlockHashed()))
 				{
 					break;
 				}
@@ -172,29 +157,26 @@ class FileHasher implements Runnable
 		return hashers.getFileHash();
 	}
 
-	private int hashBlock(FileChannel channel, long blockSize, Hashers hashers) throws IOException
+	private int hashBlock(FileChannel channel) throws IOException
 	{
-		if (blockSize > 0)
+		MappedByteBuffer buffer = null;
+		try
 		{
-			MappedByteBuffer buffer = null;
-			try
-			{
-				buffer = channel.map(FileChannel.MapMode.READ_ONLY, position, blockSize);
-				int bufferSize = buffer.limit();
+			long blockSize = min(remainder, SIZE_4_KB);
+			buffer = channel.map(FileChannel.MapMode.READ_ONLY, position, blockSize);
+			int bufferSize = buffer.limit();
 
-				hashers.update(position, buffer);
+			hashers.update(position, buffer);
 
-				position += bufferSize;
-				remainder -= bufferSize;
+			position += bufferSize;
+			remainder -= bufferSize;
 
-				return bufferSize;
-			}
-			finally
-			{
-				unmap(buffer);
-			}
+			return bufferSize;
 		}
-		return 0;
+		finally
+		{
+			unmap(buffer);
+		}
 	}
 
 	/**

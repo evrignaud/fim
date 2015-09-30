@@ -24,7 +24,6 @@ import static org.fim.model.HashMode.hashAll;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
-import org.fim.model.FileState;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +34,7 @@ public class HasherTest
 	@Before
 	public void setup() throws NoSuchAlgorithmException, IOException
 	{
-		cut = new Hasher(FileState.SIZE_UNLIMITED, hashAll, hashAll);
+		cut = new Hasher(hashAll, hashAll);
 	}
 
 	@Test
