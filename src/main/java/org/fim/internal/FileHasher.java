@@ -162,8 +162,8 @@ class FileHasher implements Runnable
 		MappedByteBuffer buffer = null;
 		try
 		{
-			long blockSize = min(remainder, SIZE_4_KB);
-			buffer = channel.map(FileChannel.MapMode.READ_ONLY, position, blockSize);
+			long size = min(remainder, SIZE_4_KB);
+			buffer = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
 			int bufferSize = buffer.limit();
 
 			hashers.update(position, buffer);

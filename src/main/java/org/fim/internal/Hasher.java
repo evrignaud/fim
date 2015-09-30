@@ -18,7 +18,7 @@
  */
 package org.fim.internal;
 
-import java.nio.MappedByteBuffer;
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -26,7 +26,7 @@ import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.util.HashModeUtil;
 
-public class Hasher
+public abstract class Hasher
 {
 	public static final String HASH_ALGORITHM = "SHA-512";
 
@@ -34,34 +34,17 @@ public class Hasher
 	private final long sizeToHash;
 	private final boolean active;
 
+	private long startPosition;
+
 	private MessageDigest digest;
 	private long bytesHashed;
 	private long totalBytesHashed;
-	private long startPosition;
 
 	public Hasher(HashMode hashMode, HashMode blockHashMode) throws NoSuchAlgorithmException
 	{
 		this.blockHashMode = blockHashMode;
 		this.active = HashModeUtil.isCompatible(hashMode, blockHashMode);
-
-		switch (blockHashMode)
-		{
-			case hashSmallBlock:
-				this.sizeToHash = FileState.SIZE_4_KB;
-				break;
-
-			case hashMediumBlock:
-				this.sizeToHash = FileState.SIZE_1_MB;
-				break;
-
-			case hashAll:
-				this.sizeToHash = FileState.SIZE_UNLIMITED;
-				break;
-
-			default:
-				throw new RuntimeException("Invalid blockHashMode");
-		}
-
+		this.sizeToHash = computeSizeToHash(blockHashMode);
 		this.totalBytesHashed = 0;
 
 		if (this.active)
@@ -70,17 +53,33 @@ public class Hasher
 		}
 	}
 
-	public long getBytesHashed()
+	protected abstract long computeSizeToHash(HashMode blockHashMode);
+
+	protected abstract long computeStartPosition(long fileSize);
+
+	protected abstract ByteBuffer getBlockToHash(long position, ByteBuffer buffer);
+
+	public long getSizeToHash()
+	{
+		return sizeToHash;
+	}
+
+	public long getStartPosition()
+	{
+		return startPosition;
+	}
+
+	public final long getBytesHashed()
 	{
 		return bytesHashed;
 	}
 
-	public long getTotalBytesHashed()
+	public final long getTotalBytesHashed()
 	{
 		return totalBytesHashed;
 	}
 
-	public String getHash()
+	public final String getHash()
 	{
 		if (active)
 		{
@@ -93,39 +92,36 @@ public class Hasher
 		}
 	}
 
-	public void reset(long fileSize)
+	public final void reset(long fileSize)
 	{
 		if (active)
 		{
-			if ((sizeToHash != FileState.SIZE_UNLIMITED) && (fileSize >= (sizeToHash * 2)))
-			{
-				// File size is at least twice the size we want to hash.
-				// So skip the first block to ensure that the headers don't increase the collision probability when doing a rapid check.
-				startPosition = sizeToHash;
-			}
-			else
-			{
-				startPosition = 0;
-			}
+			this.bytesHashed = 0;
+			this.startPosition = computeStartPosition(fileSize);
 
 			digest.reset();
-			bytesHashed = 0;
 		}
 	}
 
-	public void update(long position, MappedByteBuffer buffer)
+	public final void update(long position, ByteBuffer buffer)
 	{
-		if (active && (position >= startPosition) && ((sizeToHash == FileState.SIZE_UNLIMITED) || (position < (startPosition + sizeToHash))))
+		if (!active)
 		{
-			int limit = buffer.limit();
-			digest.update(buffer);
-			buffer.flip(); // Reset the buffer to be usable after
-			bytesHashed += limit;
-			totalBytesHashed += limit;
+			return;
+		}
+
+		ByteBuffer block = getBlockToHash(position, buffer);
+		if (block != null)
+		{
+			int size = block.limit();
+			digest.update(block);
+
+			bytesHashed += size;
+			totalBytesHashed += size;
 		}
 	}
 
-	protected String toHexString(byte[] digestBytes)
+	protected final String toHexString(byte[] digestBytes)
 	{
 		StringBuilder hexString = new StringBuilder();
 		for (byte b : digestBytes)
@@ -137,7 +133,7 @@ public class Hasher
 		return hexString.toString();
 	}
 
-	public boolean isHashComplete()
+	public final boolean isHashComplete()
 	{
 		return getBytesHashed() == sizeToHash;
 	}

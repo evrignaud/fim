@@ -22,8 +22,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.hashAll;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
+import org.fim.model.HashMode;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,7 +36,26 @@ public class HasherTest
 	@Before
 	public void setup() throws NoSuchAlgorithmException, IOException
 	{
-		cut = new Hasher(hashAll, hashAll);
+		cut = new Hasher(hashAll, hashAll)
+		{
+			@Override
+			protected long computeSizeToHash(HashMode blockHashMode)
+			{
+				return 0;
+			}
+
+			@Override
+			protected long computeStartPosition(long fileSize)
+			{
+				return 0;
+			}
+
+			@Override
+			protected ByteBuffer getBlockToHash(long position, ByteBuffer buffer)
+			{
+				return null;
+			}
+		};
 	}
 
 	@Test

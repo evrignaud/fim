@@ -23,9 +23,12 @@ import static org.fim.model.HashMode.hashAll;
 import static org.fim.model.HashMode.hashMediumBlock;
 import static org.fim.model.HashMode.hashSmallBlock;
 
-import java.nio.MappedByteBuffer;
+import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
+import org.fim.internal.hash.FullHasher;
+import org.fim.internal.hash.MediumBlockHasher;
+import org.fim.internal.hash.SmallBlockHasher;
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
 
@@ -37,9 +40,9 @@ public class Hashers
 
 	public Hashers(HashMode hashMode) throws NoSuchAlgorithmException
 	{
-		this.smallBlockHasher = new Hasher(hashMode, hashSmallBlock);
-		this.mediumBlockHasher = new Hasher(hashMode, hashMediumBlock);
-		this.fullHasher = new Hasher(hashMode, hashAll);
+		this.smallBlockHasher = new SmallBlockHasher(hashMode, hashSmallBlock);
+		this.mediumBlockHasher = new MediumBlockHasher(hashMode, hashMediumBlock);
+		this.fullHasher = new FullHasher(hashMode, hashAll);
 	}
 
 	public void reset(long fileSize)
@@ -49,11 +52,26 @@ public class Hashers
 		fullHasher.reset(fileSize);
 	}
 
-	public void update(long position, MappedByteBuffer buffer)
+	public void update(long position, ByteBuffer buffer)
 	{
-		smallBlockHasher.update(position, buffer);
-		mediumBlockHasher.update(position, buffer);
-		fullHasher.update(position, buffer);
+		update(smallBlockHasher, position, buffer);
+		update(mediumBlockHasher, position, buffer);
+		update(fullHasher, position, buffer);
+	}
+
+	private void update(Hasher hasher, long position, ByteBuffer buffer)
+	{
+		int bufferPosition = buffer.position();
+		int bufferLimit = buffer.limit();
+		try
+		{
+			hasher.update(position, buffer);
+		}
+		finally
+		{
+			buffer.position(bufferPosition);
+			buffer.limit(bufferLimit);
+		}
 	}
 
 	public long getTotalBytesHashed()
