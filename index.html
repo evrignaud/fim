@@ -887,6 +887,19 @@ After you will be able to run the following commands:
 
 <br/>
 
+## Ignoring files or directories
+
+You can specify files or directories that you want to be ignored by Fim.
+For this, you can add a `.fimignore` file in one of the directories contained into the Fim repository.<br/>
+You can also set global ignores by creating a `.fimignore` into the user home directory.
+
+Each line of the `.fimignore` file specifies a pattern. The pattern is mainly a file or directory name.<br/>
+Use wilcards in order to match many of them. For example `*.mp3` will match all the file ending with `.mp3`.
+A leading `**` followed by a slash means match in all directories.<br/>
+For example, `**/foo` matches file or directory `foo` anywhere, the same as pattern `foo`.
+
+<br/>
+
 ## Hash files in multi-thread
 
 Fim hash files using several threads.<br/>
