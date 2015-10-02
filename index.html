@@ -143,9 +143,12 @@ Available commands:
      diff                       Compare the current directory State with the previous one.
                                 You can get a quick result by using the -m or -k or -f options
      rdate / reset-date         Reset the files modification date like it is stored in the last committed State
+     corrupt                    Find changes most likely caused by a hardware corruption or a filesystem bug.
+                                Change in content, but not in creation time and last modified time
      fdup / find-duplicates     Find local duplicated files in the Fim repository
      rdup / remove-duplicates   Remove duplicated files from local directory based on a remote master Fim repository
      log                        Display the history of the States and a summary of the changes that were made
+     rollback                   Rollback the last commit. It will remove the last State
      purge / purge-states       Purge previous States
      help                       Prints the Fim help
      version                    Prints the Fim version
