@@ -23,6 +23,7 @@
 		<commons-io.version>2.4</commons-io.version>
 		<gson.version>2.3.1</gson.version>
 		<cloning.version>1.9.2</cloning.version>
+		<evo-inflector.version>1.2.1</evo-inflector.version>
 
 		<junit.version>4.12</junit.version>
 		<assertj-core.version>2.1.0</assertj-core.version>
@@ -101,6 +102,11 @@
 			<groupId>uk.com.robust-it</groupId>
 			<artifactId>cloning</artifactId>
 			<version>${cloning.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.atteo</groupId>
+			<artifactId>evo-inflector</artifactId>
+			<version>${evo-inflector.version}</version>
 		</dependency>
 
 		<dependency>

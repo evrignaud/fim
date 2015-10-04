@@ -41,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.atteo.evo.inflector.English;
 import org.fim.internal.hash.FileHasher;
 import org.fim.internal.hash.HashProgress;
 import org.fim.model.Context;
@@ -81,7 +82,9 @@ public class StateGenerator
 	{
 		this.rootDir = rootDir;
 
-		Logger.info(String.format("Scanning recursively local files, %s, using %d thread", hashModeToString(context.getHashMode()), context.getThreadCount()));
+		int threadCount = context.getThreadCount();
+		Logger.info(String.format("Scanning recursively local files, using '%s' mode and %d %s",
+				hashModeToString(context.getHashMode()), threadCount, English.plural("thread", threadCount)));
 		if (hashProgress.isProgressDisplayed())
 		{
 			System.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgress.hashLegend());
@@ -177,13 +180,13 @@ public class StateGenerator
 
 		if (context.getHashMode() == dontHash)
 		{
-			Logger.info(String.format("Scanned %d files (%s), during %s, using %d thread%n",
-					state.getFileStates().size(), totalFileContentLengthStr, durationStr, context.getThreadCount()));
+			Logger.info(String.format("Scanned %d files (%s), during %s%n",
+					state.getFileStates().size(), totalFileContentLengthStr, durationStr));
 		}
 		else
 		{
-			Logger.info(String.format("Scanned %d files (%s), hashed %s (avg %s/s), during %s, using %d thread%n",
-					state.getFileStates().size(), totalFileContentLengthStr, totalBytesHashedStr, throughputStr, durationStr, context.getThreadCount()));
+			Logger.info(String.format("Scanned %d files (%s), hashed %s (avg %s/s), during %s%n",
+					state.getFileStates().size(), totalFileContentLengthStr, totalBytesHashedStr, throughputStr, durationStr));
 		}
 	}
 

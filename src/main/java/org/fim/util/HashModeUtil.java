@@ -31,16 +31,16 @@ public class HashModeUtil
 		switch (hashMode)
 		{
 			case dontHash:
-				return "retrieve only file attributes";
+				return "do not hash";
 
 			case hashSmallBlock:
-				return "hash 3 small blocks";
+				return "super fast";
 
 			case hashMediumBlock:
-				return "hash 3 medium blocks";
+				return "fast";
 
 			case hashAll:
-				return "hash the complete file";
+				return "full";
 		}
 
 		throw new IllegalArgumentException("Invalid hash mode " + hashMode);
