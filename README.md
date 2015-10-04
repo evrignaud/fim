@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/evrignaud/fim.svg)](https://travis-ci.org/evrignaud/fim)
+
 # ![Logo](http://evrignaud.github.io/fim/images/logo-128.png)
 
 ## File Integrity Manager
