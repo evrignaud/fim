@@ -24,12 +24,13 @@ import com.google.common.base.MoreObjects;
 
 public class Range implements Comparable<Range>
 {
-	/** The initial index of the range to be copied, inclusive */
 	private long from;
-
-	/** The final index of the range to be copied, exclusive */
 	private long to;
 
+	/**
+	 * @param from    the initial index of the range, inclusive
+	 * @param to    the final index of the range, exclusive
+	 */
 	public Range(long from, long to)
 	{
 		if (from > to)
@@ -41,11 +42,17 @@ public class Range implements Comparable<Range>
 		this.to = to;
 	}
 
+	/**
+	 * Return the initial index of the range, inclusive
+	 */
 	public long getFrom()
 	{
 		return from;
 	}
 
+	/**
+	 * Return the final index of the range, exclusive
+	 */
 	public long getTo()
 	{
 		return to;
