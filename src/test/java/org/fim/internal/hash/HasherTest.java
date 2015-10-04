@@ -36,24 +36,36 @@ public class HasherTest
 	@Before
 	public void setup() throws NoSuchAlgorithmException, IOException
 	{
-		cut = new Hasher(hashAll, hashAll)
+		cut = new Hasher(hashAll)
 		{
 			@Override
-			protected long computeSizeToHash(HashMode blockHashMode)
+			protected int getBlockSize()
 			{
 				return 0;
 			}
 
 			@Override
-			protected long computeStartPosition(long fileSize)
+			protected boolean isCompatible(HashMode hashMode)
 			{
-				return 0;
+				return false;
 			}
 
 			@Override
-			protected ByteBuffer getBlockToHash(long position, ByteBuffer buffer)
+			protected void resetHasher(long fileSize)
+			{
+
+			}
+
+			@Override
+			protected ByteBuffer getNextBlockToHash(long filePosition, long currentPosition, ByteBuffer buffer)
 			{
 				return null;
+			}
+
+			@Override
+			public boolean hashComplete()
+			{
+				return false;
 			}
 		};
 	}

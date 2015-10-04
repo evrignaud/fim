@@ -24,27 +24,20 @@ import java.security.NoSuchAlgorithmException;
 
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
-import org.fim.util.HashModeUtil;
 
 public abstract class Hasher
 {
 	public static final String HASH_ALGORITHM = "SHA-512";
 
-	private final HashMode blockHashMode;
-	private final long sizeToHash;
 	private final boolean active;
-
-	private long startPosition;
 
 	private MessageDigest digest;
 	private long bytesHashed;
 	private long totalBytesHashed;
 
-	public Hasher(HashMode hashMode, HashMode blockHashMode) throws NoSuchAlgorithmException
+	public Hasher(HashMode hashMode) throws NoSuchAlgorithmException
 	{
-		this.blockHashMode = blockHashMode;
-		this.active = HashModeUtil.isCompatible(hashMode, blockHashMode);
-		this.sizeToHash = computeSizeToHash(blockHashMode);
+		this.active = isCompatible(hashMode);
 		this.totalBytesHashed = 0;
 
 		if (this.active)
@@ -53,20 +46,19 @@ public abstract class Hasher
 		}
 	}
 
-	protected abstract long computeSizeToHash(HashMode blockHashMode);
+	protected abstract int getBlockSize();
 
-	protected abstract long computeStartPosition(long fileSize);
+	protected abstract boolean isCompatible(HashMode hashMode);
 
-	protected abstract ByteBuffer getBlockToHash(long position, ByteBuffer buffer);
+	protected abstract void resetHasher(long fileSize);
 
-	public long getSizeToHash()
+	protected abstract ByteBuffer getNextBlockToHash(long filePosition, long currentPosition, ByteBuffer buffer);
+
+	public abstract boolean hashComplete();
+
+	public boolean isActive()
 	{
-		return sizeToHash;
-	}
-
-	public long getStartPosition()
-	{
-		return startPosition;
+		return active;
 	}
 
 	public final long getBytesHashed()
@@ -96,28 +88,30 @@ public abstract class Hasher
 	{
 		if (active)
 		{
-			this.bytesHashed = 0;
-			this.startPosition = computeStartPosition(fileSize);
-
 			digest.reset();
+			bytesHashed = 0;
+
+			resetHasher(fileSize);
 		}
 	}
 
-	public final void update(long position, ByteBuffer buffer)
+	public final void update(long filePosition, ByteBuffer buffer)
 	{
-		if (!active)
+		if (active)
 		{
-			return;
-		}
+			long currentPosition = filePosition;
+			long limitPosition = filePosition + buffer.limit();
+			ByteBuffer block;
+			while ((currentPosition < limitPosition) && (((block = getNextBlockToHash(filePosition, currentPosition, buffer))) != null))
+			{
+				currentPosition = filePosition + block.limit();
 
-		ByteBuffer block = getBlockToHash(position, buffer);
-		if (block != null)
-		{
-			int size = block.limit();
-			digest.update(block);
+				int remaining = block.remaining();
+				digest.update(block);
 
-			bytesHashed += size;
-			totalBytesHashed += size;
+				bytesHashed += remaining;
+				totalBytesHashed += remaining;
+			}
 		}
 	}
 
@@ -131,10 +125,5 @@ public abstract class Hasher
 		}
 
 		return hexString.toString();
-	}
-
-	public final boolean isHashComplete()
-	{
-		return getBytesHashed() == sizeToHash;
 	}
 }

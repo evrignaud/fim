@@ -22,18 +22,10 @@ import static java.lang.Math.min;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.FileState.SIZE_100_MB;
-import static org.fim.model.FileState.SIZE_1_KB;
-import static org.fim.model.FileState.SIZE_1_MB;
-import static org.fim.model.FileState.SIZE_4_KB;
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
 import static org.fim.model.HashMode.hashMediumBlock;
 import static org.fim.model.HashMode.hashSmallBlock;
-import static org.fim.tooling.BlockNumber1mb._1MB_Block_1;
-import static org.fim.tooling.BlockNumber1mb._1MB_Block_2;
-import static org.fim.tooling.BlockNumber4kb._4KB_Block_1;
-import static org.fim.tooling.BlockNumber4kb._4KB_Block_2;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -52,8 +44,6 @@ import com.google.common.hash.Hashing;
 import org.apache.commons.io.FileUtils;
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
-import org.fim.tooling.BlockNumber1mb;
-import org.fim.tooling.BlockNumber4kb;
 import org.fim.tooling.BuildableContext;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
@@ -65,6 +55,24 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class FileHasherTest extends StateAssert
 {
+	public static final int _1_KB = 1024;
+	public static final int _2_KB = 2 * _1_KB;
+	public static final int _4_KB = 4 * _1_KB;
+	public static final int _6_KB = 6 * _1_KB;
+	public static final int _8_KB = 8 * _1_KB;
+	public static final int _10_KB = 10 * _1_KB;
+	public static final int _12_KB = 12 * _1_KB;
+	public static final int _24_KB = 24 * _1_KB;
+	public static final int _30_KB = 30 * _1_KB;
+	public static final int _512_KB = 512 * _1_KB;
+
+	public static final int _1_MB = 1024 * _1_KB;
+	public static final int _2_MB = 2 * _1_MB;
+	public static final int _3_MB = 3 * _1_MB;
+	public static final int _30_MB = 30 * _1_MB;
+	public static final int _60_MB = 60 * _1_MB;
+	public static final int _100_MB = 100 * _1_MB;
+
 	public static final String NO_HASH = "no_hash";
 
 	private static byte contentBytes[];
@@ -124,84 +132,108 @@ public class FileHasherTest extends StateAssert
 	@Test
 	public void hashAn_Empty_File() throws IOException
 	{
-		checkFileHash(0, _4KB_Block_1, _1MB_Block_1);
+		checkFileHash(0,
+				new Range[]{new Range(0, 0)},
+				new Range[]{new Range(0, 0)});
 	}
 
 	@Test
 	public void hashA_2KB_File() throws IOException
 	{
-		checkFileHash((2 * 1024) + 157, _4KB_Block_1, _1MB_Block_1);
+		checkFileHash(_2_KB + 157,
+				new Range[]{new Range(0, _2_KB + 157)},
+				new Range[]{new Range(0, _2_KB + 157)});
 	}
 
 	@Test
 	public void hashA_4KB_File() throws IOException
 	{
-		checkFileHash((4 * 1024) + 201, _4KB_Block_1, _1MB_Block_1);
+		checkFileHash(_4_KB + 201,
+				new Range[]{new Range(0, _4_KB)},
+				new Range[]{new Range(0, _4_KB + 201)});
 	}
 
 	@Test
 	public void hashA_6KB_File() throws IOException
 	{
-		checkFileHash((6 * 1024) + 323, _4KB_Block_1, _1MB_Block_1);
+		checkFileHash(_6_KB + 323,
+				new Range[]{new Range(0, _4_KB)},
+				new Range[]{new Range(0, _6_KB + 323)});
 	}
 
 	@Test
 	public void hashA_8KB_File() throws IOException
 	{
-		checkFileHash((8 * 1024) + 723, _4KB_Block_2, _1MB_Block_1);
+		checkFileHash(_8_KB + 723,
+				new Range[]{new Range(_4_KB, _8_KB)},
+				new Range[]{new Range(0, _8_KB + 723)});
 	}
 
 	@Test
 	public void hashA_10KB_File() throws IOException
 	{
-		checkFileHash((10 * 1024) + 671, _4KB_Block_2, _1MB_Block_1);
+		checkFileHash(_10_KB + 671,
+				new Range[]{new Range(_4_KB, _8_KB)},
+				new Range[]{new Range(0, _10_KB + 671)});
 	}
 
 	@Test
 	public void hashA_30KB_File() throws IOException
 	{
-		checkFileHash((30 * 1024) + 257, _4KB_Block_2, _1MB_Block_1);
+		checkFileHash(_30_KB + 257,
+				new Range[]{new Range(_4_KB, _8_KB), new Range(_12_KB, _12_KB + _4_KB), new Range(_24_KB, _24_KB + _4_KB)},
+				new Range[]{new Range(0, _30_KB + 257)});
 	}
 
 	@Test
 	public void hashA_1MB_File() throws IOException
 	{
-		checkFileHash((1 * 1024 * 1024) + 91, _4KB_Block_2, _1MB_Block_1);
+		checkFileHash(_1_MB + 91,
+				new Range[]{new Range(_4_KB, _8_KB), new Range(_512_KB, _512_KB + _4_KB), new Range(_1_MB - _4_KB, _1_MB)},
+				new Range[]{new Range(0, _1_MB)});
 	}
 
 	@Test
 	public void hashA_2MB_File() throws IOException
 	{
-		checkFileHash((2 * 1024 * 1024) + 51, _4KB_Block_2, _1MB_Block_2);
+		checkFileHash(_2_MB + 51,
+				new Range[]{new Range(_4_KB, _8_KB), new Range(_1_MB, _1_MB + _4_KB), new Range(_2_MB - _4_KB, _2_MB)},
+				new Range[]{new Range(_1_MB, _2_MB)});
 	}
 
 	@Test
 	public void hashA_3MB_File() throws IOException
 	{
-		checkFileHash((3 * 1024 * 1024) + 101, _4KB_Block_2, _1MB_Block_2);
+		checkFileHash(_3_MB + 101,
+				new Range[]{new Range(_4_KB, _8_KB), new Range(_1_MB + _512_KB, _1_MB + _512_KB + _4_KB), new Range(_3_MB - _4_KB, _3_MB)},
+				new Range[]{new Range(_1_MB, _2_MB), new Range(_2_MB, _3_MB)});
 	}
 
 	@Test
 	public void hashA_60MB_File() throws IOException
 	{
-		checkFileHash((60 * 1024 * 1024) + 291, _4KB_Block_2, _1MB_Block_2);
+		checkFileHash(_60_MB + 291,
+				new Range[]{new Range(_4_KB, _8_KB), new Range(_30_MB, _30_MB + _4_KB), new Range(_60_MB - _4_KB, _60_MB)},
+				new Range[]{new Range(_1_MB, _2_MB), new Range(_30_MB, _30_MB + _1_MB), new Range(_60_MB - _1_MB, _60_MB)});
 	}
 
-	private void checkFileHash(int fileSize, BlockNumber4kb blockNumber4kb, BlockNumber1mb blockNumber1mb) throws IOException
+	private void checkFileHash(long fileSize, Range[] smallRanges, Range[] mediumRanges) throws IOException
 	{
-		Path fileToHash = createFileWithSize(fileSize);
+		Path fileToHash = createFileWithSize((int) fileSize);
 
 		// Compute the expectedHash using a very simple algorithm and Guava Sha512 impl
-		FileHash expectedHash = computeExpectedHash(fileToHash, blockNumber4kb, blockNumber1mb);
+		FileHash expectedHash = computeExpectedHash(fileToHash, smallRanges, mediumRanges);
 
 		FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
 
+		assertRangesEqualsTo(smallRanges, mediumRanges);
+
 		// displayFileHash(fileSize, fileHash);
 
-		assertFileHash(fileSize, expectedHash, fileHash);
+		assertFileHashEqualsTo(fileSize, expectedHash, fileHash);
 	}
 
-	private void displayFileHash(int fileSize, FileHash fileHash)
+	private void displayFileHash(long fileSize, FileHash fileHash)
 	{
 		System.out.println("File " + FileUtils.byteCountToDisplaySize(fileSize));
 		System.out.println("\tsmallBlockHash=" + fileHash.getSmallBlockHash());
@@ -210,7 +242,22 @@ public class FileHasherTest extends StateAssert
 		System.out.println("");
 	}
 
-	private void assertFileHash(int fileSize, FileHash expectedFileHash, FileHash fileHash)
+	private void assertRangesEqualsTo(Range[] smallRanges, Range[] mediumRanges)
+	{
+		if (hashMode != dontHash)
+		{
+			BlockHasher smallBlockHasher = (BlockHasher) cut.getHashers().getSmallBlockHasher();
+			assertThat(smallBlockHasher.getRanges()).isEqualTo(smallRanges);
+
+			if (hashMode != hashSmallBlock)
+			{
+				BlockHasher mediumBlockHasher = (BlockHasher) cut.getHashers().getMediumBlockHasher();
+				assertThat(mediumBlockHasher.getRanges()).isEqualTo(mediumRanges);
+			}
+		}
+	}
+
+	private void assertFileHashEqualsTo(long fileSize, FileHash expectedFileHash, FileHash fileHash)
 	{
 		switch (hashMode)
 		{
@@ -229,7 +276,7 @@ public class FileHasherTest extends StateAssert
 				assertThat(fileHash.getMediumBlockHash()).isEqualTo(NO_HASH);
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
 
-				assertSmallBlockBytesHashedEqualsTo(min(fileSize, SIZE_4_KB));
+				assertSmallBlockBytesHashedEqualsTo(getExpectedSizeToHash(fileSize, _4_KB));
 				assertMediumBlockBytesHashedEqualsTo(0);
 				assertFullBytesHashedEqualsTo(0);
 				break;
@@ -239,8 +286,8 @@ public class FileHasherTest extends StateAssert
 				assertThat(fileHash.getMediumBlockHash()).isEqualTo(expectedFileHash.getMediumBlockHash());
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
 
-				assertSmallBlockBytesHashedEqualsTo(min(fileSize, SIZE_4_KB));
-				assertMediumBlockBytesHashedEqualsTo(min(fileSize, SIZE_1_MB));
+				assertSmallBlockBytesHashedEqualsTo(getExpectedSizeToHash(fileSize, _4_KB));
+				assertMediumBlockBytesHashedEqualsTo(getExpectedSizeToHash(fileSize, _1_MB));
 				assertFullBytesHashedEqualsTo(0);
 				break;
 
@@ -249,26 +296,54 @@ public class FileHasherTest extends StateAssert
 				assertThat(fileHash.getMediumBlockHash()).isEqualTo(expectedFileHash.getMediumBlockHash());
 				assertThat(fileHash.getFullHash()).isEqualTo(expectedFileHash.getFullHash());
 
-				assertSmallBlockBytesHashedEqualsTo(min(fileSize, SIZE_4_KB));
-				assertMediumBlockBytesHashedEqualsTo(min(fileSize, SIZE_1_MB));
+				assertSmallBlockBytesHashedEqualsTo(getExpectedSizeToHash(fileSize, _4_KB));
+				assertMediumBlockBytesHashedEqualsTo(getExpectedSizeToHash(fileSize, _1_MB));
 				assertFullBytesHashedEqualsTo(fileSize);
 				break;
 		}
 	}
 
-	private void assertSmallBlockBytesHashedEqualsTo(int size)
+	private long getExpectedSizeToHash(long fileSize, int blockSize)
 	{
-		assertThat(cut.getHashers().getSmallBlockHasher().getBytesHashed()).isEqualTo(size);
+		long sizeToHash;
+		if (fileSize > 4 * blockSize)
+		{
+			sizeToHash = 3 * blockSize;
+		}
+		else if (fileSize > 3 * blockSize)
+		{
+			sizeToHash = 2 * blockSize;
+		}
+		else
+		{
+			sizeToHash = blockSize;
+		}
+		sizeToHash = min(fileSize, sizeToHash);
+		return sizeToHash;
 	}
 
-	private void assertMediumBlockBytesHashedEqualsTo(int size)
+	private void assertSmallBlockBytesHashedEqualsTo(long expectedSizeToHash)
 	{
-		assertThat(cut.getHashers().getMediumBlockHasher().getBytesHashed()).isEqualTo(size);
+		assertBlockBytesHashedEqualsTo(expectedSizeToHash, (BlockHasher) cut.getHashers().getSmallBlockHasher());
 	}
 
-	private void assertFullBytesHashedEqualsTo(int size)
+	private void assertMediumBlockBytesHashedEqualsTo(long expectedSizeToHash)
 	{
-		assertThat(cut.getHashers().getFullHasher().getBytesHashed()).isEqualTo(size);
+		assertBlockBytesHashedEqualsTo(expectedSizeToHash, (BlockHasher) cut.getHashers().getMediumBlockHasher());
+	}
+
+	private void assertBlockBytesHashedEqualsTo(long expectedSizeToHash, BlockHasher blockHasher)
+	{
+		long sizeToHash = blockHasher.getSizeToHash();
+		long bytesHashed = blockHasher.getBytesHashed();
+
+		assertThat(sizeToHash).isEqualTo(bytesHashed);
+		assertThat(bytesHashed).isEqualTo(expectedSizeToHash);
+	}
+
+	private void assertFullBytesHashedEqualsTo(long expectedSizeToHash)
+	{
+		assertThat(cut.getHashers().getFullHasher().getBytesHashed()).isEqualTo(expectedSizeToHash);
 	}
 
 	private Path createFileWithSize(int fileSize) throws IOException
@@ -287,7 +362,7 @@ public class FileHasherTest extends StateAssert
 
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream(fileSize))
 		{
-			int contentSize = SIZE_1_KB / 4;
+			int contentSize = _1_KB / 4;
 			int remaining = fileSize;
 			for (int sequenceCount = 0; remaining > 0; sequenceCount++)
 			{
@@ -329,44 +404,30 @@ public class FileHasherTest extends StateAssert
 		return contentBytes[index];
 	}
 
-	private FileHash computeExpectedHash(Path fileToHash, BlockNumber4kb blockNumber4kb, BlockNumber1mb blockNumber1mb) throws IOException
+	//	smallRange, mediumRange
+	private FileHash computeExpectedHash(Path fileToHash, Range[] smallRanges, Range[] mediumRanges) throws IOException
 	{
 		byte[] fullContent = Files.readAllBytes(fileToHash);
-		String smallBlockHash = generateSmallBlockHash(fullContent, blockNumber4kb);
-		String mediumBlockHash = generateMediumBlockHash(fullContent, blockNumber1mb);
+		String smallBlockHash = generateBlockHash(fullContent, smallRanges);
+		String mediumBlockHash = generateBlockHash(fullContent, mediumRanges);
 		String fullHash = generateFullHash(fullContent);
 
 		return new FileHash(smallBlockHash, mediumBlockHash, fullHash);
 	}
 
-	private String generateSmallBlockHash(byte[] fullContent, BlockNumber4kb blockNumber4kb) throws IOException
+	private String generateBlockHash(byte[] fullContent, Range[] ranges) throws IOException
 	{
-		switch (blockNumber4kb)
+		HashFunction hashFunction = Hashing.sha512();
+		com.google.common.hash.Hasher hasher = hashFunction.newHasher(_100_MB);
+
+		for (Range range : ranges)
 		{
-			case _4KB_Block_1:
-				return hashContent(extractBlock(fullContent, 0, SIZE_4_KB));
-
-			case _4KB_Block_2:
-				return hashContent(extractBlock(fullContent, SIZE_4_KB, SIZE_4_KB));
-
-			default:
-				return NO_HASH;
+			byte[] content = extractBlock(fullContent, range);
+			hasher.putBytes(content);
 		}
-	}
 
-	private String generateMediumBlockHash(byte[] fullContent, BlockNumber1mb blockNumber1mb) throws IOException
-	{
-		switch (blockNumber1mb)
-		{
-			case _1MB_Block_1:
-				return hashContent(extractBlock(fullContent, 0, SIZE_1_MB));
-
-			case _1MB_Block_2:
-				return hashContent(extractBlock(fullContent, SIZE_1_MB, SIZE_1_MB));
-
-			default:
-				return NO_HASH;
-		}
+		HashCode hash = hasher.hash();
+		return hash.toString();
 	}
 
 	private String generateFullHash(byte[] fullContent)
@@ -374,15 +435,15 @@ public class FileHasherTest extends StateAssert
 		return hashContent(fullContent);
 	}
 
-	private byte[] extractBlock(byte[] fullContent, int startPosition, int size)
+	private byte[] extractBlock(byte[] fullContent, Range range)
 	{
-		return Arrays.copyOfRange(fullContent, startPosition, min(fullContent.length, startPosition + size));
+		return Arrays.copyOfRange(fullContent, (int) range.getFrom(), (int) range.getTo());
 	}
 
 	private String hashContent(byte[] content)
 	{
 		HashFunction hashFunction = Hashing.sha512();
-		com.google.common.hash.Hasher hasher = hashFunction.newHasher(SIZE_100_MB);
+		com.google.common.hash.Hasher hasher = hashFunction.newHasher(_100_MB);
 		hasher.putBytes(content);
 		HashCode hash = hasher.hash();
 		return hash.toString();

@@ -18,47 +18,30 @@
  */
 package org.fim.internal.hash;
 
-import java.nio.ByteBuffer;
+import static org.fim.model.FileState.SIZE_1_MB;
+import static org.fim.model.HashMode.hashMediumBlock;
+
 import java.security.NoSuchAlgorithmException;
 
-import org.fim.model.FileState;
 import org.fim.model.HashMode;
+import org.fim.util.HashModeUtil;
 
-public class MediumBlockHasher extends Hasher
+public class MediumBlockHasher extends BlockHasher
 {
-	public MediumBlockHasher(HashMode hashMode, HashMode blockHashMode) throws NoSuchAlgorithmException
+	public MediumBlockHasher(HashMode hashMode) throws NoSuchAlgorithmException
 	{
-		super(hashMode, blockHashMode);
+		super(hashMode);
 	}
 
 	@Override
-	protected long computeSizeToHash(HashMode blockHashMode)
+	protected int getBlockSize()
 	{
-		return FileState.SIZE_1_MB;
+		return SIZE_1_MB;
 	}
 
 	@Override
-	protected long computeStartPosition(long fileSize)
+	protected boolean isCompatible(HashMode hashMode)
 	{
-		if (fileSize >= (getSizeToHash() * 2))
-		{
-			// File size is at least twice the size we want to hash.
-			// So skip the first block to ensure that the headers don't increase the collision probability when doing a rapid check.
-			return getSizeToHash();
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
-	@Override
-	protected ByteBuffer getBlockToHash(long position, ByteBuffer buffer)
-	{
-		if ((position >= getStartPosition()) && (position < (getStartPosition() + getSizeToHash())))
-		{
-			return buffer;
-		}
-		return null;
+		return HashModeUtil.isCompatible(hashMode, hashMediumBlock);
 	}
 }

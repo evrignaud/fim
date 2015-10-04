@@ -19,9 +19,7 @@
 package org.fim.internal.hash;
 
 import static java.lang.Math.max;
-import static org.fim.model.HashMode.hashAll;
-import static org.fim.model.HashMode.hashMediumBlock;
-import static org.fim.model.HashMode.hashSmallBlock;
+import static java.lang.Math.min;
 
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
@@ -31,43 +29,136 @@ import org.fim.model.HashMode;
 
 public class Hashers
 {
-	private final Hasher smallBlockHasher;
-	private final Hasher mediumBlockHasher;
+	private final BlockHasher smallBlockHasher;
+	private final BlockHasher mediumBlockHasher;
 	private final Hasher fullHasher;
+	private final int blockSize;
+	private long fileSize;
 
 	public Hashers(HashMode hashMode) throws NoSuchAlgorithmException
 	{
-		this.smallBlockHasher = new SmallBlockHasher(hashMode, hashSmallBlock);
-		this.mediumBlockHasher = new MediumBlockHasher(hashMode, hashMediumBlock);
-		this.fullHasher = new FullHasher(hashMode, hashAll);
+		this.smallBlockHasher = new SmallBlockHasher(hashMode);
+		this.mediumBlockHasher = new MediumBlockHasher(hashMode);
+		this.fullHasher = new FullHasher(hashMode);
+
+		checkBlockSizeCompatibility();
+
+		blockSize = getOptimizedBlockSize(hashMode);
 	}
 
 	public void reset(long fileSize)
 	{
+		this.fileSize = fileSize;
 		smallBlockHasher.reset(fileSize);
 		mediumBlockHasher.reset(fileSize);
 		fullHasher.reset(fileSize);
 	}
 
-	public void update(long position, ByteBuffer buffer)
+	public Range getNextRange(long filePosition)
 	{
-		update(smallBlockHasher, position, buffer);
-		update(mediumBlockHasher, position, buffer);
-		update(fullHasher, position, buffer);
+		long from;
+		long to;
+		Range nextSmallRange;
+		Range nextMediumRange;
+
+		if (fullHasher.isActive())
+		{
+			nextSmallRange = smallBlockHasher.getNextRange(filePosition);
+			nextMediumRange = mediumBlockHasher.getNextRange(filePosition);
+
+			from = filePosition;
+			to = min(fileSize, filePosition + blockSize);
+
+			to = adjustToRange(to, nextSmallRange);
+			to = adjustToRange(to, nextMediumRange);
+
+			return new Range(from, to);
+		}
+		else if (smallBlockHasher.isActive() && mediumBlockHasher.isActive())
+		{
+			nextSmallRange = smallBlockHasher.getNextRange(filePosition);
+			nextMediumRange = mediumBlockHasher.getNextRange(filePosition);
+
+			if (nextSmallRange == null && nextMediumRange == null)
+			{
+				return null;
+			}
+
+			if (nextSmallRange == null)
+			{
+				return nextMediumRange;
+			}
+
+			if (nextMediumRange == null)
+			{
+				return nextSmallRange;
+			}
+
+			if (nextSmallRange.getTo() < nextMediumRange.getFrom())
+			{
+				// Next small block is before the next medium block
+				return nextSmallRange;
+			}
+
+			if (nextMediumRange.getTo() < nextSmallRange.getFrom())
+			{
+				// Next medium block is before the next small block
+				return nextMediumRange;
+			}
+
+			return union(nextSmallRange, nextMediumRange);
+		}
+		else if (smallBlockHasher.isActive())
+		{
+			nextSmallRange = smallBlockHasher.getNextRange(filePosition);
+			return nextSmallRange;
+		}
+		else if (mediumBlockHasher.isActive())
+		{
+			nextMediumRange = mediumBlockHasher.getNextRange(filePosition);
+			return nextMediumRange;
+		}
+		return null;
 	}
 
-	private void update(Hasher hasher, long position, ByteBuffer buffer)
+	private long adjustToRange(long to, Range range)
 	{
-		int bufferPosition = buffer.position();
-		int bufferLimit = buffer.limit();
-		try
+		if (range != null && range.getFrom() < to && range.getTo() > to)
 		{
-			hasher.update(position, buffer);
+			return range.getTo();
 		}
-		finally
+		return to;
+	}
+
+	private Range union(Range range1, Range range2)
+	{
+		long from = min(range1.getFrom(), range2.getFrom());
+		long to = max(range1.getTo(), range2.getTo());
+		return new Range(from, to);
+	}
+
+	public void update(long filePosition, ByteBuffer buffer)
+	{
+		update(smallBlockHasher, filePosition, buffer);
+		update(mediumBlockHasher, filePosition, buffer);
+		update(fullHasher, filePosition, buffer);
+	}
+
+	private void update(Hasher hasher, long filePosition, ByteBuffer buffer)
+	{
+		if (hasher.isActive())
 		{
-			buffer.position(bufferPosition);
-			buffer.limit(bufferLimit);
+			int bufferPosition = buffer.position();
+			int bufferLimit = buffer.limit();
+			try
+			{
+				hasher.update(filePosition, buffer);
+			}
+			finally
+			{
+				buffer.limit(bufferLimit);
+				buffer.position(bufferPosition);
+			}
 		}
 	}
 
@@ -79,33 +170,57 @@ public class Hashers
 		return totalBytesHashed;
 	}
 
-	public boolean isSmallBlockHashed()
-	{
-		return smallBlockHasher.isHashComplete();
-	}
-
-	public boolean isMediumBlockHashed()
-	{
-		return mediumBlockHasher.isHashComplete();
-	}
-
 	public FileHash getFileHash()
 	{
 		return new FileHash(smallBlockHasher.getHash(), mediumBlockHasher.getHash(), fullHasher.getHash());
 	}
 
-	public Hasher getSmallBlockHasher()
+	public int getBlockSize()
+	{
+		return blockSize;
+	}
+
+	protected Hasher getSmallBlockHasher()
 	{
 		return smallBlockHasher;
 	}
 
-	public Hasher getMediumBlockHasher()
+	protected Hasher getMediumBlockHasher()
 	{
 		return mediumBlockHasher;
 	}
 
-	public Hasher getFullHasher()
+	protected Hasher getFullHasher()
 	{
 		return fullHasher;
+	}
+
+	private void checkBlockSizeCompatibility()
+	{
+		int smallBlockSize = smallBlockHasher.getBlockSize();
+		int mediumBlockSize = mediumBlockHasher.getBlockSize();
+		if ((mediumBlockSize % smallBlockSize) != 0)
+		{
+			throw new RuntimeException("Fim cannot work correctly. mediumBlockSize is not a multiple of the smallBlockSize");
+		}
+	}
+
+	private int getOptimizedBlockSize(HashMode hashMode)
+	{
+		switch (hashMode)
+		{
+			case hashAll:
+				return mediumBlockHasher.getBlockSize() * 10;
+
+			case hashMediumBlock:
+				return mediumBlockHasher.getBlockSize();
+
+			case hashSmallBlock:
+				return smallBlockHasher.getBlockSize();
+
+			case dontHash:
+			default:
+				return 0;
+		}
 	}
 }

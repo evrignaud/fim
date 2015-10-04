@@ -18,34 +18,51 @@
  */
 package org.fim.internal.hash;
 
+import static org.fim.model.HashMode.hashAll;
+
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
+import org.fim.util.HashModeUtil;
 
 public class FullHasher extends Hasher
 {
-	public FullHasher(HashMode hashMode, HashMode blockHashMode) throws NoSuchAlgorithmException
+	private long fileSize;
+
+	public FullHasher(HashMode hashMode) throws NoSuchAlgorithmException
 	{
-		super(hashMode, blockHashMode);
+		super(hashMode);
 	}
 
 	@Override
-	protected long computeSizeToHash(HashMode blockHashMode)
+	protected int getBlockSize()
 	{
 		return FileState.SIZE_UNLIMITED;
 	}
 
 	@Override
-	protected long computeStartPosition(long fileSize)
+	protected boolean isCompatible(HashMode hashMode)
 	{
-		return 0;
+		return HashModeUtil.isCompatible(hashMode, hashAll);
 	}
 
 	@Override
-	protected ByteBuffer getBlockToHash(long position, ByteBuffer buffer)
+	protected void resetHasher(long fileSize)
+	{
+		this.fileSize = fileSize;
+	}
+
+	@Override
+	protected ByteBuffer getNextBlockToHash(long filePosition, long currentPosition, ByteBuffer buffer)
 	{
 		return buffer;
+	}
+
+	@Override
+	public boolean hashComplete()
+	{
+		return getBytesHashed() == fileSize;
 	}
 }

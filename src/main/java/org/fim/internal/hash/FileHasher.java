@@ -18,12 +18,8 @@
  */
 package org.fim.internal.hash;
 
-import static java.lang.Math.min;
 import static org.fim.model.FileState.NO_HASH;
-import static org.fim.model.FileState.SIZE_4_KB;
 import static org.fim.model.HashMode.dontHash;
-import static org.fim.model.HashMode.hashMediumBlock;
-import static org.fim.model.HashMode.hashSmallBlock;
 
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
@@ -55,9 +51,6 @@ public class FileHasher implements Runnable
 	private final List<FileState> fileStates;
 
 	private final Hashers hashers;
-
-	private long remainder;
-	private long position;
 
 	private long totalFileContentLength;
 
@@ -133,20 +126,27 @@ public class FileHasher implements Runnable
 
 		hashers.reset(fileSize);
 
-		remainder = fileSize;
-		position = 0;
+		long filePosition = 0;
 
 		try (final FileChannel channel = FileChannel.open(file))
 		{
-			while (position < fileSize)
+			while (filePosition < fileSize)
 			{
-				hashBlock(channel);
-
-				if ((hashMode == hashSmallBlock && hashers.isSmallBlockHashed())
-						|| (hashMode == hashMediumBlock && hashers.isMediumBlockHashed()))
+				Range nextRange = hashers.getNextRange(filePosition);
+				if (nextRange == null)
 				{
 					break;
 				}
+
+				filePosition = nextRange.getFrom();
+				if (filePosition > fileSize)
+				{
+					break;
+				}
+
+				long blockSize = nextRange.getTo() - nextRange.getFrom();
+				int bufferSize = hashBuffer(channel, filePosition, blockSize);
+				filePosition += bufferSize;
 			}
 		}
 		finally
@@ -157,19 +157,15 @@ public class FileHasher implements Runnable
 		return hashers.getFileHash();
 	}
 
-	private int hashBlock(FileChannel channel) throws IOException
+	private int hashBuffer(FileChannel channel, long filePosition, long size) throws IOException
 	{
 		MappedByteBuffer buffer = null;
 		try
 		{
-			long size = min(remainder, SIZE_4_KB);
-			buffer = channel.map(FileChannel.MapMode.READ_ONLY, position, size);
-			int bufferSize = buffer.limit();
+			buffer = channel.map(FileChannel.MapMode.READ_ONLY, filePosition, size);
+			int bufferSize = buffer.remaining();
 
-			hashers.update(position, buffer);
-
-			position += bufferSize;
-			remainder -= bufferSize;
+			hashers.update(filePosition, buffer);
 
 			return bufferSize;
 		}
