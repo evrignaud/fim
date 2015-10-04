@@ -212,7 +212,7 @@ public class Hashers
 		switch (hashMode)
 		{
 			case hashAll:
-				return mediumBlockHasher.getBlockSize() * 10;
+				return mediumBlockHasher.getBlockSize() * 30;
 
 			case hashMediumBlock:
 				return mediumBlockHasher.getBlockSize();
