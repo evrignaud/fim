@@ -34,10 +34,10 @@ public class HashModeUtil
 				return "retrieve only file attributes";
 
 			case hashSmallBlock:
-				return "hash second 4 KB block";
+				return "hash 3 small blocks";
 
 			case hashMediumBlock:
-				return "hash second 1 MB block";
+				return "hash 3 medium blocks";
 
 			case hashAll:
 				return "hash the complete file";

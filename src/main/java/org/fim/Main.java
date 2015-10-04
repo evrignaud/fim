@@ -84,9 +84,9 @@ public class Main
 	{
 		Options options = new Options();
 		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as remote master.\nOnly for the remove duplicated files command", false));
-		options.addOption(createOption("f", "fast-mode", false, "Do not hash file content. Use only file names and modification dates", false));
-		options.addOption(createOption("k", "hash-second-4-kb-block", false, "Hash the second 4 KB block of the files", false));
-		options.addOption(createOption("m", "hash-second-1-mb-block", false, "Hash the second 1 MB block of the files", false));
+		options.addOption(createOption("n", "do-not-hash", false, "Do not hash file content. Use only file names and modification dates", false));
+		options.addOption(createOption("s", "super-fast-mode", false, "Hash only 3 small blocks at the beginning, in the middle and at the end", false));
+		options.addOption(createOption("f", "fast-mode", false, "Hash only 3 medium blocks at the beginning, in the middle and at the end", false));
 		options.addOption(createOption("h", "help", false, "Prints the Fim help", false));
 		options.addOption(createOption("l", "use-last-state", false, "Use the last committed State.\nOnly for the find local duplicated files command", false));
 		options.addOption(createOption("c", "comment", true, "Sets that State comment during init and commit", false));
@@ -128,15 +128,15 @@ public class Main
 			context.setMasterFimRepositoryDir(commandLine.getOptionValue('a'));
 			context.setAlwaysYes(commandLine.hasOption('y'));
 
-			if (commandLine.hasOption('f'))
+			if (commandLine.hasOption('n'))
 			{
 				context.setHashMode(dontHash);
 			}
-			else if (commandLine.hasOption('k'))
+			else if (commandLine.hasOption('s'))
 			{
 				context.setHashMode(hashSmallBlock);
 			}
-			else if (commandLine.hasOption('m'))
+			else if (commandLine.hasOption('f'))
 			{
 				context.setHashMode(hashMediumBlock);
 			}
