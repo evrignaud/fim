@@ -201,7 +201,9 @@ public class Hashers
 		int mediumBlockSize = mediumBlockHasher.getBlockSize();
 		if ((mediumBlockSize % smallBlockSize) != 0)
 		{
-			throw new RuntimeException("Fim cannot work correctly. mediumBlockSize is not a multiple of the smallBlockSize");
+			throw new RuntimeException("Fim cannot work correctly. 'mediumBlockSize' is not a multiple of the 'smallBlockSize': " +
+					"small=" + smallBlockSize + ", " +
+					"medium=" + mediumBlockSize);
 		}
 	}
 
