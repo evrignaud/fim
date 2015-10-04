@@ -1,10 +1,6 @@
-[![Build Status](https://travis-ci.org/evrignaud/fim.svg)](https://travis-ci.org/evrignaud/fim)
+# ![Logo](http://evrignaud.github.io/fim/images/logo-96.png)  File Integrity Manager &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Build Status](https://travis-ci.org/evrignaud/fim.svg)](https://travis-ci.org/evrignaud/fim)
 
-# ![Logo](http://evrignaud.github.io/fim/images/logo-128.png)
-
-## File Integrity Manager
-
-Fim manage the integrity of a complete file tree.
+Fim manage the integrity of a complete file tree
 
 ## Fim documentation
 
