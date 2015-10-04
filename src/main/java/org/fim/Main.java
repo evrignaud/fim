@@ -41,6 +41,7 @@ import org.fim.command.AbstractCommand;
 import org.fim.command.CommitCommand;
 import org.fim.command.CorruptCommand;
 import org.fim.command.DiffCommand;
+import org.fim.command.DisplayIgnoredFilesCommand;
 import org.fim.command.FindDuplicatesCommand;
 import org.fim.command.HelpCommand;
 import org.fim.command.InitCommand;
@@ -72,6 +73,7 @@ public class Main
 				new FindDuplicatesCommand(),
 				new RemoveDuplicatesCommand(),
 				new LogCommand(),
+				new DisplayIgnoredFilesCommand(),
 				new RollbackCommand(),
 				new PurgeStatesCommand(),
 				new HelpCommand(),
