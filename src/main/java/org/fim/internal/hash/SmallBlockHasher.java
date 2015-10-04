@@ -18,7 +18,7 @@
  */
 package org.fim.internal.hash;
 
-import static org.fim.model.FileState.SIZE_4_KB;
+import static org.fim.model.Contants._4_KB;
 import static org.fim.model.HashMode.hashSmallBlock;
 
 import java.security.NoSuchAlgorithmException;
@@ -36,7 +36,7 @@ public class SmallBlockHasher extends BlockHasher
 	@Override
 	protected int getBlockSize()
 	{
-		return SIZE_4_KB;
+		return _4_KB;
 	}
 
 	@Override

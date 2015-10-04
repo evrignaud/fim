@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.fim.model.Contants;
 import org.fim.model.Context;
 import org.fim.model.DuplicateResult;
 import org.fim.model.FileHash;
@@ -48,7 +49,7 @@ public class DuplicateFinder
 		Collections.sort(fileStates, hashComparator);
 
 		List<FileState> duplicatedFiles = new ArrayList<>();
-		FileHash previousFileHash = new FileHash(FileState.NO_HASH, FileState.NO_HASH, FileState.NO_HASH);
+		FileHash previousFileHash = new FileHash(Contants.NO_HASH, Contants.NO_HASH, Contants.NO_HASH);
 		for (FileState fileState : fileStates)
 		{
 			if (!previousFileHash.equals(fileState.getFileHash()))

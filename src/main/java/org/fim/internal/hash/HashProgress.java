@@ -27,8 +27,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.fim.model.Contants;
 import org.fim.model.Context;
-import org.fim.model.FileState;
 import org.fim.util.Console;
 
 public class HashProgress
@@ -37,10 +37,10 @@ public class HashProgress
 
 	private static final List<Pair<Character, Integer>> hashProgress = Arrays.asList(
 			Pair.of('.', 0),
-			Pair.of('o', FileState.SIZE_20_MB),
-			Pair.of('O', FileState.SIZE_50_MB),
-			Pair.of('@', FileState.SIZE_100_MB),
-			Pair.of('#', FileState.SIZE_200_MB)
+			Pair.of('o', Contants._20_MB),
+			Pair.of('O', Contants._50_MB),
+			Pair.of('@', Contants._100_MB),
+			Pair.of('#', Contants._200_MB)
 	);
 
 	private final ReentrantLock progressLock;

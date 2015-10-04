@@ -23,7 +23,7 @@ import static org.fim.model.HashMode.hashAll;
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
-import org.fim.model.FileState;
+import org.fim.model.Contants;
 import org.fim.model.HashMode;
 import org.fim.util.HashModeUtil;
 
@@ -39,7 +39,7 @@ public class FullHasher extends Hasher
 	@Override
 	protected int getBlockSize()
 	{
-		return FileState.SIZE_UNLIMITED;
+		return Contants.SIZE_UNLIMITED;
 	}
 
 	@Override

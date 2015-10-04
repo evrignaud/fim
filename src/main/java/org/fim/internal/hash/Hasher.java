@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.fim.model.FileState;
+import org.fim.model.Contants;
 import org.fim.model.HashMode;
 
 public abstract class Hasher
@@ -80,7 +80,7 @@ public abstract class Hasher
 		}
 		else
 		{
-			return FileState.NO_HASH;
+			return Contants.NO_HASH;
 		}
 	}
 

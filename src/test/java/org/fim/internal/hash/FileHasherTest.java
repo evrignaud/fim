@@ -26,6 +26,23 @@ import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
 import static org.fim.model.HashMode.hashMediumBlock;
 import static org.fim.model.HashMode.hashSmallBlock;
+import static org.fim.model.TestContants.NO_HASH;
+import static org.fim.model.TestContants._100_MB;
+import static org.fim.model.TestContants._10_KB;
+import static org.fim.model.TestContants._12_KB;
+import static org.fim.model.TestContants._1_KB;
+import static org.fim.model.TestContants._1_MB;
+import static org.fim.model.TestContants._24_KB;
+import static org.fim.model.TestContants._2_KB;
+import static org.fim.model.TestContants._2_MB;
+import static org.fim.model.TestContants._30_KB;
+import static org.fim.model.TestContants._30_MB;
+import static org.fim.model.TestContants._3_MB;
+import static org.fim.model.TestContants._4_KB;
+import static org.fim.model.TestContants._512_KB;
+import static org.fim.model.TestContants._60_MB;
+import static org.fim.model.TestContants._6_KB;
+import static org.fim.model.TestContants._8_KB;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -55,26 +72,6 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class FileHasherTest extends StateAssert
 {
-	public static final int _1_KB = 1024;
-	public static final int _2_KB = 2 * _1_KB;
-	public static final int _4_KB = 4 * _1_KB;
-	public static final int _6_KB = 6 * _1_KB;
-	public static final int _8_KB = 8 * _1_KB;
-	public static final int _10_KB = 10 * _1_KB;
-	public static final int _12_KB = 12 * _1_KB;
-	public static final int _24_KB = 24 * _1_KB;
-	public static final int _30_KB = 30 * _1_KB;
-	public static final int _512_KB = 512 * _1_KB;
-
-	public static final int _1_MB = 1024 * _1_KB;
-	public static final int _2_MB = 2 * _1_MB;
-	public static final int _3_MB = 3 * _1_MB;
-	public static final int _30_MB = 30 * _1_MB;
-	public static final int _60_MB = 60 * _1_MB;
-	public static final int _100_MB = 100 * _1_MB;
-
-	public static final String NO_HASH = "no_hash";
-
 	private static byte contentBytes[];
 	private static Path rootDir = Paths.get("target/" + FileHasherTest.class.getSimpleName());
 

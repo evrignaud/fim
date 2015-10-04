@@ -18,7 +18,7 @@
  */
 package org.fim.internal.hash;
 
-import static org.fim.model.FileState.SIZE_1_MB;
+import static org.fim.model.Contants._1_MB;
 import static org.fim.model.HashMode.hashMediumBlock;
 
 import java.security.NoSuchAlgorithmException;
@@ -36,7 +36,7 @@ public class MediumBlockHasher extends BlockHasher
 	@Override
 	protected int getBlockSize()
 	{
-		return SIZE_1_MB;
+		return _1_MB;
 	}
 
 	@Override

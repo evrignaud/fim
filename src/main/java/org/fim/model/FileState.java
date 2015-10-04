@@ -28,25 +28,6 @@ import com.google.common.hash.Hasher;
 
 public class FileState implements Hashable
 {
-	public static final int SIZE_1_KB = 1024;
-	public static final int SIZE_4_KB = 4 * SIZE_1_KB;
-	public static final int SIZE_5_KB = 5 * SIZE_1_KB;
-	public static final int SIZE_8_KB = 8 * SIZE_1_KB;
-	public static final int SIZE_12_KB = 12 * SIZE_1_KB;
-	public static final int SIZE_16_KB = 16 * SIZE_1_KB;
-	public static final int SIZE_20_KB = 20 * SIZE_1_KB;
-
-	public static final int SIZE_1_MB = 1024 * SIZE_1_KB;
-	public static final int SIZE_10_MB = 10 * SIZE_1_MB;
-	public static final int SIZE_20_MB = 20 * SIZE_1_MB;
-	public static final int SIZE_50_MB = 50 * SIZE_1_MB;
-	public static final int SIZE_100_MB = 100 * SIZE_1_MB;
-	public static final int SIZE_200_MB = 200 * SIZE_1_MB;
-
-	public static final int SIZE_UNLIMITED = -1;
-
-	public static final String NO_HASH = "no_hash";
-
 	private String fileName;
 	private long fileLength;
 	private FileTime fileTime;

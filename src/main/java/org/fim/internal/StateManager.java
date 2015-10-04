@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.fim.model.Contants;
 import org.fim.model.Context;
 import org.fim.model.CorruptedStateException;
 import org.fim.model.FileState;
@@ -83,24 +84,24 @@ public class StateManager
 			case dontHash:
 				for (FileState fileState : state.getFileStates())
 				{
-					fileState.getFileHash().setSmallBlockHash(FileState.NO_HASH);
-					fileState.getFileHash().setMediumBlockHash(FileState.NO_HASH);
-					fileState.getFileHash().setFullHash(FileState.NO_HASH);
+					fileState.getFileHash().setSmallBlockHash(Contants.NO_HASH);
+					fileState.getFileHash().setMediumBlockHash(Contants.NO_HASH);
+					fileState.getFileHash().setFullHash(Contants.NO_HASH);
 				}
 				break;
 
 			case hashSmallBlock:
 				for (FileState fileState : state.getFileStates())
 				{
-					fileState.getFileHash().setMediumBlockHash(FileState.NO_HASH);
-					fileState.getFileHash().setFullHash(FileState.NO_HASH);
+					fileState.getFileHash().setMediumBlockHash(Contants.NO_HASH);
+					fileState.getFileHash().setFullHash(Contants.NO_HASH);
 				}
 				break;
 
 			case hashMediumBlock:
 				for (FileState fileState : state.getFileStates())
 				{
-					fileState.getFileHash().setFullHash(FileState.NO_HASH);
+					fileState.getFileHash().setFullHash(Contants.NO_HASH);
 				}
 				break;
 

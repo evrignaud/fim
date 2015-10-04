@@ -234,7 +234,7 @@ public class State implements Hashable
 	public String hashState()
 	{
 		HashFunction hashFunction = Hashing.sha512();
-		Hasher hasher = hashFunction.newHasher(FileState.SIZE_10_MB);
+		Hasher hasher = hashFunction.newHasher(Contants._10_MB);
 		hashObject(hasher);
 		HashCode hash = hasher.hash();
 		return hash.toString();
