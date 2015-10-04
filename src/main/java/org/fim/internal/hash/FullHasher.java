@@ -63,6 +63,13 @@ public class FullHasher extends Hasher
 	@Override
 	public boolean hashComplete()
 	{
-		return getBytesHashed() == fileSize;
+		if (isActive())
+		{
+			return getBytesHashed() == fileSize;
+		}
+		else
+		{
+			return true;
+		}
 	}
 }

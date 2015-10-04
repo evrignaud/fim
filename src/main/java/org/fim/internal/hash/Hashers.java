@@ -170,14 +170,14 @@ public class Hashers
 		return totalBytesHashed;
 	}
 
+	public boolean hashComplete()
+	{
+		return smallBlockHasher.hashComplete() && mediumBlockHasher.hashComplete() && fullHasher.hashComplete();
+	}
+
 	public FileHash getFileHash()
 	{
 		return new FileHash(smallBlockHasher.getHash(), mediumBlockHasher.getHash(), fullHasher.getHash());
-	}
-
-	public int getBlockSize()
-	{
-		return blockSize;
 	}
 
 	protected Hasher getSmallBlockHasher()

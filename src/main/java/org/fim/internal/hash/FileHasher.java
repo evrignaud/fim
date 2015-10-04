@@ -154,6 +154,11 @@ public class FileHasher implements Runnable
 			totalFileContentLength += fileSize;
 		}
 
+		if (false == hashers.hashComplete())
+		{
+			throw new RuntimeException("Fim cannot work correctly. hashers have not completed");
+		}
+
 		return hashers.getFileHash();
 	}
 
