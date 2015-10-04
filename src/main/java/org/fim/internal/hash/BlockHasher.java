@@ -42,35 +42,12 @@ public abstract class BlockHasher extends Hasher
 	protected void resetHasher(long fileSize)
 	{
 		this.fileSize = fileSize;
-		List<Long> blockIndexes = getBlockIndexes();
 
-		ranges = new Range[blockIndexes.size()];
-		int rangeIndex = 0;
-		sizeToHash = 0;
-		for (Long blockIndex : blockIndexes)
-		{
-			Range range = getRange(blockIndex);
-			sizeToHash += range.getTo() - range.getFrom();
-
-			ranges[rangeIndex] = range;
-			rangeIndex++;
-		}
+		List<Long> blockIndexes = buildBlockIndexes();
+		buildRanges(blockIndexes);
 	}
 
-	protected long getSizeToHash()
-	{
-		return sizeToHash;
-	}
-
-	protected Range getRange(long blockIndex)
-	{
-		int blockSize = getBlockSize();
-		long from = min(fileSize, blockIndex * blockSize);
-		long to = min(fileSize, from + blockSize);
-		return new Range(from, to);
-	}
-
-	protected List<Long> getBlockIndexes()
+	protected List<Long> buildBlockIndexes()
 	{
 		// When it's possible ignore the first block to ensure that the headers don't increase the collision probability when doing a rapid check
 
@@ -99,6 +76,34 @@ public abstract class BlockHasher extends Hasher
 		}
 
 		return blockIndexes;
+	}
+
+	private void buildRanges(List<Long> blockIndexes)
+	{
+		ranges = new Range[blockIndexes.size()];
+		int rangeIndex = 0;
+		sizeToHash = 0;
+		for (Long blockIndex : blockIndexes)
+		{
+			Range range = getRange(blockIndex);
+			sizeToHash += range.getTo() - range.getFrom();
+
+			ranges[rangeIndex] = range;
+			rangeIndex++;
+		}
+	}
+
+	protected Range getRange(long blockIndex)
+	{
+		int blockSize = getBlockSize();
+		long from = min(fileSize, blockIndex * blockSize);
+		long to = min(fileSize, from + blockSize);
+		return new Range(from, to);
+	}
+
+	protected long getSizeToHash()
+	{
+		return sizeToHash;
 	}
 
 	protected long getMiddleBlockIndex()
@@ -153,6 +158,13 @@ public abstract class BlockHasher extends Hasher
 	@Override
 	public boolean hashComplete()
 	{
-		return getBytesHashed() == sizeToHash;
+		if (isActive())
+		{
+			return getBytesHashed() == sizeToHash;
+		}
+		else
+		{
+			return true;
+		}
 	}
 }
