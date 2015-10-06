@@ -19,7 +19,6 @@
 package org.fim.internal.hash;
 
 import static java.lang.Math.max;
-import static java.lang.Math.min;
 
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
@@ -27,28 +26,27 @@ import java.security.NoSuchAlgorithmException;
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
 
-public class Hashers
+public class FrontHasher implements Hasher
 {
 	private final BlockHasher smallBlockHasher;
 	private final BlockHasher mediumBlockHasher;
 	private final Hasher fullHasher;
-	private final int blockSize;
-	private long fileSize;
 
-	public Hashers(HashMode hashMode) throws NoSuchAlgorithmException
+	public FrontHasher(HashMode hashMode) throws NoSuchAlgorithmException
 	{
 		this.smallBlockHasher = new SmallBlockHasher(hashMode);
 		this.mediumBlockHasher = new MediumBlockHasher(hashMode);
 		this.fullHasher = new FullHasher(hashMode);
+	}
 
-		checkBlockSizeCompatibility();
-
-		blockSize = getOptimizedBlockSize(hashMode);
+	@Override
+	public boolean isActive()
+	{
+		return smallBlockHasher.isActive() && mediumBlockHasher.isActive() && fullHasher.isActive();
 	}
 
 	public void reset(long fileSize)
 	{
-		this.fileSize = fileSize;
 		smallBlockHasher.reset(fileSize);
 		mediumBlockHasher.reset(fileSize);
 		fullHasher.reset(fileSize);
@@ -56,23 +54,20 @@ public class Hashers
 
 	public Range getNextRange(long filePosition)
 	{
-		long from;
-		long to;
 		Range nextSmallRange;
 		Range nextMediumRange;
+		Range nextFullRange;
 
 		if (fullHasher.isActive())
 		{
 			nextSmallRange = smallBlockHasher.getNextRange(filePosition);
 			nextMediumRange = mediumBlockHasher.getNextRange(filePosition);
+			nextFullRange = fullHasher.getNextRange(filePosition);
 
-			from = filePosition;
-			to = min(fileSize, filePosition + blockSize);
+			Range nextRange = nextFullRange.adjustToRange(nextSmallRange);
+			nextRange = nextRange.adjustToRange(nextMediumRange);
 
-			to = adjustToRange(to, nextSmallRange);
-			to = adjustToRange(to, nextMediumRange);
-
-			return new Range(from, to);
+			return nextRange;
 		}
 		else if (smallBlockHasher.isActive() && mediumBlockHasher.isActive())
 		{
@@ -106,7 +101,7 @@ public class Hashers
 				return nextMediumRange;
 			}
 
-			return union(nextSmallRange, nextMediumRange);
+			return nextSmallRange.union(nextMediumRange);
 		}
 		else if (smallBlockHasher.isActive())
 		{
@@ -119,22 +114,6 @@ public class Hashers
 			return nextMediumRange;
 		}
 		return null;
-	}
-
-	private long adjustToRange(long to, Range range)
-	{
-		if (range != null && range.getFrom() < to && range.getTo() > to)
-		{
-			return range.getTo();
-		}
-		return to;
-	}
-
-	private Range union(Range range1, Range range2)
-	{
-		long from = min(range1.getFrom(), range2.getFrom());
-		long to = max(range1.getTo(), range2.getTo());
-		return new Range(from, to);
 	}
 
 	public void update(long filePosition, ByteBuffer buffer)
@@ -160,6 +139,21 @@ public class Hashers
 				buffer.position(bufferPosition);
 			}
 		}
+	}
+
+	@Override
+	public String getHash()
+	{
+		throw new RuntimeException("Not implemented");
+	}
+
+	@Override
+	public long getBytesHashed()
+	{
+		long bytesHashed =
+				max(smallBlockHasher.getBytesHashed(),
+						max(mediumBlockHasher.getBytesHashed(), fullHasher.getBytesHashed()));
+		return bytesHashed;
 	}
 
 	public long getTotalBytesHashed()
@@ -193,36 +187,5 @@ public class Hashers
 	protected Hasher getFullHasher()
 	{
 		return fullHasher;
-	}
-
-	private void checkBlockSizeCompatibility()
-	{
-		int smallBlockSize = smallBlockHasher.getBlockSize();
-		int mediumBlockSize = mediumBlockHasher.getBlockSize();
-		if ((mediumBlockSize % smallBlockSize) != 0)
-		{
-			throw new RuntimeException("Fim cannot work correctly. 'mediumBlockSize' is not a multiple of the 'smallBlockSize': " +
-					"small=" + smallBlockSize + ", " +
-					"medium=" + mediumBlockSize);
-		}
-	}
-
-	private int getOptimizedBlockSize(HashMode hashMode)
-	{
-		switch (hashMode)
-		{
-			case hashAll:
-				return mediumBlockHasher.getBlockSize() * 30;
-
-			case hashMediumBlock:
-				return mediumBlockHasher.getBlockSize();
-
-			case hashSmallBlock:
-				return smallBlockHasher.getBlockSize();
-
-			case dontHash:
-			default:
-				return 0;
-		}
 	}
 }

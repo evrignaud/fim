@@ -29,19 +29,25 @@ import org.fim.model.HashMode;
 import org.junit.Before;
 import org.junit.Test;
 
-public class HasherTest
+public class AbstractHasherTest
 {
-	private Hasher cut;
+	private AbstractHasher cut;
 
 	@Before
 	public void setup() throws NoSuchAlgorithmException, IOException
 	{
-		cut = new Hasher(hashAll)
+		cut = new AbstractHasher(hashAll)
 		{
 			@Override
-			protected int getBlockSize()
+			public Range getNextRange(long filePosition)
 			{
-				return 0;
+				return null;
+			}
+
+			@Override
+			public boolean hashComplete()
+			{
+				return false;
 			}
 
 			@Override
@@ -51,21 +57,9 @@ public class HasherTest
 			}
 
 			@Override
-			protected void resetHasher(long fileSize)
-			{
-
-			}
-
-			@Override
 			protected ByteBuffer getNextBlockToHash(long filePosition, long currentPosition, ByteBuffer buffer)
 			{
 				return null;
-			}
-
-			@Override
-			public boolean hashComplete()
-			{
-				return false;
 			}
 		};
 	}

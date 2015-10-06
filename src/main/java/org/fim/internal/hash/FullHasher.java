@@ -18,28 +18,25 @@
  */
 package org.fim.internal.hash;
 
+import static java.lang.Math.min;
+import static org.fim.model.Contants._1_MB;
 import static org.fim.model.HashMode.hashAll;
 
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
-import org.fim.model.Contants;
 import org.fim.model.HashMode;
 import org.fim.util.HashModeUtil;
 
-public class FullHasher extends Hasher
+public class FullHasher extends AbstractHasher
 {
+	public static final int BLOCK_SIZE = 30 * _1_MB;
+	
 	private long fileSize;
 
 	public FullHasher(HashMode hashMode) throws NoSuchAlgorithmException
 	{
 		super(hashMode);
-	}
-
-	@Override
-	protected int getBlockSize()
-	{
-		return Contants.SIZE_UNLIMITED;
 	}
 
 	@Override
@@ -49,9 +46,22 @@ public class FullHasher extends Hasher
 	}
 
 	@Override
-	protected void resetHasher(long fileSize)
+	public void reset(long fileSize)
 	{
-		this.fileSize = fileSize;
+		super.reset(fileSize);
+
+		if (isActive())
+		{
+			this.fileSize = fileSize;
+		}
+	}
+
+	@Override
+	public Range getNextRange(long filePosition)
+	{
+		long from = filePosition;
+		long to = min(fileSize, filePosition + BLOCK_SIZE);
+		return new Range(from, to);
 	}
 
 	@Override

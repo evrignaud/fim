@@ -19,111 +19,22 @@
 package org.fim.internal.hash;
 
 import java.nio.ByteBuffer;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
-import org.fim.model.Contants;
-import org.fim.model.HashMode;
-
-public abstract class Hasher
+public interface Hasher
 {
-	public static final String HASH_ALGORITHM = "SHA-512";
+	boolean isActive();
 
-	private final boolean active;
+	void reset(long fileSize);
 
-	private MessageDigest digest;
-	private long bytesHashed;
-	private long totalBytesHashed;
+	Range getNextRange(long filePosition);
 
-	public Hasher(HashMode hashMode) throws NoSuchAlgorithmException
-	{
-		this.active = isCompatible(hashMode);
-		this.totalBytesHashed = 0;
+	void update(long filePosition, ByteBuffer buffer);
 
-		if (this.active)
-		{
-			this.digest = MessageDigest.getInstance(HASH_ALGORITHM);
-		}
-	}
+	String getHash();
 
-	protected abstract int getBlockSize();
+	long getBytesHashed();
 
-	protected abstract boolean isCompatible(HashMode hashMode);
+	boolean hashComplete();
 
-	protected abstract void resetHasher(long fileSize);
-
-	protected abstract ByteBuffer getNextBlockToHash(long filePosition, long currentPosition, ByteBuffer buffer);
-
-	public abstract boolean hashComplete();
-
-	public boolean isActive()
-	{
-		return active;
-	}
-
-	public final long getBytesHashed()
-	{
-		return bytesHashed;
-	}
-
-	public final long getTotalBytesHashed()
-	{
-		return totalBytesHashed;
-	}
-
-	public final String getHash()
-	{
-		if (active)
-		{
-			byte[] digestBytes = digest.digest();
-			return toHexString(digestBytes);
-		}
-		else
-		{
-			return Contants.NO_HASH;
-		}
-	}
-
-	public final void reset(long fileSize)
-	{
-		if (active)
-		{
-			digest.reset();
-			bytesHashed = 0;
-
-			resetHasher(fileSize);
-		}
-	}
-
-	public final void update(long filePosition, ByteBuffer buffer)
-	{
-		if (active)
-		{
-			long currentPosition = filePosition;
-			long limitPosition = filePosition + buffer.limit();
-			ByteBuffer block;
-			while ((currentPosition < limitPosition) && (((block = getNextBlockToHash(filePosition, currentPosition, buffer))) != null))
-			{
-				currentPosition = filePosition + block.limit();
-
-				int remaining = block.remaining();
-				digest.update(block);
-
-				bytesHashed += remaining;
-				totalBytesHashed += remaining;
-			}
-		}
-	}
-
-	protected final String toHexString(byte[] digestBytes)
-	{
-		StringBuilder hexString = new StringBuilder();
-		for (byte b : digestBytes)
-		{
-			hexString.append(Character.forDigit((b >> 4) & 0xF, 16));
-			hexString.append(Character.forDigit((b & 0xF), 16));
-		}
-
-		return hexString.toString();
-	}
+	long getTotalBytesHashed();
 }

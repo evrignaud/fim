@@ -50,7 +50,7 @@ public class FileHasher implements Runnable
 
 	private final List<FileState> fileStates;
 
-	private final Hashers hashers;
+	private final FrontHasher frontHasher;
 
 	private long totalFileContentLength;
 
@@ -63,7 +63,7 @@ public class FileHasher implements Runnable
 		this.fileStates = new ArrayList<>();
 
 		HashMode hashMode = hashProgress.getContext().getHashMode();
-		hashers = new Hashers(hashMode);
+		frontHasher = new FrontHasher(hashMode);
 	}
 
 	public List<FileState> getFileStates()
@@ -71,14 +71,19 @@ public class FileHasher implements Runnable
 		return fileStates;
 	}
 
-	public Hashers getHashers()
+	public long getTotalBytesHashed()
 	{
-		return hashers;
+		return frontHasher.getTotalBytesHashed();
 	}
 
 	public long getTotalFileContentLength()
 	{
 		return totalFileContentLength;
+	}
+
+	protected FrontHasher getFrontHasher()
+	{
+		return frontHasher;
 	}
 
 	@Override
@@ -124,28 +129,25 @@ public class FileHasher implements Runnable
 			return new FileHash(NO_HASH, NO_HASH, NO_HASH);
 		}
 
-		hashers.reset(fileSize);
+		frontHasher.reset(fileSize);
 
 		long filePosition = 0;
+		long blockSize;
+		int bufferSize;
 
 		try (final FileChannel channel = FileChannel.open(file))
 		{
 			while (filePosition < fileSize)
 			{
-				Range nextRange = hashers.getNextRange(filePosition);
+				Range nextRange = frontHasher.getNextRange(filePosition);
 				if (nextRange == null)
 				{
 					break;
 				}
 
 				filePosition = nextRange.getFrom();
-				if (filePosition > fileSize)
-				{
-					break;
-				}
-
-				long blockSize = nextRange.getTo() - nextRange.getFrom();
-				int bufferSize = hashBuffer(channel, filePosition, blockSize);
+				blockSize = nextRange.getTo() - nextRange.getFrom();
+				bufferSize = hashBuffer(channel, filePosition, blockSize);
 				filePosition += bufferSize;
 			}
 		}
@@ -154,15 +156,15 @@ public class FileHasher implements Runnable
 			totalFileContentLength += fileSize;
 		}
 
-		if (false == hashers.hashComplete())
+		if (false == frontHasher.hashComplete())
 		{
 			throw new RuntimeException("Fim is not working correctly. Some Hasher have not completed: " +
-					"small=" + hashers.getSmallBlockHasher().hashComplete() + ", " +
-					"medium=" + hashers.getMediumBlockHasher().hashComplete() + ", " +
-					"full=" + hashers.getFullHasher().hashComplete());
+					"small=" + frontHasher.getSmallBlockHasher().hashComplete() + ", " +
+					"medium=" + frontHasher.getMediumBlockHasher().hashComplete() + ", " +
+					"full=" + frontHasher.getFullHasher().hashComplete());
 		}
 
-		return hashers.getFileHash();
+		return frontHasher.getFileHash();
 	}
 
 	private int hashBuffer(FileChannel channel, long filePosition, long size) throws IOException
@@ -173,7 +175,7 @@ public class FileHasher implements Runnable
 			buffer = channel.map(FileChannel.MapMode.READ_ONLY, filePosition, size);
 			int bufferSize = buffer.remaining();
 
-			hashers.update(filePosition, buffer);
+			frontHasher.update(filePosition, buffer);
 
 			return bufferSize;
 		}

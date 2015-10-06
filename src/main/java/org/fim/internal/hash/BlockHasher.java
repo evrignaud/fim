@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.fim.model.HashMode;
 
-public abstract class BlockHasher extends Hasher
+public abstract class BlockHasher extends AbstractHasher
 {
 	private Range[] ranges;
 	private long fileSize;
@@ -38,13 +38,20 @@ public abstract class BlockHasher extends Hasher
 		super(hashMode);
 	}
 
-	@Override
-	protected void resetHasher(long fileSize)
-	{
-		this.fileSize = fileSize;
+	protected abstract int getBlockSize();
 
-		List<Long> blockIndexes = buildBlockIndexes();
-		buildRanges(blockIndexes);
+	@Override
+	public void reset(long fileSize)
+	{
+		super.reset(fileSize);
+
+		if (isActive())
+		{
+			this.fileSize = fileSize;
+
+			List<Long> blockIndexes = buildBlockIndexes();
+			buildRanges(blockIndexes);
+		}
 	}
 
 	protected List<Long> buildBlockIndexes()
@@ -121,7 +128,7 @@ public abstract class BlockHasher extends Hasher
 		return ranges;
 	}
 
-	protected Range getNextRange(long filePosition)
+	public Range getNextRange(long filePosition)
 	{
 		for (Range range : ranges)
 		{

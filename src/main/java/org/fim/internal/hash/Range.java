@@ -18,6 +18,9 @@
  */
 package org.fim.internal.hash;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
@@ -56,6 +59,34 @@ public class Range implements Comparable<Range>
 	public long getTo()
 	{
 		return to;
+	}
+
+	/**
+	 * Return the union of this Range and the specified Range.
+	 */
+	public Range union(Range range)
+	{
+		if (range == null)
+		{
+			return new Range(from, to);
+		}
+
+		long unionFrom = min(from, range.getFrom());
+		long unionTo = max(to, range.getTo());
+		return new Range(unionFrom, unionTo);
+	}
+
+	/**
+	 * If the specified Range starts before the end of this Range and finish after, then return a bigger Range.
+	 */
+	public Range adjustToRange(Range range)
+	{
+		if (range != null && range.getFrom() < to && range.getTo() > to)
+		{
+			return new Range(from, range.getTo());
+		}
+
+		return new Range(from, to);
 	}
 
 	@Override

@@ -61,24 +61,24 @@ public class BlockHasherTest
 	@Test
 	public void calculateBlockIndex()
 	{
-		cut.resetHasher(31);
+		cut.reset(31);
 		assertThat(cut.getMiddleBlockIndex()).isEqualTo(0);
 
-		cut.resetHasher(_4_KB + 109);
+		cut.reset(_4_KB + 109);
 		assertThat(cut.getMiddleBlockIndex()).isEqualTo(0);
 
-		cut.resetHasher(_8_KB + 205);
+		cut.reset(_8_KB + 205);
 		assertThat(cut.getMiddleBlockIndex()).isEqualTo(1);
 
-		cut.resetHasher(_12_KB + 301);
+		cut.reset(_12_KB + 301);
 		assertThat(cut.getMiddleBlockIndex()).isEqualTo(1);
 		assertThat(cut.getEndBlockIndex()).isEqualTo(2);
 
-		cut.resetHasher(_16_KB + 407);
+		cut.reset(_16_KB + 407);
 		assertThat(cut.getMiddleBlockIndex()).isEqualTo(2);
 		assertThat(cut.getEndBlockIndex()).isEqualTo(3);
 
-		cut.resetHasher(_20_KB + 509);
+		cut.reset(_20_KB + 509);
 		assertThat(cut.getMiddleBlockIndex()).isEqualTo(2);
 		assertThat(cut.getEndBlockIndex()).isEqualTo(4);
 	}
@@ -86,29 +86,29 @@ public class BlockHasherTest
 	@Test
 	public void rangesAreCalculatedCorrectly()
 	{
-		cut.resetHasher(31);
+		cut.reset(31);
 		assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(0, 31)});
 
-		cut.resetHasher(_4_KB + 109);
+		cut.reset(_4_KB + 109);
 		assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(0, _4_KB)});
 
-		cut.resetHasher(_8_KB + 205);
+		cut.reset(_8_KB + 205);
 		assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB)});
 
-		cut.resetHasher(_12_KB + 301);
+		cut.reset(_12_KB + 301);
 		assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB), new Range(_8_KB, _12_KB)});
 
-		cut.resetHasher(_16_KB + 407);
+		cut.reset(_16_KB + 407);
 		assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB), new Range(_8_KB, _12_KB), new Range(_12_KB, _16_KB)});
 
-		cut.resetHasher(_20_KB + 509);
+		cut.reset(_20_KB + 509);
 		assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB), new Range(_8_KB, _12_KB), new Range(_16_KB, _20_KB)});
 	}
 
 	@Test
 	public void weCanRetrieveTheNextRange()
 	{
-		cut.resetHasher(_20_KB + 509);
+		cut.reset(_20_KB + 509);
 		assertThat(cut.getNextRange(0)).isEqualTo(new Range(_4_KB, _8_KB));
 
 		assertThat(cut.getNextRange(_1_KB)).isEqualTo(new Range(_4_KB, _8_KB));

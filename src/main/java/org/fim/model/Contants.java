@@ -35,7 +35,5 @@ public class Contants
 	public static final int _100_MB = 100 * _1_MB;
 	public static final int _200_MB = 200 * _1_MB;
 
-	public static final int SIZE_UNLIMITED = -1;
-
 	public static final String NO_HASH = "no_hash";
 }

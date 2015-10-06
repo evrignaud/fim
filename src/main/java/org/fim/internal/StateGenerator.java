@@ -113,7 +113,7 @@ public class StateGenerator
 		{
 			state.getFileStates().addAll(fileHasher.getFileStates());
 			totalFileContentLength += fileHasher.getTotalFileContentLength();
-			overallTotalBytesHashed += fileHasher.getHashers().getTotalBytesHashed();
+			overallTotalBytesHashed += fileHasher.getTotalBytesHashed();
 		}
 
 		Collections.sort(state.getFileStates(), fileNameComparator);

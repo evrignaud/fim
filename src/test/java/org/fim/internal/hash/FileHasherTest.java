@@ -243,12 +243,12 @@ public class FileHasherTest extends StateAssert
 	{
 		if (hashMode != dontHash)
 		{
-			BlockHasher smallBlockHasher = (BlockHasher) cut.getHashers().getSmallBlockHasher();
+			BlockHasher smallBlockHasher = (BlockHasher) cut.getFrontHasher().getSmallBlockHasher();
 			assertThat(smallBlockHasher.getRanges()).isEqualTo(smallRanges);
 
 			if (hashMode != hashSmallBlock)
 			{
-				BlockHasher mediumBlockHasher = (BlockHasher) cut.getHashers().getMediumBlockHasher();
+				BlockHasher mediumBlockHasher = (BlockHasher) cut.getFrontHasher().getMediumBlockHasher();
 				assertThat(mediumBlockHasher.getRanges()).isEqualTo(mediumRanges);
 			}
 		}
@@ -321,12 +321,12 @@ public class FileHasherTest extends StateAssert
 
 	private void assertSmallBlockBytesHashedEqualsTo(long expectedSizeToHash)
 	{
-		assertBlockBytesHashedEqualsTo(expectedSizeToHash, (BlockHasher) cut.getHashers().getSmallBlockHasher());
+		assertBlockBytesHashedEqualsTo(expectedSizeToHash, (BlockHasher) cut.getFrontHasher().getSmallBlockHasher());
 	}
 
 	private void assertMediumBlockBytesHashedEqualsTo(long expectedSizeToHash)
 	{
-		assertBlockBytesHashedEqualsTo(expectedSizeToHash, (BlockHasher) cut.getHashers().getMediumBlockHasher());
+		assertBlockBytesHashedEqualsTo(expectedSizeToHash, (BlockHasher) cut.getFrontHasher().getMediumBlockHasher());
 	}
 
 	private void assertBlockBytesHashedEqualsTo(long expectedSizeToHash, BlockHasher blockHasher)
@@ -340,7 +340,7 @@ public class FileHasherTest extends StateAssert
 
 	private void assertFullBytesHashedEqualsTo(long expectedSizeToHash)
 	{
-		assertThat(cut.getHashers().getFullHasher().getBytesHashed()).isEqualTo(expectedSizeToHash);
+		assertThat(cut.getFrontHasher().getFullHasher().getBytesHashed()).isEqualTo(expectedSizeToHash);
 	}
 
 	private Path createFileWithSize(int fileSize) throws IOException
