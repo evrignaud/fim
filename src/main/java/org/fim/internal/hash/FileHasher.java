@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
+import org.fim.model.Range;
 import org.fim.util.Console;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;

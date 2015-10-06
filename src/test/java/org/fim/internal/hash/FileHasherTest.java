@@ -61,6 +61,7 @@ import com.google.common.hash.Hashing;
 import org.apache.commons.io.FileUtils;
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
+import org.fim.model.Range;
 import org.fim.tooling.BuildableContext;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;

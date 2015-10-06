@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fim.model.HashMode;
+import org.fim.model.Range;
 
 public abstract class BlockHasher extends AbstractHasher
 {

@@ -25,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
+import org.fim.model.Range;
 
 public class FrontHasher implements Hasher
 {

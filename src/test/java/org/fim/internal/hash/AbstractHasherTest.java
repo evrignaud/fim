@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
 import org.fim.model.HashMode;
+import org.fim.model.Range;
 import org.junit.Before;
 import org.junit.Test;
 

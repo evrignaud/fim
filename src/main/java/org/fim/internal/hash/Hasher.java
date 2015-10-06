@@ -20,6 +20,8 @@ package org.fim.internal.hash;
 
 import java.nio.ByteBuffer;
 
+import org.fim.model.Range;
+
 public interface Hasher
 {
 	boolean isActive();

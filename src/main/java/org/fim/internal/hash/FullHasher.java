@@ -26,12 +26,13 @@ import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
 import org.fim.model.HashMode;
+import org.fim.model.Range;
 import org.fim.util.HashModeUtil;
 
 public class FullHasher extends AbstractHasher
 {
 	public static final int BLOCK_SIZE = 30 * _1_MB;
-	
+
 	private long fileSize;
 
 	public FullHasher(HashMode hashMode) throws NoSuchAlgorithmException
