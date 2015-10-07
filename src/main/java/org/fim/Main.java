@@ -182,6 +182,8 @@ public class Main
 		FimReposConstraint constraint = command.getFimReposConstraint();
 		if (constraint == FimReposConstraint.MUST_NOT_EXIST)
 		{
+			setRepositoryRootDir(context, getAbsoluteCurrentDirectory(), false);
+
 			if (Files.exists(context.getRepositoryStatesDir()))
 			{
 				Logger.error("Fim repository already exist");
@@ -205,20 +207,30 @@ public class Main
 	private static void findRepositoryRootDir(Context context)
 	{
 		boolean invokedFromSubDirectory = false;
-		Path directory = Paths.get(".").toAbsolutePath().normalize();
+		Path directory = getAbsoluteCurrentDirectory();
 		while (directory != null)
 		{
 			Path dotFimDir = directory.resolve(Context.DOT_FIM_DIR);
 			if (Files.exists(dotFimDir))
 			{
-				context.setRepositoryRootDir(directory);
-				context.setInvokedFromSubDirectory(invokedFromSubDirectory);
+				setRepositoryRootDir(context, directory, invokedFromSubDirectory);
 				return;
 			}
 
 			directory = directory.getParent();
 			invokedFromSubDirectory = true;
 		}
+	}
+
+	private static void setRepositoryRootDir(Context context, Path directory, boolean invokedFromSubDirectory)
+	{
+		context.setRepositoryRootDir(directory);
+		context.setInvokedFromSubDirectory(invokedFromSubDirectory);
+	}
+
+	private static Path getAbsoluteCurrentDirectory()
+	{
+		return Paths.get(".").toAbsolutePath().normalize();
 	}
 
 	private static Command findCommand(final String cmdName)

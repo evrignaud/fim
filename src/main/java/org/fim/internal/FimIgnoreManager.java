@@ -77,6 +77,11 @@ public class FimIgnoreManager
 		while (false == directory.equals(context.getRepositoryRootDir()))
 		{
 			directory = directory.getParent();
+			if (directory == null)
+			{
+				break;
+			}
+			
 			FimIgnore fimIgnore = loadFimIgnore(directory);
 			initialFimIgnore.getFilesToIgnoreInAllDirectories().addAll(fimIgnore.getFilesToIgnoreInAllDirectories());
 		}
