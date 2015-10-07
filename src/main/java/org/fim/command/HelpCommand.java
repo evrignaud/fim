@@ -18,7 +18,7 @@
  */
 package org.fim.command;
 
-import org.fim.Main;
+import org.fim.Fim;
 import org.fim.model.Context;
 
 public class HelpCommand extends AbstractCommand
@@ -50,6 +50,6 @@ public class HelpCommand extends AbstractCommand
 	@Override
 	public void execute(Context context) throws Exception
 	{
-		Main.printUsage();
+		Fim.printUsage();
 	}
 }

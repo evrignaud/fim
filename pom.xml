@@ -164,7 +164,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>org.fim.Main</mainClass>
+							<mainClass>org.fim.Fim</mainClass>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 						</manifest>
 					</archive>

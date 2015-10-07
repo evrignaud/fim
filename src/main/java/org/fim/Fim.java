@@ -57,7 +57,7 @@ import org.fim.model.Context;
 import org.fim.util.Console;
 import org.fim.util.Logger;
 
-public class Main
+public class Fim
 {
 	private static List<AbstractCommand> commands = buildCommands();
 	private static Options options = buildOptions();

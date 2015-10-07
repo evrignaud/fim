@@ -28,7 +28,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fim.Main;
+import org.fim.Fim;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
@@ -70,7 +70,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		if (context.getMasterFimRepositoryDir() == null)
 		{
 			Logger.error("The master Fim directory must be provided");
-			Main.printUsage();
+			Fim.printUsage();
 			System.exit(-1);
 		}
 
