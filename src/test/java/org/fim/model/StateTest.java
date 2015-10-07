@@ -22,9 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Paths;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.StateAssert;
@@ -33,7 +31,8 @@ import org.junit.Test;
 
 public class StateTest extends StateAssert
 {
-	public static final String MODIFICATION_TIME = "2015/07/23 23:24:10";
+	// public static final String MODIFICATION_TIME = "2015/07/23 23:24:10";
+	public static final long MODIFICATION_TIMESTAMP = 1437686650000L; // MODIFICATION_TIME translated in milliseconds
 
 	private BuildableState a1;
 	private BuildableState a2;
@@ -78,6 +77,7 @@ public class StateTest extends StateAssert
 		fixTimeStamps(a1);
 
 		String a1_hash = a1.hashState();
+		assertThat(a1_hash.length()).isEqualTo(128);
 		assertThat(a1_hash).isEqualTo("a79f7f611b5fa63338a51c4d7d29a2bdc42c058c04b1226298df9752a617063a93415fcaad5c7a480d39c8611fa3e2d58b888d168911e8d70024462f8d4f03b9");
 	}
 
@@ -128,15 +128,17 @@ public class StateTest extends StateAssert
 		assertThat(toFileNames(filteredState.getFileStates())).isEqualTo(Arrays.asList("dir_2/file_1", "dir_2/file_2", "file_1", "file_2"));
 	}
 
-	private void fixTimeStamps(BuildableState a1) throws ParseException
+	private void fixTimeStamps(BuildableState s) throws ParseException
 	{
 		// Fix the timeStamps in order that state hash can be verified
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-		Date date = sdf.parse(MODIFICATION_TIME);
-		long timestamp = date.getTime();
 
-		a1.setTimestamp(timestamp);
-		for (FileState fileState : a1.getFileStates())
+		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+		// Date date = sdf.parse(MODIFICATION_TIME);
+		// long timestamp = date.getTime();
+		long timestamp = MODIFICATION_TIMESTAMP;
+
+		s.setTimestamp(timestamp);
+		for (FileState fileState : s.getFileStates())
 		{
 			fileState.getFileTime().reset(timestamp);
 		}
