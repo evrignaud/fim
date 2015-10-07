@@ -126,14 +126,14 @@ public class CompareResult
 
 		for (Difference diff : dateModified)
 		{
-			System.out.printf(stateFormat + "%s \t%s -> %s%n", "Date modified:", diff.getFileState().getFileName(), formatLastModified(diff.getPreviousFileState()), formatLastModified(diff.getFileState()));
+			System.out.printf(stateFormat + "%s \t%s%n", "Date modified:", diff.getFileState().getFileName(), formatFileTimeModification(diff));
 		}
 
 		for (Difference diff : contentModified)
 		{
 			if (diff.isLastModifiedChanged())
 			{
-				System.out.printf(stateFormat + "%s \t%s -> %s%n", "Content modified:", diff.getFileState().getFileName(), formatLastModified(diff.getPreviousFileState()), formatLastModified(diff.getFileState()));
+				System.out.printf(stateFormat + "%s \t%s%n", "Content modified:", diff.getFileState().getFileName(), formatFileTimeModification(diff));
 			}
 			else
 			{
@@ -153,17 +153,7 @@ public class CompareResult
 
 		for (Difference diff : corrupted)
 		{
-			String modification = "";
-			if (diff.isCreationTimeChanged())
-			{
-				modification += String.format(" creationTime: %s -> %s", formatCreationTime(diff.getPreviousFileState()), formatCreationTime(diff.getFileState()));
-			}
-			if (diff.isLastModifiedChanged())
-			{
-				modification += String.format(" lastModified: %s -> %s", formatLastModified(diff.getPreviousFileState()), formatLastModified(diff.getFileState()));
-			}
-
-			System.out.printf(stateFormat + "%s \t%s%n", "Corrupted?:", diff.getFileState().getFileName(), modification);
+			System.out.printf(stateFormat + "%s \t%s%n", "Corrupted?:", diff.getFileState().getFileName(), formatFileTimeModification(diff));
 		}
 
 		if (somethingModified())
@@ -174,6 +164,20 @@ public class CompareResult
 		displayCounts();
 
 		return this;
+	}
+
+	private String formatFileTimeModification(Difference diff)
+	{
+		String modification = "";
+		if (diff.isCreationTimeChanged())
+		{
+			modification += String.format(" creationTime: %s -> %s", formatCreationTime(diff.getPreviousFileState()), formatCreationTime(diff.getFileState()));
+		}
+		if (diff.isLastModifiedChanged())
+		{
+			modification += String.format(" lastModified: %s -> %s", formatLastModified(diff.getPreviousFileState()), formatLastModified(diff.getFileState()));
+		}
+		return modification;
 	}
 
 	public CompareResult displayCounts()
