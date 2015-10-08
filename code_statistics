@@ -23,23 +23,26 @@ if [ ! -d target ]; then
 fi
 
 allJavaLines=target/all_java_lines
-shortendFileName=target/all_java_lines_shortened
-uniqDuplicatedLines=target/uniq_duplicated_ines
+trimmedLines=target/all_java_lines_trimed
+meaningfulLines=target/all_java_lines_meaningful
+uniqDuplicatedLines=target/uniq_duplicated_lines
 
 find . -name "*.java" -exec cat {}  \; > ${allJavaLines}
 
 totalJavaLines=`cat ${allJavaLines} | wc -l`
 
-# Trim all lines, remove empty lines and remove non meaningful lines 
-cat ${allJavaLines} | awk '{$1=$1;print}' | egrep -v "^$|^{$|^}$|^//|^/\*|^\*|^import|^package|^try|^continue|^break|^return|^@Test" > ${shortendFileName}
+# Trim all lines, remove empty lines and remove ^M
+cat ${allJavaLines} | awk '{$1=$1;print}' | tr -d $'\r' > ${trimmedLines}
+# Remove non meaningful lines 
+cat ${trimmedLines} | egrep -v "^$|^\{$|^\}$|^//|^/\*|^\*|^import|^package|^try|^continue|^else|^break|^return|^@Test" > ${meaningfulLines}
 
-meaningfulLines=`cat ${shortendFileName} | wc -l`
-differentLines=`cat ${shortendFileName} | sort | uniq | wc -l`
+meaningfulLinesCount=`cat ${meaningfulLines} | wc -l`
+differentLinesCount=`cat ${meaningfulLines} | sort | uniq | wc -l`
 
-duplicatedLines=`echo "$meaningfulLines - $differentLines" | bc`
-duplicatePercent=`echo "$duplicatedLines * 100 / $meaningfulLines" | bc`
+duplicatedLines=`echo "$meaningfulLinesCount - $differentLinesCount" | bc`
+duplicatePercent=`echo "$duplicatedLines * 100 / $meaningfulLinesCount" | bc`
 
-cat ${shortendFileName} | sort | uniq -d > ${uniqDuplicatedLines}
+cat ${meaningfulLines} | sort | uniq -d > ${uniqDuplicatedLines}
 
 echo "Total java lines: $totalJavaLines"
 echo "$duplicatedLines duplicated lines ($duplicatePercent% of the meaningful lines)"
