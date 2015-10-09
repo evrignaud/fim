@@ -37,6 +37,7 @@ import org.fim.command.DisplayIgnoredFilesCommand;
 import org.fim.command.FindDuplicatesCommand;
 import org.fim.command.InitCommand;
 import org.fim.command.LogCommand;
+import org.fim.command.RollbackCommand;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.DuplicateResult;
@@ -60,6 +61,7 @@ public class CompleteScenarioTest
 	private FindDuplicatesCommand findDuplicatesCommand;
 	private LogCommand logCommand;
 	private DisplayIgnoredFilesCommand displayIgnoredFilesCommand;
+	private RollbackCommand rollbackCommand;
 
 	private int fileCount;
 
@@ -87,6 +89,7 @@ public class CompleteScenarioTest
 		findDuplicatesCommand = new FindDuplicatesCommand();
 		logCommand = new LogCommand();
 		displayIgnoredFilesCommand = new DisplayIgnoredFilesCommand();
+		rollbackCommand = new RollbackCommand();
 
 		fileCount = 0;
 	}
@@ -132,6 +135,17 @@ public class CompleteScenarioTest
 
 		Set<String> ignoredFiles = (Set<String>) displayIgnoredFilesCommand.execute(context);
 		assertThat(ignoredFiles.size()).isEqualTo(6);
+
+		rollbackCommand.execute(context);
+
+		compareResult = (CompareResult) diffCommand.execute(context);
+		assertThat(compareResult.modifiedCount()).isEqualTo(14);
+
+		logResult = (LogResult) logCommand.execute(context);
+		assertThat(logResult.getLogEntries().size()).isEqualTo(2);
+
+		ignoredFiles = (Set<String>) displayIgnoredFilesCommand.execute(context);
+		assertThat(ignoredFiles.size()).isEqualTo(2);
 	}
 
 	private void createASetOfFiles(int fileCount) throws IOException
