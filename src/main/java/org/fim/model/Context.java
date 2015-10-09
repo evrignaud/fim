@@ -32,6 +32,7 @@ public class Context
 	private static final Cloner CLONER = new Cloner();
 
 	private boolean invokedFromSubDirectory;
+	private Path currentDirectory;
 	private Path repositoryRootDir;
 	private boolean verbose;
 	private HashMode hashMode;
@@ -44,7 +45,8 @@ public class Context
 	public Context()
 	{
 		invokedFromSubDirectory = false;
-		repositoryRootDir = Paths.get(".");
+		currentDirectory = Paths.get(".");
+		repositoryRootDir = currentDirectory;
 		verbose = true;
 		hashMode = hashAll;
 		comment = "";
@@ -66,6 +68,16 @@ public class Context
 	public void setInvokedFromSubDirectory(boolean invokedFromSubDirectory)
 	{
 		this.invokedFromSubDirectory = invokedFromSubDirectory;
+	}
+
+	public Path getCurrentDirectory()
+	{
+		return currentDirectory;
+	}
+
+	public void setCurrentDirectory(Path currentDirectory)
+	{
+		this.currentDirectory = currentDirectory;
 	}
 
 	public Path getRepositoryRootDir()

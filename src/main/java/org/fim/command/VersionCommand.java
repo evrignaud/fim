@@ -47,9 +47,10 @@ public class VersionCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Context context) throws Exception
+	public Object execute(Context context) throws Exception
 	{
 		String implementationVersion = this.getClass().getPackage().getImplementationVersion();
 		System.out.println("Fim version " + implementationVersion);
+		return null;
 	}
 }

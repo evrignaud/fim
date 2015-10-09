@@ -28,7 +28,7 @@ public interface Command
 
 	FimReposConstraint getFimReposConstraint();
 
-	void execute(Context context) throws Exception;
+	Object execute(Context context) throws Exception;
 
 	enum FimReposConstraint
 	{

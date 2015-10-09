@@ -53,7 +53,7 @@ public class PurgeStatesCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Context context) throws Exception
+	public Object execute(Context context) throws Exception
 	{
 		StateManager stateManager = new StateManager(context);
 
@@ -88,5 +88,6 @@ public class PurgeStatesCommand extends AbstractCommand
 
 			stateManager.saveLastStateNumber(1);
 		}
+		return null;
 	}
 }

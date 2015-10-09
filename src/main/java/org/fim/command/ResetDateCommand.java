@@ -55,7 +55,7 @@ public class ResetDateCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Context context) throws Exception
+	public Object execute(Context context) throws Exception
 	{
 		StateManager manager = new StateManager(context);
 		State lastState = manager.loadLastState();
@@ -69,7 +69,7 @@ public class ResetDateCommand extends AbstractCommand
 
 		if (context.isInvokedFromSubDirectory())
 		{
-			lastState = lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
+			lastState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
 		}
 
 		int dateResetCount = 0;
@@ -117,6 +117,7 @@ public class ResetDateCommand extends AbstractCommand
 			Console.newLine();
 			Logger.info(String.format("%d file modification dates have been reset", dateResetCount));
 		}
+		return null;
 	}
 
 	private void setCreationTime(Path file, FileTime creationTime) throws IOException

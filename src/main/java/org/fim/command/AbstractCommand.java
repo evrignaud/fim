@@ -22,8 +22,6 @@ import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
 import static org.fim.util.HashModeUtil.hashModeToString;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -36,8 +34,6 @@ import org.fim.util.Logger;
 
 public abstract class AbstractCommand implements Command
 {
-	protected static final Path CURRENT_DIRECTORY = Paths.get(".");
-
 	@Override
 	public FimReposConstraint getFimReposConstraint()
 	{

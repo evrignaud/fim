@@ -81,7 +81,7 @@ public class FimIgnoreManager
 			{
 				break;
 			}
-			
+
 			FimIgnore fimIgnore = loadFimIgnore(directory);
 			initialFimIgnore.getFilesToIgnoreInAllDirectories().addAll(fimIgnore.getFilesToIgnoreInAllDirectories());
 		}

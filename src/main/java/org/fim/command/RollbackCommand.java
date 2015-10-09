@@ -52,7 +52,7 @@ public class RollbackCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Context context) throws Exception
+	public Object execute(Context context) throws Exception
 	{
 		StateManager stateManager = new StateManager(context);
 
@@ -74,5 +74,6 @@ public class RollbackCommand extends AbstractCommand
 				stateManager.saveLastStateNumber(lastStateNumber - 1);
 			}
 		}
+		return null;
 	}
 }

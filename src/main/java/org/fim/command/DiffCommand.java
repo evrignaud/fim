@@ -21,6 +21,7 @@ package org.fim.command;
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
+import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.State;
 
@@ -46,18 +47,20 @@ public class DiffCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Context context) throws Exception
+	public Object execute(Context context) throws Exception
 	{
 		checkHashMode(context, Option.ALLOW_COMPATIBLE);
 
-		State currentState = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), CURRENT_DIRECTORY);
+		State currentState = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), context.getCurrentDirectory());
 		State lastState = new StateManager(context).loadLastState();
 
 		if (context.isInvokedFromSubDirectory())
 		{
-			lastState = lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
+			lastState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
 		}
 
-		new StateComparator(context, lastState, currentState).compare().displayChanges();
+		CompareResult result = new StateComparator(context, lastState, currentState).compare();
+		result.displayChanges();
+		return result;
 	}
 }

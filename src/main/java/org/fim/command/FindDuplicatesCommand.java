@@ -22,6 +22,7 @@ import org.fim.internal.DuplicateFinder;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
+import org.fim.model.DuplicateResult;
 import org.fim.model.State;
 import org.fim.util.Console;
 import org.fim.util.Logger;
@@ -47,7 +48,7 @@ public class FindDuplicatesCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Context context) throws Exception
+	public Object execute(Context context) throws Exception
 	{
 		checkHashMode(context, Option.ALLOW_COMPATIBLE);
 
@@ -63,9 +64,11 @@ public class FindDuplicatesCommand extends AbstractCommand
 		}
 		else
 		{
-			state = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), CURRENT_DIRECTORY);
+			state = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), context.getCurrentDirectory());
 		}
 
-		new DuplicateFinder(context).findDuplicates(state).displayDuplicates();
+		DuplicateResult result = new DuplicateFinder(context).findDuplicates(state);
+		result.displayDuplicates();
+		return result;
 	}
 }

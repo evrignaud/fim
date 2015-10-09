@@ -50,7 +50,7 @@ public class CommitCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Context context) throws Exception
+	public Object execute(Context context) throws Exception
 	{
 		checkHashMode(context, Option.ALL_HASH_MANDATORY);
 
@@ -66,7 +66,7 @@ public class CommitCommand extends AbstractCommand
 		StateManager manager = new StateManager(context);
 		State lastState = manager.loadLastState();
 		State lastStateToCompare = lastState;
-		State currentState = new StateGenerator(context).generateState(context.getComment(), context.getRepositoryRootDir(), CURRENT_DIRECTORY);
+		State currentState = new StateGenerator(context).generateState(context.getComment(), context.getRepositoryRootDir(), context.getCurrentDirectory());
 
 		if (context.isInvokedFromSubDirectory())
 		{
@@ -76,7 +76,7 @@ public class CommitCommand extends AbstractCommand
 				System.exit(-1);
 			}
 
-			lastStateToCompare = lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, true);
+			lastStateToCompare = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
 		}
 
 		CompareResult result = new StateComparator(context, lastStateToCompare, currentState).compare().displayChanges();
@@ -99,11 +99,13 @@ public class CommitCommand extends AbstractCommand
 				Logger.info("Nothing committed");
 			}
 		}
+
+		return result;
 	}
 
 	private State createConsolidatedState(Context context, State lastState, State currentState) throws IOException
 	{
-		State filteredState = lastState.filterDirectory(context.getRepositoryRootDir(), CURRENT_DIRECTORY, false);
+		State filteredState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), false);
 
 		State consolidatedState = currentState.clone();
 		consolidatedState.getFileStates().addAll(filteredState.getFileStates());

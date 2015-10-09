@@ -51,7 +51,7 @@ public class DisplayIgnoredFilesCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Context context) throws Exception
+	public Object execute(Context context) throws Exception
 	{
 		StateManager manager = new StateManager(context);
 
@@ -59,7 +59,7 @@ public class DisplayIgnoredFilesCommand extends AbstractCommand
 		if (lastStateNumber == -1)
 		{
 			Logger.error("No State found");
-			return;
+			return null;
 		}
 
 		Path statFile = manager.getStateFile(lastStateNumber);
@@ -71,9 +71,14 @@ public class DisplayIgnoredFilesCommand extends AbstractCommand
 			{
 				System.out.printf("\tComment: %s%n", state.getComment());
 			}
-			displayIgnore(state.getIgnoredFiles());
+			Set<String> ignoredFiles = state.getIgnoredFiles();
+			displayIgnore(ignoredFiles);
 			Console.newLine();
+
+			return ignoredFiles;
 		}
+
+		return null;
 	}
 
 	private void displayIgnore(Set<String> ignoredFiles)

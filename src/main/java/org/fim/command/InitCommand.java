@@ -60,7 +60,7 @@ public class InitCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Context context) throws Exception
+	public Object execute(Context context) throws Exception
 	{
 		if (context.getComment().length() == 0)
 		{
@@ -76,7 +76,7 @@ public class InitCommand extends AbstractCommand
 		{
 			comment = "Initial State";
 		}
-		State currentState = new StateGenerator(context).generateState(comment, CURRENT_DIRECTORY, CURRENT_DIRECTORY);
+		State currentState = new StateGenerator(context).generateState(comment, context.getCurrentDirectory(), context.getCurrentDirectory());
 
 		CompareResult result = new StateComparator(context, null, currentState).compare().displayChanges();
 		currentState.setModificationCounts(result.getModificationCounts());
@@ -84,6 +84,8 @@ public class InitCommand extends AbstractCommand
 		createRepository(context);
 
 		new StateManager(context).createNewState(currentState);
+
+		return currentState;
 	}
 
 	private void createRepository(Context context)

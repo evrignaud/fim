@@ -18,16 +18,14 @@
  */
 package org.fim.command;
 
-import static org.fim.util.FormatUtil.formatDate;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
-import org.fim.model.ModificationCounts;
+import org.fim.model.LogEntry;
+import org.fim.model.LogResult;
 import org.fim.model.State;
-import org.fim.util.Console;
 import org.fim.util.Logger;
 
 public class LogCommand extends AbstractCommand
@@ -51,77 +49,34 @@ public class LogCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Context context) throws Exception
+	public Object execute(Context context) throws Exception
 	{
 		StateManager manager = new StateManager(context);
 
 		if (manager.getLastStateNumber() == -1)
 		{
 			Logger.error("No State found");
-			return;
+			return null;
 		}
 
+		LogResult logResult = new LogResult();
 		for (int stateNumber = 1; stateNumber <= manager.getLastStateNumber(); stateNumber++)
 		{
 			Path statFile = manager.getStateFile(stateNumber);
 			if (Files.exists(statFile))
 			{
 				State state = manager.loadState(stateNumber);
-				System.out.printf("State #%d: %s (%d files)%n", stateNumber, formatDate(state.getTimestamp()), state.getFileCount());
-				if (state.getComment().length() > 0)
-				{
-					System.out.printf("\tComment: %s%n", state.getComment());
-				}
-				displayCounts(state.getModificationCounts());
-				Console.newLine();
+				LogEntry logEntry = new LogEntry();
+				logEntry.setStateNumber(stateNumber);
+				logEntry.setComment(state.getComment());
+				logEntry.setTimestamp(state.getTimestamp());
+				logEntry.setFileCount(state.getFileCount());
+				logEntry.setModificationCounts(state.getModificationCounts());
+				logResult.add(logEntry);
 			}
 		}
-	}
 
-	private void displayCounts(ModificationCounts modificationCounts)
-	{
-		if (modificationCounts == null)
-		{
-			return;
-		}
-
-		String message = "";
-		if (modificationCounts.getAdded() > 0)
-		{
-			message += "" + modificationCounts.getAdded() + " added, ";
-		}
-
-		if (modificationCounts.getCopied() > 0)
-		{
-			message += "" + modificationCounts.getCopied() + " copied, ";
-		}
-
-		if (modificationCounts.getDuplicated() > 0)
-		{
-			message += "" + modificationCounts.getDuplicated() + " duplicated, ";
-		}
-
-		if (modificationCounts.getDateModified() > 0)
-		{
-			message += "" + modificationCounts.getDateModified() + " date modified, ";
-		}
-
-		if (modificationCounts.getContentModified() > 0)
-		{
-			message += "" + modificationCounts.getContentModified() + " content modified, ";
-		}
-
-		if (modificationCounts.getRenamed() > 0)
-		{
-			message += "" + modificationCounts.getRenamed() + " renamed, ";
-		}
-
-		if (modificationCounts.getDeleted() > 0)
-		{
-			message += "" + modificationCounts.getDeleted() + " deleted, ";
-		}
-
-		message = message.replaceAll(", $", "");
-		System.out.printf("\t%s%n", message);
+		logResult.displayEntries();
+		return logResult;
 	}
 }

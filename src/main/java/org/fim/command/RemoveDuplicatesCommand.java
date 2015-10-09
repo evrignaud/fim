@@ -65,7 +65,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Context context) throws Exception
+	public Object execute(Context context) throws Exception
 	{
 		if (context.getMasterFimRepositoryDir() == null)
 		{
@@ -104,7 +104,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		}
 
 		Path normalizedMasterFimRepository = masterFimRepository.toAbsolutePath().normalize();
-		Path normalizedCurrentDir = CURRENT_DIRECTORY.toAbsolutePath().normalize();
+		Path normalizedCurrentDir = context.getCurrentDirectory().toAbsolutePath().normalize();
 
 		if (normalizedMasterFimRepository.equals(normalizedCurrentDir))
 		{
@@ -133,7 +133,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		Map<FileHash, FileState> masterFilesHash = buildFileHashMap(masterState);
 
 		long totalFilesRemoved = 0;
-		State localState = new StateGenerator(context).generateState("", CURRENT_DIRECTORY, CURRENT_DIRECTORY);
+		State localState = new StateGenerator(context).generateState("", context.getCurrentDirectory(), context.getCurrentDirectory());
 		for (FileState localFileState : localState.getFileStates())
 		{
 			FileState masterFileState = masterFilesHash.get(localFileState.getFileHash());
@@ -160,6 +160,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 
 		Console.newLine();
 		Logger.info(String.format("Removed %d duplicated files", totalFilesRemoved));
+		return null;
 	}
 
 	private Map<FileHash, FileState> buildFileHashMap(State state)

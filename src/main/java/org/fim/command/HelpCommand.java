@@ -48,8 +48,9 @@ public class HelpCommand extends AbstractCommand
 	}
 
 	@Override
-	public void execute(Context context) throws Exception
+	public Object execute(Context context) throws Exception
 	{
 		Fim.printUsage();
+		return null;
 	}
 }
