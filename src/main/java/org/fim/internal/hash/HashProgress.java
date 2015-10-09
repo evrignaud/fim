@@ -38,9 +38,10 @@ public class HashProgress
 	private static final List<Pair<Character, Integer>> hashProgress = Arrays.asList(
 			Pair.of('.', 0),
 			Pair.of('o', Contants._20_MB),
-			Pair.of('O', Contants._50_MB),
-			Pair.of('@', Contants._100_MB),
-			Pair.of('#', Contants._200_MB)
+			Pair.of('8', Contants._50_MB),
+			Pair.of('O', Contants._100_MB),
+			Pair.of('@', Contants._200_MB),
+			Pair.of('#', Contants._1_GB)
 	);
 
 	private final ReentrantLock progressLock;
