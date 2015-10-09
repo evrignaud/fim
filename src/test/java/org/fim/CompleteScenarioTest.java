@@ -28,10 +28,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.security.NoSuchAlgorithmException;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.fim.command.CommitCommand;
 import org.fim.command.DiffCommand;
+import org.fim.command.DisplayIgnoredFilesCommand;
 import org.fim.command.FindDuplicatesCommand;
 import org.fim.command.InitCommand;
 import org.fim.command.LogCommand;
@@ -50,12 +52,16 @@ public class CompleteScenarioTest
 	private static Path rootDir = Paths.get("target/" + CompleteScenarioTest.class.getSimpleName());
 
 	private Context context;
+	private Path dir01;
 
 	private InitCommand initCommand;
 	private DiffCommand diffCommand;
 	private CommitCommand commitCommand;
 	private FindDuplicatesCommand findDuplicatesCommand;
 	private LogCommand logCommand;
+	private DisplayIgnoredFilesCommand displayIgnoredFilesCommand;
+
+	private int fileCount;
 
 	@BeforeClass
 	public static void setupOnce() throws NoSuchAlgorithmException, IOException
@@ -73,15 +79,20 @@ public class CompleteScenarioTest
 		context.setCurrentDirectory(rootDir);
 		context.setRepositoryRootDir(rootDir);
 
+		dir01 = rootDir.resolve("dir01");
+
 		initCommand = new InitCommand();
 		diffCommand = new DiffCommand();
 		commitCommand = new CommitCommand();
 		findDuplicatesCommand = new FindDuplicatesCommand();
 		logCommand = new LogCommand();
+		displayIgnoredFilesCommand = new DisplayIgnoredFilesCommand();
+
+		fileCount = 0;
 	}
 
 	@Test
-	public void completeScenario() throws Exception
+	public void fullScenario() throws Exception
 	{
 		createASetOfFiles(10);
 
@@ -104,32 +115,35 @@ public class CompleteScenarioTest
 		DuplicateResult duplicateResult = (DuplicateResult) findDuplicatesCommand.execute(context);
 		assertThat(duplicateResult.getDuplicateSets().size()).isEqualTo(2);
 
+		addIgnoredFiles();
+
 		runTheCommandsFrom_dir01();
 
 		compareResult = (CompareResult) commitCommand.execute(context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(10);
+		assertThat(compareResult.modifiedCount()).isEqualTo(14);
 		assertThat(compareResult.getModificationCounts().getRenamed()).isEqualTo(0);
-		assertThat(compareResult.getModificationCounts().getDeleted()).isEqualTo(2);
+		assertThat(compareResult.getModificationCounts().getDeleted()).isEqualTo(3);
 
 		compareResult = (CompareResult) diffCommand.execute(context);
 		assertThat(compareResult.modifiedCount()).isEqualTo(0);
 
 		LogResult logResult = (LogResult) logCommand.execute(context);
 		assertThat(logResult.getLogEntries().size()).isEqualTo(3);
+
+		Set<String> ignoredFiles = (Set<String>) displayIgnoredFilesCommand.execute(context);
+		assertThat(ignoredFiles.size()).isEqualTo(6);
 	}
 
 	private void createASetOfFiles(int fileCount) throws IOException
 	{
 		for (int index = 1; index <= fileCount; index++)
 		{
-			String fileNum = String.format("%02d", index);
-			setFileContent("file" + fileNum, "New file " + fileNum);
+			createFile("file" + String.format("%02d", index));
 		}
 	}
 
 	private void doSomeModifications() throws IOException
 	{
-		Path dir01 = rootDir.resolve("dir01");
 		Files.createDirectories(dir01);
 
 		Files.move(rootDir.resolve("file01"), dir01.resolve("file01"));
@@ -151,20 +165,48 @@ public class CompleteScenarioTest
 		setFileContent("file12", "New file 12");
 	}
 
+	private void addIgnoredFiles() throws Exception
+	{
+		createFile("ignored_type1");
+		createFile("ignored_type2");
+
+		createFile(dir01.resolve("ignored_type1"));
+		createFile(dir01.resolve("ignored_type2"));
+
+		createFile("media.mp3");
+		createFile("media.mp4");
+
+		createFile(dir01.resolve("media.mp3"));
+		createFile(dir01.resolve("media.mp4"));
+
+		CompareResult compareResult = (CompareResult) diffCommand.execute(context);
+		assertThat(compareResult.modifiedCount()).isEqualTo(18);
+
+		createFimIgnore(rootDir, "**/*.mp3\n" + "ignored_type1");
+
+		compareResult = (CompareResult) diffCommand.execute(context);
+		assertThat(compareResult.modifiedCount()).isEqualTo(16);
+	}
+
 	private void runTheCommandsFrom_dir01() throws Exception
 	{
 		Context dir01Context = context.clone();
-		dir01Context.setCurrentDirectory(rootDir.resolve("dir01"));
+		dir01Context.setCurrentDirectory(dir01);
 		dir01Context.setInvokedFromSubDirectory(true);
 
 		CompareResult compareResult = (CompareResult) diffCommand.execute(dir01Context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(1);
+		assertThat(compareResult.modifiedCount()).isEqualTo(5);
+
+		createFimIgnore(dir01, "*.mp4\n" + "ignored_type2");
+
+		compareResult = (CompareResult) diffCommand.execute(dir01Context);
+		assertThat(compareResult.modifiedCount()).isEqualTo(4);
 
 		DuplicateResult duplicateResult = (DuplicateResult) findDuplicatesCommand.execute(dir01Context);
 		assertThat(duplicateResult.getDuplicateSets().size()).isEqualTo(0);
 
 		compareResult = (CompareResult) commitCommand.execute(dir01Context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(1);
+		assertThat(compareResult.modifiedCount()).isEqualTo(4);
 
 		compareResult = (CompareResult) diffCommand.execute(dir01Context);
 		assertThat(compareResult.modifiedCount()).isEqualTo(0);
@@ -178,9 +220,32 @@ public class CompleteScenarioTest
 		Files.setLastModifiedTime(file, FileTime.fromMillis(timeStamp));
 	}
 
+	private void createFimIgnore(Path directory, String content) throws IOException
+	{
+		Path file = directory.resolve(".fimignore");
+		setFileContent(file, content);
+	}
+
+	private void createFile(String fileName) throws IOException
+	{
+		Path file = rootDir.resolve(fileName);
+		createFile(file);
+	}
+
+	private void createFile(Path file) throws IOException
+	{
+		setFileContent(file, "File content " + String.format("%02d", fileCount));
+		fileCount++;
+	}
+
 	private void setFileContent(String fileName, String content) throws IOException
 	{
 		Path file = rootDir.resolve(fileName);
+		setFileContent(file, content);
+	}
+
+	private void setFileContent(Path file, String content) throws IOException
+	{
 		if (Files.exists(file))
 		{
 			Files.delete(file);
