@@ -133,7 +133,7 @@ $ fim ci
 ```shell
 $ fim help
 
-usage: fim <command> [-a <arg>] [-c <arg>] [-f] [-h] [-k] [-l] [-m] [-q] [-t <arg>] [-v] [-y]
+usage: fim <command> [-a <arg>] [-c <arg>] [-f] [-h] [-l] [-n] [-q] [-s] [-t <arg>] [-v] [-y]
 
 File Integrity Checker
 
@@ -148,6 +148,7 @@ Available commands:
      fdup / find-duplicates     Find local duplicated files in the Fim repository
      rdup / remove-duplicates   Remove duplicated files from local directory based on a remote master Fim repository
      log                        Display the history of the States and a summary of the changes that were made
+     ign / display-ignored      Display the files or directories that are ignored into the last State
      rollback                   Rollback the last commit. It will remove the last State
      purge / purge-states       Purge previous States
      help                       Prints the Fim help
@@ -157,13 +158,15 @@ Available options:
      -a,--master-fim-repository <arg>   Fim repository directory that you want to use as remote master.
                                         Only for the remove duplicated files command
      -c,--comment <arg>                 Sets that State comment during init and commit
-     -f,--fast-mode                     Do not hash file content. Use only file names and modification dates
+     -f,--fast-mode                     Hash only 3 medium blocks.
+                                        One at the beginning, one in the middle and one at the end
      -h,--help                          Prints the Fim help
-     -k,--hash-second-4-kb-block        Hash the second 4 KB block of the files
      -l,--use-last-state                Use the last committed State.
                                         Only for the find local duplicated files command
-     -m,--hash-second-1-mb-block        Hash the second 1 MB block of the files
+     -n,--do-not-hash                   Do not hash file content. Use only file names and modification dates
      -q,--quiet                         Do not display details
+     -s,--super-fast-mode               Hash only 3 small blocks.
+                                        One at the beginning, one in the middle and one at the end
      -t,--thread-count <arg>            Number of thread used to hash files content in parallel
      -v,--version                       Prints the Fim version
      -y,--always-yes                    Always yes to every questions
