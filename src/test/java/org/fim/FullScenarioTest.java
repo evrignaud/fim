@@ -21,13 +21,18 @@ package org.fim;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
-import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -38,6 +43,7 @@ import org.fim.command.FindDuplicatesCommand;
 import org.fim.command.InitCommand;
 import org.fim.command.LogCommand;
 import org.fim.command.RollbackCommand;
+import org.fim.command.exception.BadFimUsageException;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.DuplicateResult;
@@ -45,13 +51,16 @@ import org.fim.model.HashMode;
 import org.fim.model.LogResult;
 import org.fim.model.State;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+@RunWith(Parameterized.class)
 public class FullScenarioTest
 {
 	private static Path rootDir = Paths.get("target/" + FullScenarioTest.class.getSimpleName());
 
+	private HashMode hashMode;
 	private Context context;
 	private Path dir01;
 
@@ -65,21 +74,34 @@ public class FullScenarioTest
 
 	private int fileCount;
 
-	@BeforeClass
-	public static void setupOnce() throws NoSuchAlgorithmException, IOException
+	public FullScenarioTest(final HashMode hashMode)
 	{
-		FileUtils.deleteDirectory(rootDir.toFile());
-		Files.createDirectories(rootDir);
+		this.hashMode = hashMode;
+	}
+
+	@Parameterized.Parameters(name = "Hash mode: {0}")
+	public static Collection<Object[]> parameters()
+	{
+		return Arrays.asList(new Object[][]{
+				{dontHash},
+				{hashSmallBlock},
+				{hashMediumBlock},
+				{hashAll}
+		});
 	}
 
 	@Before
-	public void setup()
+	public void setup() throws IOException
 	{
+		FileUtils.deleteDirectory(rootDir.toFile());
+		Files.createDirectories(rootDir);
+
 		context = new Context();
-		context.setHashMode(HashMode.hashAll);
+		context.setHashMode(hashMode);
 		context.setAlwaysYes(true);
 		context.setCurrentDirectory(rootDir);
 		context.setRepositoryRootDir(rootDir);
+		context.setVerbose(hashMode == hashAll);
 
 		dir01 = rootDir.resolve("dir01");
 
@@ -111,12 +133,20 @@ public class FullScenarioTest
 		doSomeModifications();
 
 		CompareResult compareResult = (CompareResult) diffCommand.execute(context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(10);
-		assertThat(compareResult.getModificationCounts().getRenamed()).isEqualTo(1);
-		assertThat(compareResult.getModificationCounts().getDeleted()).isEqualTo(1);
+		if (hashMode == dontHash)
+		{
+			assertThat(compareResult.modifiedCount()).isEqualTo(11);
+			assertThat(compareResult.getModificationCounts().getRenamed()).isEqualTo(0);
+			assertThat(compareResult.getModificationCounts().getDeleted()).isEqualTo(2);
+		}
+		else
+		{
+			assertThat(compareResult.modifiedCount()).isEqualTo(10);
+			assertThat(compareResult.getModificationCounts().getRenamed()).isEqualTo(1);
+			assertThat(compareResult.getModificationCounts().getDeleted()).isEqualTo(1);
+		}
 
-		DuplicateResult duplicateResult = (DuplicateResult) findDuplicatesCommand.execute(context);
-		assertThat(duplicateResult.getDuplicateSets().size()).isEqualTo(2);
+		assertDuplicatedFilesEqualsTo(context, 2);
 
 		addIgnoredFiles();
 
@@ -194,12 +224,12 @@ public class FullScenarioTest
 		createFile(dir01.resolve("media.mp4"));
 
 		CompareResult compareResult = (CompareResult) diffCommand.execute(context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(18);
+		assertThat(compareResult.modifiedCount()).isEqualTo(hashMode == dontHash ? 19 : 18);
 
 		createFimIgnore(rootDir, "**/*.mp3\n" + "ignored_type1");
 
 		compareResult = (CompareResult) diffCommand.execute(context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(16);
+		assertThat(compareResult.modifiedCount()).isEqualTo(hashMode == dontHash ? 17 : 16);
 	}
 
 	private void runTheCommandsFrom_dir01() throws Exception
@@ -216,8 +246,7 @@ public class FullScenarioTest
 		compareResult = (CompareResult) diffCommand.execute(dir01Context);
 		assertThat(compareResult.modifiedCount()).isEqualTo(4);
 
-		DuplicateResult duplicateResult = (DuplicateResult) findDuplicatesCommand.execute(dir01Context);
-		assertThat(duplicateResult.getDuplicateSets().size()).isEqualTo(0);
+		assertDuplicatedFilesEqualsTo(dir01Context, 0);
 
 		compareResult = (CompareResult) commitCommand.execute(dir01Context);
 		assertThat(compareResult.modifiedCount()).isEqualTo(4);
@@ -265,5 +294,21 @@ public class FullScenarioTest
 			Files.delete(file);
 		}
 		Files.write(file, content.getBytes(), CREATE, APPEND);
+	}
+
+	private void assertDuplicatedFilesEqualsTo(Context context, int expected) throws Exception
+	{
+		try
+		{
+			DuplicateResult duplicateResult = (DuplicateResult) findDuplicatesCommand.execute(context);
+			assertThat(duplicateResult.getDuplicateSets().size()).isEqualTo(expected);
+		}
+		catch (BadFimUsageException ex)
+		{
+			if (context.getHashMode() != dontHash)
+			{
+				throw ex;
+			}
+		}
 	}
 }
