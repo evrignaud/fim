@@ -48,9 +48,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class CompleteScenarioTest
+public class FullScenarioTest
 {
-	private static Path rootDir = Paths.get("target/" + CompleteScenarioTest.class.getSimpleName());
+	private static Path rootDir = Paths.get("target/" + FullScenarioTest.class.getSimpleName());
 
 	private Context context;
 	private Path dir01;
