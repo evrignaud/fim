@@ -61,7 +61,6 @@ public class FullScenarioTest
 	private static Path rootDir = Paths.get("target/" + FullScenarioTest.class.getSimpleName());
 
 	private HashMode hashMode;
-	private Context context;
 	private Path dir01;
 
 	private InitCommand initCommand;
@@ -96,13 +95,6 @@ public class FullScenarioTest
 		FileUtils.deleteDirectory(rootDir.toFile());
 		Files.createDirectories(rootDir);
 
-		context = new Context();
-		context.setHashMode(hashMode);
-		context.setAlwaysYes(true);
-		context.setCurrentDirectory(rootDir);
-		context.setRepositoryRootDir(rootDir);
-		context.setVerbose(hashMode == hashAll);
-
 		dir01 = rootDir.resolve("dir01");
 
 		initCommand = new InitCommand();
@@ -119,6 +111,8 @@ public class FullScenarioTest
 	@Test
 	public void fullScenario() throws Exception
 	{
+		Context context = createContext();
+
 		createASetOfFiles(10);
 
 		State state = (State) initCommand.execute(context);
@@ -146,19 +140,21 @@ public class FullScenarioTest
 			assertThat(compareResult.getModificationCounts().getDeleted()).isEqualTo(1);
 		}
 
-		assertDuplicatedFilesEqualsTo(context, 2);
+		assertDuplicatedFilesCountEqualsTo(context, 2);
 
-		addIgnoredFiles();
+		addIgnoredFiles(context);
 
-		runTheCommandsFrom_dir01();
+		runCommandFromDirectory(context, dir01);
 
 		compareResult = (CompareResult) commitCommand.execute(context);
 		assertThat(compareResult.modifiedCount()).isEqualTo(14);
 		assertThat(compareResult.getModificationCounts().getRenamed()).isEqualTo(0);
 		assertThat(compareResult.getModificationCounts().getDeleted()).isEqualTo(3);
 
-		compareResult = (CompareResult) diffCommand.execute(context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(0);
+		// Committing once again does nothing
+		commit_AndAssertFilesModifiedCountEqualsTo(context, 0);
+
+		assertFilesModifiedCountEqualsTo(context, 0);
 
 		LogResult logResult = (LogResult) logCommand.execute(context);
 		assertThat(logResult.getLogEntries().size()).isEqualTo(3);
@@ -166,16 +162,27 @@ public class FullScenarioTest
 		Set<String> ignoredFiles = (Set<String>) displayIgnoredFilesCommand.execute(context);
 		assertThat(ignoredFiles.size()).isEqualTo(6);
 
-		rollbackCommand.execute(context);
+		assertWeCanRollbackLastCommit(context, 2, 2);
 
-		compareResult = (CompareResult) diffCommand.execute(context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(14);
+		assertFilesModifiedCountEqualsTo(context, 14);
 
-		logResult = (LogResult) logCommand.execute(context);
-		assertThat(logResult.getLogEntries().size()).isEqualTo(2);
+		// We can rollback again
+		assertWeCanRollbackLastCommit(context, 1, 0);
 
-		ignoredFiles = (Set<String>) displayIgnoredFilesCommand.execute(context);
-		assertThat(ignoredFiles.size()).isEqualTo(2);
+		// Nothing more to rollback
+		assertWeCanRollbackLastCommit(context, 1, 0);
+	}
+
+	private Context createContext()
+	{
+		Context context = new Context();
+		context.setHashMode(hashMode);
+		context.setAlwaysYes(true);
+		context.setCurrentDirectory(rootDir);
+		context.setRepositoryRootDir(rootDir);
+		context.setVerbose(hashMode == hashAll);
+		context.setComment("Using hash mode " + hashMode);
+		return context;
 	}
 
 	private void createASetOfFiles(int fileCount) throws IOException
@@ -209,7 +216,7 @@ public class FullScenarioTest
 		setFileContent("file12", "New file 12");
 	}
 
-	private void addIgnoredFiles() throws Exception
+	private void addIgnoredFiles(Context context) throws Exception
 	{
 		createFile("ignored_type1");
 		createFile("ignored_type2");
@@ -223,36 +230,30 @@ public class FullScenarioTest
 		createFile(dir01.resolve("media.mp3"));
 		createFile(dir01.resolve("media.mp4"));
 
-		CompareResult compareResult = (CompareResult) diffCommand.execute(context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(hashMode == dontHash ? 19 : 18);
+		assertFilesModifiedCountEqualsTo(context, hashMode == dontHash ? 19 : 18);
 
 		createFimIgnore(rootDir, "**/*.mp3\n" + "ignored_type1");
 
-		compareResult = (CompareResult) diffCommand.execute(context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(hashMode == dontHash ? 17 : 16);
+		assertFilesModifiedCountEqualsTo(context, hashMode == dontHash ? 17 : 16);
 	}
 
-	private void runTheCommandsFrom_dir01() throws Exception
+	private void runCommandFromDirectory(Context context, Path subDirectory) throws Exception
 	{
-		Context dir01Context = context.clone();
-		dir01Context.setCurrentDirectory(dir01);
-		dir01Context.setInvokedFromSubDirectory(true);
+		Context subDirectoryContext = context.clone();
+		subDirectoryContext.setCurrentDirectory(subDirectory);
+		subDirectoryContext.setInvokedFromSubDirectory(true);
 
-		CompareResult compareResult = (CompareResult) diffCommand.execute(dir01Context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(5);
+		assertFilesModifiedCountEqualsTo(subDirectoryContext, 5);
 
-		createFimIgnore(dir01, "*.mp4\n" + "ignored_type2");
+		createFimIgnore(subDirectory, "*.mp4\n" + "ignored_type2");
 
-		compareResult = (CompareResult) diffCommand.execute(dir01Context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(4);
+		assertFilesModifiedCountEqualsTo(subDirectoryContext, 4);
 
-		assertDuplicatedFilesEqualsTo(dir01Context, 0);
+		assertDuplicatedFilesCountEqualsTo(subDirectoryContext, 0);
 
-		compareResult = (CompareResult) commitCommand.execute(dir01Context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(4);
+		commit_AndAssertFilesModifiedCountEqualsTo(subDirectoryContext, 4);
 
-		compareResult = (CompareResult) diffCommand.execute(dir01Context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(0);
+		assertFilesModifiedCountEqualsTo(subDirectoryContext, 0);
 	}
 
 	private void touch(String fileName) throws IOException
@@ -296,12 +297,24 @@ public class FullScenarioTest
 		Files.write(file, content.getBytes(), CREATE, APPEND);
 	}
 
-	private void assertDuplicatedFilesEqualsTo(Context context, int expected) throws Exception
+	private void assertFilesModifiedCountEqualsTo(Context context, int expectedModifiedFileCount) throws Exception
+	{
+		CompareResult compareResult = (CompareResult) diffCommand.execute(context);
+		assertThat(compareResult.modifiedCount()).isEqualTo(expectedModifiedFileCount);
+	}
+
+	private void commit_AndAssertFilesModifiedCountEqualsTo(Context context, int expectedModifiedFileCount) throws Exception
+	{
+		CompareResult compareResult = (CompareResult) commitCommand.execute(context);
+		assertThat(compareResult.modifiedCount()).isEqualTo(expectedModifiedFileCount);
+	}
+
+	private void assertDuplicatedFilesCountEqualsTo(Context context, int expectedDuplicatedSetCount) throws Exception
 	{
 		try
 		{
 			DuplicateResult duplicateResult = (DuplicateResult) findDuplicatesCommand.execute(context);
-			assertThat(duplicateResult.getDuplicateSets().size()).isEqualTo(expected);
+			assertThat(duplicateResult.getDuplicateSets().size()).isEqualTo(expectedDuplicatedSetCount);
 		}
 		catch (BadFimUsageException ex)
 		{
@@ -310,5 +323,16 @@ public class FullScenarioTest
 				throw ex;
 			}
 		}
+	}
+
+	private void assertWeCanRollbackLastCommit(Context context, int expectedLogEntriesCount, int expectedIgnoredFilesCount) throws Exception
+	{
+		rollbackCommand.execute(context);
+
+		LogResult logResult = (LogResult) logCommand.execute(context);
+		assertThat(logResult.getLogEntries().size()).isEqualTo(expectedLogEntriesCount);
+
+		Set<String> ignoredFiles = (Set<String>) displayIgnoredFilesCommand.execute(context);
+		assertThat(ignoredFiles.size()).isEqualTo(expectedIgnoredFilesCount);
 	}
 }
