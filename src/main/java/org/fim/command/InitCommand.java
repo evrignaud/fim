@@ -24,6 +24,8 @@ import static org.fim.util.HashModeUtil.hashModeToString;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import org.fim.command.exception.DontWantToContinueException;
+import org.fim.command.exception.RepositoryCreationException;
 import org.fim.internal.SettingsManager;
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
@@ -67,7 +69,7 @@ public class InitCommand extends AbstractCommand
 			System.out.println("No comment provided. You are going to initialize your repository using the default comment.");
 			if (!confirmAction(context, "continue"))
 			{
-				System.exit(0);
+				throw new DontWantToContinueException();
 			}
 		}
 
@@ -98,7 +100,7 @@ public class InitCommand extends AbstractCommand
 		{
 			Logger.error(String.format("Not able to create the '%s' directory that holds the Fim repository: %s %s",
 					context.getRepositoryDotFimDir(), ex.getClass().getSimpleName(), ex.getMessage()));
-			System.exit(-1);
+			throw new RepositoryCreationException();
 		}
 
 		if (context.getHashMode() != hashAll)

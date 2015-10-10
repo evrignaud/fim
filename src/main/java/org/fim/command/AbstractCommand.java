@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import org.fim.command.exception.BadFimUsageException;
 import org.fim.internal.SettingsManager;
 import org.fim.model.Command;
 import org.fim.model.Context;
@@ -45,7 +46,7 @@ public abstract class AbstractCommand implements Command
 		if (context.getHashMode() == dontHash)
 		{
 			Logger.error("File content hashing mandatory for this command.");
-			System.exit(-1);
+			throw new BadFimUsageException();
 		}
 	}
 
@@ -79,7 +80,7 @@ public abstract class AbstractCommand implements Command
 			if (optionList.contains(Option.ALL_HASH_MANDATORY))
 			{
 				Logger.error("Computing all hash is mandatory");
-				System.exit(-1);
+				throw new BadFimUsageException();
 			}
 		}
 	}

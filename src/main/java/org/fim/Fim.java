@@ -51,6 +51,9 @@ import org.fim.command.RemoveDuplicatesCommand;
 import org.fim.command.ResetDateCommand;
 import org.fim.command.RollbackCommand;
 import org.fim.command.VersionCommand;
+import org.fim.command.exception.BadFimUsageException;
+import org.fim.command.exception.DontWantToContinueException;
+import org.fim.command.exception.RepositoryCreationException;
 import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
 import org.fim.model.Context;
@@ -201,7 +204,18 @@ public class Fim
 			}
 		}
 
-		command.execute(context.clone());
+		try
+		{
+			command.execute(context.clone());
+		}
+		catch (DontWantToContinueException ex)
+		{
+			System.exit(0);
+		}
+		catch (BadFimUsageException | RepositoryCreationException ex)
+		{
+			System.exit(-1);
+		}
 	}
 
 	private static void findRepositoryRootDir(Context context)

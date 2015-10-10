@@ -20,6 +20,8 @@ package org.fim.command;
 
 import java.io.IOException;
 
+import org.fim.command.exception.BadFimUsageException;
+import org.fim.command.exception.DontWantToContinueException;
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
@@ -59,7 +61,7 @@ public class CommitCommand extends AbstractCommand
 			System.out.println("No comment provided. You are going to commit your modifications without any comment.");
 			if (!confirmAction(context, "continue"))
 			{
-				System.exit(0);
+				throw new DontWantToContinueException();
 			}
 		}
 
@@ -73,7 +75,7 @@ public class CommitCommand extends AbstractCommand
 			if (!lastState.getModelVersion().equals(currentState.getModelVersion()))
 			{
 				Logger.error("Not able to incrementally commit into the last State that use a different model version.");
-				System.exit(-1);
+				throw new BadFimUsageException();
 			}
 
 			lastStateToCompare = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);

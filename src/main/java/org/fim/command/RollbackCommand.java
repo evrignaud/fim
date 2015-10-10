@@ -60,7 +60,7 @@ public class RollbackCommand extends AbstractCommand
 		if (lastStateNumber <= 1)
 		{
 			Logger.info("No commit to rollback");
-			System.exit(0);
+			return null;
 		}
 
 		Path stateFile = stateManager.getStateFile(lastStateNumber);

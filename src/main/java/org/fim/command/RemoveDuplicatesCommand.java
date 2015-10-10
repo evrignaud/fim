@@ -19,7 +19,7 @@
 package org.fim.command;
 
 import static org.fim.model.HashMode.hashMediumBlock;
-import static org.fim.model.HashMode.hashSmallBlock;
+import static org.fim.util.HashModeUtil.hashModeToString;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,11 +29,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.fim.Fim;
+import org.fim.command.exception.BadFimUsageException;
+import org.fim.command.exception.DontWantToContinueException;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
+import org.fim.model.HashMode;
 import org.fim.model.State;
 import org.fim.util.Console;
 import org.fim.util.Logger;
@@ -71,28 +74,19 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		{
 			Logger.error("The master Fim directory must be provided");
 			Fim.printUsage();
-			System.exit(-1);
+			throw new BadFimUsageException();
 		}
 
 		checkHashMode(context, Option.ALLOW_COMPATIBLE);
 
 		fileContentHashingMandatory(context);
 
-		if (context.getHashMode() == hashSmallBlock)
+		if ((context.getHashMode() == HashMode.hashSmallBlock) || (context.getHashMode() == hashMediumBlock))
 		{
-			System.out.println("You are going to detect duplicates and remove them based only on the hash of the second 4 KB block of the files.");
+			System.out.printf("You are going to detect duplicates and remove them using '%s' mode.%n", hashModeToString(context.getHashMode()));
 			if (!confirmAction(context, "continue"))
 			{
-				System.exit(0);
-			}
-		}
-
-		if (context.getHashMode() == hashMediumBlock)
-		{
-			System.out.println("You are going to detect duplicates and remove them based only on the hash of the second 1 MB block of the files.");
-			if (!confirmAction(context, "continue"))
-			{
-				System.exit(0);
+				throw new DontWantToContinueException();
 			}
 		}
 
@@ -100,7 +94,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		if (!Files.exists(masterFimRepository))
 		{
 			Logger.error(String.format("Directory %s does not exist", context.getMasterFimRepositoryDir()));
-			System.exit(-1);
+			throw new BadFimUsageException();
 		}
 
 		Path normalizedMasterFimRepository = masterFimRepository.toAbsolutePath().normalize();
@@ -109,20 +103,20 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		if (normalizedMasterFimRepository.equals(normalizedCurrentDir))
 		{
 			Logger.error("Cannot remove duplicates into the master directory");
-			System.exit(-1);
+			throw new BadFimUsageException();
 		}
 
 		if (normalizedCurrentDir.startsWith(normalizedMasterFimRepository))
 		{
 			Logger.error("Cannot remove duplicates into a sub-directory of the master directory");
-			System.exit(-1);
+			throw new BadFimUsageException();
 		}
 
 		Path masterDotFimDir = masterFimRepository.resolve(Context.DOT_FIM_DIR);
 		if (!Files.exists(masterDotFimDir))
 		{
 			Logger.error(String.format("Directory %s is not a Fim repository", context.getMasterFimRepositoryDir()));
-			System.exit(-1);
+			throw new BadFimUsageException();
 		}
 		context.setRepositoryRootDir(masterFimRepository);
 
