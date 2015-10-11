@@ -109,7 +109,7 @@ public class FullScenarioTest
 	@Test
 	public void fullScenario() throws Exception
 	{
-		Context context = tool.createContext(hashMode);
+		Context context = tool.createContext(hashMode, hashMode == hashAll);
 
 		tool.createASetOfFiles(10);
 

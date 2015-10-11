@@ -20,7 +20,6 @@ package org.fim.tooling;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
-import static org.fim.model.HashMode.hashAll;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,6 +31,8 @@ import org.fim.model.HashMode;
 
 public class RepositoryTool
 {
+	public static final int FILE_SIZE = 10 * 1024 * 1024;
+
 	private Path rootDir;
 	private int fileCount;
 
@@ -41,14 +42,14 @@ public class RepositoryTool
 		this.fileCount = 0;
 	}
 
-	public Context createContext(HashMode hashMode)
+	public Context createContext(HashMode hashMode, boolean verbose)
 	{
 		Context context = new Context();
 		context.setHashMode(hashMode);
 		context.setAlwaysYes(true);
 		context.setCurrentDirectory(rootDir);
 		context.setRepositoryRootDir(rootDir);
-		context.setVerbose(hashMode == hashAll);
+		context.setVerbose(verbose);
 		context.setComment("Using hash mode " + hashMode);
 		return context;
 	}
@@ -72,7 +73,11 @@ public class RepositoryTool
 	public void createFimIgnore(Path directory, String content) throws IOException
 	{
 		Path file = directory.resolve(".fimignore");
-		setFileContent(file, content);
+		if (Files.exists(file))
+		{
+			Files.delete(file);
+		}
+		Files.write(file, content.getBytes(), CREATE, APPEND);
 	}
 
 	public void createFile(String fileName) throws IOException
@@ -99,6 +104,17 @@ public class RepositoryTool
 		{
 			Files.delete(file);
 		}
-		Files.write(file, content.getBytes(), CREATE, APPEND);
+
+		// Creates a big content based on the provided content
+		int fileSize = FILE_SIZE + (301457 * fileCount);
+		StringBuilder sb = new StringBuilder(fileSize);
+		int index = 0;
+		while (sb.length() < fileSize)
+		{
+			index++;
+			sb.append("b_").append(index).append(": ").append(content).append('\n');
+		}
+
+		Files.write(file, sb.toString().getBytes(), CREATE, APPEND);
 	}
 }
