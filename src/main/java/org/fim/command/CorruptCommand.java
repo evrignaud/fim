@@ -18,12 +18,16 @@
  */
 package org.fim.command;
 
+import static org.fim.model.HashMode.hashAll;
+
+import org.fim.command.exception.BadFimUsageException;
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.State;
+import org.fim.util.Logger;
 
 public class CorruptCommand extends AbstractCommand
 {
@@ -49,7 +53,11 @@ public class CorruptCommand extends AbstractCommand
 	@Override
 	public Object execute(Context context) throws Exception
 	{
-		fileContentHashingMandatory(context);
+		if (context.getHashMode() != hashAll)
+		{
+			Logger.error("Hardware corruption detection require to hash all the file content.");
+			throw new BadFimUsageException();
+		}
 
 		checkHashMode(context, Option.ALLOW_COMPATIBLE);
 

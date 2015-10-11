@@ -22,6 +22,8 @@ import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -68,9 +70,23 @@ public class CorruptCommandTest
 	}
 
 	@Test(expected = BadFimUsageException.class)
-	public void fileContentHashingIsMandatory() throws Exception
+	public void dontHash_NotAllowed() throws Exception
 	{
 		Context context = tool.createContext(dontHash, false);
+		corruptCommand.execute(context);
+	}
+
+	@Test(expected = BadFimUsageException.class)
+	public void hashSmallBlock_NotAllowed() throws Exception
+	{
+		Context context = tool.createContext(hashSmallBlock, false);
+		corruptCommand.execute(context);
+	}
+
+	@Test(expected = BadFimUsageException.class)
+	public void hashMediumBlock_NotAllowed() throws Exception
+	{
+		Context context = tool.createContext(hashMediumBlock, false);
 		corruptCommand.execute(context);
 	}
 
