@@ -18,8 +18,6 @@
  */
 package org.fim;
 
-import static java.nio.file.StandardOpenOption.APPEND;
-import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
@@ -30,7 +28,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
@@ -50,6 +47,7 @@ import org.fim.model.DuplicateResult;
 import org.fim.model.HashMode;
 import org.fim.model.LogResult;
 import org.fim.model.State;
+import org.fim.tooling.RepositoryTool;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,7 +69,7 @@ public class FullScenarioTest
 	private DisplayIgnoredFilesCommand displayIgnoredFilesCommand;
 	private RollbackCommand rollbackCommand;
 
-	private int fileCount;
+	private RepositoryTool tool;
 
 	public FullScenarioTest(final HashMode hashMode)
 	{
@@ -105,15 +103,15 @@ public class FullScenarioTest
 		displayIgnoredFilesCommand = new DisplayIgnoredFilesCommand();
 		rollbackCommand = new RollbackCommand();
 
-		fileCount = 0;
+		tool = new RepositoryTool(rootDir);
 	}
 
 	@Test
 	public void fullScenario() throws Exception
 	{
-		Context context = createContext();
+		Context context = tool.createContext(hashMode);
 
-		createASetOfFiles(10);
+		tool.createASetOfFiles(10);
 
 		State state = (State) initCommand.execute(context);
 
@@ -173,66 +171,46 @@ public class FullScenarioTest
 		assertWeCanRollbackLastCommit(context, 1, 0);
 	}
 
-	private Context createContext()
-	{
-		Context context = new Context();
-		context.setHashMode(hashMode);
-		context.setAlwaysYes(true);
-		context.setCurrentDirectory(rootDir);
-		context.setRepositoryRootDir(rootDir);
-		context.setVerbose(hashMode == hashAll);
-		context.setComment("Using hash mode " + hashMode);
-		return context;
-	}
-
-	private void createASetOfFiles(int fileCount) throws IOException
-	{
-		for (int index = 1; index <= fileCount; index++)
-		{
-			createFile("file" + String.format("%02d", index));
-		}
-	}
-
 	private void doSomeModifications() throws IOException
 	{
 		Files.createDirectories(dir01);
 
 		Files.move(rootDir.resolve("file01"), dir01.resolve("file01"));
 
-		touch("file02");
+		tool.touch("file02");
 
 		Files.copy(rootDir.resolve("file03"), rootDir.resolve("file03.dup1"));
 		Files.copy(rootDir.resolve("file03"), rootDir.resolve("file03.dup2"));
 
-		setFileContent("file04", "foo");
+		tool.setFileContent("file04", "foo");
 
 		Files.copy(rootDir.resolve("file05"), rootDir.resolve("file11"));
-		setFileContent("file05", "bar");
+		tool.setFileContent("file05", "bar");
 
 		Files.delete(rootDir.resolve("file06"));
 
 		Files.copy(rootDir.resolve("file07"), rootDir.resolve("file07.dup1"));
 
-		setFileContent("file12", "New file 12");
+		tool.setFileContent("file12", "New file 12");
 	}
 
 	private void addIgnoredFiles(Context context) throws Exception
 	{
-		createFile("ignored_type1");
-		createFile("ignored_type2");
+		tool.createFile("ignored_type1");
+		tool.createFile("ignored_type2");
 
-		createFile(dir01.resolve("ignored_type1"));
-		createFile(dir01.resolve("ignored_type2"));
+		tool.createFile(dir01.resolve("ignored_type1"));
+		tool.createFile(dir01.resolve("ignored_type2"));
 
-		createFile("media.mp3");
-		createFile("media.mp4");
+		tool.createFile("media.mp3");
+		tool.createFile("media.mp4");
 
-		createFile(dir01.resolve("media.mp3"));
-		createFile(dir01.resolve("media.mp4"));
+		tool.createFile(dir01.resolve("media.mp3"));
+		tool.createFile(dir01.resolve("media.mp4"));
 
 		assertFilesModifiedCountEqualsTo(context, hashMode == dontHash ? 19 : 18);
 
-		createFimIgnore(rootDir, "**/*.mp3\n" + "ignored_type1");
+		tool.createFimIgnore(rootDir, "**/*.mp3\n" + "ignored_type1");
 
 		assertFilesModifiedCountEqualsTo(context, hashMode == dontHash ? 17 : 16);
 	}
@@ -245,7 +223,7 @@ public class FullScenarioTest
 
 		assertFilesModifiedCountEqualsTo(subDirectoryContext, 5);
 
-		createFimIgnore(subDirectory, "*.mp4\n" + "ignored_type2");
+		tool.createFimIgnore(subDirectory, "*.mp4\n" + "ignored_type2");
 
 		assertFilesModifiedCountEqualsTo(subDirectoryContext, 4);
 
@@ -254,47 +232,6 @@ public class FullScenarioTest
 		commit_AndAssertFilesModifiedCountEqualsTo(subDirectoryContext, 4);
 
 		assertFilesModifiedCountEqualsTo(subDirectoryContext, 0);
-	}
-
-	private void touch(String fileName) throws IOException
-	{
-		Path file = rootDir.resolve(fileName);
-		long timeStamp = Math.max(System.currentTimeMillis(), Files.getLastModifiedTime(file).toMillis());
-		timeStamp += 1000;
-		Files.setLastModifiedTime(file, FileTime.fromMillis(timeStamp));
-	}
-
-	private void createFimIgnore(Path directory, String content) throws IOException
-	{
-		Path file = directory.resolve(".fimignore");
-		setFileContent(file, content);
-	}
-
-	private void createFile(String fileName) throws IOException
-	{
-		Path file = rootDir.resolve(fileName);
-		createFile(file);
-	}
-
-	private void createFile(Path file) throws IOException
-	{
-		setFileContent(file, "File content " + String.format("%02d", fileCount));
-		fileCount++;
-	}
-
-	private void setFileContent(String fileName, String content) throws IOException
-	{
-		Path file = rootDir.resolve(fileName);
-		setFileContent(file, content);
-	}
-
-	private void setFileContent(Path file, String content) throws IOException
-	{
-		if (Files.exists(file))
-		{
-			Files.delete(file);
-		}
-		Files.write(file, content.getBytes(), CREATE, APPEND);
 	}
 
 	private void assertFilesModifiedCountEqualsTo(Context context, int expectedModifiedFileCount) throws Exception
