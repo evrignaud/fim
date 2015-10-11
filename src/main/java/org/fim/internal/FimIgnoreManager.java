@@ -129,18 +129,6 @@ public class FimIgnoreManager
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	public void ignoreThisFiles(Path file, BasicFileAttributes attributes)
-	{
-		String normalizedFileName = FileUtil.getNormalizedFileName(file);
-		if (attributes.isDirectory())
-		{
-			normalizedFileName = normalizedFileName + "/";
-		}
-
-		String relativeFileName = FileUtil.getRelativeFileName(repositoryRootDirString, normalizedFileName);
-		ignoredFiles.add(relativeFileName);
-	}
-
 	public boolean isIgnored(Path file, BasicFileAttributes attributes, FimIgnore fimIgnore)
 	{
 		String fileName = file.getFileName().toString();
@@ -180,6 +168,18 @@ public class FimIgnoreManager
 			}
 		}
 		return false;
+	}
+
+	public void ignoreThisFiles(Path file, BasicFileAttributes attributes)
+	{
+		String normalizedFileName = FileUtil.getNormalizedFileName(file);
+		if (attributes.isDirectory())
+		{
+			normalizedFileName = normalizedFileName + "/";
+		}
+
+		String relativeFileName = FileUtil.getRelativeFileName(repositoryRootDirString, normalizedFileName);
+		ignoredFiles.add(relativeFileName);
 	}
 
 	public Set<String> getIgnoredFiles()
