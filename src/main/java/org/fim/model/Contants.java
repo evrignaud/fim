@@ -20,7 +20,7 @@ package org.fim.model;
 
 public class Contants
 {
-	public static final int _1_KB = 1024;
+	public static final int _1_KB = 1_024;
 	public static final int _4_KB = 4 * _1_KB;
 	public static final int _5_KB = 5 * _1_KB;
 	public static final int _8_KB = 8 * _1_KB;
@@ -28,14 +28,14 @@ public class Contants
 	public static final int _16_KB = 16 * _1_KB;
 	public static final int _20_KB = 20 * _1_KB;
 
-	public static final int _1_MB = 1024 * _1_KB;
+	public static final int _1_MB = 1_024 * _1_KB;
 	public static final int _10_MB = 10 * _1_MB;
 	public static final int _20_MB = 20 * _1_MB;
 	public static final int _50_MB = 50 * _1_MB;
 	public static final int _100_MB = 100 * _1_MB;
 	public static final int _200_MB = 200 * _1_MB;
 
-	public static final int _1_GB = 1024 * _1_MB;
+	public static final int _1_GB = 1_024 * _1_MB;
 
 	public static final String NO_HASH = "no_hash";
 }

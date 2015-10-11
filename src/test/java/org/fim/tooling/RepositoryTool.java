@@ -31,7 +31,7 @@ import org.fim.model.HashMode;
 
 public class RepositoryTool
 {
-	public static final int FILE_SIZE = 10 * 1024 * 1024;
+	public static final int FILE_SIZE = 10 * 1_024 * 1_024;
 
 	private Path rootDir;
 	private int fileCount;
@@ -66,7 +66,7 @@ public class RepositoryTool
 	{
 		Path file = rootDir.resolve(fileName);
 		long timeStamp = Math.max(System.currentTimeMillis(), Files.getLastModifiedTime(file).toMillis());
-		timeStamp += 1000;
+		timeStamp += 1_000;
 		Files.setLastModifiedTime(file, FileTime.fromMillis(timeStamp));
 	}
 
@@ -106,7 +106,7 @@ public class RepositoryTool
 		}
 
 		// Creates a big content based on the provided content
-		int fileSize = FILE_SIZE + (301457 * fileCount);
+		int fileSize = FILE_SIZE + (301_457 * fileCount);
 		StringBuilder sb = new StringBuilder(fileSize);
 		int index = 0;
 		while (sb.length() < fileSize)
