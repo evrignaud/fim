@@ -115,6 +115,9 @@ public class CorruptCommandTest
 
 	private void doSomeModifications() throws IOException
 	{
+		// Ensure to increase lastModified at least of 1 second
+		sleepSafely(1_000);
+
 		tool.touchCreationTime("file01");
 
 		tool.touchLastModified("file02");
@@ -141,5 +144,17 @@ public class CorruptCommandTest
 
 		// Restore the original timestamps
 		Files.getFileAttributeView(file, BasicFileAttributeView.class).setTimes(attributes.lastModifiedTime(), attributes.lastAccessTime(), attributes.creationTime());
+	}
+
+	private void sleepSafely(int millis)
+	{
+		try
+		{
+			Thread.sleep(millis);
+		}
+		catch (InterruptedException e)
+		{
+			// Never mind
+		}
 	}
 }
