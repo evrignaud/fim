@@ -19,7 +19,6 @@
 package org.fim.internal.hash;
 
 import static java.lang.Math.min;
-import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.dontHash;
@@ -372,7 +371,7 @@ public class FileHasherTest extends StateAssert
 
 			byte[] fileContent = out.toByteArray();
 			assertThat(fileContent.length).isEqualTo(fileSize);
-			Files.write(newFile, fileContent, CREATE, APPEND);
+			Files.write(newFile, fileContent, CREATE);
 		}
 
 		return newFile;

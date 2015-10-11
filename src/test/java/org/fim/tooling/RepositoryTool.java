@@ -18,12 +18,13 @@
  */
 package org.fim.tooling;
 
-import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 
 import org.fim.model.Context;
@@ -62,7 +63,15 @@ public class RepositoryTool
 		}
 	}
 
-	public void touch(String fileName) throws IOException
+	public void touchCreationTime(String fileName) throws IOException
+	{
+		Path file = rootDir.resolve(fileName);
+		long timeStamp = Math.max(System.currentTimeMillis(), getCreationTime(file).toMillis());
+		timeStamp += 1_000;
+		setCreationTime(file, FileTime.fromMillis(timeStamp));
+	}
+
+	public void touchLastModified(String fileName) throws IOException
 	{
 		Path file = rootDir.resolve(fileName);
 		long timeStamp = Math.max(System.currentTimeMillis(), Files.getLastModifiedTime(file).toMillis());
@@ -77,7 +86,7 @@ public class RepositoryTool
 		{
 			Files.delete(file);
 		}
-		Files.write(file, content.getBytes(), CREATE, APPEND);
+		Files.write(file, content.getBytes(), CREATE);
 	}
 
 	public void createFile(String fileName) throws IOException
@@ -115,6 +124,17 @@ public class RepositoryTool
 			sb.append("b_").append(index).append(": ").append(content).append('\n');
 		}
 
-		Files.write(file, sb.toString().getBytes(), CREATE, APPEND);
+		Files.write(file, sb.toString().getBytes(), CREATE);
+	}
+
+	private FileTime getCreationTime(Path file) throws IOException
+	{
+		BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
+		return attributes.creationTime();
+	}
+
+	private void setCreationTime(Path file, FileTime creationTime) throws IOException
+	{
+		Files.getFileAttributeView(file, BasicFileAttributeView.class).setTimes(null, null, creationTime);
 	}
 }

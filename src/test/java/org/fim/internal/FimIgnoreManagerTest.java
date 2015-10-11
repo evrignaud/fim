@@ -18,7 +18,6 @@
  */
 package org.fim.internal;
 
-import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -105,7 +104,7 @@ public class FimIgnoreManagerTest extends StateAssert
 				"**/.git\n" +
 				"foo\n" +
 				"**/bar";
-		Files.write(rootDir.resolve(".fimignore"), fileContent.getBytes(), CREATE, APPEND);
+		Files.write(rootDir.resolve(".fimignore"), fileContent.getBytes(), CREATE);
 
 		fimIgnore = cut.loadFimIgnore(rootDir);
 		assertThat(fimIgnore.getFilesToIgnoreLocally().toString()).isEqualTo(

@@ -177,7 +177,7 @@ public class FullScenarioTest
 
 		Files.move(rootDir.resolve("file01"), dir01.resolve("file01"));
 
-		tool.touch("file02");
+		tool.touchLastModified("file02");
 
 		Files.copy(rootDir.resolve("file03"), rootDir.resolve("file03.dup1"));
 		Files.copy(rootDir.resolve("file03"), rootDir.resolve("file03.dup2"));
