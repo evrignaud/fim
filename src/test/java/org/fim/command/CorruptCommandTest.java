@@ -50,7 +50,6 @@ public class CorruptCommandTest
 
 	private InitCommand initCommand;
 	private DiffCommand diffCommand;
-	private CommitCommand commitCommand;
 	private CorruptCommand corruptCommand;
 
 	private RepositoryTool tool;
@@ -63,7 +62,6 @@ public class CorruptCommandTest
 
 		initCommand = new InitCommand();
 		diffCommand = new DiffCommand();
-		commitCommand = new CommitCommand();
 		corruptCommand = new CorruptCommand();
 
 		tool = new RepositoryTool(rootDir);
