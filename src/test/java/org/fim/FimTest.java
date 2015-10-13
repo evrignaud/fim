@@ -50,14 +50,38 @@ public class FimTest
 	}
 
 	@Test
-	public void weNeedToSpecifyTheCommandToRun() throws Exception
+	public void noArgumentSpecified() throws Exception
+	{
+		exit.expectSystemExitWithStatus(-1);
+		cut.main(new String[]{""});
+	}
+
+	@Test
+	public void doNotHashOptionWithoutCommand() throws Exception
 	{
 		exit.expectSystemExitWithStatus(-1);
 		cut.main(new String[]{"-n"});
+	}
 
+	@Test
+	public void fastModeOptionWithoutCommand() throws Exception
+	{
+		exit.expectSystemExitWithStatus(-1);
 		cut.main(new String[]{"-f"});
-		
+	}
+
+	@Test
+	public void superFastModeOptionWithoutCommand() throws Exception
+	{
+		exit.expectSystemExitWithStatus(-1);
 		cut.main(new String[]{"-s"});
+	}
+
+	@Test
+	public void invalidThreadCoundOption() throws Exception
+	{
+		exit.expectSystemExitWithStatus(-1);
+		cut.main(new String[]{"diff", "-t", "-1"});
 	}
 
 	@Test
