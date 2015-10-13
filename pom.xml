@@ -28,6 +28,7 @@
 		<junit.version>4.12</junit.version>
 		<assertj-core.version>2.1.0</assertj-core.version>
 		<mockito-all.version>1.10.19</mockito-all.version>
+		<system-rules.version>1.12.0</system-rules.version>
 
 		<!-- Plugins -->
 		<maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
@@ -127,6 +128,13 @@
 			<version>${mockito-all.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.github.stefanbirkner</groupId>
+			<artifactId>system-rules</artifactId>
+			<version>${system-rules.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 

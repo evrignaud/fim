@@ -216,6 +216,8 @@ public class Fim
 		{
 			System.exit(-1);
 		}
+
+		System.exit(0);
 	}
 
 	private static void findRepositoryRootDir(Context context)

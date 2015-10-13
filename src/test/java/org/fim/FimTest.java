@@ -18,10 +18,15 @@
  */
 package org.fim;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
 public class FimTest
 {
+	@Rule
+	public final ExpectedSystemExit exit = ExpectedSystemExit.none();
+
 	Fim cut = new Fim();
 
 	@Test
@@ -31,8 +36,34 @@ public class FimTest
 	}
 
 	@Test
-	public void weCanRunGetVersion() throws Exception
+	public void weCanRunVersionCommand() throws Exception
 	{
+		exit.expectSystemExitWithStatus(0);
 		cut.main(new String[]{"-v"});
+	}
+
+	@Test
+	public void weCanRunHelpCommand() throws Exception
+	{
+		exit.expectSystemExitWithStatus(0);
+		cut.main(new String[]{"-h"});
+	}
+
+	@Test
+	public void weNeedToSpecifyTheCommandToRun() throws Exception
+	{
+		exit.expectSystemExitWithStatus(-1);
+		cut.main(new String[]{"-n"});
+
+		cut.main(new String[]{"-f"});
+		
+		cut.main(new String[]{"-s"});
+	}
+
+	@Test
+	public void invalidOptionIsDetected() throws Exception
+	{
+		exit.expectSystemExitWithStatus(-1);
+		cut.main(new String[]{"-0"});
 	}
 }
