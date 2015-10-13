@@ -133,9 +133,9 @@ public class CorruptCommandTest
 		// Keep original timestamps
 		BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
 
-		// Modify the file content
+		// A zero byte appears in the middle of the file
 		byte[] bytes = Files.readAllBytes(file);
-		bytes[bytes.length / 2] = 12;
+		bytes[bytes.length / 2] = 0;
 
 		Files.delete(file);
 		Files.write(file, bytes, CREATE);
