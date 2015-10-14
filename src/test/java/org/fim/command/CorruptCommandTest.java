@@ -31,13 +31,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
-import org.fim.model.Difference;
 import org.fim.model.FileState;
 import org.fim.model.State;
 import org.fim.tooling.RepositoryTool;
@@ -96,18 +94,19 @@ public class CorruptCommandTest
 		tool.createASetOfFiles(5);
 
 		State state = (State) initCommand.execute(context);
-
 		assertThat(state.getModificationCounts().getAdded()).isEqualTo(5);
+
+		CompareResult compareResult = (CompareResult) corruptCommand.execute(context);
+		assertThat(compareResult.getCorrupted().size()).isEqualTo(0);
 
 		doSomeModifications();
 
-		CompareResult compareResult = (CompareResult) diffCommand.execute(context);
+		compareResult = (CompareResult) diffCommand.execute(context);
 		assertThat(compareResult.modifiedCount()).isEqualTo(3);
 
 		compareResult = (CompareResult) corruptCommand.execute(context);
-		List<Difference> corrupted = compareResult.getCorrupted();
-		assertThat(corrupted.size()).isEqualTo(1);
-		FileState fileState = corrupted.get(0).getFileState();
+		assertThat(compareResult.getCorrupted().size()).isEqualTo(1);
+		FileState fileState = compareResult.getCorrupted().get(0).getFileState();
 		assertThat(fileState.getFileName()).isEqualTo("file04");
 	}
 
