@@ -20,5 +20,6 @@ package org.fim.model;
 
 public enum FileAttribute
 {
-	filePermissions
+	dosFilePermissions,
+	posixFilePermissions
 }

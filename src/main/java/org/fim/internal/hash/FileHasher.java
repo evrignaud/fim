@@ -19,7 +19,8 @@
 package org.fim.internal.hash;
 
 import static org.fim.model.Contants.NO_HASH;
-import static org.fim.model.FileAttribute.filePermissions;
+import static org.fim.model.FileAttribute.dosFilePermissions;
+import static org.fim.model.FileAttribute.posixFilePermissions;
 import static org.fim.model.HashMode.dontHash;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.DosFileAttributes;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.security.NoSuchAlgorithmException;
@@ -108,12 +110,14 @@ public class FileHasher implements Runnable
 
 					if (SystemUtils.IS_OS_WINDOWS)
 					{
-						attributes = Files.readAttributes(file, BasicFileAttributes.class);
+						DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
+						fileAttributes = addAttribute(fileAttributes, dosFilePermissions, toDosFilePermissions(dosFileAttributes));
+						attributes = dosFileAttributes;
 					}
 					else
 					{
 						PosixFileAttributes posixFileAttributes = Files.readAttributes(file, PosixFileAttributes.class);
-						fileAttributes = addAttribute(fileAttributes, filePermissions, PosixFilePermissions.toString(posixFileAttributes.permissions()));
+						fileAttributes = addAttribute(fileAttributes, posixFilePermissions, PosixFilePermissions.toString(posixFileAttributes.permissions()));
 						attributes = posixFileAttributes;
 					}
 
@@ -136,6 +140,28 @@ public class FileHasher implements Runnable
 		{
 			Logger.error(ex);
 		}
+	}
+
+	private String toDosFilePermissions(DosFileAttributes dosFileAttributes)
+	{
+		StringBuilder builder = new StringBuilder();
+		if (dosFileAttributes.isArchive())
+		{
+			builder.append('A');
+		}
+		if (dosFileAttributes.isHidden())
+		{
+			builder.append('H');
+		}
+		if (dosFileAttributes.isReadOnly())
+		{
+			builder.append('R');
+		}
+		if (dosFileAttributes.isSystem())
+		{
+			builder.append('S');
+		}
+		return builder.toString();
 	}
 
 	private List<Attribute> addAttribute(List<Attribute> attributes, FileAttribute attribute, String value)

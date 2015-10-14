@@ -18,6 +18,8 @@
  */
 package org.fim.internal;
 
+import static org.fim.model.FileAttribute.dosFilePermissions;
+import static org.fim.model.FileAttribute.posixFilePermissions;
 import static org.fim.model.HashMode.dontHash;
 
 import java.util.ArrayList;
@@ -29,7 +31,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.Difference;
-import org.fim.model.FileAttribute;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.Modification;
@@ -67,7 +68,7 @@ public class StateComparator
 			lastState = null;
 		}
 
-		makeStatesComparable();
+		makeLastStateComparable();
 
 		result = new CompareResult(context, lastState);
 
@@ -76,20 +77,32 @@ public class StateComparator
 		addedOrModified = new ArrayList<>();
 	}
 
-	private void makeStatesComparable()
+	private void makeLastStateComparable()
 	{
+		if (lastState == null)
+		{
+			return;
+		}
+
+		String unsupportedFilePermissions;
 		if (SystemUtils.IS_OS_WINDOWS)
 		{
-			String filePermissions = FileAttribute.filePermissions.name();
-			for (FileState fileState : lastState.getFileStates())
-			{
-				fileState.getFileAttributes().remove(filePermissions);
-				if (fileState.getFileAttributes().isEmpty())
-				{
-					fileState.setFileAttributes(null);
-				}
-			}
+			unsupportedFilePermissions = posixFilePermissions.name();
 		}
+		else
+		{
+			unsupportedFilePermissions = dosFilePermissions.name();
+		}
+
+		lastState.getFileStates().stream()
+				.filter(fileState -> fileState.getFileAttributes() != null)
+				.forEach(fileState -> {
+					fileState.getFileAttributes().remove(unsupportedFilePermissions);
+					if (fileState.getFileAttributes().isEmpty())
+					{
+						fileState.setFileAttributes(null);
+					}
+				});
 	}
 
 	public StateComparator searchForHardwareCorruption()
