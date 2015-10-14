@@ -25,6 +25,7 @@ public class ModificationCounts
 	private int duplicated;
 	private int dateModified;
 	private int contentModified;
+	private int attributesModified;
 	private int renamed;
 	private int deleted;
 
@@ -78,6 +79,16 @@ public class ModificationCounts
 		this.contentModified = contentModified;
 	}
 
+	public int getAttributesModified()
+	{
+		return attributesModified;
+	}
+
+	public void setAttributesModified(int attributesModified)
+	{
+		this.attributesModified = attributesModified;
+	}
+
 	public int getRenamed()
 	{
 		return renamed;
@@ -105,6 +116,7 @@ public class ModificationCounts
 		duplicated += modificationCounts.getDuplicated();
 		dateModified += modificationCounts.getDateModified();
 		contentModified += modificationCounts.getContentModified();
+		attributesModified += modificationCounts.getAttributesModified();
 		renamed += modificationCounts.getRenamed();
 		deleted += modificationCounts.getDeleted();
 	}

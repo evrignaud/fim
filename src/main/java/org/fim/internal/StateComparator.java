@@ -23,10 +23,13 @@ import static org.fim.model.HashMode.dontHash;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.Difference;
+import org.fim.model.FileAttribute;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.Modification;
@@ -64,11 +67,29 @@ public class StateComparator
 			lastState = null;
 		}
 
+		makeStatesComparable();
+
 		result = new CompareResult(context, lastState);
 
 		previousFileStates = new ArrayList<>();
 		notFoundInCurrentFileState = new ArrayList<>();
 		addedOrModified = new ArrayList<>();
+	}
+
+	private void makeStatesComparable()
+	{
+		if (SystemUtils.IS_OS_WINDOWS)
+		{
+			String filePermissions = FileAttribute.filePermissions.name();
+			for (FileState fileState : lastState.getFileStates())
+			{
+				fileState.getFileAttributes().remove(filePermissions);
+				if (fileState.getFileAttributes().isEmpty())
+				{
+					fileState.setFileAttributes(null);
+				}
+			}
+		}
 	}
 
 	public StateComparator searchForHardwareCorruption()
@@ -151,11 +172,20 @@ public class StateComparator
 				}
 				else
 				{
-					if (previousFileState.getFileHash().equals(fileState.getFileHash()) && false == previousFileState.getFileTime().equals(fileState.getFileTime()))
+					if (previousFileState.getFileHash().equals(fileState.getFileHash()))
 					{
-						result.getDateModified().add(new Difference(previousFileState, fileState));
-						fileState.setModification(Modification.dateModified);
-						iterator.remove();
+						if (false == previousFileState.getFileTime().equals(fileState.getFileTime()))
+						{
+							result.getDateModified().add(new Difference(previousFileState, fileState));
+							fileState.setModification(Modification.dateModified);
+							iterator.remove();
+						}
+						else if (false == Objects.equals(previousFileState.getFileAttributes(), fileState.getFileAttributes()))
+						{
+							result.getAttributesModified().add(new Difference(previousFileState, fileState));
+							fileState.setModification(Modification.attributesModified);
+							iterator.remove();
+						}
 					}
 					else
 					{

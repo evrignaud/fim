@@ -26,18 +26,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.fim.util.Console;
 
 public class CompareResult
 {
-	private static Comparator<Difference> fileNameComparator = new Difference.FileNameComparator();
+	public static final String NOTHING = "[nothing]";
+
+	private static final Comparator<Difference> fileNameComparator = new Difference.FileNameComparator();
 
 	private List<Difference> added;
 	private List<Difference> copied;
 	private List<Difference> duplicated;
 	private List<Difference> dateModified;
 	private List<Difference> contentModified;
+	private List<Difference> attributesModified;
 	private List<Difference> renamed;
 	private List<Difference> deleted;
 	private List<Difference> corrupted;
@@ -57,6 +62,7 @@ public class CompareResult
 		duplicated = new ArrayList<>();
 		dateModified = new ArrayList<>();
 		contentModified = new ArrayList<>();
+		attributesModified = new ArrayList<>();
 		renamed = new ArrayList<>();
 		deleted = new ArrayList<>();
 		corrupted = new ArrayList<>();
@@ -79,6 +85,7 @@ public class CompareResult
 		sortDifferences(duplicated);
 		sortDifferences(dateModified);
 		sortDifferences(contentModified);
+		sortDifferences(attributesModified);
 		sortDifferences(renamed);
 		sortDifferences(deleted);
 		sortDifferences(corrupted);
@@ -126,19 +133,24 @@ public class CompareResult
 
 		for (Difference diff : dateModified)
 		{
-			System.out.printf(stateFormat + "%s \t%s%n", "Date modified:", diff.getFileState().getFileName(), formatFileTimeModification(diff));
+			System.out.printf(stateFormat + "%s \t%s%n", "Date modified:", diff.getFileState().getFileName(), formatModifiedAttributes(diff));
 		}
 
 		for (Difference diff : contentModified)
 		{
 			if (diff.isLastModifiedChanged())
 			{
-				System.out.printf(stateFormat + "%s \t%s%n", "Content modified:", diff.getFileState().getFileName(), formatFileTimeModification(diff));
+				System.out.printf(stateFormat + "%s \t%s%n", "Content modified:", diff.getFileState().getFileName(), formatModifiedAttributes(diff));
 			}
 			else
 			{
 				System.out.printf(stateFormat + "%s%n", "Content modified:", diff.getFileState().getFileName());
 			}
+		}
+
+		for (Difference diff : attributesModified)
+		{
+			System.out.printf(stateFormat + "%s \t%s%n", "Attrs. modified:", diff.getFileState().getFileName(), formatModifiedAttributes(diff));
 		}
 
 		for (Difference diff : renamed)
@@ -153,7 +165,7 @@ public class CompareResult
 
 		for (Difference diff : corrupted)
 		{
-			System.out.printf(stateFormat + "%s \t%s%n", "Corrupted?:", diff.getFileState().getFileName(), formatFileTimeModification(diff));
+			System.out.printf(stateFormat + "%s \t%s%n", "Corrupted?:", diff.getFileState().getFileName(), formatModifiedAttributes(diff));
 		}
 
 		if (somethingModified())
@@ -166,18 +178,73 @@ public class CompareResult
 		return this;
 	}
 
-	private String formatFileTimeModification(Difference diff)
+	private String formatModifiedAttributes(Difference diff)
 	{
-		String modification = "";
+		int modifCount = 0;
+		StringBuilder modification = new StringBuilder();
+
+		Map<String, String> previousFileAttributes = diff.getPreviousFileState().getFileAttributes();
+		Map<String, String> currentFileAttributes = diff.getFileState().getFileAttributes();
+		for (FileAttribute attribute : FileAttribute.values())
+		{
+			String key = attribute.name();
+			String previousValue = getValue(previousFileAttributes, key);
+			String currentValue = getValue(currentFileAttributes, key);
+
+			if (previousValue != NOTHING && currentValue != NOTHING && false == Objects.equals(previousValue, currentValue))
+			{
+				modifCount++;
+				addSeparator(diff, modification);
+				modification.append(key).append(": ").append(previousValue).append(" -> ").append(currentValue);
+			}
+		}
+
 		if (diff.isCreationTimeChanged())
 		{
-			modification += String.format(" creationTime: %s -> %s", formatCreationTime(diff.getPreviousFileState()), formatCreationTime(diff.getFileState()));
+			modifCount++;
+			addSeparator(diff, modification);
+			modification.append("creationTime: ").append(formatCreationTime(diff.getPreviousFileState())).append(" -> ").append(formatCreationTime(diff.getFileState()));
 		}
+
 		if (diff.isLastModifiedChanged())
 		{
-			modification += String.format(" lastModified: %s -> %s", formatLastModified(diff.getPreviousFileState()), formatLastModified(diff.getFileState()));
+			modifCount++;
+			addSeparator(diff, modification);
+			modification.append("lastModified: ").append(formatLastModified(diff.getPreviousFileState())).append(" -> ").append(formatLastModified(diff.getFileState()));
 		}
-		return modification;
+
+		if (modifCount > 1)
+		{
+			modification.append('\n');
+		}
+
+		return modification.toString();
+	}
+
+	private void addSeparator(Difference diff, StringBuilder modification)
+	{
+		if (modification.length() == 0)
+		{
+			return;
+		}
+
+		modification.append("\n");
+		int len = 17 + 1 + diff.getFileState().getFileName().length() + 1;
+		for (int index = 0; index < len; index++)
+		{
+			modification.append(' ');
+		}
+		modification.append('\t');
+	}
+
+	private String getValue(Map<String, String> attributes, String key)
+	{
+		String value = attributes != null ? attributes.get(key) : null;
+		if (value == null)
+		{
+			value = NOTHING;
+		}
+		return value;
 	}
 
 	public CompareResult displayCounts()
@@ -250,7 +317,8 @@ public class CompareResult
 
 	public int modifiedCount()
 	{
-		return added.size() + copied.size() + duplicated.size() + dateModified.size() + contentModified.size() + renamed.size() + deleted.size() + corrupted.size();
+		return added.size() + copied.size() + duplicated.size() + dateModified.size() + contentModified.size() +
+				attributesModified.size() + renamed.size() + deleted.size() + corrupted.size();
 	}
 
 	public ModificationCounts getModificationCounts()
@@ -261,6 +329,7 @@ public class CompareResult
 		modificationCounts.setDuplicated(duplicated.size());
 		modificationCounts.setDateModified(dateModified.size());
 		modificationCounts.setContentModified(contentModified.size());
+		modificationCounts.setAttributesModified(attributesModified.size());
 		modificationCounts.setRenamed(renamed.size());
 		modificationCounts.setDeleted(deleted.size());
 
@@ -290,6 +359,11 @@ public class CompareResult
 	public List<Difference> getContentModified()
 	{
 		return contentModified;
+	}
+
+	public List<Difference> getAttributesModified()
+	{
+		return attributesModified;
 	}
 
 	public List<Difference> getRenamed()

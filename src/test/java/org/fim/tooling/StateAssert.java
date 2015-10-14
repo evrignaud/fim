@@ -146,6 +146,9 @@ public class StateAssert
 			case contentModified:
 				return result.getContentModified();
 
+			case attributesModified:
+				return result.getAttributesModified();
+
 			case renamed:
 				return result.getRenamed();
 

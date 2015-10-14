@@ -51,7 +51,7 @@ public class BuildableState extends State
 			}
 
 			// By default put the fileName as fileContent that will be the hash
-			FileState fileState = new FileState(fileName, fileName.length(), new FileTime(getNow()), createHash(fileName));
+			FileState fileState = new FileState(fileName, fileName.length(), new FileTime(getNow()), createHash(fileName), null);
 			newState.getFileStates().add(fileState);
 		}
 		sortFileStates(newState);
@@ -67,7 +67,7 @@ public class BuildableState extends State
 		}
 
 		FileState sourceFileState = findFileState(newState, sourceFileName, true);
-		FileState targetFileState = new FileState(targetFileName, sourceFileState.getFileLength(), new FileTime(sourceFileState.getFileTime()), new FileHash(sourceFileState.getFileHash()));
+		FileState targetFileState = new FileState(targetFileName, sourceFileState.getFileLength(), new FileTime(sourceFileState.getFileTime()), new FileHash(sourceFileState.getFileHash()), null);
 		newState.getFileStates().add(targetFileState);
 		sortFileStates(newState);
 		return newState;

@@ -25,6 +25,7 @@ public enum Modification
 	duplicated,
 	dateModified,
 	contentModified,
+	attributesModified,
 	renamed,
 	deleted,
 	corrupted

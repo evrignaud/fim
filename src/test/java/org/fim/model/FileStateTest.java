@@ -32,10 +32,10 @@ public class FileStateTest
 	@Before
 	public void setup()
 	{
-		a1 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"));
-		a2 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"));
+		a1 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), null);
+		a2 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), null);
 
-		b = new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"));
+		b = new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"), null);
 	}
 
 	@Test
@@ -63,8 +63,8 @@ public class FileStateTest
 	@Test
 	public void allTheFileTimesAreTakenInAccount()
 	{
-		a1 = new FileState("file_1", 1L, new FileTime(10L, 20L), new FileHash("1", "11", "111"));
-		a2 = new FileState("file_1", 1L, new FileTime(11L, 20L), new FileHash("1", "11", "111"));
+		a1 = new FileState("file_1", 1L, new FileTime(10L, 20L), new FileHash("1", "11", "111"), null);
+		a2 = new FileState("file_1", 1L, new FileTime(11L, 20L), new FileHash("1", "11", "111"), null);
 
 		assertThat(a1).isNotEqualTo(a2);
 		assertThat(a1.hashCode()).isNotEqualTo(a2.hashCode());

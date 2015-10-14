@@ -35,18 +35,18 @@ public class DuplicateSetTest
 	public void setup()
 	{
 		a1 = new DuplicateSet(Arrays.asList(
-				new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111")),
-				new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"))
+				new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), null),
+				new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"), null)
 		));
 
 		a2 = new DuplicateSet(Arrays.asList(
-				new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111")),
-				new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"))
+				new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), null),
+				new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"), null)
 		));
 
 		b = new DuplicateSet(Arrays.asList(
-				new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111")),
-				new FileState("file_3", 3L, new FileTime(3L), new FileHash("3", "33", "333"))
+				new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), null),
+				new FileState("file_3", 3L, new FileTime(3L), new FileHash("3", "33", "333"), null)
 		));
 	}
 

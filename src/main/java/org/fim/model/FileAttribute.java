@@ -18,19 +18,7 @@
  */
 package org.fim.model;
 
-public class Contants
+public enum FileAttribute
 {
-	public static final int _1_KB = 1_024;
-	public static final int _4_KB = 4 * _1_KB;
-
-	public static final int _1_MB = 1_024 * _1_KB;
-	public static final int _10_MB = 10 * _1_MB;
-	public static final int _20_MB = 20 * _1_MB;
-	public static final int _50_MB = 50 * _1_MB;
-	public static final int _100_MB = 100 * _1_MB;
-	public static final int _200_MB = 200 * _1_MB;
-
-	public static final int _1_GB = 1_024 * _1_MB;
-
-	public static final String NO_HASH = "no_hash";
+	filePermissions
 }

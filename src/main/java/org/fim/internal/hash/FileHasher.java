@@ -19,6 +19,7 @@
 package org.fim.internal.hash;
 
 import static org.fim.model.Contants.NO_HASH;
+import static org.fim.model.FileAttribute.filePermissions;
 import static org.fim.model.HashMode.dontHash;
 
 import java.io.IOException;
@@ -27,12 +28,17 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.SystemUtils;
+import org.fim.model.Attribute;
+import org.fim.model.FileAttribute;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
@@ -97,7 +103,19 @@ public class FileHasher implements Runnable
 			{
 				try
 				{
-					BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
+					BasicFileAttributes attributes;
+					List<Attribute> fileAttributes = null;
+
+					if (SystemUtils.IS_OS_WINDOWS)
+					{
+						attributes = Files.readAttributes(file, BasicFileAttributes.class);
+					}
+					else
+					{
+						PosixFileAttributes posixFileAttributes = Files.readAttributes(file, PosixFileAttributes.class);
+						fileAttributes = addAttribute(fileAttributes, filePermissions, PosixFilePermissions.toString(posixFileAttributes.permissions()));
+						attributes = posixFileAttributes;
+					}
 
 					hashProgress.updateOutput(attributes.size());
 
@@ -105,7 +123,7 @@ public class FileHasher implements Runnable
 					String normalizedFileName = FileUtil.getNormalizedFileName(file);
 					String relativeFileName = FileUtil.getRelativeFileName(rootDir, normalizedFileName);
 
-					fileStates.add(new FileState(relativeFileName, attributes, fileHash));
+					fileStates.add(new FileState(relativeFileName, attributes, fileHash, fileAttributes));
 				}
 				catch (Exception ex)
 				{
@@ -118,6 +136,19 @@ public class FileHasher implements Runnable
 		{
 			Logger.error(ex);
 		}
+	}
+
+	private List<Attribute> addAttribute(List<Attribute> attributes, FileAttribute attribute, String value)
+	{
+		List<Attribute> newAttributes = attributes;
+		if (newAttributes == null)
+		{
+			newAttributes = new ArrayList<>();
+		}
+
+		newAttributes.add(new Attribute(attribute.name(), value));
+
+		return newAttributes;
 	}
 
 	protected FileHash hashFile(Path file, long fileSize) throws IOException

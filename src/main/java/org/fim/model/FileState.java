@@ -20,6 +20,9 @@ package org.fim.model;
 
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.base.Charsets;
@@ -33,10 +36,11 @@ public class FileState implements Hashable
 	private FileTime fileTime;
 	private Modification modification;
 	private FileHash fileHash;
+	private Map<String, String> fileAttributes;
 
 	private transient FileHash newFileHash; // Used by StateComparator to detect accurately duplicates
 
-	public FileState(String fileName, long fileLength, FileTime fileTime, FileHash fileHash)
+	public FileState(String fileName, long fileLength, FileTime fileTime, FileHash fileHash, List<Attribute> attributeList)
 	{
 		if (fileName == null)
 		{
@@ -51,11 +55,12 @@ public class FileState implements Hashable
 		setFileLength(fileLength);
 		setFileTime(fileTime);
 		setFileHash(fileHash);
+		setFileAttributes(toMap(attributeList));
 	}
 
-	public FileState(String fileName, BasicFileAttributes attributes, FileHash fileHash)
+	public FileState(String fileName, BasicFileAttributes attributes, FileHash fileHash, List<Attribute> attributeList)
 	{
-		this(fileName, attributes.size(), new FileTime(attributes), fileHash);
+		this(fileName, attributes.size(), new FileTime(attributes), fileHash, attributeList);
 	}
 
 	public String getFileName()
@@ -108,6 +113,16 @@ public class FileState implements Hashable
 		this.fileHash = fileHash;
 	}
 
+	public Map<String, String> getFileAttributes()
+	{
+		return fileAttributes;
+	}
+
+	public void setFileAttributes(Map<String, String> fileAttributes)
+	{
+		this.fileAttributes = fileAttributes;
+	}
+
 	public FileHash getNewFileHash()
 	{
 		return newFileHash;
@@ -141,13 +156,14 @@ public class FileState implements Hashable
 		return Objects.equals(this.fileName, otherFileState.fileName)
 				&& Objects.equals(this.fileLength, otherFileState.fileLength)
 				&& Objects.equals(this.fileTime, otherFileState.fileTime)
-				&& Objects.equals(this.fileHash, otherFileState.fileHash);
+				&& Objects.equals(this.fileHash, otherFileState.fileHash)
+				&& Objects.equals(this.fileAttributes, otherFileState.fileAttributes);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(fileName, fileLength, fileTime, fileHash);
+		return Objects.hash(fileName, fileLength, fileTime, fileHash, fileAttributes);
 	}
 
 	@Override
@@ -158,6 +174,7 @@ public class FileState implements Hashable
 				.add("fileLength", fileLength)
 				.add("fileTime", fileTime)
 				.add("fileHash", fileHash)
+				.add("fileAttributes", fileAttributes)
 				.add("newFileHash", newFileHash)
 				.toString();
 	}
@@ -177,6 +194,35 @@ public class FileState implements Hashable
 
 		hasher.putChar(HASH_OBJECT_SEPARATOR);
 		fileHash.hashObject(hasher);
+
+		hasher.putChar(HASH_OBJECT_SEPARATOR);
+		if (fileAttributes != null)
+		{
+			for (String key : fileAttributes.keySet())
+			{
+				hasher
+						.putString(key, Charsets.UTF_8)
+						.putChar(':')
+						.putChar(':')
+						.putString(fileAttributes.get(key), Charsets.UTF_8);
+				hasher.putChar(HASH_OBJECT_SEPARATOR);
+			}
+		}
+	}
+
+	private Map<String, String> toMap(List<Attribute> attrs)
+	{
+		if (attrs == null)
+		{
+			return null;
+		}
+
+		Map<String, String> map = new HashMap<>();
+		for (Attribute attr : attrs)
+		{
+			map.put(attr.getName(), attr.getValue());
+		}
+		return map;
 	}
 
 	public static class FileNameComparator implements Comparator<FileState>
