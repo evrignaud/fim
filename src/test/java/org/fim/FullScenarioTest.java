@@ -145,9 +145,9 @@ public class FullScenarioTest
 		runCommandFromDirectory(context, dir01);
 
 		compareResult = (CompareResult) commitCommand.execute(context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(14);
+		assertThat(compareResult.modifiedCount()).isEqualTo(13);
 		assertThat(compareResult.getModificationCounts().getRenamed()).isEqualTo(0);
-		assertThat(compareResult.getModificationCounts().getDeleted()).isEqualTo(3);
+		assertThat(compareResult.getModificationCounts().getDeleted()).isEqualTo(2);
 
 		// Committing once again does nothing
 		commit_AndAssertFilesModifiedCountEqualsTo(context, 0);
@@ -162,7 +162,7 @@ public class FullScenarioTest
 
 		assertWeCanRollbackLastCommit(context, 2, 2);
 
-		assertFilesModifiedCountEqualsTo(context, 14);
+		assertFilesModifiedCountEqualsTo(context, 13);
 
 		// We can rollback again
 		assertWeCanRollbackLastCommit(context, 1, 0);

@@ -44,20 +44,16 @@ public class Context
 
 	public Context()
 	{
-		invokedFromSubDirectory = false;
-		currentDirectory = Paths.get(".");
-		repositoryRootDir = currentDirectory;
-		verbose = true;
-		hashMode = hashAll;
-		comment = "";
-		useLastState = false;
-		threadCount = Runtime.getRuntime().availableProcessors() / 2;
-		if (threadCount < 1)
-		{
-			threadCount = 1;
-		}
-		masterFimRepositoryDir = null;
-		alwaysYes = false;
+		setInvokedFromSubDirectory(false);
+		setCurrentDirectory(Paths.get("."));
+		setRepositoryRootDir(getCurrentDirectory());
+		setVerbose(true);
+		setHashMode(hashAll);
+		setComment("");
+		setUseLastState(false);
+		setThreadCount(Runtime.getRuntime().availableProcessors() / 2);
+		setMasterFimRepositoryDir(null);
+		setAlwaysYes(false);
 	}
 
 	public boolean isInvokedFromSubDirectory()
@@ -87,7 +83,7 @@ public class Context
 
 	public void setRepositoryRootDir(Path repositoryRootDir)
 	{
-		this.repositoryRootDir = repositoryRootDir;
+		this.repositoryRootDir = repositoryRootDir.toAbsolutePath().normalize();
 	}
 
 	public Path getRepositoryDotFimDir()
@@ -167,7 +163,14 @@ public class Context
 
 	public void setThreadCount(int threadCount)
 	{
-		this.threadCount = threadCount;
+		if (threadCount < 1)
+		{
+			this.threadCount = 1;
+		}
+		else
+		{
+			this.threadCount = threadCount;
+		}
 	}
 
 	public Context clone()
