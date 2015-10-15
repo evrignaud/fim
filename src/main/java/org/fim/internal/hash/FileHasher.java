@@ -151,6 +151,11 @@ public class FileHasher implements Runnable
 
 	private List<Attribute> addAttribute(List<Attribute> attributes, FileAttribute attribute, String value)
 	{
+		if (value == null)
+		{
+			return attributes;
+		}
+		
 		List<Attribute> newAttributes = attributes;
 		if (newAttributes == null)
 		{
