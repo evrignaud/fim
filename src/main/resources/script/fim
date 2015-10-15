@@ -20,7 +20,12 @@
 
 currentDir=`pwd`
 
-baseDir=`dirname "$(readlink -f "$0")"`
+readLinkCommand="readlink"
+if ! type "$readLinkCommand" > /dev/null 2>&1; then
+  readLinkCommand="greadlink"
+fi
+
+baseDir=`dirname "$(${readLinkCommand} -f "$0")"`
 
 JAVA_OPTIONS="-Xmx4g -XX:MaxMetaspaceSize=4g"
 
