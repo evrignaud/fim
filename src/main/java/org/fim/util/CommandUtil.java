@@ -29,7 +29,7 @@ public class CommandUtil
 	/**
 	 * Execute a command and return all the output.
 	 */
-	public static String execCmd(List<String> cmdarray) throws IOException, InterruptedException
+	public static String executeCommand(List<String> cmdarray) throws IOException, InterruptedException
 	{
 		ProcessBuilder builder = new ProcessBuilder(cmdarray);
 		builder.redirectErrorStream(true);
@@ -46,7 +46,7 @@ public class CommandUtil
 			{
 				throw new IllegalArgumentException(String.format("Command execution failed with status: %d\n%s", exitValue, output));
 			}
-			
+
 			return output;
 		}
 	}
@@ -54,7 +54,7 @@ public class CommandUtil
 	/**
 	 * Execute a command and return all the lines of the output.
 	 */
-	public static List<String> execCmdAndGetLines(List<String> cmdarray) throws IOException, InterruptedException
+	public static List<String> executeCommandAndGetLines(List<String> cmdarray) throws IOException, InterruptedException
 	{
 		ProcessBuilder builder = new ProcessBuilder(cmdarray);
 		builder.redirectErrorStream(true);

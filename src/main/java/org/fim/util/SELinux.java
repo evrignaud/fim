@@ -40,7 +40,7 @@ public class SELinux
 
 		try
 		{
-			List<String> lines = CommandUtil.execCmdAndGetLines(Arrays.asList("sestatus"));
+			List<String> lines = CommandUtil.executeCommandAndGetLines(Arrays.asList("sestatus"));
 			for (String line : lines)
 			{
 				if (line.contains("SELinux status"))
@@ -70,7 +70,7 @@ public class SELinux
 		String fileName = file.normalize().toAbsolutePath().toString();
 		try
 		{
-			String line = CommandUtil.execCmd(Arrays.asList("ls", "-1Z", fileName));
+			String line = CommandUtil.executeCommand(Arrays.asList("ls", "-1Z", fileName));
 			String[] strings = line.split(" ");
 			if (strings.length == 2)
 			{
@@ -90,7 +90,7 @@ public class SELinux
 		String fileName = file.normalize().toAbsolutePath().toString();
 		try
 		{
-			CommandUtil.execCmd(Arrays.asList("chcon", label, fileName));
+			CommandUtil.executeCommand(Arrays.asList("chcon", label, fileName));
 		}
 		catch (Exception ex)
 		{
