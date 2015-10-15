@@ -38,6 +38,7 @@ import org.fim.model.FileState;
 import org.fim.model.Modification;
 import org.fim.model.State;
 import org.fim.util.Logger;
+import org.fim.util.SELinux;
 
 public class StateComparator
 {

@@ -40,7 +40,6 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.fim.internal.SELinux;
 import org.fim.model.Attribute;
 import org.fim.model.FileAttribute;
 import org.fim.model.FileHash;
@@ -48,8 +47,10 @@ import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.model.Range;
 import org.fim.util.Console;
+import org.fim.util.DosFilePermissions;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;
+import org.fim.util.SELinux;
 import sun.misc.Cleaner;
 import sun.nio.ch.DirectBuffer;
 
@@ -113,7 +114,7 @@ public class FileHasher implements Runnable
 					if (SystemUtils.IS_OS_WINDOWS)
 					{
 						DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
-						fileAttributes = addAttribute(fileAttributes, dosFilePermissions, toDosFilePermissions(dosFileAttributes));
+						fileAttributes = addAttribute(fileAttributes, dosFilePermissions, DosFilePermissions.toString(dosFileAttributes));
 						attributes = dosFileAttributes;
 					}
 					else
@@ -146,28 +147,6 @@ public class FileHasher implements Runnable
 		{
 			Logger.error(ex);
 		}
-	}
-
-	private String toDosFilePermissions(DosFileAttributes dosFileAttributes)
-	{
-		StringBuilder builder = new StringBuilder();
-		if (dosFileAttributes.isArchive())
-		{
-			builder.append('A');
-		}
-		if (dosFileAttributes.isHidden())
-		{
-			builder.append('H');
-		}
-		if (dosFileAttributes.isReadOnly())
-		{
-			builder.append('R');
-		}
-		if (dosFileAttributes.isSystem())
-		{
-			builder.append('S');
-		}
-		return builder.toString();
 	}
 
 	private List<Attribute> addAttribute(List<Attribute> attributes, FileAttribute attribute, String value)

@@ -36,7 +36,7 @@ public class RollbackCommand extends AbstractCommand
 	@Override
 	public String getShortCmdName()
 	{
-		return "";
+		return "rb";
 	}
 
 	@Override

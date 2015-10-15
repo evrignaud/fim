@@ -48,7 +48,7 @@ import org.fim.command.InitCommand;
 import org.fim.command.LogCommand;
 import org.fim.command.PurgeStatesCommand;
 import org.fim.command.RemoveDuplicatesCommand;
-import org.fim.command.ResetDateCommand;
+import org.fim.command.ResetFileAttributesCommand;
 import org.fim.command.RollbackCommand;
 import org.fim.command.VersionCommand;
 import org.fim.command.exception.BadFimUsageException;
@@ -71,7 +71,7 @@ public class Fim
 				new InitCommand(),
 				new CommitCommand(),
 				new DiffCommand(),
-				new ResetDateCommand(),
+				new ResetFileAttributesCommand(),
 				new CorruptCommand(),
 				new FindDuplicatesCommand(),
 				new RemoveDuplicatesCommand(),

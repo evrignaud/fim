@@ -16,15 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fim.internal;
+package org.fim.util;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.fim.util.CommandUtil;
-import org.fim.util.Logger;
 
 public class SELinux
 {
@@ -49,7 +47,7 @@ public class SELinux
 				{
 					if (line.contains("enabled"))
 					{
-						System.out.println("SELinux enabled");
+						Logger.info("SELinux is enabled on this system");
 						return true;
 					}
 
@@ -81,9 +79,22 @@ public class SELinux
 		}
 		catch (IOException ex)
 		{
-			Logger.error("Error retrieving SELinux label for '" + fileName + "'", ex);
+			Logger.error("Error retrieving SELinux label for '" + file + "'", ex);
 		}
 
 		return null;
+	}
+
+	public static void setLabel(Path file, String label)
+	{
+		String fileName = file.normalize().toAbsolutePath().toString();
+		try
+		{
+			CommandUtil.execCmd("chcon " + label + " " + fileName);
+		}
+		catch (IOException ex)
+		{
+			Logger.error("Error setting SELinux label for '" + file + "'", ex);
+		}
 	}
 }
