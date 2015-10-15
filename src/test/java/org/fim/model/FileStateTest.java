@@ -20,6 +20,8 @@ package org.fim.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,10 +34,10 @@ public class FileStateTest
 	@Before
 	public void setup()
 	{
-		a1 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), null);
-		a2 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), null);
+		a1 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), Arrays.asList(new Attribute("n1", "v1"), new Attribute("n2", "v2"), new Attribute("n3", "v3")));
+		a2 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), Arrays.asList(new Attribute("n3", "v3"), new Attribute("n2", "v2"), new Attribute("n1", "v1")));
 
-		b = new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"), null);
+		b = new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"), Arrays.asList(new Attribute("n1", "v1"), new Attribute("n2", "v2"), new Attribute("n3", "v3")));
 	}
 
 	@Test
