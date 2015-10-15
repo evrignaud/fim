@@ -19,6 +19,7 @@
 package org.fim.internal.hash;
 
 import static org.fim.model.Contants.NO_HASH;
+import static org.fim.model.FileAttribute.SELinuxLabel;
 import static org.fim.model.FileAttribute.dosFilePermissions;
 import static org.fim.model.FileAttribute.posixFilePermissions;
 import static org.fim.model.HashMode.dontHash;
@@ -39,6 +40,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.fim.internal.SELinux;
 import org.fim.model.Attribute;
 import org.fim.model.FileAttribute;
 import org.fim.model.FileHash;
@@ -118,6 +120,10 @@ public class FileHasher implements Runnable
 					{
 						PosixFileAttributes posixFileAttributes = Files.readAttributes(file, PosixFileAttributes.class);
 						fileAttributes = addAttribute(fileAttributes, posixFilePermissions, PosixFilePermissions.toString(posixFileAttributes.permissions()));
+						if (SELinux.ENABLED)
+						{
+							fileAttributes = addAttribute(fileAttributes, SELinuxLabel, SELinux.getLabel(file));
+						}
 						attributes = posixFileAttributes;
 					}
 

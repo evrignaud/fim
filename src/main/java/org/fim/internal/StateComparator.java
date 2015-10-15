@@ -18,6 +18,7 @@
  */
 package org.fim.internal;
 
+import static org.fim.model.FileAttribute.SELinuxLabel;
 import static org.fim.model.FileAttribute.dosFilePermissions;
 import static org.fim.model.FileAttribute.posixFilePermissions;
 import static org.fim.model.HashMode.dontHash;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.fim.model.CompareResult;
@@ -77,6 +79,9 @@ public class StateComparator
 		addedOrModified = new ArrayList<>();
 	}
 
+	/**
+	 * Allow to compare the current State with a State created on another OS.
+	 */
 	private void makeLastStateComparable()
 	{
 		if (lastState == null)
@@ -84,25 +89,41 @@ public class StateComparator
 			return;
 		}
 
-		String unsupportedFilePermissions;
 		if (SystemUtils.IS_OS_WINDOWS)
 		{
-			unsupportedFilePermissions = posixFilePermissions.name();
+			filterOut(lastState, posixFilePermissions.name());
 		}
 		else
 		{
-			unsupportedFilePermissions = dosFilePermissions.name();
+			filterOut(lastState, dosFilePermissions.name());
 		}
 
-		lastState.getFileStates().stream()
+		if (!SELinux.ENABLED)
+		{
+			filterOut(lastState, SELinuxLabel.name());
+		}
+	}
+
+	private void filterOut(State state, String unsupportedFileAttr)
+	{
+		final AtomicBoolean attrRemoved = new AtomicBoolean(false);
+		state.getFileStates().stream()
 				.filter(fileState -> fileState.getFileAttributes() != null)
 				.forEach(fileState -> {
-					fileState.getFileAttributes().remove(unsupportedFilePermissions);
+					if (fileState.getFileAttributes().remove(unsupportedFileAttr) != null)
+					{
+						attrRemoved.set(true);
+					}
 					if (fileState.getFileAttributes().isEmpty())
 					{
 						fileState.setFileAttributes(null);
 					}
 				});
+
+		if (attrRemoved.get())
+		{
+			Logger.warning(String.format("Last State contain %s file attributes that are not supported. They are ignored", unsupportedFileAttr));
+		}
 	}
 
 	public StateComparator searchForHardwareCorruption()

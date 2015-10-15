@@ -191,7 +191,7 @@ public class CompareResult
 			String previousValue = getValue(previousFileAttributes, key);
 			String currentValue = getValue(currentFileAttributes, key);
 
-			if (previousValue != NOTHING && currentValue != NOTHING && false == Objects.equals(previousValue, currentValue))
+			if (false == Objects.equals(previousValue, currentValue))
 			{
 				modifCount++;
 				addSeparator(diff, modification);
@@ -270,6 +270,11 @@ public class CompareResult
 			if (!dateModified.isEmpty())
 			{
 				message += "" + dateModified.size() + " date modified, ";
+			}
+
+			if (!attributesModified.isEmpty())
+			{
+				message += "" + attributesModified.size() + " attrs. modified, ";
 			}
 
 			if (!contentModified.isEmpty())
