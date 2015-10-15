@@ -39,6 +39,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.atteo.evo.inflector.English;
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
 import org.fim.model.FileAttribute;
@@ -87,7 +88,7 @@ public class ResetFileAttributesCommand extends AbstractCommand
 			lastState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
 		}
 
-		int attrResetCount = 0;
+		int fileResetCount = 0;
 		for (FileState fileState : lastState.getFileStates())
 		{
 			Path file = context.getRepositoryRootDir().resolve(fileState.getFileName());
@@ -159,19 +160,19 @@ public class ResetFileAttributesCommand extends AbstractCommand
 
 				if (attrReset)
 				{
-					attrResetCount++;
+					fileResetCount++;
 				}
 			}
 		}
 
-		if (attrResetCount == 0)
+		if (fileResetCount == 0)
 		{
-			Logger.info("No file modification date have been reset");
+			Logger.info("No file attributes have been reset");
 		}
 		else
 		{
 			Console.newLine();
-			Logger.info(String.format("%d file attributes have been reset", attrResetCount));
+			Logger.info(String.format("The attributes of %d %s have been reset", fileResetCount, English.plural("file", fileResetCount)));
 		}
 		return null;
 	}
