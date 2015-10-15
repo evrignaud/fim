@@ -18,8 +18,8 @@
  */
 package org.fim.util;
 
-import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -40,7 +40,7 @@ public class SELinux
 
 		try
 		{
-			List<String> lines = CommandUtil.execCmdAndGetLines("sestatus");
+			List<String> lines = CommandUtil.execCmdAndGetLines(Arrays.asList("sestatus"));
 			for (String line : lines)
 			{
 				if (line.contains("SELinux status"))
@@ -55,7 +55,7 @@ public class SELinux
 				}
 			}
 		}
-		catch (IOException ex)
+		catch (Exception ex)
 		{
 			// Never mind
 		}
@@ -70,14 +70,14 @@ public class SELinux
 		String fileName = file.normalize().toAbsolutePath().toString();
 		try
 		{
-			String line = CommandUtil.execCmd("ls -1Z " + fileName);
+			String line = CommandUtil.execCmd(Arrays.asList("ls", "-1Z", fileName));
 			String[] strings = line.split(" ");
 			if (strings.length == 2)
 			{
 				return strings[0];
 			}
 		}
-		catch (IOException ex)
+		catch (Exception ex)
 		{
 			Logger.error("Error retrieving SELinux label for '" + file + "'", ex);
 		}
@@ -90,9 +90,9 @@ public class SELinux
 		String fileName = file.normalize().toAbsolutePath().toString();
 		try
 		{
-			CommandUtil.execCmd("chcon " + label + " " + fileName);
+			CommandUtil.execCmd(Arrays.asList("chcon", label, fileName));
 		}
-		catch (IOException ex)
+		catch (Exception ex)
 		{
 			Logger.error("Error setting SELinux label for '" + file + "'", ex);
 		}

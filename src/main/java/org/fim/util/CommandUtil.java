@@ -18,6 +18,7 @@
  */
 package org.fim.util;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,30 +29,51 @@ public class CommandUtil
 	/**
 	 * Execute a command and return all the output.
 	 */
-	public static String execCmd(String cmd) throws java.io.IOException
+	public static String execCmd(List<String> cmdarray) throws IOException, InterruptedException
 	{
-		Process proc = Runtime.getRuntime().exec(cmd);
-		try (InputStream is = proc.getInputStream();
+		ProcessBuilder builder = new ProcessBuilder(cmdarray);
+		builder.redirectErrorStream(true);
+		Process process = builder.start();
+
+		try (InputStream is = process.getInputStream();
 			 Scanner scanner = new Scanner(is).useDelimiter("$"))
 		{
-			String val = scanner.hasNext() ? scanner.next() : "";
-			return val;
+			String output = scanner.hasNext() ? scanner.next() : "";
+
+			process.waitFor();
+			int exitValue = process.exitValue();
+			if (exitValue != 0)
+			{
+				throw new IllegalArgumentException(String.format("Command execution failed with status: %d\n%s", exitValue, output));
+			}
+			
+			return output;
 		}
 	}
 
 	/**
 	 * Execute a command and return all the lines of the output.
 	 */
-	public static List<String> execCmdAndGetLines(String cmd) throws java.io.IOException
+	public static List<String> execCmdAndGetLines(List<String> cmdarray) throws IOException, InterruptedException
 	{
-		Process proc = Runtime.getRuntime().exec(cmd);
-		try (InputStream is = proc.getInputStream();
+		ProcessBuilder builder = new ProcessBuilder(cmdarray);
+		builder.redirectErrorStream(true);
+		Process process = builder.start();
+
+		try (InputStream is = process.getInputStream();
 			 Scanner scanner = new Scanner(is).useDelimiter("\n"))
 		{
 			List<String> lines = new ArrayList<>();
 			while (scanner.hasNext())
 			{
 				lines.add(scanner.next());
+			}
+
+			process.waitFor();
+			int exitValue = process.exitValue();
+			if (exitValue != 0)
+			{
+				throw new IllegalArgumentException(String.format("Command execution failed with status: %d\n%s", exitValue, lines));
 			}
 
 			return lines;

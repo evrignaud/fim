@@ -155,7 +155,7 @@ public class FileHasher implements Runnable
 		{
 			return attributes;
 		}
-		
+
 		List<Attribute> newAttributes = attributes;
 		if (newAttributes == null)
 		{
