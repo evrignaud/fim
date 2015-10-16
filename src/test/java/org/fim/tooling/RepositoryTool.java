@@ -44,7 +44,7 @@ public class RepositoryTool
 	public RepositoryTool(Path rootDir)
 	{
 		this.rootDir = rootDir;
-		this.fileCount = 0;
+		this.fileCount = 1;
 	}
 
 	public Context createContext(HashMode hashMode, boolean verbose)
@@ -59,12 +59,17 @@ public class RepositoryTool
 		return context;
 	}
 
-	public void createASetOfFiles(int fileCount) throws IOException
+	public void createASetOfFiles(int count) throws IOException
 	{
-		for (int index = 1; index <= fileCount; index++)
+		for (int index = 1; index <= count; index++)
 		{
-			createFile("file" + String.format("%02d", index));
+			createOneFile();
 		}
+	}
+
+	public void createOneFile() throws IOException
+	{
+		createFile("file" + String.format("%02d", fileCount));
 	}
 
 	public void touchCreationTime(String fileName) throws IOException

@@ -38,7 +38,7 @@ import org.junit.Test;
 
 public class LinuxResetFileAttrsCommandTest
 {
-	private static Path rootDir = Paths.get("target/" + CorruptCommandTest.class.getSimpleName());
+	private static Path rootDir = Paths.get("target/" + LinuxResetFileAttrsCommandTest.class.getSimpleName());
 
 	private InitCommand initCommand;
 	private DiffCommand diffCommand;

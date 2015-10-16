@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
+import org.fim.util.Logger;
 
 public class PurgeStatesCommand extends AbstractCommand
 {
@@ -57,7 +58,7 @@ public class PurgeStatesCommand extends AbstractCommand
 	{
 		StateManager stateManager = new StateManager(context);
 
-		List<Path> filesToDelete = new ArrayList<>();
+		List<Path> statesToPurge = new ArrayList<>();
 
 		int index;
 		Path stateFile;
@@ -71,23 +72,31 @@ public class PurgeStatesCommand extends AbstractCommand
 			}
 
 			stateFile = stateManager.getStateFile(index);
-			filesToDelete.add(stateFile);
+			statesToPurge.add(stateFile);
 		}
 
-		System.out.printf("You are going to delete the %d previous State files, keeping only the last one%n", filesToDelete.size());
-		if (confirmAction(context, "remove them"))
+		int statesPurgedCount = statesToPurge.size();
+		if (statesPurgedCount == 0)
 		{
-			for (Path fileToDelete : filesToDelete)
-			{
-				Files.delete(fileToDelete);
-			}
-
-			stateFile = stateManager.getStateFile(index);
-			Path newStateFile = stateManager.getStateFile(1);
-			Files.move(stateFile, newStateFile);
-
-			stateManager.saveLastStateNumber(1);
+			Logger.info("No State to purge");
 		}
-		return null;
+		else
+		{
+			System.out.printf("You are going to delete the %d previous State files, keeping only the last one%n", statesPurgedCount);
+			if (confirmAction(context, "remove them"))
+			{
+				for (Path stateToDelete : statesToPurge)
+				{
+					Files.delete(stateToDelete);
+				}
+
+				stateFile = stateManager.getStateFile(index);
+				Path newStateFile = stateManager.getStateFile(1);
+				Files.move(stateFile, newStateFile);
+
+				stateManager.saveLastStateNumber(1);
+			}
+		}
+		return statesPurgedCount;
 	}
 }

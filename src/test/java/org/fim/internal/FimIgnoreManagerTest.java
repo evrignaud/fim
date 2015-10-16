@@ -29,7 +29,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.io.FileUtils;
-import org.fim.internal.hash.FileHasherTest;
 import org.fim.model.FileToIgnore;
 import org.fim.model.FimIgnore;
 import org.fim.tooling.StateAssert;
@@ -39,7 +38,7 @@ import org.mockito.Mockito;
 
 public class FimIgnoreManagerTest extends StateAssert
 {
-	private static Path rootDir = Paths.get("target/" + FileHasherTest.class.getSimpleName());
+	private static Path rootDir = Paths.get("target/" + FimIgnoreManagerTest.class.getSimpleName());
 
 	private FimIgnoreManager cut = new FimIgnoreManager(defaultContext());
 
