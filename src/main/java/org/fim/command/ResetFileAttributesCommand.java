@@ -18,9 +18,6 @@
  */
 package org.fim.command;
 
-import static org.fim.model.FileAttribute.SELinuxLabel;
-import static org.fim.model.FileAttribute.dosFilePermissions;
-import static org.fim.model.FileAttribute.posixFilePermissions;
 import static org.fim.util.FormatUtil.formatDate;
 
 import java.io.IOException;
@@ -139,7 +136,7 @@ public class ResetFileAttributesCommand extends AbstractCommand
 	private boolean resetDosPermissions(Path file, FileState fileState, DosFileAttributes dosFileAttributes)
 	{
 		String permissions = DosFilePermissions.toString(dosFileAttributes);
-		String previousPermissions = getAttribute(fileState, dosFilePermissions);
+		String previousPermissions = getAttribute(fileState, FileAttribute.DosFilePermissions);
 		if (!Objects.equals(permissions, previousPermissions))
 		{
 			DosFilePermissions.setPermissions(file, previousPermissions);
@@ -152,7 +149,7 @@ public class ResetFileAttributesCommand extends AbstractCommand
 	private boolean resetPosixPermissions(Path file, FileState fileState, PosixFileAttributes posixFileAttributes) throws IOException
 	{
 		String permissions = PosixFilePermissions.toString(posixFileAttributes.permissions());
-		String previousPermissions = getAttribute(fileState, posixFilePermissions);
+		String previousPermissions = getAttribute(fileState, FileAttribute.PosixFilePermissions);
 		if (!Objects.equals(permissions, previousPermissions))
 		{
 			Set<PosixFilePermission> permissionSet = PosixFilePermissions.fromString(previousPermissions);
@@ -194,7 +191,7 @@ public class ResetFileAttributesCommand extends AbstractCommand
 		if (SELinux.ENABLED)
 		{
 			String label = SELinux.getLabel(file);
-			String previousLabel = getAttribute(fileState, SELinuxLabel);
+			String previousLabel = getAttribute(fileState, FileAttribute.SELinuxLabel);
 			if (!Objects.equals(label, previousLabel))
 			{
 				SELinux.setLabel(file, previousLabel);

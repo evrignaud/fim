@@ -29,9 +29,9 @@ public class CommandUtil
 	/**
 	 * Execute a command and return all the output.
 	 */
-	public static String executeCommand(List<String> cmdarray) throws IOException, InterruptedException
+	public static String executeCommand(List<String> cmdArray) throws IOException, InterruptedException
 	{
-		ProcessBuilder builder = new ProcessBuilder(cmdarray);
+		ProcessBuilder builder = new ProcessBuilder(cmdArray);
 		builder.redirectErrorStream(true);
 		Process process = builder.start();
 
@@ -54,9 +54,9 @@ public class CommandUtil
 	/**
 	 * Execute a command and return all the lines of the output.
 	 */
-	public static List<String> executeCommandAndGetLines(List<String> cmdarray) throws IOException, InterruptedException
+	public static List<String> executeCommandAndGetLines(List<String> cmdArray) throws IOException, InterruptedException
 	{
-		ProcessBuilder builder = new ProcessBuilder(cmdarray);
+		ProcessBuilder builder = new ProcessBuilder(cmdArray);
 		builder.redirectErrorStream(true);
 		Process process = builder.start();
 

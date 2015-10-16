@@ -18,9 +18,9 @@
  */
 package org.fim.internal;
 
+import static org.fim.model.FileAttribute.DosFilePermissions;
+import static org.fim.model.FileAttribute.PosixFilePermissions;
 import static org.fim.model.FileAttribute.SELinuxLabel;
-import static org.fim.model.FileAttribute.dosFilePermissions;
-import static org.fim.model.FileAttribute.posixFilePermissions;
 import static org.fim.model.HashMode.dontHash;
 
 import java.util.ArrayList;
@@ -92,11 +92,11 @@ public class StateComparator
 
 		if (SystemUtils.IS_OS_WINDOWS)
 		{
-			filterOut(lastState, posixFilePermissions.name());
+			filterOut(lastState, PosixFilePermissions.name());
 		}
 		else
 		{
-			filterOut(lastState, dosFilePermissions.name());
+			filterOut(lastState, DosFilePermissions.name());
 		}
 
 		if (!SELinux.ENABLED)

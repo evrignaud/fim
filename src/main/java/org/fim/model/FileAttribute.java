@@ -20,7 +20,7 @@ package org.fim.model;
 
 public enum FileAttribute
 {
-	dosFilePermissions,
-	posixFilePermissions,
+	DosFilePermissions,
+	PosixFilePermissions,
 	SELinuxLabel
 }

@@ -77,7 +77,7 @@ public class DuplicateResult
 				Console.newLine();
 			}
 		}
-		System.out.printf("%d duplicated files spread in %d duplicate sets, %s of wasted space%n",
+		System.out.printf("%d duplicated files spread into %d duplicate sets, %s of wasted space%n",
 				duplicatedFilesCount, duplicateSets.size(), FileUtils.byteCountToDisplaySize(wastedSpace));
 
 		return this;
