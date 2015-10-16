@@ -137,7 +137,7 @@ public class ResetFileAttributesCommand extends AbstractCommand
 	{
 		String permissions = DosFilePermissions.toString(dosFileAttributes);
 		String previousPermissions = getAttribute(fileState, FileAttribute.DosFilePermissions);
-		if (!Objects.equals(permissions, previousPermissions))
+		if (previousPermissions != null && !Objects.equals(permissions, previousPermissions))
 		{
 			DosFilePermissions.setPermissions(file, previousPermissions);
 			System.out.printf("Set permissions: %s \t%s -> %s%n", fileState.getFileName(), permissions, previousPermissions);
@@ -150,7 +150,7 @@ public class ResetFileAttributesCommand extends AbstractCommand
 	{
 		String permissions = PosixFilePermissions.toString(posixFileAttributes.permissions());
 		String previousPermissions = getAttribute(fileState, FileAttribute.PosixFilePermissions);
-		if (!Objects.equals(permissions, previousPermissions))
+		if (previousPermissions != null && !Objects.equals(permissions, previousPermissions))
 		{
 			Set<PosixFilePermission> permissionSet = PosixFilePermissions.fromString(previousPermissions);
 			Files.getFileAttributeView(file, PosixFileAttributeView.class).setPermissions(permissionSet);
@@ -192,7 +192,7 @@ public class ResetFileAttributesCommand extends AbstractCommand
 		{
 			String label = SELinux.getLabel(file);
 			String previousLabel = getAttribute(fileState, FileAttribute.SELinuxLabel);
-			if (!Objects.equals(label, previousLabel))
+			if (previousLabel != null && !Objects.equals(label, previousLabel))
 			{
 				SELinux.setLabel(file, previousLabel);
 				System.out.printf("Set SELinux: %s \t%s -> %s%n", fileState.getFileName(), label, previousLabel);
