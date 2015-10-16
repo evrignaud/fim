@@ -18,7 +18,7 @@
  */
 package org.fim.internal.hash;
 
-import static org.fim.model.Contants._4_KB;
+import static org.fim.model.Constants._4_KB;
 import static org.fim.model.HashMode.hashSmallBlock;
 
 import java.security.NoSuchAlgorithmException;

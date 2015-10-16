@@ -18,7 +18,7 @@
  */
 package org.fim.model;
 
-public class Contants
+public class Constants
 {
 	public static final int _1_KB = 1_024;
 	public static final int _4_KB = 4 * _1_KB;

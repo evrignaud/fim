@@ -18,7 +18,7 @@
  */
 package org.fim.internal.hash;
 
-import static org.fim.model.Contants.NO_HASH;
+import static org.fim.model.Constants.NO_HASH;
 import static org.fim.model.HashMode.dontHash;
 
 import java.io.IOException;

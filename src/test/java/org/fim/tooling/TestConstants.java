@@ -18,7 +18,7 @@
  */
 package org.fim.tooling;
 
-public class TestContants
+public class TestConstants
 {
 	public static final int _1_KB = 1_024;
 	public static final int _2_KB = 2 * _1_KB;

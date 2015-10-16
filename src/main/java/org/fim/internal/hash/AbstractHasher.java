@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.fim.model.Contants;
+import org.fim.model.Constants;
 import org.fim.model.HashMode;
 
 public abstract class AbstractHasher implements Hasher
@@ -78,7 +78,7 @@ public abstract class AbstractHasher implements Hasher
 		}
 		else
 		{
-			return Contants.NO_HASH;
+			return Constants.NO_HASH;
 		}
 	}
 

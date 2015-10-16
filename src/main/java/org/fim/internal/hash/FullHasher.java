@@ -19,7 +19,7 @@
 package org.fim.internal.hash;
 
 import static java.lang.Math.min;
-import static org.fim.model.Contants._1_MB;
+import static org.fim.model.Constants._1_MB;
 import static org.fim.model.HashMode.hashAll;
 
 import java.nio.ByteBuffer;

@@ -20,13 +20,13 @@ package org.fim.internal.hash;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.hashSmallBlock;
-import static org.fim.tooling.TestContants._12_KB;
-import static org.fim.tooling.TestContants._16_KB;
-import static org.fim.tooling.TestContants._1_KB;
-import static org.fim.tooling.TestContants._20_KB;
-import static org.fim.tooling.TestContants._4_KB;
-import static org.fim.tooling.TestContants._5_KB;
-import static org.fim.tooling.TestContants._8_KB;
+import static org.fim.tooling.TestConstants._12_KB;
+import static org.fim.tooling.TestConstants._16_KB;
+import static org.fim.tooling.TestConstants._1_KB;
+import static org.fim.tooling.TestConstants._20_KB;
+import static org.fim.tooling.TestConstants._4_KB;
+import static org.fim.tooling.TestConstants._5_KB;
+import static org.fim.tooling.TestConstants._8_KB;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;

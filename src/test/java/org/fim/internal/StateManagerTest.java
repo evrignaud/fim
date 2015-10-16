@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
-import org.fim.model.Contants;
+import org.fim.model.Constants;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
@@ -162,7 +162,7 @@ public class StateManagerTest extends StateAssert
 
 	private void assertAllFileStatesHaveNoHash(State result, int fileCount)
 	{
-		FileHash noHash = new FileHash(Contants.NO_HASH, Contants.NO_HASH, Contants.NO_HASH);
+		FileHash noHash = new FileHash(Constants.NO_HASH, Constants.NO_HASH, Constants.NO_HASH);
 
 		assertThat(result.getFileStates().size()).isEqualTo(fileCount);
 		for (FileState fileState : result.getFileStates())

@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
-import org.fim.model.Contants;
+import org.fim.model.Constants;
 import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
@@ -133,18 +133,18 @@ public class BuildableState extends State
 		switch (context.getHashMode())
 		{
 			case dontHash:
-				smallBlockHash = Contants.NO_HASH;
-				mediumBlockHash = Contants.NO_HASH;
-				fullHash = Contants.NO_HASH;
+				smallBlockHash = Constants.NO_HASH;
+				mediumBlockHash = Constants.NO_HASH;
+				fullHash = Constants.NO_HASH;
 				break;
 
 			case hashSmallBlock:
-				mediumBlockHash = Contants.NO_HASH;
-				fullHash = Contants.NO_HASH;
+				mediumBlockHash = Constants.NO_HASH;
+				fullHash = Constants.NO_HASH;
 				break;
 
 			case hashMediumBlock:
-				fullHash = Contants.NO_HASH;
+				fullHash = Constants.NO_HASH;
 				break;
 
 			case hashAll:
@@ -164,18 +164,18 @@ public class BuildableState extends State
 		switch (context.getHashMode())
 		{
 			case dontHash:
-				smallBlockHash = Contants.NO_HASH;
-				mediumBlockHash = Contants.NO_HASH;
-				fullHash = Contants.NO_HASH;
+				smallBlockHash = Constants.NO_HASH;
+				mediumBlockHash = Constants.NO_HASH;
+				fullHash = Constants.NO_HASH;
 				break;
 
 			case hashSmallBlock:
-				mediumBlockHash = Contants.NO_HASH;
-				fullHash = Contants.NO_HASH;
+				mediumBlockHash = Constants.NO_HASH;
+				fullHash = Constants.NO_HASH;
 				break;
 
 			case hashMediumBlock:
-				fullHash = Contants.NO_HASH;
+				fullHash = Constants.NO_HASH;
 				break;
 
 			case hashAll:
