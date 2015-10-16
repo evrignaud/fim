@@ -130,7 +130,7 @@ public class ResetFileAttributesCommand extends AbstractCommand
 			Console.newLine();
 			Logger.info(String.format("The attributes of %d %s have been reset", fileResetCount, English.plural("file", fileResetCount)));
 		}
-		return null;
+		return fileResetCount;
 	}
 
 	private boolean resetDosPermissions(Path file, FileState fileState, DosFileAttributes dosFileAttributes)

@@ -28,7 +28,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CommandUtilTest
+public class LinuxCommandUtilTest
 {
 	@Before
 	public void setup()

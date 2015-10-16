@@ -26,6 +26,10 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Set;
 
 import org.fim.model.Context;
 import org.fim.model.HashMode;
@@ -125,6 +129,25 @@ public class RepositoryTool
 		}
 
 		Files.write(file, sb.toString().getBytes(), CREATE);
+	}
+
+	public void setPermissions(String fileName, String permissions) throws IOException
+	{
+		Path file = rootDir.resolve(fileName);
+		Set<PosixFilePermission> permissionSet = PosixFilePermissions.fromString(permissions);
+		Files.getFileAttributeView(file, PosixFileAttributeView.class).setPermissions(permissionSet);
+	}
+
+	public void sleepSafely(int millis)
+	{
+		try
+		{
+			Thread.sleep(millis);
+		}
+		catch (InterruptedException e)
+		{
+			// Never mind
+		}
 	}
 
 	private FileTime getCreationTime(Path file) throws IOException
