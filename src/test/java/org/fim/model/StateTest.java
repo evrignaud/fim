@@ -72,6 +72,12 @@ public class StateTest extends StateAssert
 	}
 
 	@Test
+	public void toStringIsWorking()
+	{
+		assertThat(a1.toString().contains("modelVersion")).isTrue();
+	}
+
+	@Test
 	public void weCanHashAState() throws ParseException
 	{
 		fixTimeStamps(a1);

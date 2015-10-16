@@ -123,4 +123,10 @@ public class RangeTest
 		assertThat(b.compareTo(a1)).isEqualTo(1);
 		assertThat(c.compareTo(a1)).isEqualTo(1);
 	}
+
+	@Test
+	public void toStringIsWorking()
+	{
+		assertThat(a1.toString().contains("from")).isTrue();
+	}
 }

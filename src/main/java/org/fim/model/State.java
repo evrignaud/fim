@@ -155,11 +155,6 @@ public class State implements Hashable
 		return modelVersion;
 	}
 
-	public void setModelVersion(String modelVersion)
-	{
-		this.modelVersion = modelVersion;
-	}
-
 	public long getTimestamp()
 	{
 		return timestamp;
@@ -186,11 +181,6 @@ public class State implements Hashable
 		return fileCount;
 	}
 
-	protected void setFileCount(int fileCount)
-	{
-		// This value is computed dynamically when getFileCount() is called
-	}
-
 	public HashMode getHashMode()
 	{
 		return hashMode;
@@ -214,11 +204,6 @@ public class State implements Hashable
 	public List<FileState> getFileStates()
 	{
 		return fileStates;
-	}
-
-	public void setFileStates(List<FileState> fileStates)
-	{
-		this.fileStates = fileStates;
 	}
 
 	public ModificationCounts getModificationCounts()

@@ -61,4 +61,10 @@ public class DuplicatedFilesTest
 
 		assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
 	}
+
+	@Test
+	public void toStringIsWorking()
+	{
+		assertThat(a1.toString().contains("duplicates")).isTrue();
+	}
 }
