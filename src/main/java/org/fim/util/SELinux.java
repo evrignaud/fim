@@ -63,7 +63,7 @@ public class SELinux
 	}
 
 	/**
-	 * Retrieve the SELinux label of the specified file
+	 * Retrieve the SELinux label of the specified file.
 	 */
 	public static String getLabel(Path file)
 	{
@@ -85,6 +85,9 @@ public class SELinux
 		return null;
 	}
 
+	/**
+	 * Set the SELinux label of the specified file.
+	 */
 	public static void setLabel(Path file, String label)
 	{
 		String fileName = file.normalize().toAbsolutePath().toString();
