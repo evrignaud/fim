@@ -94,7 +94,7 @@ public class ResetFileAttributesCommand extends AbstractCommand
 			Path file = context.getRepositoryRootDir().resolve(fileState.getFileName());
 			if (Files.exists(file))
 			{
-				boolean attrReset = false;
+				boolean attributesModified = false;
 
 				BasicFileAttributes attributes;
 
@@ -103,62 +103,21 @@ public class ResetFileAttributesCommand extends AbstractCommand
 					DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
 					attributes = dosFileAttributes;
 
-					String dosPermissions = DosFilePermissions.toString(dosFileAttributes);
-					String previousDosPermissions = getAttribute(fileState, dosFilePermissions);
-					if (!Objects.equals(dosPermissions, previousDosPermissions))
-					{
-						attrReset = true;
-						DosFilePermissions.setPermissions(file, previousDosPermissions);
-						System.out.printf("Set permissions: %s \t%s -> %s%n", fileState.getFileName(), dosPermissions, previousDosPermissions);
-					}
+					attributesModified = resetDosPermissions(file, fileState, dosFileAttributes) || attributesModified;
 				}
 				else
 				{
 					PosixFileAttributes posixFileAttributes = Files.readAttributes(file, PosixFileAttributes.class);
 					attributes = posixFileAttributes;
 
-					String posixPermissions = PosixFilePermissions.toString(posixFileAttributes.permissions());
-					String previousPosixPermissions = getAttribute(fileState, posixFilePermissions);
-					if (!Objects.equals(posixPermissions, previousPosixPermissions))
-					{
-						attrReset = true;
-						Set<PosixFilePermission> permissions = PosixFilePermissions.fromString(previousPosixPermissions);
-						Files.getFileAttributeView(file, PosixFileAttributeView.class).setPermissions(permissions);
-						System.out.printf("Set permissions: %s \t%s -> %s%n", fileState.getFileName(), posixPermissions, previousPosixPermissions);
-					}
+					attributesModified = resetPosixPermissions(file, fileState, posixFileAttributes) || attributesModified;
 				}
 
-				long creationTime = attributes.creationTime().toMillis();
-				long previousCreationTime = fileState.getFileTime().getCreationTime();
-				if (creationTime != previousCreationTime)
-				{
-					attrReset = true;
-					setCreationTime(file, FileTime.fromMillis(previousCreationTime));
-					System.out.printf("Set creation Time: %s \t%s -> %s%n", fileState.getFileName(), formatDate(creationTime), formatDate(previousCreationTime));
-				}
+				attributesModified = resetCreationTime(file, fileState, attributes) || attributesModified;
+				attributesModified = resetLastModified(file, fileState, attributes) || attributesModified;
+				attributesModified = resetSELinux(file, fileState) || attributesModified;
 
-				long lastModified = attributes.lastModifiedTime().toMillis();
-				long previousLastModified = fileState.getFileTime().getLastModified();
-				if (lastModified != previousLastModified)
-				{
-					attrReset = true;
-					Files.setLastModifiedTime(file, FileTime.fromMillis(previousLastModified));
-					System.out.printf("Set last modified: %s \t%s -> %s%n", fileState.getFileName(), formatDate(lastModified), formatDate(previousLastModified));
-				}
-
-				if (SELinux.ENABLED)
-				{
-					String label = SELinux.getLabel(file);
-					String previousLabel = getAttribute(fileState, SELinuxLabel);
-					if (!Objects.equals(label, previousLabel))
-					{
-						attrReset = true;
-						SELinux.setLabel(file, previousLabel);
-						System.out.printf("Set SELinux: %s \t%s -> %s%n", fileState.getFileName(), label, previousLabel);
-					}
-				}
-
-				if (attrReset)
+				if (attributesModified)
 				{
 					fileResetCount++;
 				}
@@ -175,6 +134,75 @@ public class ResetFileAttributesCommand extends AbstractCommand
 			Logger.info(String.format("The attributes of %d %s have been reset", fileResetCount, English.plural("file", fileResetCount)));
 		}
 		return null;
+	}
+
+	private boolean resetDosPermissions(Path file, FileState fileState, DosFileAttributes dosFileAttributes)
+	{
+		String permissions = DosFilePermissions.toString(dosFileAttributes);
+		String previousPermissions = getAttribute(fileState, dosFilePermissions);
+		if (!Objects.equals(permissions, previousPermissions))
+		{
+			DosFilePermissions.setPermissions(file, previousPermissions);
+			System.out.printf("Set permissions: %s \t%s -> %s%n", fileState.getFileName(), permissions, previousPermissions);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean resetPosixPermissions(Path file, FileState fileState, PosixFileAttributes posixFileAttributes) throws IOException
+	{
+		String permissions = PosixFilePermissions.toString(posixFileAttributes.permissions());
+		String previousPermissions = getAttribute(fileState, posixFilePermissions);
+		if (!Objects.equals(permissions, previousPermissions))
+		{
+			Set<PosixFilePermission> permissionSet = PosixFilePermissions.fromString(previousPermissions);
+			Files.getFileAttributeView(file, PosixFileAttributeView.class).setPermissions(permissionSet);
+			System.out.printf("Set permissions: %s \t%s -> %s%n", fileState.getFileName(), permissions, previousPermissions);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean resetCreationTime(Path file, FileState fileState, BasicFileAttributes attributes) throws IOException
+	{
+		long creationTime = attributes.creationTime().toMillis();
+		long previousCreationTime = fileState.getFileTime().getCreationTime();
+		if (creationTime != previousCreationTime)
+		{
+			setCreationTime(file, FileTime.fromMillis(previousCreationTime));
+			System.out.printf("Set creation Time: %s \t%s -> %s%n", fileState.getFileName(), formatDate(creationTime), formatDate(previousCreationTime));
+			return true;
+		}
+		return false;
+	}
+
+	private boolean resetLastModified(Path file, FileState fileState, BasicFileAttributes attributes) throws IOException
+	{
+		long lastModified = attributes.lastModifiedTime().toMillis();
+		long previousLastModified = fileState.getFileTime().getLastModified();
+		if (lastModified != previousLastModified)
+		{
+			Files.setLastModifiedTime(file, FileTime.fromMillis(previousLastModified));
+			System.out.printf("Set last modified: %s \t%s -> %s%n", fileState.getFileName(), formatDate(lastModified), formatDate(previousLastModified));
+			return true;
+		}
+		return false;
+	}
+
+	private boolean resetSELinux(Path file, FileState fileState)
+	{
+		if (SELinux.ENABLED)
+		{
+			String label = SELinux.getLabel(file);
+			String previousLabel = getAttribute(fileState, SELinuxLabel);
+			if (!Objects.equals(label, previousLabel))
+			{
+				SELinux.setLabel(file, previousLabel);
+				System.out.printf("Set SELinux: %s \t%s -> %s%n", fileState.getFileName(), label, previousLabel);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private String getAttribute(FileState fileState, FileAttribute fileAttribute)
