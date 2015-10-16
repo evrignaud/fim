@@ -78,12 +78,21 @@ public class Range implements Comparable<Range>
 
 	/**
 	 * If the specified Range starts before the end of this Range and finish after, then return a bigger Range.
+	 * The specified Range must begin inside the current Range.
 	 */
 	public Range adjustToRange(Range range)
 	{
-		if (range != null && range.getFrom() < to && range.getTo() > to)
+		if (range != null)
 		{
-			return new Range(from, range.getTo());
+			if (range.getFrom() < from)
+			{
+				throw new RuntimeException("The Range must begin inside the current Range");
+			}
+
+			if (range.getFrom() < to && range.getTo() > to)
+			{
+				return new Range(from, range.getTo());
+			}
 		}
 
 		return new Range(from, to);

@@ -41,6 +41,52 @@ public class RangeTest
 		c = new Range(4, 5);
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void toMustBeGreaterThanFrom()
+	{
+		new Range(4, 3);
+	}
+
+	@Test
+	public void emptyRangeIsAllowed()
+	{
+		Range range = new Range(4, 4);
+		assertThat(range.getFrom()).isEqualTo(range.getTo());
+	}
+
+	@Test
+	public void unionOfTwoRange()
+	{
+		Range range1 = new Range(4, 10);
+		Range range2 = new Range(7, 15);
+		assertThat(range1.union(range2)).isEqualTo(new Range(4, 15));
+		assertThat(range2.union(range1)).isEqualTo(new Range(4, 15));
+
+		range1 = new Range(4, 9);
+		range2 = new Range(12, 15);
+		assertThat(range1.union(range2)).isEqualTo(new Range(4, 15));
+	}
+
+	@Test
+	public void adjustingRanges()
+	{
+		Range range1 = new Range(4, 10);
+		Range range2 = new Range(7, 15);
+		assertThat(range1.adjustToRange(range2)).isEqualTo(new Range(4, 15));
+
+		range1 = new Range(4, 9);
+		range2 = new Range(12, 15);
+		assertThat(range1.adjustToRange(range2)).isEqualTo(new Range(4, 9));
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void otherRangeCannotStartBefore()
+	{
+		Range range1 = new Range(4, 10);
+		Range range2 = new Range(3, 15);
+		range1.adjustToRange(range2);
+	}
+
 	@Test
 	public void equalsIsWorking()
 	{
