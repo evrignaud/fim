@@ -50,7 +50,7 @@ public class FimIgnoreManager
 	public FimIgnoreManager(Context context)
 	{
 		this.context = context;
-		this.repositoryRootDirString = this.context.getRepositoryRootDir().toString();
+		this.repositoryRootDirString = FileUtil.getNormalizedFileName(this.context.getRepositoryRootDir());
 		this.ignoredFiles = new HashSet<>();
 	}
 
@@ -129,9 +129,8 @@ public class FimIgnoreManager
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	public boolean isIgnored(Path file, BasicFileAttributes attributes, FimIgnore fimIgnore)
+	public boolean isIgnored(String fileName, BasicFileAttributes attributes, FimIgnore fimIgnore)
 	{
-		String fileName = file.getFileName().toString();
 		if (attributes.isDirectory() && IGNORED_DIRECTORIES.contains(fileName))
 		{
 			return true;

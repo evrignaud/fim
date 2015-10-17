@@ -107,22 +107,20 @@ public class CorruptCommandTest
 		compareResult = (CompareResult) corruptCommand.execute(context);
 		assertThat(compareResult.getCorrupted().size()).isEqualTo(1);
 		FileState fileState = compareResult.getCorrupted().get(0).getFileState();
-		assertThat(fileState.getFileName()).isEqualTo("file04");
+		assertThat(fileState.getFileName()).isEqualTo("file03");
 	}
 
 	private void doSomeModifications() throws IOException
 	{
 		tool.sleepSafely(1_000); // Ensure to increase lastModified at least of 1 second
 
-		tool.touchCreationTime("file01");
+		tool.touchLastModified("file01");
 
-		tool.touchLastModified("file02");
+		tool.setFileContent("file02", "file02 new content");
 
-		tool.setFileContent("file03", "file03 new content");
+		simulateHardwareCorruption("file03");
 
-		simulateHardwareCorruption("file04");
-
-		// Do nothing on file05
+		// Do nothing on file04 and file05
 	}
 
 	private void simulateHardwareCorruption(String fileName) throws IOException

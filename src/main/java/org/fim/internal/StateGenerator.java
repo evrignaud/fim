@@ -204,7 +204,8 @@ public class StateGenerator
 				}
 
 				BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
-				if (fimIgnoreManager.isIgnored(file, attributes, fimIgnore))
+				String fileName = file.getFileName().toString();
+				if (fimIgnoreManager.isIgnored(fileName, attributes, fimIgnore))
 				{
 					fimIgnoreManager.ignoreThisFiles(file, attributes);
 				}

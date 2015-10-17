@@ -118,12 +118,12 @@ public class FimIgnoreManagerTest extends StateAssert
 
 	private void assertFileIgnored(String fileName, FimIgnore fimIgnore)
 	{
-		assertThat(cut.isIgnored(Paths.get(fileName), fileAttributes, fimIgnore)).isTrue();
+		assertThat(cut.isIgnored(fileName, fileAttributes, fimIgnore)).isTrue();
 	}
 
 	private void assertFileNotIgnored(String fileName, FimIgnore fimIgnore)
 	{
-		assertThat(cut.isIgnored(Paths.get(fileName), fileAttributes, fimIgnore)).isFalse();
+		assertThat(cut.isIgnored(fileName, fileAttributes, fimIgnore)).isFalse();
 	}
 
 	private void ignoreFile(FimIgnore fimIgnore, String fileNamePattern)

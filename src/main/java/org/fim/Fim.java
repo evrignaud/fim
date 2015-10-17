@@ -170,12 +170,6 @@ public class Fim
 			youMustSpecifyACommandToRun();
 		}
 
-		if (context.getThreadCount() < 1)
-		{
-			Logger.error("Thread count must be at least one");
-			System.exit(-1);
-		}
-
 		if (context.getThreadCount() != 1 && context.getHashMode() == dontHash)
 		{
 			context.setThreadCount(1);

@@ -18,6 +18,7 @@
  */
 package org.fim;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
@@ -27,7 +28,13 @@ public class FimTest
 	@Rule
 	public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
-	Fim cut = new Fim();
+	private Fim cut;
+
+	@Before
+	public void setUp()
+	{
+		cut = new Fim();
+	}
 
 	@Test
 	public void weCanPrintUsage()
@@ -75,13 +82,6 @@ public class FimTest
 	{
 		exit.expectSystemExitWithStatus(-1);
 		cut.main(new String[]{"-s"});
-	}
-
-	@Test
-	public void invalidThreadCountOption() throws Exception
-	{
-		exit.expectSystemExitWithStatus(-1);
-		cut.main(new String[]{"diff", "-t", "-1"});
 	}
 
 	@Test
