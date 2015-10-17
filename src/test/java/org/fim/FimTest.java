@@ -43,6 +43,13 @@ public class FimTest
 	}
 
 	@Test
+	public void weCanUseFimCommands() throws Exception
+	{
+		exit.expectSystemExitWithStatus(0);
+		cut.main(new String[]{"help"});
+	}
+
+	@Test
 	public void weCanRunVersionCommand() throws Exception
 	{
 		exit.expectSystemExitWithStatus(0);
