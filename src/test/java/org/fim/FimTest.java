@@ -78,7 +78,7 @@ public class FimTest
 	}
 
 	@Test
-	public void invalidThreadCoundOption() throws Exception
+	public void invalidThreadCountOption() throws Exception
 	{
 		exit.expectSystemExitWithStatus(-1);
 		cut.main(new String[]{"diff", "-t", "-1"});
