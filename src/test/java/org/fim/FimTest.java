@@ -58,15 +58,31 @@ public class FimTest
 	}
 
 	@Test
-	public void weCanUseFimCommands() throws Exception
+	public void weCanCommitUsingFim() throws Exception
 	{
-		tool.createOneFile();
-		cut.run(new String[]{"init", "-y"}, context);
-
-		tool.createOneFile();
-		cut.run(new String[]{"diff"}, context);
-
+		initRepoAndCreateOneFile();
 		cut.run(new String[]{"ci", "-y"}, context);
+	}
+
+	@Test
+	public void doNotHashOption() throws Exception
+	{
+		initRepoAndCreateOneFile();
+		cut.run(new String[]{"diff", "-n"}, context);
+	}
+
+	@Test
+	public void fastModeOption() throws Exception
+	{
+		initRepoAndCreateOneFile();
+		cut.run(new String[]{"diff", "-f"}, context);
+	}
+
+	@Test
+	public void superFastModeOption() throws Exception
+	{
+		initRepoAndCreateOneFile();
+		cut.run(new String[]{"diff", "-s"}, context);
 	}
 
 	@Test
@@ -88,26 +104,14 @@ public class FimTest
 	}
 
 	@Test(expected = BadFimUsageException.class)
-	public void doNotHashOptionWithoutCommand() throws Exception
-	{
-		cut.run(new String[]{"-n"}, context);
-	}
-
-	@Test(expected = BadFimUsageException.class)
-	public void fastModeOptionWithoutCommand() throws Exception
-	{
-		cut.run(new String[]{"-f"}, context);
-	}
-
-	@Test(expected = BadFimUsageException.class)
-	public void superFastModeOptionWithoutCommand() throws Exception
-	{
-		cut.run(new String[]{"-s"}, context);
-	}
-
-	@Test(expected = BadFimUsageException.class)
 	public void invalidOptionIsDetected() throws Exception
 	{
 		cut.run(new String[]{"-0"}, context);
+	}
+
+	private void initRepoAndCreateOneFile() throws Exception
+	{
+		cut.run(new String[]{"init", "-y"}, context);
+		tool.createOneFile();
 	}
 }
