@@ -76,6 +76,11 @@ public class Context
 		this.currentDirectory = currentDirectory;
 	}
 
+	public Path getAbsoluteCurrentDirectory()
+	{
+		return currentDirectory.toAbsolutePath().normalize();
+	}
+
 	public Path getRepositoryRootDir()
 	{
 		return repositoryRootDir;

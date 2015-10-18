@@ -43,6 +43,13 @@ import org.fim.util.Logger;
 
 public class RemoveDuplicatesCommand extends AbstractCommand
 {
+	private final Fim fim;
+
+	public RemoveDuplicatesCommand(Fim fim)
+	{
+		this.fim = fim;
+	}
+
 	@Override
 	public String getCmdName()
 	{
@@ -73,7 +80,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 		if (context.getMasterFimRepositoryDir() == null)
 		{
 			Logger.error("The master Fim directory must be provided");
-			Fim.printUsage();
+			fim.printUsage();
 			throw new BadFimUsageException();
 		}
 

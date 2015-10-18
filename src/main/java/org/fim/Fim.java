@@ -26,7 +26,6 @@ import static org.fim.model.HashMode.hashSmallBlock;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,10 +61,30 @@ import org.fim.util.Logger;
 
 public class Fim
 {
-	private static List<AbstractCommand> commands = buildCommands();
-	private static Options options = buildOptions();
+	private List<AbstractCommand> commands = buildCommands();
+	private Options options = buildOptions();
 
-	private static List<AbstractCommand> buildCommands()
+	public static void main(String[] args) throws Exception
+	{
+		try
+		{
+			Fim fim = new Fim();
+			Context context = new Context();
+			fim.run(args, context);
+		}
+		catch (DontWantToContinueException ex)
+		{
+			System.exit(0);
+		}
+		catch (BadFimUsageException | RepositoryCreationException ex)
+		{
+			System.exit(-1);
+		}
+
+		System.exit(0);
+	}
+
+	private List<AbstractCommand> buildCommands()
 	{
 		return Arrays.asList(
 				new InitCommand(),
@@ -74,16 +93,16 @@ public class Fim
 				new ResetFileAttributesCommand(),
 				new CorruptCommand(),
 				new FindDuplicatesCommand(),
-				new RemoveDuplicatesCommand(),
+				new RemoveDuplicatesCommand(this),
 				new LogCommand(),
 				new DisplayIgnoredFilesCommand(),
 				new RollbackCommand(),
 				new PurgeStatesCommand(),
-				new HelpCommand(),
+				new HelpCommand(this),
 				new VersionCommand());
 	}
 
-	private static Options buildOptions()
+	private Options buildOptions()
 	{
 		Options options = new Options();
 		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as remote master.\nOnly for the remove duplicated files command", false));
@@ -100,7 +119,7 @@ public class Fim
 		return options;
 	}
 
-	public static void main(String[] args) throws Exception
+	protected void run(String[] args, Context context) throws Exception
 	{
 		String[] filteredArgs = filterEmptyArgs(args);
 		if (filteredArgs.length < 1)
@@ -118,7 +137,6 @@ public class Fim
 		}
 
 		CommandLineParser cmdLineGnuParser = new DefaultParser();
-		Context context = new Context();
 
 		try
 		{
@@ -150,7 +168,7 @@ public class Fim
 
 			if (commandLine.hasOption('h'))
 			{
-				command = new HelpCommand();
+				command = new HelpCommand(this);
 			}
 			else if (commandLine.hasOption('v'))
 			{
@@ -162,7 +180,7 @@ public class Fim
 		{
 			Logger.error(ex.getMessage());
 			printUsage();
-			System.exit(-1);
+			throw new BadFimUsageException();
 		}
 
 		if (command == null)
@@ -170,7 +188,7 @@ public class Fim
 			youMustSpecifyACommandToRun();
 		}
 
-		if (context.getThreadCount() != 1 && context.getHashMode() == dontHash)
+		if ((context.getThreadCount() != 1) && (context.getHashMode() == dontHash))
 		{
 			context.setThreadCount(1);
 			Logger.info("Not hashing file content so thread count forced to 1");
@@ -179,12 +197,12 @@ public class Fim
 		FimReposConstraint constraint = command.getFimReposConstraint();
 		if (constraint == FimReposConstraint.MUST_NOT_EXIST)
 		{
-			setRepositoryRootDir(context, getAbsoluteCurrentDirectory(), false);
+			setRepositoryRootDir(context, context.getAbsoluteCurrentDirectory(), false);
 
 			if (Files.exists(context.getRepositoryStatesDir()))
 			{
 				Logger.error("Fim repository already exist");
-				System.exit(0);
+				throw new BadFimUsageException();
 			}
 		}
 		else if (constraint == FimReposConstraint.MUST_EXIST)
@@ -194,30 +212,17 @@ public class Fim
 			if (!Files.exists(context.getRepositoryStatesDir()))
 			{
 				Logger.error("Fim repository does not exist. Please run 'fim init' before.");
-				System.exit(-1);
+				throw new BadFimUsageException();
 			}
 		}
 
-		try
-		{
-			command.execute(context.clone());
-		}
-		catch (DontWantToContinueException ex)
-		{
-			System.exit(0);
-		}
-		catch (BadFimUsageException | RepositoryCreationException ex)
-		{
-			System.exit(-1);
-		}
-
-		System.exit(0);
+		command.execute(context.clone());
 	}
 
-	private static void findRepositoryRootDir(Context context)
+	private void findRepositoryRootDir(Context context)
 	{
 		boolean invokedFromSubDirectory = false;
-		Path directory = getAbsoluteCurrentDirectory();
+		Path directory = context.getAbsoluteCurrentDirectory();
 		while (directory != null)
 		{
 			Path dotFimDir = directory.resolve(Context.DOT_FIM_DIR);
@@ -232,18 +237,13 @@ public class Fim
 		}
 	}
 
-	private static void setRepositoryRootDir(Context context, Path directory, boolean invokedFromSubDirectory)
+	private void setRepositoryRootDir(Context context, Path directory, boolean invokedFromSubDirectory)
 	{
 		context.setRepositoryRootDir(directory);
 		context.setInvokedFromSubDirectory(invokedFromSubDirectory);
 	}
 
-	private static Path getAbsoluteCurrentDirectory()
-	{
-		return Paths.get(".").toAbsolutePath().normalize();
-	}
-
-	private static Command findCommand(final String cmdName)
+	private Command findCommand(final String cmdName)
 	{
 		for (final Command command : commands)
 		{
@@ -260,14 +260,14 @@ public class Fim
 		return null;
 	}
 
-	private static Option createOption(String opt, String longOpt, boolean hasArg, String description, boolean required)
+	private Option createOption(String opt, String longOpt, boolean hasArg, String description, boolean required)
 	{
 		Option option = new Option(opt, longOpt, hasArg, description);
 		option.setRequired(required);
 		return option;
 	}
 
-	private static String[] filterEmptyArgs(String[] args)
+	private String[] filterEmptyArgs(String[] args)
 	{
 		List<String> filteredArgs = new ArrayList<>();
 		for (String arg : args)
@@ -280,14 +280,14 @@ public class Fim
 		return filteredArgs.toArray(new String[0]);
 	}
 
-	private static void youMustSpecifyACommandToRun()
+	private void youMustSpecifyACommandToRun()
 	{
 		Logger.error("You must specify the command to run");
 		printUsage();
-		System.exit(-1);
+		throw new BadFimUsageException();
 	}
 
-	public static void printUsage()
+	public void printUsage()
 	{
 		StringBuilder usage = new StringBuilder();
 		usage.append("\n");

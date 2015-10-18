@@ -18,83 +18,96 @@
  */
 package org.fim;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.apache.commons.io.FileUtils;
+import org.fim.command.exception.BadFimUsageException;
+import org.fim.model.Context;
+import org.fim.tooling.RepositoryTool;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
 public class FimTest
 {
-	@Rule
-	public final ExpectedSystemExit exit = ExpectedSystemExit.none();
+	private static Path rootDir = Paths.get("target/" + FullScenarioTest.class.getSimpleName());
 
 	private Fim cut;
+	private Context context;
+	private RepositoryTool tool;
 
 	@Before
-	public void setUp()
+	public void setUp() throws IOException
 	{
+		FileUtils.deleteDirectory(rootDir.toFile());
+		Files.createDirectories(rootDir);
+
 		cut = new Fim();
+		context = new Context();
+		context.setCurrentDirectory(rootDir);
+
+		tool = new RepositoryTool(rootDir);
 	}
 
 	@Test
 	public void weCanPrintUsage()
 	{
-		Fim.printUsage();
+		cut.printUsage();
 	}
 
 	@Test
 	public void weCanUseFimCommands() throws Exception
 	{
-		exit.expectSystemExitWithStatus(0);
-		cut.main(new String[]{"help"});
+		tool.createOneFile();
+		cut.run(new String[]{"init", "-y"}, context);
+
+		tool.createOneFile();
+		cut.run(new String[]{"diff"}, context);
+
+		cut.run(new String[]{"ci", "-y"}, context);
 	}
 
 	@Test
 	public void weCanRunVersionCommand() throws Exception
 	{
-		exit.expectSystemExitWithStatus(0);
-		cut.main(new String[]{"-v"});
+		cut.run(new String[]{"-v"}, context);
 	}
 
 	@Test
 	public void weCanRunHelpCommand() throws Exception
 	{
-		exit.expectSystemExitWithStatus(0);
-		cut.main(new String[]{"-h"});
+		cut.run(new String[]{"-h"}, context);
 	}
 
-	@Test
+	@Test(expected = BadFimUsageException.class)
 	public void noArgumentSpecified() throws Exception
 	{
-		exit.expectSystemExitWithStatus(-1);
-		cut.main(new String[]{""});
+		cut.run(new String[]{""}, context);
 	}
 
-	@Test
+	@Test(expected = BadFimUsageException.class)
 	public void doNotHashOptionWithoutCommand() throws Exception
 	{
-		exit.expectSystemExitWithStatus(-1);
-		cut.main(new String[]{"-n"});
+		cut.run(new String[]{"-n"}, context);
 	}
 
-	@Test
+	@Test(expected = BadFimUsageException.class)
 	public void fastModeOptionWithoutCommand() throws Exception
 	{
-		exit.expectSystemExitWithStatus(-1);
-		cut.main(new String[]{"-f"});
+		cut.run(new String[]{"-f"}, context);
 	}
 
-	@Test
+	@Test(expected = BadFimUsageException.class)
 	public void superFastModeOptionWithoutCommand() throws Exception
 	{
-		exit.expectSystemExitWithStatus(-1);
-		cut.main(new String[]{"-s"});
+		cut.run(new String[]{"-s"}, context);
 	}
 
-	@Test
+	@Test(expected = BadFimUsageException.class)
 	public void invalidOptionIsDetected() throws Exception
 	{
-		exit.expectSystemExitWithStatus(-1);
-		cut.main(new String[]{"-0"});
+		cut.run(new String[]{"-0"}, context);
 	}
 }

@@ -73,7 +73,7 @@ public class FimIgnoreManager
 	 */
 	private void addParentFimIgnore(FimIgnore initialFimIgnore)
 	{
-		Path directory = Paths.get(".").toAbsolutePath().normalize();
+		Path directory = context.getAbsoluteCurrentDirectory();
 		while (false == directory.equals(context.getRepositoryRootDir()))
 		{
 			directory = directory.getParent();

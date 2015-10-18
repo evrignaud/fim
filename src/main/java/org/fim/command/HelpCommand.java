@@ -23,6 +23,13 @@ import org.fim.model.Context;
 
 public class HelpCommand extends AbstractCommand
 {
+	private final Fim fim;
+
+	public HelpCommand(Fim fim)
+	{
+		this.fim = fim;
+	}
+
 	@Override
 	public String getCmdName()
 	{
@@ -50,7 +57,7 @@ public class HelpCommand extends AbstractCommand
 	@Override
 	public Object execute(Context context) throws Exception
 	{
-		Fim.printUsage();
+		fim.printUsage();
 		return null;
 	}
 }

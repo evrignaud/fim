@@ -160,7 +160,7 @@ public class FullScenarioTest
 		Set<String> ignoredFiles = (Set<String>) displayIgnoredFilesCommand.execute(context);
 		assertThat(ignoredFiles.size()).isEqualTo(6);
 
-		assertWeCanRollbackLastCommit(context, 2, 2);
+		assertWeCanRollbackLastCommit(context, 2, 3);
 
 		assertFilesModifiedCountEqualsTo(context, 13);
 
@@ -221,15 +221,15 @@ public class FullScenarioTest
 		subDirectoryContext.setCurrentDirectory(subDirectory);
 		subDirectoryContext.setInvokedFromSubDirectory(true);
 
-		assertFilesModifiedCountEqualsTo(subDirectoryContext, 5);
+		assertFilesModifiedCountEqualsTo(subDirectoryContext, 4);
 
 		tool.createFimIgnore(subDirectory, "*.mp4\n" + "ignored_type2");
 
-		assertFilesModifiedCountEqualsTo(subDirectoryContext, 4);
+		assertFilesModifiedCountEqualsTo(subDirectoryContext, 3);
 
 		assertDuplicatedFilesCountEqualsTo(subDirectoryContext, 0);
 
-		commit_AndAssertFilesModifiedCountEqualsTo(subDirectoryContext, 4);
+		commit_AndAssertFilesModifiedCountEqualsTo(subDirectoryContext, 3);
 
 		assertFilesModifiedCountEqualsTo(subDirectoryContext, 0);
 	}
