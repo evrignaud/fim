@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import org.apache.commons.io.FileUtils;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.model.Context;
+import org.fim.model.HashMode;
 import org.fim.tooling.RepositoryTool;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,8 +36,8 @@ public class FimTest
 	private static Path rootDir = Paths.get("target/" + FullScenarioTest.class.getSimpleName());
 
 	private Fim cut;
-	private Context context;
 	private RepositoryTool tool;
+	private Context context;
 
 	@Before
 	public void setUp() throws IOException
@@ -45,10 +46,9 @@ public class FimTest
 		Files.createDirectories(rootDir);
 
 		cut = new Fim();
-		context = new Context();
-		context.setCurrentDirectory(rootDir);
 
 		tool = new RepositoryTool(rootDir);
+		context = tool.createContext(HashMode.hashAll, true);
 	}
 
 	@Test
@@ -101,6 +101,12 @@ public class FimTest
 	public void noArgumentSpecified() throws Exception
 	{
 		cut.run(new String[]{""}, context);
+	}
+
+	@Test(expected = BadFimUsageException.class)
+	public void noCommandSpecified() throws Exception
+	{
+		cut.run(new String[]{"-s"}, context);
 	}
 
 	@Test(expected = BadFimUsageException.class)
