@@ -144,7 +144,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 						context.getMasterFimRepositoryDir(), masterFileState.getFileName());
 				if (confirmAction(context, "remove it"))
 				{
-					Path localFile = Paths.get(localFileState.getFileName());
+					Path localFile = normalizedCurrentDir.resolve(localFileState.getFileName());
 					try
 					{
 						Files.delete(localFile);
@@ -159,9 +159,16 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 			}
 		}
 
-		Console.newLine();
-		Logger.info(String.format("Removed %d duplicated files", totalFilesRemoved));
-		return null;
+		if (totalFilesRemoved == 0)
+		{
+			Logger.info("No duplicated file found");
+		}
+		else
+		{
+			Console.newLine();
+			Logger.info(String.format("Removed %d duplicated files", totalFilesRemoved));
+		}
+		return totalFilesRemoved;
 	}
 
 	private Map<FileHash, FileState> buildFileHashMap(State state)
