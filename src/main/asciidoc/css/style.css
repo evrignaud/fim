@@ -1,0 +1,33 @@
+body, .title {
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title,
+.listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title,
+.quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title,
+.olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title {
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 1.5rem;
+}
+
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 {
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#header, #content, #footnotes {
+	max-width: 75em;
+}
+
+#footer {
+	max-width: 85em;
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+#footer {
+	background-color: #efefed;
+}
+
+#footer-text {
+	color: rgba(0, 0, 0, 0.8);
+}

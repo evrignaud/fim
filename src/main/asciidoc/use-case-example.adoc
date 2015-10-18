@@ -1,0 +1,10 @@
+= Use case example
+
+Fim can be used for different kind of use cases.
+Personally I use Fim to manage my photos and videos.
+When I have new photos, I put them at the right place in my pictures folder and then I do `fim ci` from the sub-directory containing the new photos to record a new State. As I could do with Git.
+As I do this from a sub-directory the commit is fast because Fim hash only the files that I added and create a new State by merging the previous State and the new hash.
+
+The `fim diff` command lets me know when I want (even super quickly) if something changed in my pictures folder.
+
+I can easily identify and delete the pictures I have duplicated on my drive or other computer with the command `fim rdup`. For this, I just need to copy the `.fim` directory on the other computer.

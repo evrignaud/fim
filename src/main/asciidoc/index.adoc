@@ -1,0 +1,90 @@
+:toc: left
+:toclevels: 2
+:toc-position: left
+:toc-title: Table of Contents
+:numbered:
+:imagesdir: images
+:icons:
+
+++++
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,900' rel='stylesheet' type='text/css'>
+
+<link rel="stylesheet" href="css/style.css">
+
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-65608268-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+<p>
+    <a href="https://github.com/evrignaud/fim"><img
+		style="position: fixed; top: 0; right: 0; border: 0; z-index: 1000; margin: 0;"
+		src="images/fork_me_on_github-top-right.png" alt="Fork me on GitHub">
+	</a>
+    <a href="#"><img
+		style="position: fixed; bottom: 0; right: 0; border: 0; z-index: 1000; margin: 20px 20px 20px;"
+		src="images/icons/back_to_top.png" alt="Back to top">
+	</a>
+</p>
+++++
+
+= Fim - File Integrity Manager
+Version {projectVersion}
+
+'''
+
+image:icons/fim-96.png[Fim]
+
+The purpose of Fim is to manage a workspace and be able to know where we are in the work we are doing.
+When we do a lot of stuff at the same time, things take time and we lose the thread.
+
+Fim allow you to quickly get the status of all kind of files.
+It can be photos, videos or a complete disk tree. You can manage them with a spirit that looks like Git.
+
+On a daily workflow, you can know the files that have been added, modified, removed, moved, renamed, duplicated.
+When you are working with files and you are also very busy, it's difficult to remind what are the files you were working on previously.
+A VCS can help you find it.
+Unfortunately when you are working with photos or videos, or other kind of big binary files you cannot manage them with a tool like Git.
+Fim is here for that.
+
+Each time you have a stable state you can commit to store it and be able to compare it with the next state later.
+
+The big difference with Git is that Fim does not keep track of the different contents of the files that are managed.
+This is why we can call it an Unversioned Control System (UVCS).
+
+Fim is able to manage hundreds of thousands of files with a total size of several terabytes.
+This kind of file tree could not be managed by Git.
+
+Using Fim you can also easily detect duplicates and remove them.
+
+
+// Push titles down one level
+:leveloffset: 1
+
+include::how-does-it-works.adoc[]
+
+include::fim-workflow.adoc[]
+
+include::fim-usage.adoc[]
+
+include::how-can-i-use-fim.adoc[]
+
+include::use-case-example.adoc[]
+
+include::changelog.adoc[]
+
+include::simple-example.adoc[]
+
+include::real-life-example.adoc[]
+
+include::faq.adoc[]
+
+include::other-stuff.adoc[]
+
+// Return to normal title levels
+:leveloffset: 0

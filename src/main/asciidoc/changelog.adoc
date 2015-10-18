@@ -1,0 +1,34 @@
+= Fim changelog
+
+
+== Version 1.0.2 (released 2015-09-04)
+
+https://github.com/evrignaud/fim/tree/1.0.2[image:icons/github.png[GitHub] Sources] &nbsp;&nbsp; - &nbsp;&nbsp; https://github.com/evrignaud/fim/compare/1.0.1%2E%2E%2E1.0.2[image:icons/list.png[List] Full Changelog]
+&nbsp;&nbsp; - &nbsp;&nbsp;
+https://github.com/evrignaud/fim/releases/tag/1.0.2[image:icons/package.png[Package] Download]
+
+* Fix https://github.com/evrignaud/fim/issues/1[issue #1]: Hash the second 4 KB / 1 MB block to ensure that the headers don't increase the collision probability when doing a rapid check.
+* Clarified the documentation
+
+
+== Version 1.0.1 (released 2015-08-26)
+
+https://github.com/evrignaud/fim/tree/1.0.1[image:icons/github.png[GitHub] Sources] &nbsp;&nbsp; - &nbsp;&nbsp; https://github.com/evrignaud/fim/compare/1.0.0%2E%2E%2E1.0.1[image:icons/list.png[List] Full Changelog]
+&nbsp;&nbsp; - &nbsp;&nbsp;
+https://github.com/evrignaud/fim/releases/tag/1.0.1[image:icons/package.png[Package] Download]
+
+* Bug Fix
+* Update the State format in order to improve Fim commands. It allows for example to display more details in the log command
+* Add the ability to run Fim from sub-directories
+* Add Global hash mode to be able to change the default Fim behavior
+
+
+== Version 1.0.0 (released 2015-07-29)
+
+https://github.com/evrignaud/fim/tree/1.0.0[image:icons/github.png[GitHub] Sources] &nbsp;&nbsp; - &nbsp;&nbsp; https://github.com/evrignaud/fim/compare/Initial_commit%2E%2E%2E1.0.0[image:icons/list.png[List] Full Changelog]
+&nbsp;&nbsp; - &nbsp;&nbsp;
+https://github.com/evrignaud/fim/releases/tag/1.0.0[image:icons/package.png[Package] Download]
+
+* *First release of Fim.*
+* Setup all the basis to allow adding more and more stuff around the States.
+* Provides mainly init, commit and diff commands.

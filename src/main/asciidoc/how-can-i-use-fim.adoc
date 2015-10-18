@@ -1,0 +1,86 @@
+= How can I use Fim
+
+== Fim releases
+
+You can find prebuilt releases of Fim
+https://github.com/evrignaud/fim/releases[here]
+
+== Build Fim
+
+You can build yourself Fim to try the master version.
+
+* Get the code
+** Download the https://github.com/evrignaud/fim/zipball/master[.zip] or
+the https://github.com/evrignaud/fim/tarball/master[.tar.gz]
+** or clone it using either `https://github.com/evrignaud/fim.git` or
+`git@github.com:evrignaud/fim.git`
+* build it by typing the following command:
+
+[source]
+-----------------
+mvn clean install
+-----------------
+
+* You can run the jar file generated into the `target` directory using
+the two shell script files located in the root directory.
+
+** `fim` for Linux
+** `fim.bat` for Windows
+
+[[step-by-step-procedure]]
+== Step by step procedure
+
+_This procedure is a contribution done by
+http://linuxfr.org/nodes/106724/comments/1622498[El Titi]_
+
+First, it install maven. If you already have it you can skip the 2 first
+lines. `/usr/local/bin/mvn` should be replaced with the path where `mvn`
+is installed.
+
+=== For OS X
+
+[source]
+-----------------------------------------------------------------------------------------
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install maven
+cd
+mkdir git
+cd git
+git clone https://github.com/evrignaud/fim.git
+cd fim/
+/usr/local/bin/mvn clean install
+./fim
+-----------------------------------------------------------------------------------------
+
+=== For Linux
+
+[source]
+---------------------------------------------------------------------------------------
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/linuxbrew/go/install)"
+brew install maven
+cd
+mkdir git
+cd git
+git clone https://github.com/evrignaud/fim.git
+cd fim/
+/usr/local/bin/mvn clean install
+./fim
+---------------------------------------------------------------------------------------
+
+== Build a Fim distribution
+
+If you want to generate a Fim distribution type the following command:
+
+[source]
+---------------------------
+mvn clean install -Pdistrib
+---------------------------
+
+It generates two distribution files into the `target/dist` directory.
+
+[source]
+---------------------------
+$ ls -a1 target/dist/
+fim-1.0.0-SNAPSHOT-distribution.tar.gz
+fim-1.0.0-SNAPSHOT-distribution.zip
+---------------------------
