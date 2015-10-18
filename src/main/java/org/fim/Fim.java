@@ -76,9 +76,13 @@ public class Fim
 		{
 			System.exit(0);
 		}
-		catch (BadFimUsageException | RepositoryCreationException ex)
+		catch (BadFimUsageException ex)
 		{
 			System.exit(-1);
+		}
+		catch (RepositoryCreationException ex)
+		{
+			System.exit(-2);
 		}
 
 		System.exit(0);

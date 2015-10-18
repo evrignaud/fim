@@ -29,11 +29,16 @@ import org.fim.model.Context;
 import org.fim.model.HashMode;
 import org.fim.tooling.RepositoryTool;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
 public class FimTest
 {
 	private static Path rootDir = Paths.get("target/" + FullScenarioTest.class.getSimpleName());
+
+	@Rule
+	public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
 	private Fim cut;
 	private RepositoryTool tool;
@@ -51,10 +56,31 @@ public class FimTest
 		context = tool.createContext(HashMode.hashAll, true);
 	}
 
-	@Test
-	public void weCanPrintUsage()
+	@Test(expected = BadFimUsageException.class)
+	public void fimRepositoryAlreadyExist() throws Exception
 	{
-		cut.printUsage();
+		initRepoAndCreateOneFile();
+		cut.run(new String[]{"init", "-y"}, context);
+	}
+
+	@Test(expected = BadFimUsageException.class)
+	public void fimDoesNotExist() throws Exception
+	{
+		cut.run(new String[]{"diff"}, context);
+	}
+
+	@Test
+	public void weCanPrintUsage() throws Exception
+	{
+		exit.expectSystemExitWithStatus(0);
+		Fim.main(new String[]{"help"});
+	}
+
+	@Test
+	public void invalidOptionIsDetected() throws Exception
+	{
+		exit.expectSystemExitWithStatus(-1);
+		Fim.main(new String[]{"-9"});
 	}
 
 	@Test
@@ -107,12 +133,6 @@ public class FimTest
 	public void noCommandSpecified() throws Exception
 	{
 		cut.run(new String[]{"-s"}, context);
-	}
-
-	@Test(expected = BadFimUsageException.class)
-	public void invalidOptionIsDetected() throws Exception
-	{
-		cut.run(new String[]{"-0"}, context);
 	}
 
 	private void initRepoAndCreateOneFile() throws Exception
