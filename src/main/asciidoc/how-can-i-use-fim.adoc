@@ -2,18 +2,21 @@
 
 == Fim releases
 
-You can find prebuilt releases of Fim
-https://github.com/evrignaud/fim/releases[here]
+You can find prebuilt releases of Fim https://github.com/evrignaud/fim/releases[here]
 
-== Build Fim
+== Building Fim
 
 You can build yourself Fim to try the master version.
 
+[IMPORTANT]
+====
+Fim comes with versioned prebuilt release. I recommend to use them as they are ok to be used. +
+When you make a clone of the master of Fim, a SNAPSHOT is retrieved and there is no guarantee that this particular build of Fim will work properly.
+====
+
 * Get the code
-** Download the https://github.com/evrignaud/fim/zipball/master[.zip] or
-the https://github.com/evrignaud/fim/tarball/master[.tar.gz]
-** or clone it using either `https://github.com/evrignaud/fim.git` or
-`git@github.com:evrignaud/fim.git`
+** Download the https://github.com/evrignaud/fim/zipball/master[.zip] or the https://github.com/evrignaud/fim/tarball/master[.tar.gz]
+** or clone it using either `https://github.com/evrignaud/fim.git` or `git@github.com:evrignaud/fim.git`
 * build it by typing the following command:
 
 [source]
@@ -24,7 +27,7 @@ mvn clean install
 * You can run the jar file generated into the `target` directory using
 the two shell script files located in the root directory.
 
-** `fim` for Linux
+** `fim` for Linux or Mac OS X
 ** `fim.bat` for Windows
 
 [[step-by-step-procedure]]

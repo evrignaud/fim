@@ -17,29 +17,29 @@ You can do a full diff that will compare the hash of all the files. It can be ve
 $ fim diff
 ----
 
-You can compare quickly asking to hash only the second 1 MB block of the files. *Using this option can produce an inaccurate result.*
-
-[source,shell]
-----
-$ fim diff -m
-----
-
-You can compare quicker asking to hash only the second 4 KB block of the files. *Using this option can produce an inaccurate result.*
-
-[source,shell]
-----
-$ fim diff -k
-----
-
-Otherwise, you can request to not hash file content using the fast mode (-f option). It will compare only the file names and modification dates.
-You will not be able to detect files that have been renamed or duplicated.
+You can compare quickly asking to hash only medium blocks of the files. *Using this option can produce an inaccurate result.*
 
 [source,shell]
 ----
 $ fim diff -f
 ----
 
-Each time you want to record the State of the current file tree you can use the commit command.
+You can compare quicker asking to hash only small blocks of the files. *Using this option can produce an inaccurate result.*
+
+[source,shell]
+----
+$ fim diff -s
+----
+
+Otherwise, you can request to not hash file content using the -n option. It will compare only the file names, file length, modification dates and permissions.
+You will not be able to detect files that have been renamed or duplicated.
+
+[source,shell]
+----
+$ fim diff -n
+----
+
+Each time you want to record the State of the current file tree you can use the commit command. +
 It's a time consuming operation that will compute all the hash of each files content.
 
 [source,shell]
