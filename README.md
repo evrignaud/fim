@@ -33,8 +33,7 @@ You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.
 
 ## Tested Platforms
 
-Currently Fim is tested on Linux and Windows.<br/>
-Contribution is welcome to test it on OS X.
+Fim can be used on Linux, Mac OS X and Windows
 
 ## Cross Platform Compatibility
 
