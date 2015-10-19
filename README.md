@@ -31,14 +31,14 @@ You can download Fim binary distributions from [here](https://github.com/evrigna
 Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from [here](http://www.oracle.com/technetwork/java/javase/downloads/index.html).<br/>
 You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.
 
-## Tested Platforms
+## Supported OS
 
 Fim can be used on Linux, Mac OS X and Windows
 
 ## Cross Platform Compatibility
 
-The same Fim repository can be used by either on Linux and on Windows.<br/>
-State content is normalized and the same State content can be loaded either on Linux and Windows.
+The same Fim repository can be used by either on Linux, Mac OS X and Windows.<br/>
+State content is normalized and the same State content can be loaded on the different supported OS.
 
 ## They talked about it
 
