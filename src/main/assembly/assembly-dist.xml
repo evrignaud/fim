@@ -33,31 +33,24 @@
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>${basedir}</directory>
+			<directory>target/docs</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
-				<include>LICENSE</include>
+				<include>index.html</include>
+				<include>LICENSE.html</include>
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>target/gh-pages</directory>
-			<outputDirectory></outputDirectory>
-			<includes>
-				<include>*.html</include>
-			</includes>
-		</fileSet>
-		<fileSet>
-			<directory>target/gh-pages/images</directory>
+			<directory>target/docs/images</directory>
 			<outputDirectory>images</outputDirectory>
 			<includes>
-				<include>*.png</include>
+				<include>**/*.png</include>
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>target/gh-pages/strapdown</directory>
-			<outputDirectory>strapdown</outputDirectory>
+			<directory>target/docs/css</directory>
+			<outputDirectory>css</outputDirectory>
 			<includes>
-				<include>*.js</include>
 				<include>*.css</include>
 			</includes>
 		</fileSet>

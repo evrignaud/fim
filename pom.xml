@@ -34,7 +34,7 @@
 		<maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
 		<maven-shade-plugin.version>2.4.1</maven-shade-plugin.version>
 		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
-		<maven-scm-plugin.version>1.9.4</maven-scm-plugin.version>
+		<asciidoctor-maven-plugin.version>1.5.2.1</asciidoctor-maven-plugin.version>
 		<maven-source-plugin.version>2.4</maven-source-plugin.version>
 		<maven-assembly-plugin.version>2.5.5</maven-assembly-plugin.version>
 		<maven-release-plugin.version>2.5.2</maven-release-plugin.version>
@@ -134,7 +134,7 @@
 			<version>${system-rules.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
 
 
@@ -213,7 +213,7 @@
 			<plugin>
 				<groupId>org.asciidoctor</groupId>
 				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>1.5.2.1</version>
+				<version>${asciidoctor-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>output-html</id>
@@ -242,6 +242,42 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>${maven-assembly-plugin.version}</version>
+				<configuration>
+					<outputDirectory>${project.build.directory}/dist</outputDirectory>
+					<descriptors>
+						<descriptor>src/main/assembly/assembly-dist.xml</descriptor>
+					</descriptors>
+					<finalName>${project.artifactId}-${project.version}</finalName>
+				</configuration>
+				<executions>
+					<execution>
+						<id>dist</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>${maven-site-plugin.version}</version>
 				<configuration>
@@ -266,74 +302,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<!-- Profiles -->
-	<profiles>
-
-		<profile>
-			<id>distrib</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-scm-plugin</artifactId>
-						<version>${maven-scm-plugin.version}</version>
-						<configuration>
-							<goals>checkout</goals>
-							<scmVersionType>branch</scmVersionType>
-							<scmVersion>gh-pages</scmVersion>
-							<checkoutDirectory>target/gh-pages</checkoutDirectory>
-						</configuration>
-						<executions>
-							<execution>
-								<id>check-out-pages</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>checkout</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>${maven-source-plugin.version}</version>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-
-					<plugin>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>${maven-assembly-plugin.version}</version>
-						<configuration>
-							<outputDirectory>${project.build.directory}/dist</outputDirectory>
-							<descriptors>
-								<descriptor>src/main/assembly/assembly-dist.xml</descriptor>
-							</descriptors>
-							<finalName>${project.artifactId}-${project.version}</finalName>
-						</configuration>
-						<executions>
-							<execution>
-								<id>dist</id>
-								<phase>package</phase>
-								<goals>
-									<goal>single</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-	</profiles>
 
 </project>
