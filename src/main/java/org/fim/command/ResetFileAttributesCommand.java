@@ -72,63 +72,66 @@ public class ResetFileAttributesCommand extends AbstractCommand
 	{
 		StateManager manager = new StateManager(context);
 		State lastState = manager.loadLastState();
-
-		Logger.info(String.format("Reset files attributes based on the last committed State done %s", formatDate(lastState.getTimestamp())));
-		if (lastState.getComment().length() > 0)
-		{
-			System.out.println("Comment: " + lastState.getComment());
-		}
-		Console.newLine();
-
-		if (context.isInvokedFromSubDirectory())
-		{
-			lastState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
-		}
-
 		int fileResetCount = 0;
-		for (FileState fileState : lastState.getFileStates())
+
+		System.out.printf(String.format("You are going to reset files attributes based on the last committed State done %s%n", formatDate(lastState.getTimestamp())));
+		if (confirmAction(context, "continue"))
 		{
-			Path file = context.getRepositoryRootDir().resolve(fileState.getFileName());
-			if (Files.exists(file))
+			if (lastState.getComment().length() > 0)
 			{
-				boolean attributesModified = false;
+				System.out.println("Comment: " + lastState.getComment());
+			}
+			Console.newLine();
 
-				BasicFileAttributes attributes;
+			if (context.isInvokedFromSubDirectory())
+			{
+				lastState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
+			}
 
-				if (SystemUtils.IS_OS_WINDOWS)
+			for (FileState fileState : lastState.getFileStates())
+			{
+				Path file = context.getRepositoryRootDir().resolve(fileState.getFileName());
+				if (Files.exists(file))
 				{
-					DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
-					attributes = dosFileAttributes;
+					boolean attributesModified = false;
 
-					attributesModified = resetDosPermissions(file, fileState, dosFileAttributes) || attributesModified;
-				}
-				else
-				{
-					PosixFileAttributes posixFileAttributes = Files.readAttributes(file, PosixFileAttributes.class);
-					attributes = posixFileAttributes;
+					BasicFileAttributes attributes;
 
-					attributesModified = resetPosixPermissions(file, fileState, posixFileAttributes) || attributesModified;
-				}
+					if (SystemUtils.IS_OS_WINDOWS)
+					{
+						DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
+						attributes = dosFileAttributes;
 
-				attributesModified = resetCreationTime(file, fileState, attributes) || attributesModified;
-				attributesModified = resetLastModified(file, fileState, attributes) || attributesModified;
-				attributesModified = resetSELinux(file, fileState) || attributesModified;
+						attributesModified = resetDosPermissions(file, fileState, dosFileAttributes) || attributesModified;
+					}
+					else
+					{
+						PosixFileAttributes posixFileAttributes = Files.readAttributes(file, PosixFileAttributes.class);
+						attributes = posixFileAttributes;
 
-				if (attributesModified)
-				{
-					fileResetCount++;
+						attributesModified = resetPosixPermissions(file, fileState, posixFileAttributes) || attributesModified;
+					}
+
+					attributesModified = resetCreationTime(file, fileState, attributes) || attributesModified;
+					attributesModified = resetLastModified(file, fileState, attributes) || attributesModified;
+					attributesModified = resetSELinux(file, fileState) || attributesModified;
+
+					if (attributesModified)
+					{
+						fileResetCount++;
+					}
 				}
 			}
-		}
 
-		if (fileResetCount == 0)
-		{
-			Logger.info("No file attributes have been reset");
-		}
-		else
-		{
-			Console.newLine();
-			Logger.info(String.format("The attributes of %d %s have been reset", fileResetCount, English.plural("file", fileResetCount)));
+			if (fileResetCount == 0)
+			{
+				Logger.info("No file attributes have been reset");
+			}
+			else
+			{
+				Console.newLine();
+				Logger.info(String.format("The attributes of %d %s have been reset", fileResetCount, English.plural("file", fileResetCount)));
+			}
 		}
 		return fileResetCount;
 	}
