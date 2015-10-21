@@ -103,7 +103,7 @@ set +x
 
 	echo
 	echo \# Commit only the local modifications done inside this directory
-	fim ci -c modifications from dir01 -y
+	fim ci -c "Modifications from dir01" -y
 
 	echo
 	echo \# No more local modifications
