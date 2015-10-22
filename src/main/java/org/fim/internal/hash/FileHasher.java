@@ -61,8 +61,6 @@ public class FileHasher implements Runnable
 
 	private final FrontHasher frontHasher;
 
-	private long totalFileContentLength;
-
 	public FileHasher(HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException
 	{
 		this.hashProgress = hashProgress;
@@ -83,11 +81,6 @@ public class FileHasher implements Runnable
 	public long getTotalBytesHashed()
 	{
 		return frontHasher.getTotalBytesHashed();
-	}
-
-	public long getTotalFileContentLength()
-	{
-		return totalFileContentLength;
 	}
 
 	protected FrontHasher getFrontHasher()
@@ -170,7 +163,6 @@ public class FileHasher implements Runnable
 
 		if (hashMode == dontHash)
 		{
-			totalFileContentLength += fileSize;
 			return new FileHash(NO_HASH, NO_HASH, NO_HASH);
 		}
 
@@ -195,10 +187,6 @@ public class FileHasher implements Runnable
 				bufferSize = hashBuffer(channel, filePosition, blockSize);
 				filePosition += bufferSize;
 			}
-		}
-		finally
-		{
-			totalFileContentLength += fileSize;
 		}
 
 		if (false == frontHasher.hashComplete())

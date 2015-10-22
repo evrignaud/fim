@@ -25,6 +25,7 @@ public class LogEntry
 	private long timestamp;
 	private int fileCount;
 	private ModificationCounts modificationCounts;
+	private long filesContentLength;
 
 	public int getStateNumber()
 	{
@@ -64,6 +65,16 @@ public class LogEntry
 	public void setFileCount(int fileCount)
 	{
 		this.fileCount = fileCount;
+	}
+
+	public long getFilesContentLength()
+	{
+		return filesContentLength;
+	}
+
+	public void setFilesContentLength(long filesContentLength)
+	{
+		this.filesContentLength = filesContentLength;
 	}
 
 	public ModificationCounts getModificationCounts()

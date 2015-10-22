@@ -71,6 +71,7 @@ public class LogCommand extends AbstractCommand
 				logEntry.setComment(state.getComment());
 				logEntry.setTimestamp(state.getTimestamp());
 				logEntry.setFileCount(state.getFileCount());
+				logEntry.setFilesContentLength(state.getFilesContentLength());
 				logEntry.setModificationCounts(state.getModificationCounts());
 				logResult.add(logEntry);
 			}

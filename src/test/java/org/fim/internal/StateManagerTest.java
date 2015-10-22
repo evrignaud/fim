@@ -164,7 +164,7 @@ public class StateManagerTest extends StateAssert
 	{
 		FileHash noHash = new FileHash(Constants.NO_HASH, Constants.NO_HASH, Constants.NO_HASH);
 
-		assertThat(result.getFileStates().size()).isEqualTo(fileCount);
+		assertThat(result.getFileCount()).isEqualTo(fileCount);
 		for (FileState fileState : result.getFileStates())
 		{
 			assertThat(fileState.getFileHash()).isEqualTo(noHash);

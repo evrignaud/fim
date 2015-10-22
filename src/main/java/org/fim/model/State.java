@@ -64,6 +64,7 @@ public class State implements Hashable
 	private long timestamp;
 	private String comment;
 	private int fileCount;
+	private long filesContentLength;
 	private HashMode hashMode;
 
 	private ModificationCounts modificationCounts; // Not taken in account in equals(), hashCode(), hashObject()
@@ -76,6 +77,7 @@ public class State implements Hashable
 		timestamp = System.currentTimeMillis();
 		comment = "";
 		fileCount = 0;
+		filesContentLength = 0;
 		hashMode = hashAll;
 		modificationCounts = new ModificationCounts();
 		ignoredFiles = new HashSet<>();
@@ -115,6 +117,7 @@ public class State implements Hashable
 		Collections.sort(fileStates, fileNameComparator);
 
 		updateFileCount();
+		updateFilesContentLength();
 		stateHash = hashState();
 
 		try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile.toFile()))))
@@ -150,6 +153,15 @@ public class State implements Hashable
 		fileCount = fileStates.size();
 	}
 
+	public void updateFilesContentLength()
+	{
+		filesContentLength = 0;
+		for (FileState fileState : fileStates)
+		{
+			filesContentLength += fileState.getFileLength();
+		}
+	}
+
 	public String getModelVersion()
 	{
 		return modelVersion;
@@ -179,6 +191,12 @@ public class State implements Hashable
 	{
 		updateFileCount();
 		return fileCount;
+	}
+
+	public long getFilesContentLength()
+	{
+		updateFilesContentLength();
+		return filesContentLength;
 	}
 
 	public HashMode getHashMode()
@@ -244,6 +262,7 @@ public class State implements Hashable
 				&& Objects.equals(this.timestamp, state.timestamp)
 				&& Objects.equals(this.comment, state.comment)
 				&& Objects.equals(this.fileCount, state.fileCount)
+				&& Objects.equals(this.filesContentLength, state.filesContentLength)
 				&& Objects.equals(this.hashMode, state.hashMode)
 				&& Objects.equals(this.ignoredFiles, state.ignoredFiles)
 				&& Objects.equals(this.fileStates, state.fileStates);
@@ -252,7 +271,7 @@ public class State implements Hashable
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(modelVersion, timestamp, comment, fileCount, hashMode, ignoredFiles, fileStates);
+		return Objects.hash(modelVersion, timestamp, comment, fileCount, filesContentLength, hashMode, ignoredFiles, fileStates);
 	}
 
 	@Override
@@ -263,6 +282,7 @@ public class State implements Hashable
 				.add("timestamp", timestamp)
 				.add("comment", comment)
 				.add("fileCount", fileCount)
+				.add("filesContentLength", filesContentLength)
 				.add("hashMode", hashMode)
 				.add("ignoredFiles", ignoredFiles)
 				.add("fileStates", fileStates)
@@ -282,6 +302,8 @@ public class State implements Hashable
 				.putString(comment, Charsets.UTF_8)
 				.putChar(HASH_FIELD_SEPARATOR)
 				.putInt(fileCount)
+				.putChar(HASH_FIELD_SEPARATOR)
+				.putLong(filesContentLength)
 				.putChar(HASH_FIELD_SEPARATOR)
 				.putString(hashMode.name(), Charsets.UTF_8);
 

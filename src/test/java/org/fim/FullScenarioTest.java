@@ -116,7 +116,7 @@ public class FullScenarioTest
 		State state = (State) initCommand.execute(context);
 
 		assertThat(state.getModificationCounts().getAdded()).isEqualTo(10);
-		assertThat(state.getFileStates().size()).isEqualTo(10);
+		assertThat(state.getFileCount()).isEqualTo(10);
 		Path dotFim = rootDir.resolve(".fim");
 		assertThat(Files.exists(dotFim)).isTrue();
 		assertThat(Files.exists(dotFim.resolve("settings.json"))).isTrue();

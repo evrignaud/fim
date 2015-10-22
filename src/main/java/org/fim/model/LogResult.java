@@ -23,6 +23,7 @@ import static org.fim.util.FormatUtil.formatDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.fim.util.Console;
 
 public class LogResult
@@ -43,7 +44,8 @@ public class LogResult
 	{
 		for (LogEntry logEntry : logEntries)
 		{
-			System.out.printf("State #%d: %s (%d files)%n", logEntry.getStateNumber(), formatDate(logEntry.getTimestamp()), logEntry.getFileCount());
+			System.out.printf("State #%d: %s (%d files - %s)%n", logEntry.getStateNumber(), formatDate(logEntry.getTimestamp()),
+					logEntry.getFileCount(), FileUtils.byteCountToDisplaySize(logEntry.getFilesContentLength()));
 			if (logEntry.getComment().length() > 0)
 			{
 				System.out.printf("\tComment: %s%n", logEntry.getComment());

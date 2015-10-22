@@ -84,7 +84,7 @@ public class StateTest extends StateAssert
 
 		String a1_hash = a1.hashState();
 		assertThat(a1_hash.length()).isEqualTo(128);
-		assertThat(a1_hash).isEqualTo("c6685a6deca5a2aa013cc3522840ef2e47685dba9d3ca57f8c6c9def0a81f5bfbf34c65d27240b8fced011beebbddd8aadc07adc5936bcb313579cce37d4491f");
+		assertThat(a1_hash).isEqualTo("b4ac7d25e35fca118786a3f148b99fc4a3b9e01aa9dc8cd670ec7a25f0a7122c1c0b598aa5d7729ce20f44c48f89a4d570c00cd6a936b27004358f4b73067fff");
 	}
 
 	@Test

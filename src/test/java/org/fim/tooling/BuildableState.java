@@ -190,6 +190,7 @@ public class BuildableState extends State
 	{
 		Collections.sort(state.getFileStates(), fileNameComparator);
 		state.updateFileCount();
+		state.updateFilesContentLength();
 	}
 
 	private FileState findFileState(BuildableState state, String fileName, boolean throwEx)
