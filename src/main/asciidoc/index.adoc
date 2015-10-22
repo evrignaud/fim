@@ -24,11 +24,11 @@
 <p>
     <a href="https://github.com/evrignaud/fim"><img
 		style="position: fixed; top: 0; right: 0; border: 0; z-index: 1000; margin: 0;"
-		src="images/fork_me_on_github-top-right.png" alt="Fork me on GitHub">
+		src="images/fork_me_on_github-top-right.png" alt="Fork me on GitHub"/>
 	</a>
     <a href="#"><img
 		style="position: fixed; bottom: 0; right: 0; border: 0; z-index: 1000; margin: 20px 20px 20px;"
-		src="images/icons/back_to_top.png" alt="Back to top">
+		src="images/icons/back_to_top.png" title="Back to top" alt="Back to top"/>
 	</a>
 </p>
 ++++

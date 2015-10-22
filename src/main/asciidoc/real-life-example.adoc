@@ -2,7 +2,7 @@
 
 == Initialize the big Fim repository
 
-Here is the output of the initialization of a big Fim repository that contains 297 GB of photos and videos.
+Here is the output of the initialization of a big Fim repository that contains 297 GB of photos and videos. +
 In my case *it takes 2 hours* to hash all the files content.
 
 [source,shell]
@@ -59,14 +59,14 @@ oooooooooooooooooo#ooooooooooo..oo@...ooooo#o
 41453 added
 ----
 
-== Check quickly for differences
+== Check very quickly for differences
 
-It is possible to check the differences very quickly using the `-k` option that will check only the second 4 KB block.
+It is possible to check the differences very quickly using the `-s` option that will check only 3 small blocks of 4 KB. +
 In my case *it takes 4 minutes :=)*.
 
 [source,shell]
 ----
-~/Photos_Videos$ fim diff -k
+~/Photos_Videos$ fim diff -s
 2015/07/21 08:49:21 - Info  - Scanning recursively local files, hash second 4 KB block, using 2 thread
 (Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
 .o#...........................................o@o...............OO.oO.......O.......................
@@ -121,9 +121,9 @@ Nothing modified
 
 == Check more accurately for differences
 
-This quick diff can be inaccurate.
-To increase accuracy, you can use the `-m` option. This result is more accurate,
-but it cannot be completely accurate as only the hash of the second 1 MB block of the files are computed.
+Using the super fast mode can produce inaccurate results. *You can miss modified files.* +
+To increase accuracy, you can use the fast mode using the `-f` option that will check 3 medium blocks.
+But it cannot be completely accurate as we only hash 3 different 1 MB blocks of the files. +
 This time in my case, *it takes 20 minutes* to check the differences.
 
 [source,shell]
@@ -188,5 +188,6 @@ This time in my case, *it takes 2 hours* as for the `init` command.
 
 == Checking without hashing
 
-There is also the fast mode using the `-f` option that do not hash file content. It helps to detect faster changes but only file names that have changed.
+There is also the do not hash mode using the `-n` option that will not hash the files content.
+It helps to detect faster changes but you will be able to detect only file names and file attributes that have changed. +
 This time in my case, *it takes 3 seconds*.

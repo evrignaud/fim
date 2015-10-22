@@ -18,12 +18,12 @@
 # along with Fim.  If not, see <http://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------------------------------------------------
 
-rm -rf sample1
-mkdir sample1
+rm -rf simple-example
+mkdir simple-example
 
 set +x
 (
-	cd sample1
+	cd simple-example
 	echo
 	echo \# Create a set of files
 	for i in 01 02 03 04 05 06 07 08 09 10 ; do echo "New File $i" > file$i ; done

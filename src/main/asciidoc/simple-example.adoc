@@ -3,42 +3,45 @@
 Here is a step by step example of Fim usage.
 For the purpose of this example we use small files.
 
+You can run yourself this example using the https://github.com/evrignaud/fim/blob/master/samples/simple-example.sh[`samples/simple-example.sh`] script.
+
 == Create a set of files
 
 [source,shell]
 ----
-~$ mkdir sample
+~$ mkdir simple-example
 
-~$ cd sample/
+~$ cd simple-example/
 
 # Creates 10 files
-~/sample$ for i in 01 02 03 04 05 06 07 08 09 10 ; do echo "New File $i" > file$i ; done
+~/simple-example$ for i in 01 02 03 04 05 06 07 08 09 10 ; do echo "New File $i" > file$i ; done
 
-~/sample$ ls -la
-total 56
-drwxrwxr-x   2  4096 août  24 23:00 .
-drwxr-xr-x 108 12288 août  24 22:18 ..
--rw-rw-r--   1    12 août  24 23:00 file01
--rw-rw-r--   1    12 août  24 23:00 file02
--rw-rw-r--   1    12 août  24 23:00 file03
--rw-rw-r--   1    12 août  24 23:00 file04
--rw-rw-r--   1    12 août  24 23:00 file05
--rw-rw-r--   1    12 août  24 23:00 file06
--rw-rw-r--   1    12 août  24 23:00 file07
--rw-rw-r--   1    12 août  24 23:00 file08
--rw-rw-r--   1    12 août  24 23:00 file09
--rw-rw-r--   1    12 août  24 23:00 file10
+~/simple-example$ ls -la
+total 48
+drwxrwxr-x. 2 evrignaud evrignaud 4096 oct.  20 07:37 .
+drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file01
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file02
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file04
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file05
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file06
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file07
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file08
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file09
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file10
 ----
 
 == Initialize the Fim repository
 
 [source,shell]
 ----
-~/sample$ fim init -c "First State"
-2015/08/24 23:00:27 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
+~/simple-example$ fim init -c "First State"
+2015/10/20 07:37:51 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
+2015/10/20 07:37:51 - Info  - SELinux is enabled on this system
 .
-2015/08/24 23:00:27 - Info  - Scanned 10 files (120 bytes), hashed 120 bytes (avg 120 bytes/s), during 00:00:00, using 2 thread
+2015/10/20 07:37:52 - Info  - Scanned 10 files (120 bytes), hashed 120 bytes (avg 120 bytes/s), during 00:00:00
 
 Added:            file01
 Added:            file02
@@ -58,95 +61,96 @@ Added:            file10
 
 [source,shell]
 ----
-~/sample$ ls -la
-total 60
-drwxrwxr-x   3  4096 août  24 23:00 .
-drwxr-xr-x 108 12288 août  24 22:18 ..
--rw-rw-r--   1    12 août  24 23:00 file01
--rw-rw-r--   1    12 août  24 23:00 file02
--rw-rw-r--   1    12 août  24 23:00 file03
--rw-rw-r--   1    12 août  24 23:00 file04
--rw-rw-r--   1    12 août  24 23:00 file05
--rw-rw-r--   1    12 août  24 23:00 file06
--rw-rw-r--   1    12 août  24 23:00 file07
--rw-rw-r--   1    12 août  24 23:00 file08
--rw-rw-r--   1    12 août  24 23:00 file09
--rw-rw-r--   1    12 août  24 23:00 file10
-drwxrwxr-x   3  4096 août  24 23:00 .fim
+~/simple-example$ ls -la
+total 52
+drwxrwxr-x. 3 evrignaud evrignaud 4096 oct.  20 07:37 .
+drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file01
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file02
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file04
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file05
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file06
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file07
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file08
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file09
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file10
+drwxrwxr-x. 3 evrignaud evrignaud 4096 oct.  20 07:37 .fim
 ----
 
 == Do some modifications
 
 [source,shell]
 ----
-~/sample$ mkdir dir01
+~/simple-example$ mkdir dir01
 
 # Move file01 to dir01
-~/sample$ mv file01 dir01
+~/simple-example$ mv file01 dir01
 
 # Change the file02 modification date
-~/sample$ touch file02
+~/simple-example$ touch file02
 
 # Duplicate twice file03
-~/sample$ cp file03 file03.dup1
-~/sample$ cp file03 file03.dup2
+~/simple-example$ cp file03 file03.dup1
+~/simple-example$ cp file03 file03.dup2
 
 # Add content to file04
-~/sample$ echo foo >> file04
+~/simple-example$ echo foo >> file04
 
 # Copy file05
-~/sample$ cp file05 file11
+~/simple-example$ cp file05 file11
 
 # And add content to it
-~/sample$ echo bar >> file05
+~/simple-example$ echo bar >> file05
 
 # Remove file06
-~/sample$ rm file06
+~/simple-example$ rm file06
 
 # Duplicate once file07
-~/sample$ cp file07 file07.dup1
+~/simple-example$ cp file07 file07.dup1
 
 # Create the new file12
-~/sample$ echo "New File 12" > file12
+~/simple-example$ echo "New File 12" > file12
 
-~/sample$ ls -la
-total 76
-drwxrwxr-x   4  4096 août  24 23:00 .
-drwxr-xr-x 108 12288 août  24 22:18 ..
-drwxrwxr-x   2  4096 août  24 23:00 dir01
--rw-rw-r--   1    12 août  24 23:00 file02
--rw-rw-r--   1    12 août  24 23:00 file03
--rw-rw-r--   1    12 août  24 23:00 file03.dup1
--rw-rw-r--   1    12 août  24 23:00 file03.dup2
--rw-rw-r--   1    16 août  24 23:00 file04
--rw-rw-r--   1    16 août  24 23:00 file05
--rw-rw-r--   1    12 août  24 23:00 file07
--rw-rw-r--   1    12 août  24 23:00 file07.dup1
--rw-rw-r--   1    12 août  24 23:00 file08
--rw-rw-r--   1    12 août  24 23:00 file09
--rw-rw-r--   1    12 août  24 23:00 file10
--rw-rw-r--   1    12 août  24 23:00 file11
--rw-rw-r--   1    12 août  24 23:00 file12
-drwxrwxr-x   3  4096 août  24 23:00 .fim
+~/simple-example$ ls -la
+total 68
+drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 .
+drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
+drwxrwxr-x. 2 evrignaud evrignaud 4096 oct.  20 07:37 dir01
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file02
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03.dup1
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03.dup2
+-rw-rw-r--. 1 evrignaud evrignaud   16 oct.  20 07:37 file04
+-rw-rw-r--. 1 evrignaud evrignaud   16 oct.  20 07:37 file05
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file07
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file07.dup1
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file08
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file09
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file10
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file11
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file12
+drwxrwxr-x. 3 evrignaud evrignaud 4096 oct.  20 07:37 .fim
 
-~/sample$ ls -la dir01/
+~/simple-example$ ls -la dir01/
 total 12
-drwxrwxr-x 2 4096 août  24 23:00 .
-drwxrwxr-x 4 4096 août  24 23:00 ..
--rw-rw-r-- 1   12 août  24 23:00 file01
+drwxrwxr-x. 2 evrignaud evrignaud 4096 oct.  20 07:37 .
+drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file01
 ----
 
 == Fim detects the modifications
 
 [source,shell]
 ----
-~/sample$ fim diff
-2015/08/24 23:00:28 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
+~/simple-example$ fim diff
+2015/10/20 07:37:52 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
+2015/10/20 07:37:52 - Info  - SELinux is enabled on this system
 .
-2015/08/24 23:00:28 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00, using 2 thread
+2015/10/20 07:37:53 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/08/24 23:00:27
+Comparing with the last committed state from 2015/10/20 07:37:51
 Comment: First State
 
 Added:            file12
@@ -154,9 +158,15 @@ Copied:           file11 	(was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
-Content modified: file04 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
-Content modified: file05 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
+Date modified:    file02 	creationTime: 2015/10/20 07:37:51 -> 2015/10/20 07:37:52
+                         	lastModified: 2015/10/20 07:37:51 -> 2015/10/20 07:37:52
+
+Content modified: file04 	creationTime: 2015/10/20 07:37:51 -> 2015/10/20 07:37:52
+                         	lastModified: 2015/10/20 07:37:51 -> 2015/10/20 07:37:52
+
+Content modified: file05 	creationTime: 2015/10/20 07:37:51 -> 2015/10/20 07:37:52
+                         	lastModified: 2015/10/20 07:37:51 -> 2015/10/20 07:37:52
+
 Renamed:          file01 -> dir01/file01
 Deleted:          file06
 
@@ -167,13 +177,14 @@ Deleted:          file06
 
 [source,shell]
 ----
-~/sample$ fim fdup
-Searching for duplicated files
+~/simple-example$ fim fdup
+2015/10/20 07:37:53 - Info  - Searching for duplicated files
 
-2015/08/24 23:00:29 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
+2015/10/20 07:37:53 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
+2015/10/20 07:37:53 - Info  - SELinux is enabled on this system
 .
-2015/08/24 23:00:29 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00, using 2 thread
+2015/10/20 07:37:54 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 - Duplicate set #1
@@ -186,7 +197,7 @@ Searching for duplicated files
       12 bytes - file03.dup1
       12 bytes - file03.dup2
 
-3 duplicated files spread in 2 duplicate sets, 36 bytes of wasted space
+3 duplicated files spread into 2 duplicate sets, 36 bytes of wasted space
 ----
 
 == From the `dir01` sub-directory
@@ -195,19 +206,20 @@ We can run Fim on a subset of the repository.
 
 [source,shell]
 ----
-~/sample$ cd dir01
+~/simple-example$ cd dir01
 ----
 
 Inside this directory only one file is added.
 
 [source,shell]
 ----
-~/sample/dir01$ fim diff
-2015/08/24 23:00:29 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
-2015/08/24 23:00:30 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
+~/simple-example/dir01$ fim diff
+2015/10/20 07:37:54 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
+2015/10/20 07:37:54 - Info  - SELinux is enabled on this system
+2015/10/20 07:37:55 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/08/24 23:00:27
+Comparing with the last committed state from 2015/10/20 07:37:51
 Comment: First State
 
 Added:            dir01/file01
@@ -219,26 +231,28 @@ No duplicated files as we are looking only inside the `dir01`.
 
 [source,shell]
 ----
-~/sample/dir01$ fim fdup
-Searching for duplicated files
+~/simple-example/dir01$ fim fdup
+2015/10/20 07:37:55 - Info  - Searching for duplicated files
 
-2015/08/24 23:00:30 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
-2015/08/24 23:00:31 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
+2015/10/20 07:37:55 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
+2015/10/20 07:37:55 - Info  - SELinux is enabled on this system
+2015/10/20 07:37:56 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-0 duplicated files spread in 0 duplicate sets, 0 bytes of wasted space
+0 duplicated files spread into 0 duplicate sets, 0 bytes of wasted space
 ----
 
 Commit only the local modifications done inside this directory.
 
 [source,shell]
 ----
-~/sample/dir01$ fim ci -c "modifications from dir01" -y
-2015/08/24 23:00:31 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
-2015/08/24 23:00:32 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
+~/simple-example/dir01$ fim ci -c "Modifications from dir01" -y
+2015/10/20 07:37:56 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
+2015/10/20 07:37:56 - Info  - SELinux is enabled on this system
+2015/10/20 07:37:57 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/08/24 23:00:27
+Comparing with the last committed state from 2015/10/20 07:37:51
 Comment: First State
 
 Added:            dir01/file01
@@ -250,43 +264,50 @@ No more local modifications.
 
 [source,shell]
 ----
-~/sample/dir01$ fim diff
-2015/08/24 23:00:32 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
-2015/08/24 23:00:33 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
+~/simple-example/dir01$ fim diff
+2015/10/20 07:37:57 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
+2015/10/20 07:37:57 - Info  - SELinux is enabled on this system
+2015/10/20 07:37:58 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/08/24 23:00:31
-Comment: modifications from dir01
+Comparing with the last committed state from 2015/10/20 07:37:56
+Comment: Modifications from dir01
 
 Nothing modified
 ----
 
 [source,shell]
 ----
-~/sample/dir01$ cd ..
+~/simple-example/dir01$ cd ..
 ----
 
 == Commit the modifications
 
 [source,shell]
 ----
-~/sample$ fim ci -c "All modifications" -y
-2015/08/24 23:00:33 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
+2015/10/20 07:37:58 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
+2015/10/20 07:37:58 - Info  - SELinux is enabled on this system
 .
-2015/08/24 23:00:33 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00, using 2 thread
+2015/10/20 07:37:59 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/08/24 23:00:31
-Comment: modifications from dir01
+Comparing with the last committed state from 2015/10/20 07:37:56
+Comment: Modifications from dir01
 
 Added:            file12
 Copied:           file11 	(was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
-Content modified: file04 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
-Content modified: file05 	2015/08/24 23:00:27 -> 2015/08/24 23:00:27
+Date modified:    file02 	creationTime: 2015/10/20 07:37:51 -> 2015/10/20 07:37:52
+                         	lastModified: 2015/10/20 07:37:51 -> 2015/10/20 07:37:52
+
+Content modified: file04 	creationTime: 2015/10/20 07:37:51 -> 2015/10/20 07:37:52
+                         	lastModified: 2015/10/20 07:37:51 -> 2015/10/20 07:37:52
+
+Content modified: file05 	creationTime: 2015/10/20 07:37:51 -> 2015/10/20 07:37:52
+                         	lastModified: 2015/10/20 07:37:51 -> 2015/10/20 07:37:52
+
 Deleted:          file01
 Deleted:          file06
 
@@ -297,13 +318,14 @@ Deleted:          file06
 
 [source,shell]
 ----
-~/sample$ fim diff
-2015/08/24 23:00:34 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # > 200 MB, @ > 100 MB, O > 50 MB, o > 20 MB, . otherwise)
+~/simple-example$ fim diff
+2015/10/20 07:37:59 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
+2015/10/20 07:37:59 - Info  - SELinux is enabled on this system
 .
-2015/08/24 23:00:34 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00, using 2 thread
+2015/10/20 07:38:00 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/08/24 23:00:33
+Comparing with the last committed state from 2015/10/20 07:37:58
 Comment: All modifications
 
 Nothing modified
@@ -313,16 +335,70 @@ Nothing modified
 
 [source,shell]
 ----
-~/sample$ fim log
-State #1: 2015/08/24 23:00:27 (10 files)
+~/simple-example$ fim log
+State #1: 2015/10/20 07:37:51 (10 files)
 	Comment: First State
 	10 added
 
-State #2: 2015/08/24 23:00:31 (11 files)
-	Comment: modifications from dir01
-	1 added
+State #2: 2015/10/20 07:37:56 (11 files)
+	Comment: Modifications from dir01
+	11 added
 
-State #3: 2015/08/24 23:00:33 (14 files)
+State #3: 2015/10/20 07:37:58 (14 files)
 	Comment: All modifications
 	1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 2 deleted
+----
+
+== State File Content
+
+Here is an extract of the State 3 content. To simplify reading, hash are shortened and only one file entry is kept.
+
+[source]
+----
+{
+  "stateHash": "95707f3180...ba2f3dca9e",
+  "modelVersion": "4",
+  "timestamp": 1445321428623,
+  "comment": "All modifications",
+  "fileCount": 14,
+  "fileContentLength": 176,
+  "hashMode": "hashAll",
+  "modificationCounts": {
+    "added": 1,
+    "copied": 1,
+    "duplicated": 3,
+    "dateModified": 1,
+    "contentModified": 2,
+    "attributesModified": 0,
+    "renamed": 0,
+    "deleted": 2
+  },
+  "ignoredFiles": [
+    ".fim/"
+  ],
+  "fileStates": [
+    {
+      "fileName": "dir01/file01",
+      "fileLength": 12,
+      "fileTime": {
+        "creationTime": 1445321421552,
+        "lastModified": 1445321421552
+      },
+      "fileHash": {
+        "smallBlockHash": "fa5d74eb88...1a44aaa2df",
+        "mediumBlockHash": "fa5d74eb88...1a44aaa2df",
+        "fullHash": "fa5d74eb88...1a44aaa2df",
+      },
+      "fileAttributes": {
+        "SELinuxLabel": "system_u:object_r:file_t:s0",
+        "PosixFilePermissions": "rw-rw-r--"
+      }
+    },
+
+    ...
+    // Other file entries have been removed
+    ...
+
+  ]
+}
 ----

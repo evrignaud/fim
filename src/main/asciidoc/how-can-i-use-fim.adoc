@@ -30,56 +30,7 @@ the two shell script files located in the root directory.
 ** `fim` for Linux or Mac OS X
 ** `fim.bat` for Windows
 
-[[step-by-step-procedure]]
-== Step by step procedure
-
-_This procedure is a contribution done by
-http://linuxfr.org/nodes/106724/comments/1622498[El Titi]_
-
-First, it install maven. If you already have it you can skip the 2 first
-lines. `/usr/local/bin/mvn` should be replaced with the path where `mvn`
-is installed.
-
-=== For OS X
-
-[source]
------------------------------------------------------------------------------------------
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew install maven
-cd
-mkdir git
-cd git
-git clone https://github.com/evrignaud/fim.git
-cd fim/
-/usr/local/bin/mvn clean install
-./fim
------------------------------------------------------------------------------------------
-
-=== For Linux
-
-[source]
----------------------------------------------------------------------------------------
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/linuxbrew/go/install)"
-brew install maven
-cd
-mkdir git
-cd git
-git clone https://github.com/evrignaud/fim.git
-cd fim/
-/usr/local/bin/mvn clean install
-./fim
----------------------------------------------------------------------------------------
-
-== Build a Fim distribution
-
-If you want to generate a Fim distribution type the following command:
-
-[source]
----------------------------
-mvn clean install -Pdistrib
----------------------------
-
-It generates two distribution files into the `target/dist` directory.
+It generates also two distribution files into the `target/dist` directory.
 
 [source]
 ---------------------------
@@ -87,3 +38,49 @@ $ ls -a1 target/dist/
 fim-1.0.0-SNAPSHOT-distribution.tar.gz
 fim-1.0.0-SNAPSHOT-distribution.zip
 ---------------------------
+
+== Step by step procedure
+
+Here are some tips on how you can build it easily.
+
+=== Getting Maven
+
+If you don't have maven, you can either download it from http://maven.apache.org/index.html[here] or use packages managers.
+
+==== For Linux
+
+[source]
+-----------------------------------------------------------------------------------------
+sudo apt-get install maven
+-----------------------------------------------------------------------------------------
+
+==== For Mac OS X
+
+[source]
+-----------------------------------------------------------------------------------------
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install maven
+-----------------------------------------------------------------------------------------
+
+Then you need to add the `maven/bin` directory into your `PATH`.
+
+=== Clone Fim
+
+[source]
+-----------------------------------------------------------------------------------------
+cd
+mkdir projects
+cd projects
+git clone https://github.com/evrignaud/fim.git
+cd fim/
+-----------------------------------------------------------------------------------------
+
+=== Build Fim
+
+[source]
+---------------------------------------------------------------------------------------
+mvn clean install
+
+# Now Fim is ready
+./fim
+---------------------------------------------------------------------------------------
