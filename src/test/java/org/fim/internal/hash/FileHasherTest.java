@@ -85,6 +85,7 @@ public class FileHasherTest extends StateAssert
 		contentBytes = builder.toString().getBytes();
 	}
 
+	private long globalSequenceCount = 0;
 	private HashProgress hashProgress;
 	private HashMode hashMode;
 	private BuildableContext context;
@@ -361,10 +362,10 @@ public class FileHasherTest extends StateAssert
 		{
 			int contentSize = _1_KB / 4;
 			int remaining = fileSize;
-			for (int sequenceCount = 0; remaining > 0; sequenceCount++)
+			for (; remaining > 0; globalSequenceCount++)
 			{
 				int size = min(contentSize, remaining);
-				byte[] content = generateContent(sequenceCount, size);
+				byte[] content = generateContent(globalSequenceCount, size);
 				remaining -= size;
 				out.write(content);
 			}
@@ -377,7 +378,7 @@ public class FileHasherTest extends StateAssert
 		return newFile;
 	}
 
-	private byte[] generateContent(int sequenceCount, int contentSize)
+	private byte[] generateContent(long sequenceCount, int contentSize)
 	{
 		byte[] content = new byte[contentSize];
 		for (int index = 0; index < contentSize; index += 2)
@@ -391,9 +392,9 @@ public class FileHasherTest extends StateAssert
 		return content;
 	}
 
-	private byte getContentByte(int sequenceCount, boolean fromTheEnd)
+	private byte getContentByte(long sequenceCount, boolean fromTheEnd)
 	{
-		int index = sequenceCount % contentBytes.length;
+		int index = (int) (sequenceCount % contentBytes.length);
 		if (fromTheEnd)
 		{
 			index = contentBytes.length - 1 - index;
@@ -401,7 +402,6 @@ public class FileHasherTest extends StateAssert
 		return contentBytes[index];
 	}
 
-	//	smallRange, mediumRange
 	private FileHash computeExpectedHash(Path fileToHash, Range[] smallRanges, Range[] mediumRanges) throws IOException
 	{
 		byte[] fullContent = Files.readAllBytes(fileToHash);
