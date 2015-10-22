@@ -17,14 +17,14 @@ You can do a full diff that will compare the hash of all the files. It can be ve
 $ fim diff
 ----
 
-You can compare quickly asking to hash only medium blocks of the files. *Using this option can produce an inaccurate result.*
+You can compare quickly using fast mode. *With this option you can miss some modified files.*
 
 [source,shell]
 ----
 $ fim diff -f
 ----
 
-You can compare quicker asking to hash only small blocks of the files. *Using this option can produce an inaccurate result.*
+You can compare quicker using super fast mode. *With this option you can miss some modified files.*
 
 [source,shell]
 ----
@@ -44,5 +44,5 @@ It's a time consuming operation that will compute all the hash of each files con
 
 [source,shell]
 ----
-$ fim ci
+$ fim ci -c "My commit comment"
 ----

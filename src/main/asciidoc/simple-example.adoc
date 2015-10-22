@@ -276,6 +276,8 @@ Comment: Modifications from dir01
 Nothing modified
 ----
 
+Return into the parent directory.
+
 [source,shell]
 ----
 ~/simple-example/dir01$ cd ..
@@ -351,7 +353,7 @@ State #3: 2015/10/20 07:37:58 (14 files)
 
 == State File Content
 
-Here is an extract of the State 3 content. To simplify reading, hash are shortened and only one file entry is kept.
+Here is an extract of the State's 3 content. To simplify reading, hash are shortened and only one file entry is kept.
 
 [source]
 ----
@@ -361,7 +363,7 @@ Here is an extract of the State 3 content. To simplify reading, hash are shorten
   "timestamp": 1445321428623,
   "comment": "All modifications",
   "fileCount": 14,
-  "fileContentLength": 176,
+  "filesContentLength": 176,
   "hashMode": "hashAll",
   "modificationCounts": {
     "added": 1,

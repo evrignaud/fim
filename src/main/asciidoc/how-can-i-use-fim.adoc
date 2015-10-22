@@ -1,8 +1,8 @@
 = How can I use Fim
 
-== Fim releases
+== Download Fim releases
 
-You can find prebuilt releases of Fim https://github.com/evrignaud/fim/releases[here]
+You can download prebuilt releases of Fim from https://github.com/evrignaud/fim/releases[image:icons/download.png[Download] here]
 
 == Building Fim
 
@@ -39,22 +39,22 @@ fim-1.0.0-SNAPSHOT-distribution.tar.gz
 fim-1.0.0-SNAPSHOT-distribution.zip
 ---------------------------
 
-== Step by step procedure
+=== Step by step procedure
 
 Here are some tips on how you can build it easily.
 
-=== Getting Maven
+==== Getting Maven
 
 If you don't have maven, you can either download it from http://maven.apache.org/index.html[here] or use packages managers.
 
-==== For Linux
+===== For Linux
 
 [source]
 -----------------------------------------------------------------------------------------
 sudo apt-get install maven
 -----------------------------------------------------------------------------------------
 
-==== For Mac OS X
+===== For Mac OS X
 
 [source]
 -----------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ brew install maven
 
 Then you need to add the `maven/bin` directory into your `PATH`.
 
-=== Clone Fim
+==== Clone Fim
 
 [source]
 -----------------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ git clone https://github.com/evrignaud/fim.git
 cd fim/
 -----------------------------------------------------------------------------------------
 
-=== Build Fim
+==== Build Fim
 
 [source]
 ---------------------------------------------------------------------------------------

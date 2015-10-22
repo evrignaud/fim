@@ -121,7 +121,7 @@ Nothing modified
 
 == Check more accurately for differences
 
-Using the super fast mode can produce inaccurate results. *You can miss modified files.* +
+Using the super fast mode can produce inaccurate results. *You can miss some modified files.* +
 To increase accuracy, you can use the fast mode using the `-f` option that will check 3 medium blocks.
 But it cannot be completely accurate as we only hash 3 different 1 MB blocks of the files. +
 This time in my case, *it takes 20 minutes* to check the differences.

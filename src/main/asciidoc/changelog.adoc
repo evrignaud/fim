@@ -1,9 +1,10 @@
 = Fim changelog
 
 
-== Version 1.0.2 (released 2015-09-04)
+== Version 1.0.2
+*(Released 2015-09-04)*
 
-https://github.com/evrignaud/fim/tree/1.0.2[image:icons/github.png[GitHub] Sources] &nbsp;&nbsp; - &nbsp;&nbsp; https://github.com/evrignaud/fim/compare/1.0.1%2E%2E%2E1.0.2[image:icons/list.png[List] Full Changelog]
+https://github.com/evrignaud/fim/tree/1.0.2[image:icons/octocat.png[GitHub] Sources] &nbsp;&nbsp; - &nbsp;&nbsp; https://github.com/evrignaud/fim/compare/1.0.1%2E%2E%2E1.0.2[image:icons/list.png[List] Full Changelog]
 &nbsp;&nbsp; - &nbsp;&nbsp;
 https://github.com/evrignaud/fim/releases/tag/1.0.2[image:icons/package.png[Package] Download]
 
@@ -11,9 +12,10 @@ https://github.com/evrignaud/fim/releases/tag/1.0.2[image:icons/package.png[Pack
 * Clarified the documentation
 
 
-== Version 1.0.1 (released 2015-08-26)
+== Version 1.0.1
+*(Released 2015-08-26)*
 
-https://github.com/evrignaud/fim/tree/1.0.1[image:icons/github.png[GitHub] Sources] &nbsp;&nbsp; - &nbsp;&nbsp; https://github.com/evrignaud/fim/compare/1.0.0%2E%2E%2E1.0.1[image:icons/list.png[List] Full Changelog]
+https://github.com/evrignaud/fim/tree/1.0.1[image:icons/octocat.png[GitHub] Sources] &nbsp;&nbsp; - &nbsp;&nbsp; https://github.com/evrignaud/fim/compare/1.0.0%2E%2E%2E1.0.1[image:icons/list.png[List] Full Changelog]
 &nbsp;&nbsp; - &nbsp;&nbsp;
 https://github.com/evrignaud/fim/releases/tag/1.0.1[image:icons/package.png[Package] Download]
 
@@ -23,9 +25,10 @@ https://github.com/evrignaud/fim/releases/tag/1.0.1[image:icons/package.png[Pack
 * Add Global hash mode to be able to change the default Fim behavior
 
 
-== Version 1.0.0 (released 2015-07-29)
+== Version 1.0.0
+*(Released 2015-07-29)*
 
-https://github.com/evrignaud/fim/tree/1.0.0[image:icons/github.png[GitHub] Sources] &nbsp;&nbsp; - &nbsp;&nbsp; https://github.com/evrignaud/fim/compare/Initial_commit%2E%2E%2E1.0.0[image:icons/list.png[List] Full Changelog]
+https://github.com/evrignaud/fim/tree/1.0.0[image:icons/octocat.png[GitHub] Sources] &nbsp;&nbsp; - &nbsp;&nbsp; https://github.com/evrignaud/fim/compare/Initial_commit%2E%2E%2E1.0.0[image:icons/list.png[List] Full Changelog]
 &nbsp;&nbsp; - &nbsp;&nbsp;
 https://github.com/evrignaud/fim/releases/tag/1.0.0[image:icons/package.png[Package] Download]
 

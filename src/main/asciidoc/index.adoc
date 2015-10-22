@@ -38,9 +38,15 @@ Version {projectVersion}
 
 '''
 
-image:icons/fim-96.png[Fim]
+++++
+<div class="paragraph">
+	<p align="center">
+		<img src="images/icons/fim-128.png" alt="Fim">
+	</p>
+</div>
+++++
 
-The purpose of Fim is to manage a workspace and be able to know where we are in the work we are doing.
+The purpose of Fim is to manage a set of files and be able to know where we are in the work we are doing.
 When we do a lot of stuff at the same time, things take time and we lose the thread.
 
 Fim allow you to quickly get the status of all kind of files.
@@ -70,13 +76,13 @@ include::how-does-it-works.adoc[]
 
 include::fim-workflow.adoc[]
 
-include::fim-usage.adoc[]
-
-include::how-can-i-use-fim.adoc[]
-
 include::use-case-example.adoc[]
 
+include::fim-usage.adoc[]
+
 include::changelog.adoc[]
+
+include::how-can-i-use-fim.adoc[]
 
 include::simple-example.adoc[]
 

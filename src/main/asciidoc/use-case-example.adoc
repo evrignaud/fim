@@ -1,6 +1,6 @@
 = Use case example
 
-Fim can be used for different kind of use cases.
+Fim can be used for different kind of use cases. +
 Personally I use Fim to manage my photos and videos.
 When I have new photos, I put them at the right place in my pictures folder and then I do `fim ci` from the sub-directory containing the new photos to record a new State.
 As I could do with Git.
