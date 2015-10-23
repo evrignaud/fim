@@ -4,13 +4,13 @@
 
 .This tool is written in Java.
 
-Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from http://www.oracle.com/technetwork/java/javase/downloads/index.html[here].
+Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from http://www.oracle.com/technetwork/java/javase/downloads/index.html[here]. +
 You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.
 
-= Tested Platforms
+= Supported OS
 
-Currently Fim is tested on Linux and Windows.
-Contribution is welcome to test it on OS X.
+Fim can be used on Linux, Mac OS X and Windows
+
 
 = They talked about it
 
@@ -22,7 +22,8 @@ ____
 http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html[+ Lire la suite]
 ________
 
-image:icons/english.png[English version] &nbsp; http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html[Check integrity of many files]
+image:icons/english.png[English version] &nbsp;
+http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html[Check integrity of many files]
 *Fim (File Integrity Manager)* is a really great tool for managing the integrity of many files.
 http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html[+ Read more]
 ________
@@ -33,12 +34,19 @@ ____
 
 ____
 
-*Fim (File Integrity Manager)* est un outil open source qui vous permet de vérifier l'intégrité de tous vos fichiers après les avoir manipulés en lots. &nbsp;&nbsp;
-http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html[+ Lire la suite pour image:icons/linux.png[Linux]] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html[+ Lire la suite pour image:icons/windows.png[Windows]]
+*Fim (File Integrity Manager)* est un outil open source qui vous permet de vérifier l'intégrité de tous vos fichiers après les avoir manipulés en lots.
+&nbsp;&nbsp;
+http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html[+ Lire la suite pour image:icons/linux.png[Linux]]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html[+ Lire la suite pour image:icons/windows.png[Windows]]
 ________
 
-image:icons/english.png[English version] &nbsp; *Fim (File Integrity Manager)* is an open source tool which allows you to check the integrity of all your files after have handled them bulk. &nbsp;&nbsp;
-http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Flinux%2FUtilitaires%2Ffiches%2F132315.html[+ Read more for image:icons/linux.png[Linux]] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Fwindows%2FUtilitaire%2Fmanipulation_de_fichier%2Ffiches%2F132314.html[+ Read more for image:icons/windows.png[Windows]]
+image:icons/english.png[English version] &nbsp; *Fim (File Integrity Manager)*
+is an open source tool which allows you to check the integrity of all your files after have handled them bulk.
+&nbsp;&nbsp;
+http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Flinux%2FUtilitaires%2Ffiches%2F132315.html[+ Read more for image:icons/linux.png[Linux]]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Fwindows%2FUtilitaire%2Fmanipulation_de_fichier%2Ffiches%2F132314.html[+ Read more for image:icons/windows.png[Windows]]
 ________
 ____
 
@@ -57,7 +65,9 @@ ____
 
 = About
 
-Created by Etienne Vrignaud &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; https://twitter.com/evrignaud[image:icons/twitter.png[Twitter icon] Follow @evrignaud]
+Created by Etienne Vrignaud
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+https://twitter.com/evrignaud[image:icons/twitter.png[Twitter icon] Follow @evrignaud]
 
 
 = License

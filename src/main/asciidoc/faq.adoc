@@ -2,15 +2,17 @@
 
 == Run Fim commands from a sub-directory
 
-You can run all the Fim commands from every directory inside the Fim repository.
-It allows you to:
+You can run all the Fim commands from every sub-directory inside a Fim repository.
+You can see it in action into the <<simple-example.adoc#_from_the_code_dir01_code_sub_directory,Simple example>>.
 
-- Quickly find the modifications done in this directory. You will hash only the files contained inside and not the complete file tree
-- Quickly commit the modifications done in this directory
-- Quickly find the duplicated files contained in this directory
-- Quickly reset the date of files contained in this directory
+Doing this allow you to:
 
-All the other commands will run as if you were on the top of the repository.
+- Quickly find the modifications done in this specific sub-directory. You will hash only the files contained inside and not the complete file tree
+- Quickly commit the modifications done in this sub-directory
+- Quickly find the duplicated files contained in this sub-directory
+- Quickly reset the attributes of files contained in this sub-directory
+
+All the other commands will run as if you were on the top of the Fim repository.
 
 == Dealing with duplicates
 
@@ -18,8 +20,8 @@ Duplicated files are addressed by Fim in two different ways.
 
 === Duplicates inside a Fim repository
 
-Fim allow you to detect duplicates using the `fdup` command.
-If you want to remove them, Fim cannot do it. It does not provide a smart way to remove those duplicates.
+Fim allow you to detect duplicates using the `fdup` command. It displays the list of duplicated files. +
+If you want to remove them, Fim won't do it. It does not provide a smart way to remove those duplicates.
 
 === Duplicates that are outside
 
@@ -31,54 +33,59 @@ It can be useful if you want to cleanup old backups that are no more synchronize
 If you never want to hash the complete content of your files you can set a global hash mode that will indicate the maximum hash mode you want to use for this repository.
 You can specify this to the init command:
 
-- `-f`: means always don't hash anything
-- `-k`: You will be able to use `-f` or `-k` after
-- `-m`: You will be able to use `-f`, `-k` or `-m` after
+- `-f`: Set maximum hash mode to fast. You will be able to use `-f`, `-s` or `-n` after
+- `-s`: Set maximum hash mode to super fast. You will be able to use `-f` or `-s` after
+- `-n`: means always don't hash anything. You won't be able to use other hash mode after
 
-Example:
-`shell
-~/sample$ fim init -m
-`
+=== Example
 
-It sets a global hash mode for the complete repository to `-m`.
-All the Fim commands that you use after will use `-m` hash mode (or less if specified) and you won't be able to hash the full file content.
-After you will be able to run the following commands:
+Initialize the Fim repository specifying the global hash mode.
 
 [source,shell]
 ----
-~/sample$ fim diff # will run using -m
+$ fim init -f
+----
 
-~/sample$ fim diff -k
+It sets a global hash mode for the complete repository to fast mode. +
+All the Fim commands that you use after will use by default the fast hash mode (or less if specified) and you won't be able to hash the full file content.
 
-~/sample$ fim diff -f
+After the init command that we run in our example, you will be able to run the following commands:
+
+[source,shell]
+----
+$ fim diff    # will run using -f
+
+$ fim diff -s
+
+$ fim diff -n
 ----
 
 == Ignoring files or directories
 
 You can specify files or directories that you want to be ignored by Fim.
-For this, you can add a `.fimignore` file in one of the directories contained into the Fim repository.
+For this, you can add a `.fimignore` file in one of the directories contained into the Fim repository. +
 You can also set global ignores by creating a `.fimignore` into the user home directory.
 
-Each line of the `.fimignore` file specifies a pattern. The pattern is mainly a file or directory name.
-Use wilcards in order to match many of them. For example `*.mp3` will match all the file ending with `.mp3`.
-A leading `**` followed by a slash means match in all directories.
+Each line of the `.fimignore` file specifies a pattern. The pattern is mainly a file or directory name. +
+Use wildcards in order to match many of them. For example `\*.mp3` will match all the file ending with `.mp3`. +
+A leading `*\*` followed by a slash means match in all directories. +
 For example, `**/foo` matches file or directory `foo` anywhere, the same as pattern `foo`.
 
 == Hash files in multi-thread
 
-Fim hash files using several threads.
-This allow taking advantage of the computer resources and maximize the overall performances of file hashing.
-By default, Fim use an arbitrary thread count that is the number of CPU cores divided by two.
-You can specify the number of thread to be used for file hashing.
+Fim hash files using several threads. +
+This allow taking advantage of the computer resources and maximize the overall performances of file hashing. +
+By default, Fim use an arbitrary thread count that is the number of CPU cores divided by two. +
+You can specify the number of thread to be used for file hashing. +
 The best value depend on the kind of hard disk you have. The more throughput you have, the more thread you can use.
 
 == State integrity
 
-All the States contains a hash of the State content.
-If something is modified in the State, the hash of the State content will change and the State will be reported as corrupted.
-Fim won't use it.
+All the States contains a hash of the State content. +
+If something is modified in the State, the hash of the State content will change and the State will be reported as corrupted. +
+Fim won't use a corrupted State.
 
-== Cross Platform Compatibility
+== Cross platform compatibility
 
-The same Fim repository can be used by either on Linux and on Windows.
-State content is normalized and the same State content can be loaded either on Linux and Windows.
+The same Fim repository can be used by either on Linux, Mac OS X and Windows. +
+State content is normalized and the same State content can be loaded on the different supported OS.

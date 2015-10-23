@@ -4,18 +4,23 @@
 == Version 1.0.2
 *(Released 2015-09-04)*
 
-https://github.com/evrignaud/fim/tree/1.0.2[image:icons/octocat.png[GitHub] Sources] &nbsp;&nbsp; - &nbsp;&nbsp; https://github.com/evrignaud/fim/compare/1.0.1%2E%2E%2E1.0.2[image:icons/list.png[List] Full Changelog]
+https://github.com/evrignaud/fim/tree/1.0.2[image:icons/octocat.png[GitHub] Sources]
+&nbsp;&nbsp; - &nbsp;&nbsp;
+https://github.com/evrignaud/fim/compare/1.0.1%2E%2E%2E1.0.2[image:icons/list.png[List] Full Changelog]
 &nbsp;&nbsp; - &nbsp;&nbsp;
 https://github.com/evrignaud/fim/releases/tag/1.0.2[image:icons/package.png[Package] Download]
 
-* Fix https://github.com/evrignaud/fim/issues/1[issue #1]: Hash the second 4 KB / 1 MB block to ensure that the headers don't increase the collision probability when doing a rapid check.
+* Fix https://github.com/evrignaud/fim/issues/1[issue #1]:
+  Hash the second 4 KB / 1 MB block to ensure that the headers don't increase the collision probability when doing a rapid check.
 * Clarified the documentation
 
 
 == Version 1.0.1
 *(Released 2015-08-26)*
 
-https://github.com/evrignaud/fim/tree/1.0.1[image:icons/octocat.png[GitHub] Sources] &nbsp;&nbsp; - &nbsp;&nbsp; https://github.com/evrignaud/fim/compare/1.0.0%2E%2E%2E1.0.1[image:icons/list.png[List] Full Changelog]
+https://github.com/evrignaud/fim/tree/1.0.1[image:icons/octocat.png[GitHub] Sources]
+&nbsp;&nbsp; - &nbsp;&nbsp;
+https://github.com/evrignaud/fim/compare/1.0.0%2E%2E%2E1.0.1[image:icons/list.png[List] Full Changelog]
 &nbsp;&nbsp; - &nbsp;&nbsp;
 https://github.com/evrignaud/fim/releases/tag/1.0.1[image:icons/package.png[Package] Download]
 
@@ -28,7 +33,9 @@ https://github.com/evrignaud/fim/releases/tag/1.0.1[image:icons/package.png[Pack
 == Version 1.0.0
 *(Released 2015-07-29)*
 
-https://github.com/evrignaud/fim/tree/1.0.0[image:icons/octocat.png[GitHub] Sources] &nbsp;&nbsp; - &nbsp;&nbsp; https://github.com/evrignaud/fim/compare/Initial_commit%2E%2E%2E1.0.0[image:icons/list.png[List] Full Changelog]
+https://github.com/evrignaud/fim/tree/1.0.0[image:icons/octocat.png[GitHub] Sources]
+&nbsp;&nbsp; - &nbsp;&nbsp;
+https://github.com/evrignaud/fim/compare/Initial_commit%2E%2E%2E1.0.0[image:icons/list.png[List] Full Changelog]
 &nbsp;&nbsp; - &nbsp;&nbsp;
 https://github.com/evrignaud/fim/releases/tag/1.0.0[image:icons/package.png[Package] Download]
 

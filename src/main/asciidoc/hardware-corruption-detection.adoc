@@ -1,0 +1,56 @@
+= Hardware corruption detection
+
+Fim is able to find changes likely caused by a hardware corruption or a filesystem bug. +
+A file is suspected to be corrupted when the content have changed, but the timestamps are not modified (creation time and modification time). +
+To run hardware corruption detection use the `corrupt` command.
+
+The `diff` command can also be used to check if a file content have changed. +
+The difference for the `corrupt` command is that only corrupted files are displayed. Files that you way have added or modified are not listed in the result.
+
+== False positive
+
+The `corrupt` command can produce false positive.
+
+For example here is a simulation of hardware corruption in the repository generated for the <<simple-example.adoc#_simple_example,Simple example>>:
+
+* Change the content of a file
+
+[source,shell]
+----
+simple-example$ echo bar >> file05
+----
+
+* Reset the file attributes using the `fim rfa` command
+
+[source,shell]
+----
+simple-example$ fim rfa -y
+You are going to reset files attributes based on the last committed State done 2015/10/23 07:16:19
+Comment: All modifications
+
+2015/10/23 09:18:21 - Info  - SELinux is enabled on this system
+Set creation Time: file05 	2015/10/23 09:18:14 -> 2015/10/23 07:16:12
+Set last modified: file05 	2015/10/23 09:18:14 -> 2015/10/23 07:16:12
+
+2015/10/23 09:18:21 - Info  - The attributes of 1 file have been reset
+----
+
+* Now `file05` is suspected to be corrupted
+
+[source,shell]
+----
+simple-example$ fim corrupt
+2015/10/23 09:19:26 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
+2015/10/23 09:19:27 - Info  - SELinux is enabled on this system
+.
+2015/10/23 09:19:27 - Info  - Scanned 14 files (164 bytes), hashed 164 bytes (avg 164 bytes/s), during 00:00:00
+
+Comparing with the last committed state from 2015/10/23 07:16:19
+Comment: All modifications
+
+Corrupted?:       file05
+
+1 corrupted
+----
+
