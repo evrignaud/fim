@@ -109,7 +109,7 @@ public class Fim
 	private Options buildOptions()
 	{
 		Options options = new Options();
-		options.addOption(createOption("a", "master-fim-repository", true, "Fim repository directory that you want to use as remote master.\nOnly for the remove duplicated files command", false));
+		options.addOption(createOption("m", "master-fim-repository", true, "Fim repository directory that you want to use as remote master.\nOnly for the remove duplicated files command", false));
 		options.addOption(createOption("n", "do-not-hash", false, "Do not hash file content. Use only file names and modification dates", false));
 		options.addOption(createOption("s", "super-fast-mode", false, "Hash only 3 small blocks.\nOne at the beginning, one in the middle and one at the end", false));
 		options.addOption(createOption("f", "fast-mode", false, "Hash only 3 medium blocks.\nOne at the beginning, one in the middle and one at the end", false));
@@ -150,7 +150,7 @@ public class Fim
 			context.setComment(commandLine.getOptionValue('c', context.getComment()));
 			context.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "" + context.getThreadCount())));
 			context.setUseLastState(commandLine.hasOption('l'));
-			context.setMasterFimRepositoryDir(commandLine.getOptionValue('a'));
+			context.setMasterFimRepositoryDir(commandLine.getOptionValue('m'));
 			context.setAlwaysYes(commandLine.hasOption('y'));
 
 			if (commandLine.hasOption('n'))

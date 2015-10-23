@@ -4,7 +4,7 @@
 --------
 $ fim help
 
-usage: fim <command> [-a <arg>] [-c <arg>] [-f] [-h] [-l] [-n] [-q] [-s] [-t <arg>] [-v] [-y]
+usage: fim <command> [-c <arg>] [-f] [-h] [-l] [-m <arg>] [-n] [-q] [-s] [-t <arg>] [-v] [-y]
 
 File Integrity Checker
 
@@ -26,14 +26,14 @@ Available commands:
      version                    Prints the Fim version
 
 Available options:
-     -a,--master-fim-repository <arg>   Fim repository directory that you want to use as remote master.
-                                        Only for the remove duplicated files command
      -c,--comment <arg>                 Sets that State comment during init and commit
      -f,--fast-mode                     Hash only 3 medium blocks.
                                         One at the beginning, one in the middle and one at the end
      -h,--help                          Prints the Fim help
      -l,--use-last-state                Use the last committed State.
                                         Only for the find local duplicated files command
+     -m,--master-fim-repository <arg>   Fim repository directory that you want to use as remote master.
+                                        Only for the remove duplicated files command
      -n,--do-not-hash                   Do not hash file content. Use only file names and modification dates
      -q,--quiet                         Do not display details
      -s,--super-fast-mode               Hash only 3 small blocks.
