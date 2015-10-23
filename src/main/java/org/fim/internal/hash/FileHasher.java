@@ -191,10 +191,8 @@ public class FileHasher implements Runnable
 
 		if (false == frontHasher.hashComplete())
 		{
-			throw new RuntimeException("Fim is not working correctly. Some Hasher have not completed: " +
-					"small=" + frontHasher.getSmallBlockHasher().hashComplete() + ", " +
-					"medium=" + frontHasher.getMediumBlockHasher().hashComplete() + ", " +
-					"full=" + frontHasher.getFullHasher().hashComplete());
+			throw new RuntimeException(String.format("Fim is not working correctly for file '%s' (size=%d). Some Hasher have not completed: small=%s, medium=%s, full=%s",
+					file, fileSize, frontHasher.getSmallBlockHasher().hashComplete(), frontHasher.getMediumBlockHasher().hashComplete(), frontHasher.getFullHasher().hashComplete()));
 		}
 
 		return frontHasher.getFileHash();

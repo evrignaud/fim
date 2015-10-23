@@ -129,6 +129,7 @@ public class Range implements Comparable<Range>
 		return MoreObjects.toStringHelper(this)
 				.add("from", from)
 				.add("to", to)
+				.add("length", to - from)
 				.toString();
 	}
 

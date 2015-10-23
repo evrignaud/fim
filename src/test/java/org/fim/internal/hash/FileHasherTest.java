@@ -208,6 +208,14 @@ public class FileHasherTest extends StateAssert
 	}
 
 	@Test
+	public void hashA_4MB_File() throws IOException
+	{
+		checkFileHash((4 * _1_MB) + (6 * _1_KB) + 594,
+				new Range[]{new Range(_4_KB, _8_KB), new Range(_2_MB, _2_MB + _4_KB), new Range(4 * _1_MB, (4 * _1_MB) + _4_KB)},
+				new Range[]{new Range(_1_MB, _2_MB), new Range(_2_MB, _3_MB), new Range(_3_MB, 4 * _1_MB)});
+	}
+
+	@Test
 	public void hashA_60MB_File() throws IOException
 	{
 		checkFileHash(_60_MB + 291,

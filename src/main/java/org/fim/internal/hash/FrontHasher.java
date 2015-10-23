@@ -90,13 +90,13 @@ public class FrontHasher implements Hasher
 				return nextSmallRange;
 			}
 
-			if (nextSmallRange.getTo() < nextMediumRange.getFrom())
+			if (nextSmallRange.getTo() <= nextMediumRange.getFrom())
 			{
 				// Next small block is before the next medium block
 				return nextSmallRange;
 			}
 
-			if (nextMediumRange.getTo() < nextSmallRange.getFrom())
+			if (nextMediumRange.getTo() <= nextSmallRange.getFrom())
 			{
 				// Next medium block is before the next small block
 				return nextMediumRange;
