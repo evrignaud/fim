@@ -128,34 +128,27 @@ public class CompareResult
 
 		for (Difference diff : duplicated)
 		{
-			System.out.printf(stateFormat + "%s = %s%n", "Duplicated:", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName());
+			System.out.printf(stateFormat + "%s = %s%s%n", "Duplicated:", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName(), formatModifiedAttributes(diff, true));
 		}
 
 		for (Difference diff : dateModified)
 		{
-			System.out.printf(stateFormat + "%s \t%s%n", "Date modified:", diff.getFileState().getFileName(), formatModifiedAttributes(diff));
+			System.out.printf(stateFormat + "%s \t%s%n", "Date modified:", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false));
 		}
 
 		for (Difference diff : contentModified)
 		{
-			if (diff.isLastModifiedChanged())
-			{
-				System.out.printf(stateFormat + "%s \t%s%n", "Content modified:", diff.getFileState().getFileName(), formatModifiedAttributes(diff));
-			}
-			else
-			{
-				System.out.printf(stateFormat + "%s%n", "Content modified:", diff.getFileState().getFileName());
-			}
+			System.out.printf(stateFormat + "%s \t%s%n", "Content modified:", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false));
 		}
 
 		for (Difference diff : attributesModified)
 		{
-			System.out.printf(stateFormat + "%s \t%s%n", "Attrs. modified:", diff.getFileState().getFileName(), formatModifiedAttributes(diff));
+			System.out.printf(stateFormat + "%s \t%s%n", "Attrs. modified:", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false));
 		}
 
 		for (Difference diff : renamed)
 		{
-			System.out.printf(stateFormat + "%s -> %s%n", "Renamed:", diff.getPreviousFileState().getFileName(), diff.getFileState().getFileName());
+			System.out.printf(stateFormat + "%s -> %s%s%n", "Renamed:", diff.getPreviousFileState().getFileName(), diff.getFileState().getFileName(), formatModifiedAttributes(diff, true));
 		}
 
 		for (Difference diff : deleted)
@@ -165,7 +158,7 @@ public class CompareResult
 
 		for (Difference diff : corrupted)
 		{
-			System.out.printf(stateFormat + "%s \t%s%n", "Corrupted?:", diff.getFileState().getFileName(), formatModifiedAttributes(diff));
+			System.out.printf(stateFormat + "%s \t%s%n", "Corrupted?:", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false));
 		}
 
 		if (somethingModified())
@@ -178,10 +171,10 @@ public class CompareResult
 		return this;
 	}
 
-	private String formatModifiedAttributes(Difference diff)
+	private String formatModifiedAttributes(Difference diff, boolean nextLine)
 	{
 		int modifCount = 0;
-		StringBuilder modification = new StringBuilder();
+		StringBuilder modification = new StringBuilder(nextLine ? " " : ""); // Put a white space to force to add a separator
 
 		Map<String, String> previousFileAttributes = diff.getPreviousFileState().getFileAttributes();
 		Map<String, String> currentFileAttributes = diff.getFileState().getFileAttributes();
