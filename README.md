@@ -1,5 +1,6 @@
 # ![Logo](http://evrignaud.github.io/fim/images/icons/fim-96.png) &nbsp; File Integrity Manager
 
+Project health
 [![Build Status](https://travis-ci.org/evrignaud/fim.svg)](https://travis-ci.org/evrignaud/fim) &nbsp; [![Coverage Status](https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github)](https://coveralls.io/github/evrignaud/fim?branch=master)
 
 Fim manage the integrity of a complete file tree
@@ -7,20 +8,19 @@ Fim manage the integrity of a complete file tree
 ## Fim documentation
 
   * [Presentation](http://evrignaud.github.io/fim/#_fim_file_integrity_manager)
-  * [How does it works](http://evrignaud.github.io/fim/#_how_does_it_works)
+  * [Why do you need Fim?](http://evrignaud.github.io/fim/#_why_do_you_need_fim)
+  * [How does it work](http://evrignaud.github.io/fim/#_how_does_it_work)
   * [Fim workflow](http://evrignaud.github.io/fim/#_fim_workflow)
+  * [Use case example](http://evrignaud.github.io/fim/#_use_case_example)
   * [Fim usage](http://evrignaud.github.io/fim/#_fim_usage)
-  * [How can I use Fim](http://evrignaud.github.io/fim/#_how_can_i_use_fim)
+  * [How can you use Fim](http://evrignaud.github.io/fim/#_how_can_you_use_fim)
   * [Fim changelog](http://evrignaud.github.io/fim/#_fim_changelog)
   * [Simple example](http://evrignaud.github.io/fim/#_simple_example)
   * [Real life example](http://evrignaud.github.io/fim/#_real_life_example)
+  * [File permissions management](http://evrignaud.github.io/fim/#_file_permissions_management)
+  * [Hardware corruption detection](http://evrignaud.github.io/fim/#_hardware_corruption_detection)
   * [FAQ](http://evrignaud.github.io/fim/#_faq)
-  * [Fim requirements](http://evrignaud.github.io/fim/#_fim_requirements)
   * [License](http://evrignaud.github.io/fim/LICENSE.html)
-
-## Use case example
-
-You can find some use case example [here](http://evrignaud.github.io/fim/#_use_case_example)
 
 ## Fim releases
 
@@ -28,17 +28,14 @@ You can download Fim binary distributions from [here](https://github.com/evrigna
 
 ## Fim requirements
 
+This tool is written in Java.
+
 Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from [here](http://www.oracle.com/technetwork/java/javase/downloads/index.html).<br/>
 You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.
 
 ## Supported OS
 
 Fim can be used on Linux, Mac OS X and Windows
-
-## Cross Platform Compatibility
-
-The same Fim repository can be used by either on Linux, Mac OS X and Windows.<br/>
-State content is normalized and the same State content can be loaded on the different supported OS.
 
 ## They talked about it
 
@@ -67,7 +64,7 @@ State content is normalized and the same State content can be loaded on the diff
 
 ## About
 
-> Forged by Etienne Vrignaud &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Twitter icon](http://evrignaud.github.io/fim/images/icons/twitter.png) Follow @evrignaud](https://twitter.com/evrignaud)
+> Created by by Etienne Vrignaud &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Twitter icon](http://evrignaud.github.io/fim/images/icons/twitter.png) Follow @evrignaud](https://twitter.com/evrignaud)
 
 
 ![Analytics](https://ga-beacon.appspot.com/UA-65759837-1/fim/README.md?pixel)

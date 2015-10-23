@@ -507,64 +507,56 @@ table.CodeRay td.code>pre{padding:0}
 <ul class="sectlevel0">
 <li><a href="#_fim_file_integrity_manager">Fim - File Integrity Manager</a>
 <ul class="sectlevel1">
-<li><a href="#_how_does_it_works">1. How does it works</a></li>
-<li><a href="#_fim_workflow">2. Fim workflow</a></li>
-<li><a href="#_fim_usage">3. Fim usage</a></li>
-<li><a href="#_how_can_i_use_fim">4. How can I use Fim</a>
+<li><a href="#_why_do_you_need_fim">1. Why do you need Fim?</a></li>
+<li><a href="#_how_does_it_work">2. How does it work</a></li>
+<li><a href="#_fim_workflow">3. Fim workflow</a></li>
+<li><a href="#_use_case_example">4. Use case example</a></li>
+<li><a href="#_fim_usage">5. Fim usage</a></li>
+<li><a href="#_how_can_you_use_fim">6. How can you use Fim</a>
 <ul class="sectlevel2">
-<li><a href="#_fim_releases">4.1. Fim releases</a></li>
-<li><a href="#_build_fim">4.2. Build Fim</a></li>
-<li><a href="#step-by-step-procedure">4.3. Step by step procedure</a></li>
-<li><a href="#_build_a_fim_distribution">4.4. Build a Fim distribution</a></li>
-</ul>
-</li>
-<li><a href="#_use_case_example">5. Use case example</a></li>
-<li><a href="#_fim_changelog">6. Fim changelog</a>
-<ul class="sectlevel2">
-<li><a href="#_version_1_0_2_released_2015_09_04">6.1. Version 1.0.2 (released 2015-09-04)</a></li>
-<li><a href="#_version_1_0_1_released_2015_08_26">6.2. Version 1.0.1 (released 2015-08-26)</a></li>
-<li><a href="#_version_1_0_0_released_2015_07_29">6.3. Version 1.0.0 (released 2015-07-29)</a></li>
+<li><a href="#_download_a_fim_release">6.1. Download a Fim release</a></li>
+<li><a href="#_fim_changelog">6.2. Fim changelog</a></li>
+<li><a href="#_build_fim">6.3. Build Fim</a></li>
 </ul>
 </li>
 <li><a href="#_simple_example">7. Simple example</a>
 <ul class="sectlevel2">
-<li><a href="#_create_a_set_of_files">7.1. Create a set of files</a></li>
-<li><a href="#_initialize_the_fim_repository">7.2. Initialize the Fim repository</a></li>
-<li><a href="#_a_new_code_fim_code_directory_have_been_created">7.3. A new <code>.fim</code> directory have been created</a></li>
-<li><a href="#_do_some_modifications">7.4. Do some modifications</a></li>
-<li><a href="#_fim_detects_the_modifications">7.5. Fim detects the modifications</a></li>
-<li><a href="#_search_for_duplicated_files">7.6. Search for duplicated files</a></li>
-<li><a href="#_from_the_code_dir01_code_sub_directory">7.7. From the <code>dir01</code> sub-directory</a></li>
-<li><a href="#_commit_the_modifications">7.8. Commit the modifications</a></li>
-<li><a href="#_nothing_is_modified_now">7.9. Nothing is modified now</a></li>
-<li><a href="#_display_the_fim_log">7.10. Display the Fim log</a></li>
+<li><a href="#_step_by_step">7.1. Step by step</a></li>
+<li><a href="#_the_fim_log">7.2. The Fim log</a></li>
+<li><a href="#_state_file_content">7.3. State file content</a></li>
 </ul>
 </li>
 <li><a href="#_real_life_example">8. Real life example</a>
 <ul class="sectlevel2">
 <li><a href="#_initialize_the_big_fim_repository">8.1. Initialize the big Fim repository</a></li>
-<li><a href="#_check_quickly_for_differences">8.2. Check quickly for differences</a></li>
+<li><a href="#_check_very_quickly_for_differences">8.2. Check very quickly for differences</a></li>
 <li><a href="#_check_more_accurately_for_differences">8.3. Check more accurately for differences</a></li>
 <li><a href="#_fully_checking_for_differences">8.4. Fully checking for differences</a></li>
 <li><a href="#_checking_without_hashing">8.5. Checking without hashing</a></li>
 </ul>
 </li>
-<li><a href="#_faq">9. FAQ</a>
+<li><a href="#_file_permissions_management">9. File permissions management</a></li>
+<li><a href="#_hardware_corruption_detection">10. Hardware corruption detection</a>
 <ul class="sectlevel2">
-<li><a href="#_run_fim_commands_from_a_sub_directory">9.1. Run Fim commands from a sub-directory</a></li>
-<li><a href="#_dealing_with_duplicates">9.2. Dealing with duplicates</a></li>
-<li><a href="#_changing_default_hash_mode">9.3. Changing default hash mode</a></li>
-<li><a href="#_ignoring_files_or_directories">9.4. Ignoring files or directories</a></li>
-<li><a href="#_hash_files_in_multi_thread">9.5. Hash files in multi-thread</a></li>
-<li><a href="#_state_integrity">9.6. State integrity</a></li>
-<li><a href="#_cross_platform_compatibility">9.7. Cross Platform Compatibility</a></li>
+<li><a href="#_false_positive">10.1. False positive</a></li>
 </ul>
 </li>
-<li><a href="#_fim_requirements">10. Fim requirements</a></li>
-<li><a href="#_tested_platforms">11. Tested Platforms</a></li>
-<li><a href="#_they_talked_about_it">12. They talked about it</a></li>
-<li><a href="#_about">13. About</a></li>
-<li><a href="#_license">14. License</a></li>
+<li><a href="#_faq">11. FAQ</a>
+<ul class="sectlevel2">
+<li><a href="#_run_fim_commands_from_a_sub_directory">11.1. Run Fim commands from a sub-directory</a></li>
+<li><a href="#_dealing_with_duplicates">11.2. Dealing with duplicates</a></li>
+<li><a href="#_changing_default_hash_mode">11.3. Changing default hash mode</a></li>
+<li><a href="#_ignoring_files_or_directories">11.4. Ignoring files or directories</a></li>
+<li><a href="#_hash_files_in_multi_thread">11.5. Hash files in multi-thread</a></li>
+<li><a href="#_state_integrity">11.6. State integrity</a></li>
+<li><a href="#_cross_platform_compatibility">11.7. Cross platform compatibility</a></li>
+</ul>
+</li>
+<li><a href="#_fim_requirements">12. Fim requirements</a></li>
+<li><a href="#_supported_os">13. Supported OS</a></li>
+<li><a href="#_they_talked_about_it">14. They talked about it</a></li>
+<li><a href="#_about">15. About</a></li>
+<li><a href="#_license">16. License</a></li>
 </ul>
 </li>
 </ul>
@@ -590,11 +582,11 @@ table.CodeRay td.code>pre{padding:0}
 <p>
     <a href="https://github.com/evrignaud/fim"><img
 		style="position: fixed; top: 0; right: 0; border: 0; z-index: 1000; margin: 0;"
-		src="images/fork_me_on_github-top-right.png" alt="Fork me on GitHub">
+		src="images/fork_me_on_github-top-right.png" alt="Fork me on GitHub"/>
 	</a>
     <a href="#"><img
 		style="position: fixed; bottom: 0; right: 0; border: 0; z-index: 1000; margin: 20px 20px 20px;"
-		src="images/icons/back_to_top.png" alt="Back to top">
+		src="images/icons/back_to_top.png" title="Back to top" alt="Back to top"/>
 	</a>
 </p>
 </div>
@@ -607,11 +599,13 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <hr>
 <div class="paragraph">
-<p><span class="image"><img src="images/icons/fim-96.png" alt="Fim"></span></p>
+	<p align="center">
+		<img src="images/icons/fim-128.png" alt="Fim">
+	</p>
 </div>
 <div class="paragraph">
-<p>The purpose of Fim is to manage a workspace and be able to know where we are in the work we are doing.
-When we do a lot of stuff at the same time, things take time and we lose the thread.</p>
+<p>The purpose of Fim is to manage a set of files and be able to see quickly the files you are working on and be sure that files are not tampered.<br>
+When you do a lot of stuff at the same time, things take time and Fim is here to help you to figure out what you were doing before.</p>
 </div>
 <div class="paragraph">
 <p>Fim allow you to quickly get the status of all kind of files.
@@ -620,15 +614,15 @@ It can be photos, videos or a complete disk tree. You can manage them with a spi
 <div class="paragraph">
 <p>On a daily workflow, you can know the files that have been added, modified, removed, moved, renamed, duplicated.
 When you are working with files and you are also very busy, it&#8217;s difficult to remind what are the files you were working on previously.
-A VCS can help you find it.
-Unfortunately when you are working with photos or videos, or other kind of big binary files you cannot manage them with a tool like Git.
+A VCS can help you for this.
+Unfortunately when you are working with photos or videos, or other kind of big binary files you cannot manage them with a tool like Git.<br>
 Fim is here for that.</p>
 </div>
 <div class="paragraph">
-<p>Each time you have a stable state you can commit to store it and be able to compare it with the next state later.</p>
+<p>Each time you have a stable set of files you can commit them to store their properties into a State and be able to compare it with your set of files later.</p>
 </div>
 <div class="paragraph">
-<p>The big difference with Git is that Fim does not keep track of the different contents of the files that are managed.
+<p>The big difference with Git is that Fim does not keep track of the different contents of the files that are managed.<br>
 This is why we can call it an Unversioned Control System (UVCS).</p>
 </div>
 <div class="paragraph">
@@ -641,28 +635,48 @@ This kind of file tree could not be managed by Git.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_how_does_it_works">1. How does it works</h2>
+<h2 id="_why_do_you_need_fim">1. Why do you need Fim?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Fim manages an index of the files that are managed. It contains for each
+<p>You can check the integrity of you files using filesystems capabilities. For example <code>brfs</code> comes with the
+<a href="https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc">scrub</a> command that read all data from the disk and verify checksums.</p>
+</div>
+<div class="paragraph">
+<p>Fim have a different use case. It allows you to see files you are working on that you have modified or moved.<br>
+With <code>brfs</code> all those files would have appeared as ok.</p>
+</div>
+<div class="paragraph">
+<p>Fim allow you also to check the integrity of files with filesystems that does not maintain file checksums.<br>
+For example you will be able to detect hardware corruption on a DVD. You simply have to burn the complete Fim repository on the DVD. All the files and the <code>.fim</code> content.<br>
+You can verify the integrity of this DVD by going on the top of the DVD and type <code>fim diff</code> or <code>fim corrupt</code>.
+More details <a href="#_hardware_corruption_detection">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>The Fim States could also be corrupted. To do so the State content is hashed and each time Fim loads a State, it checks his integrity by recalculating the State hash.
+More details <a href="#_state_integrity">here</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_does_it_work">2. How does it work</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Fim creates an index of the files that are managed. It contains for each
 file:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>file name</p>
+<p>file name &amp; length</p>
 </li>
 <li>
-<p>file length</p>
+<p>file attributes (dates, permissions)</p>
 </li>
 <li>
-<p>modification date</p>
+<p>hash of 3 small blocks</p>
 </li>
 <li>
-<p>hash of the second 4 KB block of the file content</p>
-</li>
-<li>
-<p>hash of the second 1 MB block of the file content</p>
+<p>hash of 3 medium blocks</p>
 </li>
 <li>
 <p>hash of the full file content</p>
@@ -670,23 +684,25 @@ file:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Most of the files contains headers, so to produce accurate hash of 4 KB
-/ 1 MB blocs we skip the first block and hash the second one, <strong>but when
-the file size is less than twice the block size we hash the first
-block</strong>.</p>
+<p>For the 3 blocks hash it is one at the beginning, one in the middle and one at the end.<br>
+The block that is hash at the beginning is not the first one. Most of the files contains headers, so to produce accurate hash
+of small of medium blocs we skip the first block and hash the second one,
+but when the file size is less than twice the block size we hash the first block.</p>
 </div>
 <div class="paragraph">
-<p>The hash algorithm that is used is SHA-512.</p>
+<p>The small block size is 4 KB and the medium block size is 1 MB.<br>
+The hash algorithm that is used is SHA-512.</p>
 </div>
 <div class="paragraph">
-<p>This index is called a <code>State</code> and acts like the Central Directory does
-for a Zip file. All the data generated by Fim is stored into the <code>.fim</code>
-root directory.</p>
+<p>More details regarding file permissions can be found <a href="#_file_permissions_management">here</a>.</p>
 </div>
 <div class="paragraph">
-<p>Fim keeps each version of the different State that have been committed.
-You cannot use them to retrieve the content of one file that you may
-have lost.</p>
+<p>The index is called a <code>State</code> and acts like the Central Directory does for a Zip file.
+All the data generated by Fim is stored into the <code>.fim</code> root directory.</p>
+</div>
+<div class="paragraph">
+<p>Fim keeps each version of the different State that have been committed.<br>
+You cannot use them to retrieve the content of one file that you may have lost.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -703,7 +719,7 @@ have lost.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_fim_workflow">2. Fim workflow</h2>
+<h2 id="_fim_workflow">3. Fim workflow</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>First you need to initialize the Fim repository using the <code>init</code> command.
@@ -724,24 +740,7 @@ You can do a full diff that will compare the hash of all the files. It can be ve
 </div>
 </div>
 <div class="paragraph">
-<p>You can compare quickly asking to hash only the second 1 MB block of the files. <strong>Using this option can produce an inaccurate result.</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">$ fim diff -m</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can compare quicker asking to hash only the second 4 KB block of the files. <strong>Using this option can produce an inaccurate result.</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">$ fim diff -k</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Otherwise, you can request to not hash file content using the fast mode (-f option). It will compare only the file names and modification dates.
-You will not be able to detect files that have been renamed or duplicated.</p>
+<p>You can compare quickly using fast mode. <strong>With this option you can miss some modified files.</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -749,24 +748,64 @@ You will not be able to detect files that have been renamed or duplicated.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Each time you want to record the State of the current file tree you can use the commit command.
+<p>You can compare quicker using super fast mode. <strong>With this option you can miss some modified files.</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ fim diff -s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Otherwise, you can request to not hash file content using the -n option. It will compare only the file names, file length, modification dates and permissions.
+You will not be able to detect files that have been renamed or duplicated.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ fim diff -n</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Each time you want to record the State of the current file tree you can use the commit command.<br>
 It&#8217;s a time consuming operation that will compute all the hash of each files content.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">$ fim ci</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">$ fim ci -c &quot;My commit comment&quot;</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_fim_usage">3. Fim usage</h2>
+<h2 id="_use_case_example">4. Use case example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Fim can be used for different kind of use cases.<br>
+Personally I use Fim to manage my photos and videos.
+When I have new photos, I put them at the right place in my pictures folder and then I do <code>fim ci</code> from the sub-directory
+containing the new photos to record a new State, as I could do with Git.
+As I do this from a sub-directory the commit is fast because Fim hash only the files that I added and create a new State
+by merging the previous State with the new hash.</p>
+</div>
+<div class="paragraph">
+<p>More details regarding sub-directories can be found <a href="#_run_fim_commands_from_a_sub_directory">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>fim diff</code> command let me know when I want (even super quickly) if something changed in my pictures folder.</p>
+</div>
+<div class="paragraph">
+<p>I can easily identify and delete the photos I have duplicated on my drive or other computer with the command <code>fim rdup</code>.
+For this, I just need to copy the <code>.fim</code> directory on the other computer.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_fim_usage">5. Fim usage</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="shell">$ fim help
 
-usage: fim &lt;command&gt; [-a &lt;arg&gt;] [-c &lt;arg&gt;] [-f] [-h] [-l] [-n] [-q] [-s] [-t &lt;arg&gt;] [-v] [-y]
+usage: fim &lt;command&gt; [-c &lt;arg&gt;] [-f] [-h] [-l] [-m &lt;arg&gt;] [-n] [-q] [-s] [-t &lt;arg&gt;] [-v] [-y]
 
 File Integrity Checker
 
@@ -775,27 +814,27 @@ Available commands:
      ci / commit                Commit the current directory State
      diff                       Compare the current directory State with the previous one.
                                 You can get a quick result by using the -m or -k or -f options
-     rdate / reset-date         Reset the files modification date like it is stored in the last committed State
+     rfa / reset-file-attrs     Reset the files attributes like they were stored in the last committed State
      corrupt                    Find changes most likely caused by a hardware corruption or a filesystem bug.
                                 Change in content, but not in creation time and last modified time
      fdup / find-duplicates     Find local duplicated files in the Fim repository
      rdup / remove-duplicates   Remove duplicated files from local directory based on a remote master Fim repository
      log                        Display the history of the States and a summary of the changes that were made
-     ign / display-ignored      Display the files or directories that are ignored into the last State
-     rollback                   Rollback the last commit. It will remove the last State
+     di / display-ignored       Display the files or directories that are ignored into the last State
+     rb / rollback              Rollback the last commit. It will remove the last State
      purge / purge-states       Purge previous States
      help                       Prints the Fim help
      version                    Prints the Fim version
 
 Available options:
-     -a,--master-fim-repository &lt;arg&gt;   Fim repository directory that you want to use as remote master.
-                                        Only for the remove duplicated files command
      -c,--comment &lt;arg&gt;                 Sets that State comment during init and commit
      -f,--fast-mode                     Hash only 3 medium blocks.
                                         One at the beginning, one in the middle and one at the end
      -h,--help                          Prints the Fim help
      -l,--use-last-state                Use the last committed State.
                                         Only for the find local duplicated files command
+     -m,--master-fim-repository &lt;arg&gt;   Fim repository directory that you want to use as remote master.
+                                        Only for the remove duplicated files command
      -n,--do-not-hash                   Do not hash file content. Use only file names and modification dates
      -q,--quiet                         Do not display details
      -s,--super-fast-mode               Hash only 3 small blocks.
@@ -808,19 +847,115 @@ Available options:
 </div>
 </div>
 <div class="sect1">
-<h2 id="_how_can_i_use_fim">4. How can I use Fim</h2>
+<h2 id="_how_can_you_use_fim">6. How can you use Fim</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_fim_releases">4.1. Fim releases</h3>
+<h3 id="_download_a_fim_release">6.1. Download a Fim release</h3>
 <div class="paragraph">
-<p>You can find prebuilt releases of Fim
-<a href="https://github.com/evrignaud/fim/releases">here</a></p>
+<p>You can download a prebuilt release of Fim from <a href="https://github.com/evrignaud/fim/releases"><span class="image"><img src="images/icons/download.png" alt="Download"></span> here</a></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_build_fim">4.2. Build Fim</h3>
+<h3 id="_fim_changelog">6.2. Fim changelog</h3>
+<div class="sect3">
+<h4 id="_version_1_0_2">6.2.1. Version 1.0.2</h4>
+<div class="paragraph">
+<p><strong>(Released 2015-09-04)</strong></p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/evrignaud/fim/tree/1.0.2"><span class="image"><img src="images/icons/octocat.png" alt="GitHub"></span> Sources</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/compare/1.0.1%2E%2E%2E1.0.2"><span class="image"><img src="images/icons/list.png" alt="List"></span> Full Changelog</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/releases/tag/1.0.2"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Fix <a href="https://github.com/evrignaud/fim/issues/1">issue #1</a>:
+Hash the second 4 KB / 1 MB block to ensure that the headers don&#8217;t increase the collision probability when doing a rapid check.</p>
+</li>
+<li>
+<p>Clarified the documentation</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_version_1_0_1">6.2.2. Version 1.0.1</h4>
+<div class="paragraph">
+<p><strong>(Released 2015-08-26)</strong></p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/evrignaud/fim/tree/1.0.1"><span class="image"><img src="images/icons/octocat.png" alt="GitHub"></span> Sources</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/compare/1.0.0%2E%2E%2E1.0.1"><span class="image"><img src="images/icons/list.png" alt="List"></span> Full Changelog</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/releases/tag/1.0.1"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Bug Fix</p>
+</li>
+<li>
+<p>Update the State format in order to improve Fim commands. It allows for example to display more details in the log command</p>
+</li>
+<li>
+<p>Add the ability to run Fim from sub-directories</p>
+</li>
+<li>
+<p>Add Global hash mode to be able to change the default Fim behavior</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_version_1_0_0">6.2.3. Version 1.0.0</h4>
+<div class="paragraph">
+<p><strong>(Released 2015-07-29)</strong></p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/evrignaud/fim/tree/1.0.0"><span class="image"><img src="images/icons/octocat.png" alt="GitHub"></span> Sources</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/compare/Initial_commit%2E%2E%2E1.0.0"><span class="image"><img src="images/icons/list.png" alt="List"></span> Full Changelog</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/releases/tag/1.0.0"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>First release of Fim.</strong></p>
+</li>
+<li>
+<p>Setup all the basis to allow adding more and more stuff around the States.</p>
+</li>
+<li>
+<p>Provides mainly init, commit and diff commands.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_build_fim">6.3. Build Fim</h3>
 <div class="paragraph">
 <p>You can build yourself Fim to try the master version.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<img src="images/icons/important.png" alt="Important">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Fim comes with versioned prebuilt release. I recommend to use them as they are OK to be used.<br>
+When you make a clone of the master of Fim, a SNAPSHOT is retrieved and there is no guarantee that this particular build of Fim will work properly.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="ulist">
 <ul>
@@ -829,12 +964,10 @@ Available options:
 <div class="ulist">
 <ul>
 <li>
-<p>Download the <a href="https://github.com/evrignaud/fim/zipball/master">.zip</a> or
-the <a href="https://github.com/evrignaud/fim/tarball/master">.tar.gz</a></p>
+<p>Download the <a href="https://github.com/evrignaud/fim/zipball/master">.zip</a> or the <a href="https://github.com/evrignaud/fim/tarball/master">.tar.gz</a></p>
 </li>
 <li>
-<p>or clone it using either <code><a href="https://github.com/evrignaud/fim.git" class="bare">https://github.com/evrignaud/fim.git</a></code> or
-<code>git@github.com:evrignaud/fim.git</code></p>
+<p>or clone it using either <code><a href="https://github.com/evrignaud/fim.git" class="bare">https://github.com/evrignaud/fim.git</a></code> or <code>git@github.com:evrignaud/fim.git</code></p>
 </li>
 </ul>
 </div>
@@ -857,7 +990,7 @@ the two shell script files located in the root directory.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>fim</code> for Linux</p>
+<p><code>fim</code> for Linux or Mac OS X</p>
 </li>
 <li>
 <p><code>fim.bat</code> for Windows</p>
@@ -867,63 +1000,8 @@ the two shell script files located in the root directory.</p>
 </li>
 </ul>
 </div>
-</div>
-<div class="sect2">
-<h3 id="step-by-step-procedure">4.3. Step by step procedure</h3>
 <div class="paragraph">
-<p><em>This procedure is a contribution done by
-<a href="http://linuxfr.org/nodes/106724/comments/1622498">El Titi</a></em></p>
-</div>
-<div class="paragraph">
-<p>First, it install maven. If you already have it you can skip the 2 first
-lines. <code>/usr/local/bin/mvn</code> should be replaced with the path where <code>mvn</code>
-is installed.</p>
-</div>
-<div class="sect3">
-<h4 id="_for_os_x">4.3.1. For OS X</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew install maven
-cd
-mkdir git
-cd git
-git clone https://github.com/evrignaud/fim.git
-cd fim/
-/usr/local/bin/mvn clean install
-./fim</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_for_linux">4.3.2. For Linux</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/linuxbrew/go/install)"
-brew install maven
-cd
-mkdir git
-cd git
-git clone https://github.com/evrignaud/fim.git
-cd fim/
-/usr/local/bin/mvn clean install
-./fim</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_build_a_fim_distribution">4.4. Build a Fim distribution</h3>
-<div class="paragraph">
-<p>If you want to generate a Fim distribution type the following command:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>mvn clean install -Pdistrib</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It generates two distribution files into the <code>target/dist</code> directory.</p>
+<p>It generates also two distribution files into the <code>target/dist</code> directory.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -932,90 +1010,65 @@ fim-1.0.0-SNAPSHOT-distribution.tar.gz
 fim-1.0.0-SNAPSHOT-distribution.zip</code></pre>
 </div>
 </div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_use_case_example">5. Use case example</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_step_by_step_procedure">6.3.1. Step by step procedure</h4>
 <div class="paragraph">
-<p>Fim can be used for different kind of use cases.
-Personally I use Fim to manage my photos and videos.
-When I have new photos, I put them at the right place in my pictures folder and then I do <code>fim ci</code> from the sub-directory containing the new photos to record a new State. As I could do with Git.
-As I do this from a sub-directory the commit is fast because Fim hash only the files that I added and create a new State by merging the previous State and the new hash.</p>
+<p>Here are some tips on how you can build it easily.</p>
+</div>
+<div class="sect4">
+<h5 id="_getting_maven">Getting Maven</h5>
+<div class="paragraph">
+<p>If you don&#8217;t have maven, you can either download it from <a href="http://maven.apache.org/index.html">here</a> or use packages managers.</p>
+</div>
+<div class="sect5">
+<h6 id="_for_linux">For Linux</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>sudo apt-get install maven</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_for_mac_os_x">For Mac OS X</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install maven</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>The <code>fim diff</code> command lets me know when I want (even super quickly) if something changed in my pictures folder.</p>
-</div>
-<div class="paragraph">
-<p>I can easily identify and delete the pictures I have duplicated on my drive or other computer with the command <code>fim rdup</code>. For this, I just need to copy the <code>.fim</code> directory on the other computer.</p>
+<p>Then you need to add the <code>maven/bin</code> directory into your <code>PATH</code>.</p>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_fim_changelog">6. Fim changelog</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_version_1_0_2_released_2015_09_04">6.1. Version 1.0.2 (released 2015-09-04)</h3>
-<div class="paragraph">
-<p><a href="https://github.com/evrignaud/fim/tree/1.0.2"><span class="image"><img src="images/icons/github.png" alt="GitHub"></span> Sources</a> &nbsp;&nbsp; - &nbsp;&nbsp; <a href="https://github.com/evrignaud/fim/compare/1.0.1%2E%2E%2E1.0.2"><span class="image"><img src="images/icons/list.png" alt="List"></span> Full Changelog</a>
-&nbsp;&nbsp; - &nbsp;&nbsp;
-<a href="https://github.com/evrignaud/fim/releases/tag/1.0.2"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Fix <a href="https://github.com/evrignaud/fim/issues/1">issue #1</a>: Hash the second 4 KB / 1 MB block to ensure that the headers don&#8217;t increase the collision probability when doing a rapid check.</p>
-</li>
-<li>
-<p>Clarified the documentation</p>
-</li>
-</ul>
+<div class="sect4">
+<h5 id="_clone_fim">Clone Fim</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>cd
+mkdir projects
+cd projects
+git clone https://github.com/evrignaud/fim.git
+cd fim/</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_version_1_0_1_released_2015_08_26">6.2. Version 1.0.1 (released 2015-08-26)</h3>
-<div class="paragraph">
-<p><a href="https://github.com/evrignaud/fim/tree/1.0.1"><span class="image"><img src="images/icons/github.png" alt="GitHub"></span> Sources</a> &nbsp;&nbsp; - &nbsp;&nbsp; <a href="https://github.com/evrignaud/fim/compare/1.0.0%2E%2E%2E1.0.1"><span class="image"><img src="images/icons/list.png" alt="List"></span> Full Changelog</a>
-&nbsp;&nbsp; - &nbsp;&nbsp;
-<a href="https://github.com/evrignaud/fim/releases/tag/1.0.1"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Bug Fix</p>
-</li>
-<li>
-<p>Update the State format in order to improve Fim commands. It allows for example to display more details in the log command</p>
-</li>
-<li>
-<p>Add the ability to run Fim from sub-directories</p>
-</li>
-<li>
-<p>Add Global hash mode to be able to change the default Fim behavior</p>
-</li>
-</ul>
+<div class="sect4">
+<h5 id="_build_fim_2">Build Fim</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn clean install</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_version_1_0_0_released_2015_07_29">6.3. Version 1.0.0 (released 2015-07-29)</h3>
-<div class="paragraph">
-<p><a href="https://github.com/evrignaud/fim/tree/1.0.0"><span class="image"><img src="images/icons/github.png" alt="GitHub"></span> Sources</a> &nbsp;&nbsp; - &nbsp;&nbsp; <a href="https://github.com/evrignaud/fim/compare/Initial_commit%2E%2E%2E1.0.0"><span class="image"><img src="images/icons/list.png" alt="List"></span> Full Changelog</a>
-&nbsp;&nbsp; - &nbsp;&nbsp;
-<a href="https://github.com/evrignaud/fim/releases/tag/1.0.0"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>First release of Fim.</strong></p>
-</li>
-<li>
-<p>Setup all the basis to allow adding more and more stuff around the States.</p>
-</li>
-<li>
-<p>Provides mainly init, commit and diff commands.</p>
-</li>
-</ul>
+<div class="sect4">
+<h5 id="_now_fim_is_ready">Now Fim is ready</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>./fim</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1027,43 +1080,49 @@ As I do this from a sub-directory the commit is fast because Fim hash only the f
 <p>Here is a step by step example of Fim usage.
 For the purpose of this example we use small files.</p>
 </div>
+<div class="paragraph">
+<p>You can run yourself this example using the <a href="https://github.com/evrignaud/fim/blob/master/samples/simple-example.sh"><code>samples/simple-example.sh</code></a> script.</p>
+</div>
 <div class="sect2">
-<h3 id="_create_a_set_of_files">7.1. Create a set of files</h3>
+<h3 id="_step_by_step">7.1. Step by step</h3>
+<div class="sect3">
+<h4 id="_create_a_set_of_files">7.1.1. Create a set of files</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~$ mkdir sample
+<pre class="CodeRay highlight"><code data-lang="shell">~$ mkdir simple-example
 
-~$ cd sample/
+~$ cd simple-example/
 
 # Creates 10 files
-~/sample$ for i in 01 02 03 04 05 06 07 08 09 10 ; do echo &quot;New File $i&quot; &gt; file$i ; done
+simple-example$ for i in 01 02 03 04 05 06 07 08 09 10 ; do echo &quot;New File $i&quot; &gt; file$i ; done
 
-~/sample$ ls -la
-total 56
-drwxrwxr-x   2  4096 août  24 23:00 .
-drwxr-xr-x 108 12288 août  24 22:18 ..
--rw-rw-r--   1    12 août  24 23:00 file01
--rw-rw-r--   1    12 août  24 23:00 file02
--rw-rw-r--   1    12 août  24 23:00 file03
--rw-rw-r--   1    12 août  24 23:00 file04
--rw-rw-r--   1    12 août  24 23:00 file05
--rw-rw-r--   1    12 août  24 23:00 file06
--rw-rw-r--   1    12 août  24 23:00 file07
--rw-rw-r--   1    12 août  24 23:00 file08
--rw-rw-r--   1    12 août  24 23:00 file09
--rw-rw-r--   1    12 août  24 23:00 file10</code></pre>
+simple-example$ ls -la
+total 48
+drwxrwxr-x. 2 evrignaud evrignaud 4096 oct.  20 07:37 .
+drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file01
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file02
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file04
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file05
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file06
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file07
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file08
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file09
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file10</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_initialize_the_fim_repository">7.2. Initialize the Fim repository</h3>
+<div class="sect3">
+<h4 id="_initialize_the_fim_repository">7.1.2. Initialize the Fim repository</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample$ fim init -c &quot;First State&quot;
-2015/08/24 23:00:27 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # &gt; 200 MB, @ &gt; 100 MB, O &gt; 50 MB, o &gt; 20 MB, . otherwise)
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim init -c &quot;First State&quot;
+2015/10/20 07:37:51 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/20 07:37:51 - Info  - SELinux is enabled on this system
 .
-2015/08/24 23:00:27 - Info  - Scanned 10 files (120 bytes), hashed 120 bytes (avg 120 bytes/s), during 00:00:00, using 2 thread
+2015/10/20 07:37:52 - Info  - Scanned 10 files (120 bytes), hashed 120 bytes (avg 120 bytes/s), during 00:00:00
 
 Added:            file01
 Added:            file02
@@ -1080,101 +1139,102 @@ Added:            file10
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_a_new_code_fim_code_directory_have_been_created">7.3. A new <code>.fim</code> directory have been created</h3>
+<div class="sect3">
+<h4 id="_a_new_code_fim_code_directory_have_been_created">7.1.3. A new <code>.fim</code> directory have been created</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample$ ls -la
-total 60
-drwxrwxr-x   3  4096 août  24 23:00 .
-drwxr-xr-x 108 12288 août  24 22:18 ..
--rw-rw-r--   1    12 août  24 23:00 file01
--rw-rw-r--   1    12 août  24 23:00 file02
--rw-rw-r--   1    12 août  24 23:00 file03
--rw-rw-r--   1    12 août  24 23:00 file04
--rw-rw-r--   1    12 août  24 23:00 file05
--rw-rw-r--   1    12 août  24 23:00 file06
--rw-rw-r--   1    12 août  24 23:00 file07
--rw-rw-r--   1    12 août  24 23:00 file08
--rw-rw-r--   1    12 août  24 23:00 file09
--rw-rw-r--   1    12 août  24 23:00 file10
-drwxrwxr-x   3  4096 août  24 23:00 .fim</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ ls -la
+total 52
+drwxrwxr-x. 3 evrignaud evrignaud 4096 oct.  20 07:37 .
+drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file01
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file02
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file04
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file05
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file06
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file07
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file08
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file09
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file10
+drwxrwxr-x. 3 evrignaud evrignaud 4096 oct.  20 07:37 .fim</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_do_some_modifications">7.4. Do some modifications</h3>
+<div class="sect3">
+<h4 id="_do_some_modifications">7.1.4. Do some modifications</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample$ mkdir dir01
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ mkdir dir01
 
 # Move file01 to dir01
-~/sample$ mv file01 dir01
+simple-example$ mv file01 dir01
 
 # Change the file02 modification date
-~/sample$ touch file02
+simple-example$ touch file02
 
 # Duplicate twice file03
-~/sample$ cp file03 file03.dup1
-~/sample$ cp file03 file03.dup2
+simple-example$ cp file03 file03.dup1
+simple-example$ cp file03 file03.dup2
 
 # Add content to file04
-~/sample$ echo foo &gt;&gt; file04
+simple-example$ echo foo &gt;&gt; file04
 
 # Copy file05
-~/sample$ cp file05 file11
+simple-example$ cp file05 file11
 
 # And add content to it
-~/sample$ echo bar &gt;&gt; file05
+simple-example$ echo bar &gt;&gt; file05
 
 # Remove file06
-~/sample$ rm file06
+simple-example$ rm file06
 
 # Duplicate once file07
-~/sample$ cp file07 file07.dup1
+simple-example$ cp file07 file07.dup1
 
 # Create the new file12
-~/sample$ echo &quot;New File 12&quot; &gt; file12
+simple-example$ echo &quot;New File 12&quot; &gt; file12
 
-~/sample$ ls -la
-total 76
-drwxrwxr-x   4  4096 août  24 23:00 .
-drwxr-xr-x 108 12288 août  24 22:18 ..
-drwxrwxr-x   2  4096 août  24 23:00 dir01
--rw-rw-r--   1    12 août  24 23:00 file02
--rw-rw-r--   1    12 août  24 23:00 file03
--rw-rw-r--   1    12 août  24 23:00 file03.dup1
--rw-rw-r--   1    12 août  24 23:00 file03.dup2
--rw-rw-r--   1    16 août  24 23:00 file04
--rw-rw-r--   1    16 août  24 23:00 file05
--rw-rw-r--   1    12 août  24 23:00 file07
--rw-rw-r--   1    12 août  24 23:00 file07.dup1
--rw-rw-r--   1    12 août  24 23:00 file08
--rw-rw-r--   1    12 août  24 23:00 file09
--rw-rw-r--   1    12 août  24 23:00 file10
--rw-rw-r--   1    12 août  24 23:00 file11
--rw-rw-r--   1    12 août  24 23:00 file12
-drwxrwxr-x   3  4096 août  24 23:00 .fim
+simple-example$ ls -la
+total 68
+drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 .
+drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
+drwxrwxr-x. 2 evrignaud evrignaud 4096 oct.  20 07:37 dir01
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file02
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03.dup1
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03.dup2
+-rw-rw-r--. 1 evrignaud evrignaud   16 oct.  20 07:37 file04
+-rw-rw-r--. 1 evrignaud evrignaud   16 oct.  20 07:37 file05
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file07
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file07.dup1
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file08
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file09
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file10
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file11
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file12
+drwxrwxr-x. 3 evrignaud evrignaud 4096 oct.  20 07:37 .fim
 
-~/sample$ ls -la dir01/
+simple-example$ ls -la dir01/
 total 12
-drwxrwxr-x 2 4096 août  24 23:00 .
-drwxrwxr-x 4 4096 août  24 23:00 ..
--rw-rw-r-- 1   12 août  24 23:00 file01</code></pre>
+drwxrwxr-x. 2 evrignaud evrignaud 4096 oct.  20 07:37 .
+drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
+-rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file01</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_fim_detects_the_modifications">7.5. Fim detects the modifications</h3>
+<div class="sect3">
+<h4 id="_fim_detects_the_modifications">7.1.5. Fim detects the modifications</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample$ fim diff
-2015/08/24 23:00:28 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # &gt; 200 MB, @ &gt; 100 MB, O &gt; 50 MB, o &gt; 20 MB, . otherwise)
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim diff
+2015/10/20 07:37:52 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/20 07:37:52 - Info  - SELinux is enabled on this system
 .
-2015/08/24 23:00:28 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00, using 2 thread
+2015/10/20 07:37:53 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/08/24 23:00:27
+Comparing with the last committed state from 2015/10/20 07:37:51
 Comment: First State
 
 Added:            file12
@@ -1182,9 +1242,15 @@ Copied:           file11         (was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02         2015/08/24 23:00:27 -&gt; 2015/08/24 23:00:27
-Content modified: file04         2015/08/24 23:00:27 -&gt; 2015/08/24 23:00:27
-Content modified: file05         2015/08/24 23:00:27 -&gt; 2015/08/24 23:00:27
+Date modified:    file02         creationTime: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+                                 lastModified: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+
+Content modified: file04         creationTime: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+                                 lastModified: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+
+Content modified: file05         creationTime: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+                                 lastModified: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+
 Renamed:          file01 -&gt; dir01/file01
 Deleted:          file06
 
@@ -1192,17 +1258,18 @@ Deleted:          file06
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_search_for_duplicated_files">7.6. Search for duplicated files</h3>
+<div class="sect3">
+<h4 id="_search_for_duplicated_files">7.1.6. Search for duplicated files</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample$ fim fdup
-Searching for duplicated files
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim fdup
+2015/10/20 07:37:53 - Info  - Searching for duplicated files
 
-2015/08/24 23:00:29 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # &gt; 200 MB, @ &gt; 100 MB, O &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/20 07:37:53 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/20 07:37:53 - Info  - SELinux is enabled on this system
 .
-2015/08/24 23:00:29 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00, using 2 thread
+2015/10/20 07:37:54 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 - Duplicate set #1
@@ -1215,18 +1282,19 @@ Searching for duplicated files
       12 bytes - file03.dup1
       12 bytes - file03.dup2
 
-3 duplicated files spread in 2 duplicate sets, 36 bytes of wasted space</code></pre>
+3 duplicated files spread into 2 duplicate sets, 36 bytes of wasted space</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_from_the_code_dir01_code_sub_directory">7.7. From the <code>dir01</code> sub-directory</h3>
+<div class="sect3">
+<h4 id="_from_the_code_dir01_code_sub_directory">7.1.7. From the <code>dir01</code> sub-directory</h4>
 <div class="paragraph">
-<p>We can run Fim on a subset of the repository.</p>
+<p>We can run Fim on a subset of the repository.<br>
+More details regarding sub-directories can be found <a href="#_run_fim_commands_from_a_sub_directory">here</a>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample$ cd dir01</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ cd dir01</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1234,12 +1302,13 @@ Searching for duplicated files
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample/dir01$ fim diff
-2015/08/24 23:00:29 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # &gt; 200 MB, @ &gt; 100 MB, O &gt; 50 MB, o &gt; 20 MB, . otherwise)
-2015/08/24 23:00:30 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example/dir01$ fim diff
+2015/10/20 07:37:54 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/20 07:37:54 - Info  - SELinux is enabled on this system
+2015/10/20 07:37:55 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/08/24 23:00:27
+Comparing with the last committed state from 2015/10/20 07:37:51
 Comment: First State
 
 Added:            dir01/file01
@@ -1252,14 +1321,15 @@ Added:            dir01/file01
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample/dir01$ fim fdup
-Searching for duplicated files
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example/dir01$ fim fdup
+2015/10/20 07:37:55 - Info  - Searching for duplicated files
 
-2015/08/24 23:00:30 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # &gt; 200 MB, @ &gt; 100 MB, O &gt; 50 MB, o &gt; 20 MB, . otherwise)
-2015/08/24 23:00:31 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
+2015/10/20 07:37:55 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/20 07:37:55 - Info  - SELinux is enabled on this system
+2015/10/20 07:37:56 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-0 duplicated files spread in 0 duplicate sets, 0 bytes of wasted space</code></pre>
+0 duplicated files spread into 0 duplicate sets, 0 bytes of wasted space</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1267,12 +1337,13 @@ Searching for duplicated files
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample/dir01$ fim ci -c &quot;modifications from dir01&quot; -y
-2015/08/24 23:00:31 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # &gt; 200 MB, @ &gt; 100 MB, O &gt; 50 MB, o &gt; 20 MB, . otherwise)
-2015/08/24 23:00:32 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example/dir01$ fim ci -c &quot;Modifications from dir01&quot; -y
+2015/10/20 07:37:56 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/20 07:37:56 - Info  - SELinux is enabled on this system
+2015/10/20 07:37:57 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/08/24 23:00:27
+Comparing with the last committed state from 2015/10/20 07:37:51
 Comment: First State
 
 Added:            dir01/file01
@@ -1285,44 +1356,54 @@ Added:            dir01/file01
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample/dir01$ fim diff
-2015/08/24 23:00:32 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # &gt; 200 MB, @ &gt; 100 MB, O &gt; 50 MB, o &gt; 20 MB, . otherwise)
-2015/08/24 23:00:33 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00, using 2 thread
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example/dir01$ fim diff
+2015/10/20 07:37:57 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/20 07:37:57 - Info  - SELinux is enabled on this system
+2015/10/20 07:37:58 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/08/24 23:00:31
-Comment: modifications from dir01
+Comparing with the last committed state from 2015/10/20 07:37:56
+Comment: Modifications from dir01
 
 Nothing modified</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Return into the parent directory.</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample/dir01$ cd ..</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example/dir01$ cd ..</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_commit_the_modifications">7.8. Commit the modifications</h3>
+<div class="sect3">
+<h4 id="_commit_the_modifications">7.1.8. Commit the modifications</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample$ fim ci -c &quot;All modifications&quot; -y
-2015/08/24 23:00:33 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # &gt; 200 MB, @ &gt; 100 MB, O &gt; 50 MB, o &gt; 20 MB, . otherwise)
+<pre class="CodeRay highlight"><code data-lang="shell">2015/10/20 07:37:58 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/20 07:37:58 - Info  - SELinux is enabled on this system
 .
-2015/08/24 23:00:33 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00, using 2 thread
+2015/10/20 07:37:59 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/08/24 23:00:31
-Comment: modifications from dir01
+Comparing with the last committed state from 2015/10/20 07:37:56
+Comment: Modifications from dir01
 
 Added:            file12
 Copied:           file11         (was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02         2015/08/24 23:00:27 -&gt; 2015/08/24 23:00:27
-Content modified: file04         2015/08/24 23:00:27 -&gt; 2015/08/24 23:00:27
-Content modified: file05         2015/08/24 23:00:27 -&gt; 2015/08/24 23:00:27
+Date modified:    file02         creationTime: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+                                 lastModified: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+
+Content modified: file04         creationTime: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+                                 lastModified: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+
+Content modified: file05         creationTime: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+                                 lastModified: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+
 Deleted:          file01
 Deleted:          file06
 
@@ -1330,39 +1411,97 @@ Deleted:          file06
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_nothing_is_modified_now">7.9. Nothing is modified now</h3>
+<div class="sect3">
+<h4 id="_nothing_is_modified_now">7.1.9. Nothing is modified now</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample$ fim diff
-2015/08/24 23:00:34 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # &gt; 200 MB, @ &gt; 100 MB, O &gt; 50 MB, o &gt; 20 MB, . otherwise)
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim diff
+2015/10/20 07:37:59 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/20 07:37:59 - Info  - SELinux is enabled on this system
 .
-2015/08/24 23:00:34 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00, using 2 thread
+2015/10/20 07:38:00 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/08/24 23:00:33
+Comparing with the last committed state from 2015/10/20 07:37:58
 Comment: All modifications
 
 Nothing modified</code></pre>
 </div>
 </div>
 </div>
+</div>
 <div class="sect2">
-<h3 id="_display_the_fim_log">7.10. Display the Fim log</h3>
+<h3 id="_the_fim_log">7.2. The Fim log</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample$ fim log
-State #1: 2015/08/24 23:00:27 (10 files)
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim log
+State #1: 2015/10/20 07:37:51 (10 files - 120 bytes)
         Comment: First State
         10 added
 
-State #2: 2015/08/24 23:00:31 (11 files)
-        Comment: modifications from dir01
-        1 added
+State #2: 2015/10/20 07:37:56 (11 files - 132 bytes)
+        Comment: Modifications from dir01
+        11 added
 
-State #3: 2015/08/24 23:00:33 (14 files)
+State #3: 2015/10/20 07:37:58 (14 files - 176 bytes)
         Comment: All modifications
         1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 2 deleted</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_state_file_content">7.3. State file content</h3>
+<div class="paragraph">
+<p>Here is an extract of the State&#8217;s 3 content. To simplify reading, hash are shortened and only one file entry is kept.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>{
+  "stateHash": "95707f3180...ba2f3dca9e",
+  "modelVersion": "4",
+  "timestamp": 1445321428623,
+  "comment": "All modifications",
+  "fileCount": 14,
+  "filesContentLength": 176,
+  "hashMode": "hashAll",
+  "modificationCounts": {
+    "added": 1,
+    "copied": 1,
+    "duplicated": 3,
+    "dateModified": 1,
+    "contentModified": 2,
+    "attributesModified": 0,
+    "renamed": 0,
+    "deleted": 2
+  },
+  "ignoredFiles": [
+    ".fim/"
+  ],
+  "fileStates": [
+    {
+      "fileName": "dir01/file01",
+      "fileLength": 12,
+      "fileTime": {
+        "creationTime": 1445321421552,
+        "lastModified": 1445321421552
+      },
+      "fileHash": {
+        "smallBlockHash": "fa5d74eb88...1a44aaa2df",
+        "mediumBlockHash": "fa5d74eb88...1a44aaa2df",
+        "fullHash": "fa5d74eb88...1a44aaa2df",
+      },
+      "fileAttributes": {
+        "SELinuxLabel": "system_u:object_r:file_t:s0",
+        "PosixFilePermissions": "rw-rw-r--"
+      }
+    },
+
+    ...
+    // Other file entries have been removed
+    ...
+
+  ]
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1374,120 +1513,49 @@ State #3: 2015/08/24 23:00:33 (14 files)
 <div class="sect2">
 <h3 id="_initialize_the_big_fim_repository">8.1. Initialize the big Fim repository</h3>
 <div class="paragraph">
-<p>Here is the output of the initialization of a big Fim repository that contains 297 GB of photos and videos.
-In my case <strong>it takes 2 hours</strong> to hash all the files content.</p>
+<p>Here is the output of the initialization of a big Fim repository that contains 297 GB of photos and videos.<br>
+In my case <strong>it takes almost 3 hours</strong> to hash all the files content.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/Photos_Videos$ fim init
-2015/07/20 23:07:28 - Info  - Scanning recursively local files, hash the complete file, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # &gt; 200 MB, @ &gt; 100 MB, O &gt; 50 MB, o &gt; 20 MB, . otherwise)
-.o#...........................................o@o...............OO.oO.......O.......................
-@....o.......oo......................o..................Oo..........................................
-......................................#.............................................................
-oO........O........................@@...............................................................
-............................O...o........o.oo...o.o..o.................o........o...................
-....o.o................................Oo..oo..o@...........................o.......................
-.................................O...@..............................................................
-....................................................................................................
-...........o.......O@..............O@@.................O.o........@.........Oo........O@O..o......OO
-..@...O#o..o......o................@.........OO.....................................................
-...............o.........oo.o................................o...............o......................
-.........................oooooooo.ooo@..........................oooo................O...............
-...oo....OoOo..o....oO@@o@..O..........oO...o@oOO#@@@oo.@@o.o@O.....@@@@@@OO@@@@OO..@@#....OooO.....
-.........................Oo#oOOoo.O#O.....oo.....o.......oo........@oOO.@o....o................O....
-...@o#OoOO..@Oo.O.o........@o.............ooo@.o...............oO...................................
-....O..O.....Oo#oooooooo..oo@oo.ooo.oooooooooO@ooo#Ooo@Ooo.o.o.##@@ooooo@OoOOOo...o.O.@Ooooooooooooo
-oooooOooo.ooooooOooooOOoo.######O@####oo#####oo...oooOoo...ooooooooooooo....o.@#@#@OOoooOo#ooooOOoo@
-ooo#@#####ooo..#.##o@o.@@o##oooooooO.oooooo@##o#@....#oooo@oo#######o...o.ooooooo#oo@#ooO@###o#oooo#
-OooooooooooooooOoooooo....ooooooooo.#oooooo.oOOOooo....................o..ooo.........o.ooo.........
-oo.o...........@o@o@oooO@##o.oooo#@##oo@ooo@##O##oOooooooooo###@##@............###OOoO#o###ooOoooo#o
-oOoo@oo..o.oo...................o@#..o@ooo@@....................................................O...
-............o............ooooo..o.....................ooo.o........................ooo.....o.oo.....
-...............ooo....................oooooooooooooo.oo.oooooooooooo#oo#oooooooooooooooooooo........
-..oooo......o......o......o..................o...#.#####ooooooooOoOooooooooOooooooOOOOooOOOoOOooo###
-#@OooooooO#####oOoooOOOOOOOoOOOoooooooOooooooooooooo###ooooooooooo#@OoOOOOOOOOoooooooooooooooOOoo#oO
-ooooooooooOOOoooooOooOOoOOOOooOOoOOOooOooOoooOoOOoooOoOoooOOOoOo##..................................
-..........................@oo......ooo.oooo@oooooooooOooooooooO##OOOOOoOOOOOOOOOOOOOO@###OOOoOOOOOO#
-@@OOOo...........................................................####@.ooo.o...o#ooooo@ooo..ooooo...
-.ooo.......................Oo........................oo..@.......O@......O..........................
-.....................................................@................@O............................
-..................................................##@.....................................#o#oooOooo
-.......#oO############################################################@##########o....ooooooooooo.oo
-ooooo.oooo.o.oooooooooooo......ooooooooooooooooooooooo.oooooooooo.oooooooooooooooooooooooooooooooooo
-o......oooooooooooooo....oooooooooooooooooooooooooooooooooooooo.oooooooooooooooooooooooooooooooooooo
-oooooooo.o.ooo..ooo.ooooooooooo...oo.o....o..ooooo.ooo...o.ooooooooooooooooooo.ooooooooooooooooooooo
-oooooooooo....oooo.ooooooooooooooooo....o....ooo...o.....oo............o.......o.oo.ooooooooooooo.oo
-oooooooooooooooooooooooooooooooooo.oooooooooooooooo.ooooooooooooooooooooo.....oooooooooooooooooooooo
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo..oo
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-oooooooooooooooooo#ooooooooooo..oo@...ooooo#o
-2015/07/21 01:11:54 - Info  - Scanned 41453 files (297 GB), hashed 297 GB (avg 41 MB/s), during 02:04:25, using 2 thread
+<pre class="CodeRay highlight"><code data-lang="shell">photos-videos$ fim init -y
+No comment provided. You are going to initialize your repository using the default comment.
+2015/10/22 19:23:05 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/22 19:23:06 - Info  - SELinux is enabled on this system
+.................................................................o.o...o......8........O.........oo.
+...O....................#.................Oooooooooooo.@.o.o.oo..oo@................o.......88oOoooo
+... # Hash progress legend shortened
+.................................o.............@ooooo@oooooooooooooooooo.ooooooooooooooooooooooooooo
+..............................................
+2015/10/22 22:05:50 - Info  - Scanned 41467 files (297 GB), hashed 297 GB (avg 31 MB/s), during 02:42:44
 
 ... # File list is skipped as it is too long
 
-41453 added</code></pre>
+41467 added</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_check_quickly_for_differences">8.2. Check quickly for differences</h3>
+<h3 id="_check_very_quickly_for_differences">8.2. Check very quickly for differences</h3>
 <div class="paragraph">
-<p>It is possible to check the differences very quickly using the <code>-k</code> option that will check only the second 4 KB block.
-In my case <strong>it takes 4 minutes :=)</strong>.</p>
+<p>It is possible to check the differences very quickly using the <code>-s</code> option that will check only 3 small blocks of 4 KB.<br>
+In my case <strong>it takes 17 minutes :=)</strong>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/Photos_Videos$ fim diff -k
-2015/07/21 08:49:21 - Info  - Scanning recursively local files, hash second 4 KB block, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # &gt; 200 MB, @ &gt; 100 MB, O &gt; 50 MB, o &gt; 20 MB, . otherwise)
-.o#...........................................o@o...............OO.oO.......O.......................
-@....o.......oo......................o..................Oo..........................................
-......................................#.............................................................
-oO........O........................@@...............................................................
-............................O...o........o.oo...o.o..o.................o........o...................
-....o.o................................Oo..oo..o@...........................o.......................
-.................................O...@..............................................................
-....................................................................................................
-...........o.......O@..............O@@.................O.o........@.........Oo........O@O..o......OO
-..@...O#o..o......o................@.........OO.....................................................
-...............o.........oo.o................................o...............o......................
-.........................oooooooo.ooo@..........................oooo................O...............
-...oo....OoOo..o....oO@@o@..O..........oO...o@oOO#@@@oo.@@o.o@O.....@@@@@@OO@@@@OO..@@#....OooO.....
-.........................Oo#oOOoo.O#O.....oo.....o.......oo........@oOO.@o....o................O....
-...@o#OoOO..@Oo.O.o........@o.............ooo@.o...............oO...................................
-....O..O.....Oo#oooooooo..oo@oo.ooo.oooooooooO@ooo#Ooo@Ooo.o.o.##@@ooooo@OoOOOo...o.O.@Ooooooooooooo
-oooooOooo.ooooooOooooOOoo.######O@####oo#####oo...oooOoo...ooooooooooooo....o.@#@#@OOoooOo#ooooOOoo@
-ooo#@#####ooo..#.##o@o.@@o##oooooooO.oooooo@##o#@....#oooo@oo#######o...o.ooooooo#oo@#ooO@###o#oooo#
-OooooooooooooooOoooooo....ooooooooo.#oooooo.oOOOooo....................o..ooo.........o.ooo.........
-oo.o...........@o@o@oooO@##o.oooo#@##oo@ooo@##O##oOooooooooo###@##@............###OOoO#o###ooOoooo#o
-oOoo@oo..o.oo...................o@#..o@ooo@@....................................................O...
-............o............ooooo..o.....................ooo.o........................ooo.....o.oo.....
-...............ooo....................oooooooooooooo.oo.oooooooooooo#oo#oooooooooooooooooooo........
-..oooo......o......o......o..................o...#.#####ooooooooOoOooooooooOooooooOOOOooOOOoOOooo###
-#@OooooooO#####oOoooOOOOOOOoOOOoooooooOooooooooooooo###ooooooooooo#@OoOOOOOOOOoooooooooooooooOOoo#oO
-ooooooooooOOOoooooOooOOoOOOOooOOoOOOooOooOoooOoOOoooOoOoooOOOoOo##..................................
-..........................@oo......ooo.oooo@oooooooooOooooooooO##OOOOOoOOOOOOOOOOOOOO@###OOOoOOOOOO#
-@@OOOo...........................................................####@.ooo.o...o#ooooo@ooo..ooooo...
-.ooo.......................Oo........................oo..@.......O@......O..........................
-.....................................................@................@O............................
-..................................................##@.....................................#o#oooOooo
-.......#oO############################################################@##########o....ooooooooooo.oo
-ooooo.oooo.o.oooooooooooo......ooooooooooooooooooooooo.oooooooooo.oooooooooooooooooooooooooooooooooo
-o......oooooooooooooo....oooooooooooooooooooooooooooooooooooooo.oooooooooooooooooooooooooooooooooooo
-oooooooo.o.ooo..ooo.ooooooooooo...oo.o....o..ooooo.ooo...o.ooooooooooooooooooo.ooooooooooooooooooooo
-oooooooooo....oooo.ooooooooooooooooo....o....ooo...o.....oo............o.......o.oo.ooooooooooooo.oo
-oooooooooooooooooooooooooooooooooo.oooooooooooooooo.ooooooooooooooooooooo.....oooooooooooooooooooooo
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo..oo
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-oooooooooooooooooo#ooooooooooo..oo@...ooooo#o
-2015/07/21 08:53:47 - Info  - Scanned 41453 files (297 GB), hashed 161 MB (avg 622 KB/s), during 00:04:25, using 2 thread
+<pre class="CodeRay highlight"><code data-lang="shell">photos-videos$ fim diff -s
+2015/10/22 23:15:52 - Info  - Scanning recursively local files, using 'super fast' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/22 23:15:52 - Info  - SELinux is enabled on this system
+.................................................................o.o...o......8........O.........oo.
+...O....................#.................Oooooooooooo.@.o.o.oo..oo@................o.......88oOoooo
+... # Hash progress legend shortened
+.................................o.............@ooooo@oooooooooooooooooo.ooooooooooooooooooooooooooo
+..............................................
+2015/10/22 23:32:57 - Info  - Scanned 41467 files (297 GB), hashed 484 MB (avg 484 KB/s), during 00:17:04
 
-Comparing with the last committed state from 2015/07/20 23:07:28
+Comparing with the last committed state from 2015/10/22 19:23:06
 Comment: Initial State
 
 Nothing modified</code></pre>
@@ -1497,61 +1565,25 @@ Nothing modified</code></pre>
 <div class="sect2">
 <h3 id="_check_more_accurately_for_differences">8.3. Check more accurately for differences</h3>
 <div class="paragraph">
-<p>This quick diff can be inaccurate.
-To increase accuracy, you can use the <code>-m</code> option. This result is more accurate,
-but it cannot be completely accurate as only the hash of the second 1 MB block of the files are computed.
-This time in my case, <strong>it takes 20 minutes</strong> to check the differences.</p>
+<p>Using the super fast mode can produce inaccurate results. <strong>You can miss some modified files.</strong><br>
+To increase accuracy, you can use the fast mode using the <code>-f</code> option that will check 3 medium blocks.<br>
+Even if, using this mode increase accuracy, it cannot be completely accurate as we only hash 3 different 1 MB blocks of the files.<br>
+This time in my case, <strong>it takes 42 minutes</strong> to check the differences.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/Photos_Videos$ fim diff -m
-2015/07/21 12:45:24 - Info  - Scanning recursively local files, hash second 1 MB block, using 2 thread
-(Hash progress legend for files grouped 10 by 10: # &gt; 200 MB, @ &gt; 100 MB, O &gt; 50 MB, o &gt; 20 MB, . otherwise)
-.o#...........................................o@o...............OO.oO.......O.......................
-@....o.......oo......................o..................Oo..........................................
-......................................#.............................................................
-oO........O........................@@...............................................................
-............................O...o........o.oo...o.o..o.................o........o...................
-....o.o................................Oo..oo..o@...........................o.......................
-.................................O...@..............................................................
-....................................................................................................
-...........o.......O@..............O@@.................O.o........@.........Oo........O@O..o......OO
-..@...O#o..o......o................@.........OO.....................................................
-...............o.........oo.o................................o...............o......................
-.........................oooooooo.ooo@..........................oooo................O...............
-...oo....OoOo..o....oO@@o@..O..........oO...o@oOO#@@@oo.@@o.o@O.....@@@@@@OO@@@@OO..@@#....OooO.....
-.........................Oo#oOOoo.O#O.....oo.....o.......oo........@oOO.@o....o................O....
-...@o#OoOO..@Oo.O.o........@o.............ooo@.o...............oO...................................
-....O..O.....Oo#oooooooo..oo@oo.ooo.oooooooooO@ooo#Ooo@Ooo.o.o.##@@ooooo@OoOOOo...o.O.@Ooooooooooooo
-oooooOooo.ooooooOooooOOoo.######O@####oo#####oo...oooOoo...ooooooooooooo....o.@#@#@OOoooOo#ooooOOoo@
-ooo#@#####ooo..#.##o@o.@@o##oooooooO.oooooo@##o#@....#oooo@oo#######o...o.ooooooo#oo@#ooO@###o#oooo#
-OooooooooooooooOoooooo....ooooooooo.#oooooo.oOOOooo....................o..ooo.........o.ooo.........
-oo.o...........@o@o@oooO@##o.oooo#@##oo@ooo@##O##oOooooooooo###@##@............###OOoO#o###ooOoooo#o
-oOoo@oo..o.oo...................o@#..o@ooo@@....................................................O...
-............o............ooooo..o.....................ooo.o........................ooo.....o.oo.....
-...............ooo....................oooooooooooooo.oo.oooooooooooo#oo#oooooooooooooooooooo........
-..oooo......o......o......o..................o...#.#####ooooooooOoOooooooooOooooooOOOOooOOOoOOooo###
-#@OooooooO#####oOoooOOOOOOOoOOOoooooooOooooooooooooo###ooooooooooo#@OoOOOOOOOOoooooooooooooooOOoo#oO
-ooooooooooOOOoooooOooOOoOOOOooOOoOOOooOooOoooOoOOoooOoOoooOOOoOo##..................................
-..........................@oo......ooo.oooo@oooooooooOooooooooO##OOOOOoOOOOOOOOOOOOOO@###OOOoOOOOOO#
-@@OOOo...........................................................####@.ooo.o...o#ooooo@ooo..ooooo...
-.ooo.......................Oo........................oo..@.......O@......O..........................
-.....................................................@................@O............................
-..................................................##@.....................................#o#oooOooo
-.......#oO############################################################@##########o....ooooooooooo.oo
-ooooo.oooo.o.oooooooooooo......ooooooooooooooooooooooo.oooooooooo.oooooooooooooooooooooooooooooooooo
-o......oooooooooooooo....oooooooooooooooooooooooooooooooooooooo.oooooooooooooooooooooooooooooooooooo
-oooooooo.o.ooo..ooo.ooooooooooo...oo.o....o..ooooo.ooo...o.ooooooooooooooooooo.ooooooooooooooooooooo
-oooooooooo....oooo.ooooooooooooooooo....o....ooo...o.....oo............o.......o.oo.ooooooooooooo.oo
-oooooooooooooooooooooooooooooooooo.oooooooooooooooo.ooooooooooooooooooooo.....oooooooooooooooooooooo
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo..oo
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-oooooooooooooooooo#ooooooooooo..oo@...ooooo#o
-2015/07/21 13:05:04 - Info  - Scanned 41453 files (297 GB), hashed 35 GB (avg 30 MB/s), during 00:19:39, using 2 thread
+<pre class="CodeRay highlight"><code data-lang="shell">photos-videos$ fim diff -f
+2015/10/22 23:33:22 - Info  - Scanning recursively local files, using 'fast' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/22 23:33:23 - Info  - SELinux is enabled on this system
+.................................................................o.o...o......8........O.........oo.
+...O....................#.................Oooooooooooo.@.o.o.oo..oo@................o.......88oOoooo
+... # Hash progress legend shortened
+.................................o.............@ooooo@oooooooooooooooooo.ooooooooooooooooooooooooooo
+..............................................
+2015/10/23 00:15:05 - Info  - Scanned 41467 files (297 GB), hashed 51 GB (avg 21 MB/s), during 00:41:42
 
-Comparing with the last committed state from 2015/07/20 23:07:28
+Comparing with the last committed state from 2015/10/22 19:23:06
 Comment: Initial State
 
 Nothing modified</code></pre>
@@ -1561,62 +1593,200 @@ Nothing modified</code></pre>
 <div class="sect2">
 <h3 id="_fully_checking_for_differences">8.4. Fully checking for differences</h3>
 <div class="paragraph">
-<p>If you want to be completely sure of the <code>diff</code> result, you need to run a full hash of all the files content using the <code>fim diff</code> command without any option.
-This time in my case, <strong>it takes 2 hours</strong> as for the <code>init</code> command.</p>
+<p>If you want to be completely sure of the <code>diff</code> result, you need to run a full hash of all the files content using the <code>diff</code> command without any option.<br>
+This time in my case, <strong>it takes almost 3 hours</strong> as for the <code>init</code> command.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_checking_without_hashing">8.5. Checking without hashing</h3>
 <div class="paragraph">
-<p>There is also the fast mode using the <code>-f</code> option that do not hash file content. It helps to detect faster changes but only file names that have changed.
-This time in my case, <strong>it takes 3 seconds</strong>.</p>
+<p>There is also the do not hash mode using the <code>-n</code> option that will not hash the files content.
+It helps to detect faster changes but you will be able to detect only file names and file attributes that have changed.<br>
+This time in my case, <strong>it takes 46 seconds</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">photos-videos$ fim diff -n
+2015/10/22 23:14:53 - Info  - Not hashing file content so thread count forced to 1
+2015/10/22 23:14:53 - Info  - Scanning recursively local files, using 'do not hash' mode and 1 thread
+2015/10/22 23:14:54 - Info  - SELinux is enabled on this system
+2015/10/22 23:15:40 - Info  - Scanned 41467 files (297 GB), during 00:00:46
+
+Comparing with the last committed state from 2015/10/22 19:23:06
+Comment: Initial State
+
+Nothing modified</code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_faq">9. FAQ</h2>
+<h2 id="_file_permissions_management">9. File permissions management</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_run_fim_commands_from_a_sub_directory">9.1. Run Fim commands from a sub-directory</h3>
 <div class="paragraph">
-<p>You can run all the Fim commands from every directory inside the Fim repository.
-It allows you to:</p>
+<p>Checking the integrity of data files can be good, but we need also to ensure that file permissions are not compromised.</p>
+</div>
+<div class="paragraph">
+<p>Fim is able to save and restore back file permissions.<br>
+To do so it stores for each file:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Quickly find the modifications done in this directory. You will hash only the files contained inside and not the complete file tree</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Discretionary_access_control">DAC</a> information:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>On Linux and Mac OS X file permission like <code>rwxrwxrwx</code> is stored.</p>
 </li>
 <li>
-<p>Quickly commit the modifications done in this directory</p>
+<p>On Windows the Archive, Hidden, ReadOnly and System attributes are stored.</p>
+</li>
+</ul>
+</div>
 </li>
 <li>
-<p>Quickly find the duplicated files contained in this directory</p>
-</li>
-<li>
-<p>Quickly reset the date of files contained in this directory</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Mandatory_access_control">MAC</a> information:<br>
+Currently the <strong>SELinux label</strong> is stored, if supported by the OS.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>All the other commands will run as if you were on the top of the repository.</p>
+<p>You can check file permissions using the <code>diff</code> command. A quick result can be produced using the do not hash mode (<code>-n</code> option),
+but in this case Fim will not be able to detect file permissions change for files that have been renamed.<br>
+If some permissions have changed and you want to restore them use the <code>rfa</code> command.</p>
+</div>
+<div class="paragraph">
+<p>When you use the same Fim repository with different OS, file permissions that are not supported are ignored.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_hardware_corruption_detection">10. Hardware corruption detection</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Fim is able to find changes likely caused by a hardware corruption or a filesystem bug.<br>
+A file is suspected to be corrupted when the content have changed, but the timestamps are not modified (creation time and modification time).<br>
+To run hardware corruption detection use the <code>corrupt</code> command.</p>
+</div>
+<div class="paragraph">
+<p>The <code>diff</code> command can also be used to check if a file content have changed.<br>
+The difference for the <code>corrupt</code> command is that only corrupted files are displayed. Files that you way have added or modified are not listed in the result.</p>
+</div>
+<div class="sect2">
+<h3 id="_false_positive">10.1. False positive</h3>
+<div class="paragraph">
+<p>The <code>corrupt</code> command can produce false positive.</p>
+</div>
+<div class="paragraph">
+<p>For example here is a simulation of hardware corruption in the repository generated for the <a href="#_simple_example">Simple example</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Change the content of a file</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ echo bar &gt;&gt; file05</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Reset the file attributes using the <code>fim rfa</code> command</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim rfa -y
+You are going to reset files attributes based on the last committed State done 2015/10/23 07:16:19
+Comment: All modifications
+
+2015/10/23 09:18:21 - Info  - SELinux is enabled on this system
+Set creation Time: file05         2015/10/23 09:18:14 -&gt; 2015/10/23 07:16:12
+Set last modified: file05         2015/10/23 09:18:14 -&gt; 2015/10/23 07:16:12
+
+2015/10/23 09:18:21 - Info  - The attributes of 1 file have been reset</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Now <code>file05</code> is suspected to be corrupted</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim corrupt
+2015/10/23 09:19:26 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+2015/10/23 09:19:27 - Info  - SELinux is enabled on this system
+.
+2015/10/23 09:19:27 - Info  - Scanned 14 files (164 bytes), hashed 164 bytes (avg 164 bytes/s), during 00:00:00
+
+Comparing with the last committed state from 2015/10/23 07:16:19
+Comment: All modifications
+
+Corrupted?:       file05
+
+1 corrupted</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_faq">11. FAQ</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_run_fim_commands_from_a_sub_directory">11.1. Run Fim commands from a sub-directory</h3>
+<div class="paragraph">
+<p>You can run all the Fim commands from every sub-directory inside a Fim repository.
+You can see it in action into the <a href="#_from_the_code_dir01_code_sub_directory">Simple example</a>.</p>
+</div>
+<div class="paragraph">
+<p>Doing this allow you to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Quickly find the modifications done in this specific sub-directory. You will hash only the files contained inside and not the complete file tree</p>
+</li>
+<li>
+<p>Quickly commit the modifications done in this sub-directory</p>
+</li>
+<li>
+<p>Quickly find the duplicated files contained in this sub-directory</p>
+</li>
+<li>
+<p>Quickly reset the attributes of files contained in this sub-directory</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All the other commands will run as if you were on the top of the Fim repository.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_dealing_with_duplicates">9.2. Dealing with duplicates</h3>
+<h3 id="_dealing_with_duplicates">11.2. Dealing with duplicates</h3>
 <div class="paragraph">
 <p>Duplicated files are addressed by Fim in two different ways.</p>
 </div>
 <div class="sect3">
-<h4 id="_duplicates_inside_a_fim_repository">9.2.1. Duplicates inside a Fim repository</h4>
+<h4 id="_duplicates_inside_a_fim_repository">11.2.1. Duplicates inside a Fim repository</h4>
 <div class="paragraph">
-<p>Fim allow you to detect duplicates using the <code>fdup</code> command.
-If you want to remove them, Fim cannot do it. It does not provide a smart way to remove those duplicates.</p>
+<p>Fim allow you to detect duplicates using the <code>fdup</code> command. It displays the list of duplicated files.<br>
+If you want to remove them, Fim won&#8217;t do it. It does not provide a smart way to remove those duplicates.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_duplicates_that_are_outside">9.2.2. Duplicates that are outside</h4>
+<h4 id="_duplicates_that_are_outside">11.2.2. Duplicates that are outside</h4>
 <div class="paragraph">
 <p>You can use Fim to remove duplicated files that are located outside a Fim repository using the <code>rdup</code> command.
 It can be useful if you want to cleanup old backups that are no more synchronized and you want to be sure to not loose any files that could have been modified or added.</p>
@@ -1624,7 +1794,7 @@ It can be useful if you want to cleanup old backups that are no more synchronize
 </div>
 </div>
 <div class="sect2">
-<h3 id="_changing_default_hash_mode">9.3. Changing default hash mode</h3>
+<h3 id="_changing_default_hash_mode">11.3. Changing default hash mode</h3>
 <div class="paragraph">
 <p>If you never want to hash the complete content of your files you can set a global hash mode that will indicate the maximum hash mode you want to use for this repository.
 You can specify this to the init command:</p>
@@ -1632,99 +1802,105 @@ You can specify this to the init command:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>-f</code>: means always don&#8217;t hash anything</p>
+<p><code>-f</code>: Set maximum hash mode to fast. You will be able to use <code>-f</code>, <code>-s</code> or <code>-n</code> after</p>
 </li>
 <li>
-<p><code>-k</code>: You will be able to use <code>-f</code> or <code>-k</code> after</p>
+<p><code>-s</code>: Set maximum hash mode to super fast. You will be able to use <code>-f</code> or <code>-s</code> after</p>
 </li>
 <li>
-<p><code>-m</code>: You will be able to use <code>-f</code>, <code>-k</code> or <code>-m</code> after</p>
+<p><code>-n</code>: means always don&#8217;t hash anything. You won&#8217;t be able to use other hash mode after</p>
 </li>
 </ul>
 </div>
+<div class="sect3">
+<h4 id="_example">11.3.1. Example</h4>
 <div class="paragraph">
-<p>Example:
-`shell
-~/sample$ fim init -m
-`</p>
-</div>
-<div class="paragraph">
-<p>It sets a global hash mode for the complete repository to <code>-m</code>.
-All the Fim commands that you use after will use <code>-m</code> hash mode (or less if specified) and you won&#8217;t be able to hash the full file content.
-After you will be able to run the following commands:</p>
+<p>Initialize the Fim repository specifying the global hash mode.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~/sample$ fim diff # will run using -m
+<pre class="CodeRay highlight"><code data-lang="shell">$ fim init -f</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It sets a global hash mode for the complete repository to fast mode.<br>
+All the Fim commands that you use after will use by default the fast hash mode (or less if specified) and you won&#8217;t be able to hash the full file content.</p>
+</div>
+<div class="paragraph">
+<p>After the init command that we run in our example, you will be able to run the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ fim diff    # will run using -f
 
-~/sample$ fim diff -k
+$ fim diff -s
 
-~/sample$ fim diff -f</code></pre>
+$ fim diff -n</code></pre>
+</div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ignoring_files_or_directories">9.4. Ignoring files or directories</h3>
+<h3 id="_ignoring_files_or_directories">11.4. Ignoring files or directories</h3>
 <div class="paragraph">
 <p>You can specify files or directories that you want to be ignored by Fim.
-For this, you can add a <code>.fimignore</code> file in one of the directories contained into the Fim repository.
+For this, you can add a <code>.fimignore</code> file in one of the directories contained into the Fim repository.<br>
 You can also set global ignores by creating a <code>.fimignore</code> into the user home directory.</p>
 </div>
 <div class="paragraph">
-<p>Each line of the <code>.fimignore</code> file specifies a pattern. The pattern is mainly a file or directory name.
-Use wilcards in order to match many of them. For example <code>*.mp3</code> will match all the file ending with <code>.mp3</code>.
-A leading <code><strong></code> followed by a slash means match in all directories.
-For example, <code></strong>/foo</code> matches file or directory <code>foo</code> anywhere, the same as pattern <code>foo</code>.</p>
+<p>Each line of the <code>.fimignore</code> file specifies a pattern. The pattern is mainly a file or directory name.<br>
+Use wildcards in order to match many of them. For example <code>*.mp3</code> will match all the file ending with <code>.mp3</code>.<br>
+A leading <code>**</code> followed by a slash means match in all directories.<br>
+For example, <code>**/foo</code> matches file or directory <code>foo</code> anywhere, the same as pattern <code>foo</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_hash_files_in_multi_thread">9.5. Hash files in multi-thread</h3>
+<h3 id="_hash_files_in_multi_thread">11.5. Hash files in multi-thread</h3>
 <div class="paragraph">
-<p>Fim hash files using several threads.
-This allow taking advantage of the computer resources and maximize the overall performances of file hashing.
-By default, Fim use an arbitrary thread count that is the number of CPU cores divided by two.
-You can specify the number of thread to be used for file hashing.
+<p>Fim hash files using several threads.<br>
+This allow taking advantage of the computer resources and maximize the overall performances of file hashing.<br>
+By default, Fim use an arbitrary thread count that is the number of CPU cores divided by two.<br>
+You can specify the number of thread to be used for file hashing.<br>
 The best value depend on the kind of hard disk you have. The more throughput you have, the more thread you can use.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_state_integrity">9.6. State integrity</h3>
+<h3 id="_state_integrity">11.6. State integrity</h3>
 <div class="paragraph">
-<p>All the States contains a hash of the State content.
-If something is modified in the State, the hash of the State content will change and the State will be reported as corrupted.
-Fim won&#8217;t use it.</p>
+<p>All the States contains a hash of the State content.<br>
+If something is modified in the State, the hash of the State content will change and the State will be reported as corrupted.<br>
+Fim won&#8217;t use a corrupted State.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_cross_platform_compatibility">9.7. Cross Platform Compatibility</h3>
+<h3 id="_cross_platform_compatibility">11.7. Cross platform compatibility</h3>
 <div class="paragraph">
-<p>The same Fim repository can be used by either on Linux and on Windows.
-State content is normalized and the same State content can be loaded either on Linux and Windows.</p>
+<p>The same Fim repository can be used by either on Linux, Mac OS X and Windows.<br>
+State content is normalized and the same State content can be loaded on the different supported OS.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_fim_requirements">10. Fim requirements</h2>
+<h2 id="_fim_requirements">12. Fim requirements</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <div class="title">This tool is written in Java.</div>
-<p>Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">here</a>.
+<p>Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">here</a>.<br>
 You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_tested_platforms">11. Tested Platforms</h2>
+<h2 id="_supported_os">13. Supported OS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Currently Fim is tested on Linux and Windows.
-Contribution is welcome to test it on OS X.</p>
+<p>Fim can be used on Linux, Mac OS X and Windows</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_they_talked_about_it">12. They talked about it</h2>
+<h2 id="_they_talked_about_it">14. They talked about it</h2>
 <div class="sectionbody">
 <div class="quoteblock">
 <div class="title"><strong>&bull; <span class="image"><img src="images/icons/korben.info.png" alt="Korben.info"></span> &nbsp;&nbsp; <a href="http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html">Vérifier l’intégrité de très nombreux fichiers</a></strong></div>
@@ -1736,7 +1912,8 @@ Contribution is welcome to test it on OS X.</p>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; <a href="http://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html">Check integrity of many files</a>
+<p><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp;
+<a href="http://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html">Check integrity of many files</a>
 <strong>Fim (File Integrity Manager)</strong> is a really great tool for managing the integrity of many files.
 <a href="http://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html">+ Read more</a></p>
 </div>
@@ -1748,14 +1925,21 @@ Contribution is welcome to test it on OS X.</p>
 <div class="title"><strong>&bull; <span class="image"><img src="images/icons/01net.com.png" alt="01net.com"></span> &nbsp;&nbsp; <a href="http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html">Fim (File Integrity Manager)</a></strong></div>
 <blockquote>
 <div class="paragraph">
-<p><strong>Fim (File Integrity Manager)</strong> est un outil open source qui vous permet de vérifier l&#8217;intégrité de tous vos fichiers après les avoir manipulés en lots. &nbsp;&nbsp;
-<a href="http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html">+ Lire la suite pour <span class="image"><img src="images/icons/linux.png" alt="Linux"></span></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html">+ Lire la suite pour <span class="image"><img src="images/icons/windows.png" alt="Windows"></span></a></p>
+<p><strong>Fim (File Integrity Manager)</strong> est un outil open source qui vous permet de vérifier l&#8217;intégrité de tous vos fichiers après les avoir manipulés en lots.
+&nbsp;&nbsp;
+<a href="http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html">+ Lire la suite pour <span class="image"><img src="images/icons/linux.png" alt="Linux"></span></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html">+ Lire la suite pour <span class="image"><img src="images/icons/windows.png" alt="Windows"></span></a></p>
 </div>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; <strong>Fim (File Integrity Manager)</strong> is an open source tool which allows you to check the integrity of all your files after have handled them bulk. &nbsp;&nbsp;
-<a href="http://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Flinux%2FUtilitaires%2Ffiches%2F132315.html">+ Read more for <span class="image"><img src="images/icons/linux.png" alt="Linux"></span></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Fwindows%2FUtilitaire%2Fmanipulation_de_fichier%2Ffiches%2F132314.html">+ Read more for <span class="image"><img src="images/icons/windows.png" alt="Windows"></span></a></p>
+<p><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; <strong>Fim (File Integrity Manager)</strong>
+is an open source tool which allows you to check the integrity of all your files after have handled them bulk.
+&nbsp;&nbsp;
+<a href="http://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Flinux%2FUtilitaires%2Ffiches%2F132315.html">+ Read more for <span class="image"><img src="images/icons/linux.png" alt="Linux"></span></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Fwindows%2FUtilitaire%2Fmanipulation_de_fichier%2Ffiches%2F132314.html">+ Read more for <span class="image"><img src="images/icons/windows.png" alt="Windows"></span></a></p>
 </div>
 </blockquote>
 </div>
@@ -1779,15 +1963,17 @@ Contribution is welcome to test it on OS X.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_about">13. About</h2>
+<h2 id="_about">15. About</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Created by Etienne Vrignaud &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="https://twitter.com/evrignaud"><span class="image"><img src="images/icons/twitter.png" alt="Twitter icon"></span> Follow @evrignaud</a></p>
+<p>Created by Etienne Vrignaud
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://twitter.com/evrignaud"><span class="image"><img src="images/icons/twitter.png" alt="Twitter icon"></span> Follow @evrignaud</a></p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_license">14. License</h2>
+<h2 id="_license">16. License</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This project is released under the <a href="LICENSE.html">GPLv3 license</a>, for more details, take a look at the LICENSE file in the source.</p>
@@ -1800,7 +1986,7 @@ Contribution is welcome to test it on OS X.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-10-18 22:48:25 +02:00
+Last updated 2015-10-23 20:56:38 +02:00
 </div>
 </div>
 </body>

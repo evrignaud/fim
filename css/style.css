@@ -14,6 +14,11 @@ h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 {
 	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+#toc ul.sectlevel0 > li > a {
+	font-style: normal;
+	font-weight: bold;
+}
+
 #header, #content, #footnotes {
 	max-width: 75em;
 }
