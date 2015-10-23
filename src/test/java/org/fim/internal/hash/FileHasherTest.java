@@ -19,6 +19,7 @@
 package org.fim.internal.hash;
 
 import static java.lang.Math.min;
+import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.dontHash;
@@ -65,6 +66,7 @@ import org.fim.tooling.BuildableContext;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -221,6 +223,26 @@ public class FileHasherTest extends StateAssert
 		checkFileHash(_60_MB + 291,
 				new Range[]{new Range(_4_KB, _8_KB), new Range(_30_MB, _30_MB + _4_KB), new Range(_60_MB - _4_KB, _60_MB)},
 				new Range[]{new Range(_1_MB, _2_MB), new Range(_30_MB, _30_MB + _1_MB), new Range(_60_MB - _1_MB, _60_MB)});
+	}
+
+	// This is an heavy test that takes several hours to run and cannot be run every time.
+	@Test
+	@Ignore
+	public void checkHashIsCompleteInEveryCases() throws IOException
+	{
+		if (hashMode != dontHash)
+		{
+			int initialSize = 4190000;
+			Path file = createFileWithSize(initialSize - 1);
+			for (int fileSize = initialSize; fileSize < (10 * _1_MB); fileSize++)
+			{
+				byte contentByte = getContentByte(globalSequenceCount, false);
+				globalSequenceCount++;
+				Files.write(file, new byte[]{contentByte}, CREATE, APPEND);
+
+				cut.hashFile(file, Files.size(file));
+			}
+		}
 	}
 
 	private void checkFileHash(long fileSize, Range[] smallRanges, Range[] mediumRanges) throws IOException
