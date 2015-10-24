@@ -1,6 +1,5 @@
 # ![Logo](http://evrignaud.github.io/fim/images/icons/fim-96.png) &nbsp; File Integrity Manager
 
-Project health
 [![Build Status](https://travis-ci.org/evrignaud/fim.svg)](https://travis-ci.org/evrignaud/fim) &nbsp; [![Coverage Status](https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github)](https://coveralls.io/github/evrignaud/fim?branch=master)
 
 Fim manage the integrity of a complete file tree
@@ -8,7 +7,7 @@ Fim manage the integrity of a complete file tree
 ## Fim documentation
 
   * [Presentation](http://evrignaud.github.io/fim/#_fim_file_integrity_manager)
-  * [Why do you need Fim?](http://evrignaud.github.io/fim/#_why_do_you_need_fim)
+  * [Why do you need Fim](http://evrignaud.github.io/fim/#_why_do_you_need_fim)
   * [How does it work](http://evrignaud.github.io/fim/#_how_does_it_work)
   * [Fim workflow](http://evrignaud.github.io/fim/#_fim_workflow)
   * [Use case example](http://evrignaud.github.io/fim/#_use_case_example)
