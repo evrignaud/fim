@@ -109,12 +109,7 @@ public class FrontHasher implements Hasher
 			nextSmallRange = smallBlockHasher.getNextRange(filePosition);
 			return nextSmallRange;
 		}
-		else if (mediumBlockHasher.isActive())
-		{
-			nextMediumRange = mediumBlockHasher.getNextRange(filePosition);
-			return nextMediumRange;
-		}
-		return null;
+		throw new RuntimeException(String.format("Fim is not working correctly. Unable to getNextRange for filePosition " + filePosition));
 	}
 
 	public void update(long filePosition, ByteBuffer buffer)

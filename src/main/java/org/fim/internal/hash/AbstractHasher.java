@@ -59,7 +59,14 @@ public abstract class AbstractHasher implements Hasher
 	@Override
 	public long getBytesHashed()
 	{
-		return bytesHashed;
+		if (active)
+		{
+			return bytesHashed;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 
 	@Override

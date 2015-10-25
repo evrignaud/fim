@@ -287,6 +287,8 @@ public class FileHasherTest extends StateAssert
 
 	private void assertFileHashEqualsTo(long fileSize, FileHash expectedFileHash, FileHash fileHash)
 	{
+		long expectedSmallSizeToHash = getExpectedSizeToHash(fileSize, _4_KB);
+		long expectedMediumSizeToHash = getExpectedSizeToHash(fileSize, _1_MB);
 		switch (hashMode)
 		{
 			case dontHash:
@@ -297,6 +299,7 @@ public class FileHasherTest extends StateAssert
 				assertSmallBlockBytesHashedEqualsTo(0);
 				assertMediumBlockBytesHashedEqualsTo(0);
 				assertFullBytesHashedEqualsTo(0);
+				assertMaxBytesHashedEqualsTo(0);
 				break;
 
 			case hashSmallBlock:
@@ -304,9 +307,10 @@ public class FileHasherTest extends StateAssert
 				assertThat(fileHash.getMediumBlockHash()).isEqualTo(NO_HASH);
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
 
-				assertSmallBlockBytesHashedEqualsTo(getExpectedSizeToHash(fileSize, _4_KB));
+				assertSmallBlockBytesHashedEqualsTo(expectedSmallSizeToHash);
 				assertMediumBlockBytesHashedEqualsTo(0);
 				assertFullBytesHashedEqualsTo(0);
+				assertMaxBytesHashedEqualsTo(expectedSmallSizeToHash);
 				break;
 
 			case hashMediumBlock:
@@ -314,9 +318,10 @@ public class FileHasherTest extends StateAssert
 				assertThat(fileHash.getMediumBlockHash()).isEqualTo(expectedFileHash.getMediumBlockHash());
 				assertThat(fileHash.getFullHash()).isEqualTo(NO_HASH);
 
-				assertSmallBlockBytesHashedEqualsTo(getExpectedSizeToHash(fileSize, _4_KB));
-				assertMediumBlockBytesHashedEqualsTo(getExpectedSizeToHash(fileSize, _1_MB));
+				assertSmallBlockBytesHashedEqualsTo(expectedSmallSizeToHash);
+				assertMediumBlockBytesHashedEqualsTo(expectedMediumSizeToHash);
 				assertFullBytesHashedEqualsTo(0);
+				assertMaxBytesHashedEqualsTo(expectedMediumSizeToHash);
 				break;
 
 			case hashAll:
@@ -324,9 +329,10 @@ public class FileHasherTest extends StateAssert
 				assertThat(fileHash.getMediumBlockHash()).isEqualTo(expectedFileHash.getMediumBlockHash());
 				assertThat(fileHash.getFullHash()).isEqualTo(expectedFileHash.getFullHash());
 
-				assertSmallBlockBytesHashedEqualsTo(getExpectedSizeToHash(fileSize, _4_KB));
-				assertMediumBlockBytesHashedEqualsTo(getExpectedSizeToHash(fileSize, _1_MB));
+				assertSmallBlockBytesHashedEqualsTo(expectedSmallSizeToHash);
+				assertMediumBlockBytesHashedEqualsTo(expectedMediumSizeToHash);
 				assertFullBytesHashedEqualsTo(fileSize);
+				assertMaxBytesHashedEqualsTo(fileSize);
 				break;
 		}
 	}
@@ -372,6 +378,11 @@ public class FileHasherTest extends StateAssert
 	private void assertFullBytesHashedEqualsTo(long expectedSizeToHash)
 	{
 		assertThat(cut.getFrontHasher().getFullHasher().getBytesHashed()).isEqualTo(expectedSizeToHash);
+	}
+
+	private void assertMaxBytesHashedEqualsTo(long expectedSizeToHash)
+	{
+		assertThat(cut.getFrontHasher().getBytesHashed()).isEqualTo(expectedSizeToHash);
 	}
 
 	private Path createFileWithSize(int fileSize) throws IOException

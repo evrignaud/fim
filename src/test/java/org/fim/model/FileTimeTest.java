@@ -28,6 +28,7 @@ public class FileTimeTest
 	private FileTime a1;
 	private FileTime a2;
 	private FileTime b;
+	private FileTime c;
 
 	@Before
 	public void setup()
@@ -36,6 +37,8 @@ public class FileTimeTest
 		a2 = new FileTime(1L, 2L);
 
 		b = new FileTime(2L, 3L);
+
+		c = new FileTime(4L, 5L);
 	}
 
 	@Test
@@ -58,5 +61,20 @@ public class FileTimeTest
 		assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
 
 		assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
+	}
+
+	@Test
+	public void compareIsWorking()
+	{
+		assertThat(a1.compareTo(a2)).isEqualTo(0);
+		assertThat(a2.compareTo(a1)).isEqualTo(0);
+
+		assertThat(a1.compareTo(b)).isEqualTo(-1);
+		assertThat(b.compareTo(c)).isEqualTo(-1);
+		assertThat(a1.compareTo(c)).isEqualTo(-1);
+
+		assertThat(c.compareTo(b)).isEqualTo(1);
+		assertThat(b.compareTo(a1)).isEqualTo(1);
+		assertThat(c.compareTo(a1)).isEqualTo(1);
 	}
 }

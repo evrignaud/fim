@@ -59,6 +59,9 @@ public class RangeTest
 	{
 		Range range1 = new Range(4, 10);
 		Range range2 = new Range(7, 15);
+
+		assertThat(range1.union(null)).isEqualTo(new Range(4, 10));
+
 		assertThat(range1.union(range2)).isEqualTo(new Range(4, 15));
 		assertThat(range2.union(range1)).isEqualTo(new Range(4, 15));
 
