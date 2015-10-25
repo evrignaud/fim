@@ -34,11 +34,13 @@
 		<maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
 		<maven-shade-plugin.version>2.4.1</maven-shade-plugin.version>
 		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
-		<asciidoctor-maven-plugin.version>1.5.2.1</asciidoctor-maven-plugin.version>
 		<maven-source-plugin.version>2.4</maven-source-plugin.version>
 		<maven-assembly-plugin.version>2.5.5</maven-assembly-plugin.version>
 		<maven-release-plugin.version>2.5.2</maven-release-plugin.version>
 		<maven-site-plugin.version>3.4</maven-site-plugin.version>
+		<cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
+		<coveralls-maven-plugin.version>4.0.0</coveralls-maven-plugin.version>
+		<asciidoctor-maven-plugin.version>1.5.2.1</asciidoctor-maven-plugin.version>
 
 	</properties>
 
@@ -182,8 +184,13 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.7</version>
+				<version>${cobertura-maven-plugin.version}</version>
 				<configuration>
+					<instrumentation>
+						<excludes>
+							<exclude>**/SELinux.class</exclude>
+						</excludes>
+					</instrumentation>
 					<formats>
 						<format>xml</format>
 						<format>html</format>
@@ -194,7 +201,7 @@
 			<plugin>
 				<groupId>org.eluder.coveralls</groupId>
 				<artifactId>coveralls-maven-plugin</artifactId>
-				<version>4.0.0</version>
+				<version>${coveralls-maven-plugin.version}</version>
 				<configuration>
 					<repoToken>yz1HDUtMG2qPbkAFkTltCeNHsiajJSytu</repoToken>
 				</configuration>
