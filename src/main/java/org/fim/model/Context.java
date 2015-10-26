@@ -39,6 +39,7 @@ public class Context
 	private String comment;
 	private boolean useLastState;
 	private int threadCount;
+	private boolean threadCountSpecified;
 	private String masterFimRepositoryDir;
 	private boolean alwaysYes;
 
@@ -52,6 +53,7 @@ public class Context
 		setComment("");
 		setUseLastState(false);
 		setThreadCount(Runtime.getRuntime().availableProcessors() / 2);
+		setThreadCountSpecified(false);
 		setMasterFimRepositoryDir(null);
 		setAlwaysYes(false);
 	}
@@ -176,6 +178,16 @@ public class Context
 		{
 			this.threadCount = threadCount;
 		}
+	}
+
+	public boolean isThreadCountSpecified()
+	{
+		return threadCountSpecified;
+	}
+
+	public void setThreadCountSpecified(boolean threadCountSpecified)
+	{
+		this.threadCountSpecified = threadCountSpecified;
 	}
 
 	public Context clone()

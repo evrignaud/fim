@@ -83,6 +83,15 @@ public abstract class AbstractCommand implements Command
 				throw new BadFimUsageException();
 			}
 		}
+
+		if ((context.getThreadCount() != 1) && (context.getHashMode() == dontHash))
+		{
+			context.setThreadCount(1);
+			if (context.isThreadCountSpecified())
+			{
+				Logger.info("Not hashing file content so thread count forced to 1");
+			}
+		}
 	}
 
 	protected boolean confirmAction(Context context, String action)

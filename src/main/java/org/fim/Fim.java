@@ -148,10 +148,15 @@ public class Fim
 
 			context.setVerbose(!commandLine.hasOption('q'));
 			context.setComment(commandLine.getOptionValue('c', context.getComment()));
-			context.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "" + context.getThreadCount())));
 			context.setUseLastState(commandLine.hasOption('l'));
 			context.setMasterFimRepositoryDir(commandLine.getOptionValue('m'));
 			context.setAlwaysYes(commandLine.hasOption('y'));
+
+			if (commandLine.hasOption('t'))
+			{
+				context.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "1")));
+				context.setThreadCountSpecified(true);
+			}
 
 			if (commandLine.hasOption('n'))
 			{
@@ -190,12 +195,6 @@ public class Fim
 		if (command == null)
 		{
 			youMustSpecifyACommandToRun();
-		}
-
-		if ((context.getThreadCount() != 1) && (context.getHashMode() == dontHash))
-		{
-			context.setThreadCount(1);
-			Logger.info("Not hashing file content so thread count forced to 1");
 		}
 
 		FimReposConstraint constraint = command.getFimReposConstraint();
