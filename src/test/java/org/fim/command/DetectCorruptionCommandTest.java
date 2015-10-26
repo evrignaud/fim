@@ -42,13 +42,13 @@ import org.fim.tooling.RepositoryTool;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CorruptCommandTest
+public class DetectCorruptionCommandTest
 {
-	private static Path rootDir = Paths.get("target/" + CorruptCommandTest.class.getSimpleName());
+	private static Path rootDir = Paths.get("target/" + DetectCorruptionCommandTest.class.getSimpleName());
 
 	private InitCommand initCommand;
 	private DiffCommand diffCommand;
-	private CorruptCommand corruptCommand;
+	private DetectCorruptionCommand detectCorruptionCommand;
 
 	private RepositoryTool tool;
 
@@ -60,7 +60,7 @@ public class CorruptCommandTest
 
 		initCommand = new InitCommand();
 		diffCommand = new DiffCommand();
-		corruptCommand = new CorruptCommand();
+		detectCorruptionCommand = new DetectCorruptionCommand();
 
 		tool = new RepositoryTool(rootDir);
 	}
@@ -69,21 +69,21 @@ public class CorruptCommandTest
 	public void dontHash_NotAllowed() throws Exception
 	{
 		Context context = tool.createContext(dontHash, false);
-		corruptCommand.execute(context);
+		detectCorruptionCommand.execute(context);
 	}
 
 	@Test(expected = BadFimUsageException.class)
 	public void hashSmallBlock_NotAllowed() throws Exception
 	{
 		Context context = tool.createContext(hashSmallBlock, false);
-		corruptCommand.execute(context);
+		detectCorruptionCommand.execute(context);
 	}
 
 	@Test(expected = BadFimUsageException.class)
 	public void hashMediumBlock_NotAllowed() throws Exception
 	{
 		Context context = tool.createContext(hashMediumBlock, false);
-		corruptCommand.execute(context);
+		detectCorruptionCommand.execute(context);
 	}
 
 	@Test
@@ -96,7 +96,7 @@ public class CorruptCommandTest
 		State state = (State) initCommand.execute(context);
 		assertThat(state.getModificationCounts().getAdded()).isEqualTo(5);
 
-		CompareResult compareResult = (CompareResult) corruptCommand.execute(context);
+		CompareResult compareResult = (CompareResult) detectCorruptionCommand.execute(context);
 		assertThat(compareResult.getCorrupted().size()).isEqualTo(0);
 
 		doSomeModifications();
@@ -104,7 +104,7 @@ public class CorruptCommandTest
 		compareResult = (CompareResult) diffCommand.execute(context);
 		assertThat(compareResult.modifiedCount()).isEqualTo(3);
 
-		compareResult = (CompareResult) corruptCommand.execute(context);
+		compareResult = (CompareResult) detectCorruptionCommand.execute(context);
 		assertThat(compareResult.getCorrupted().size()).isEqualTo(1);
 		FileState fileState = compareResult.getCorrupted().get(0).getFileState();
 		assertThat(fileState.getFileName()).isEqualTo("file03");

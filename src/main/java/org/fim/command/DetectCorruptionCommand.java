@@ -29,18 +29,18 @@ import org.fim.model.Context;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
-public class CorruptCommand extends AbstractCommand
+public class DetectCorruptionCommand extends AbstractCommand
 {
 	@Override
 	public String getCmdName()
 	{
-		return "corrupt";
+		return "detect-corruption";
 	}
 
 	@Override
 	public String getShortCmdName()
 	{
-		return "";
+		return "dcor";
 	}
 
 	@Override

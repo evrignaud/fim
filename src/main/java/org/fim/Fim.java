@@ -38,7 +38,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.fim.command.AbstractCommand;
 import org.fim.command.CommitCommand;
-import org.fim.command.CorruptCommand;
+import org.fim.command.DetectCorruptionCommand;
 import org.fim.command.DiffCommand;
 import org.fim.command.DisplayIgnoredFilesCommand;
 import org.fim.command.FindDuplicatesCommand;
@@ -95,7 +95,7 @@ public class Fim
 				new CommitCommand(),
 				new DiffCommand(),
 				new ResetFileAttributesCommand(),
-				new CorruptCommand(),
+				new DetectCorruptionCommand(),
 				new FindDuplicatesCommand(),
 				new RemoveDuplicatesCommand(this),
 				new LogCommand(),
