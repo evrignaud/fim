@@ -2,12 +2,12 @@
 
 Fim can be used for different kind of use cases. +
 Personally I use Fim to manage my photos and videos.
-When I have new photos, I put them at the right place in my pictures folder and then I do `fim ci` from the sub-directory
+When I have new photos, I put them at the right place in my pictures folder and then I do `fim&nbsp;ci` from the sub-directory
 containing the new photos to record a new State, as I could do with Git.
-As I do this from a sub-directory the commit is fast because Fim hash only the files that I added and create a new State
-by merging the previous State with the new hash.
+As I do this from a sub-directory the commit is fast because Fim hashes only the files that I added and creates a new State
+by merging those new hash with the previous State.
 
-More details regarding sub-directories can be found <<faq.adoc#_run_fim_commands_from_a_sub_directory,here>>.
+More details on using Fim from a sub-directory can be found <<faq.adoc#_run_fim_commands_from_a_sub_directory,here>>.
 
 The `fim diff` command let me know when I want (even super quickly) if something changed in my pictures folder.
 

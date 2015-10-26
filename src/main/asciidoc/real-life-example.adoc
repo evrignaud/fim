@@ -3,7 +3,7 @@
 == Initialize the big Fim repository
 
 Here is the output of the initialization of a big Fim repository that contains 297 GB of photos and videos. +
-In my case *it takes almost 3 hours* to hash all the files content.
+In my case *it takes almost 3 hours* to hash all the file contents.
 
 [source,shell]
 ----
@@ -26,7 +26,7 @@ No comment provided. You are going to initialize your repository using the defau
 
 == Check very quickly for differences
 
-It is possible to check the differences very quickly using the `-s` option that will check only 3 small blocks of 4 KB. +
+It is possible to check the differences very quickly using the super fast mode using the `-s` option that will check only 3 small blocks of 4 KB. +
 In my case *it takes 17 minutes :=)*.
 
 [source,shell]
@@ -76,12 +76,12 @@ Nothing modified
 
 == Fully checking for differences
 
-If you want to be completely sure of the `diff` result, you need to run a full hash of all the files content using the `diff` command without any option. +
+If you want to be completely sure of the `diff` result, you need to run a full hash of all the file contents using the `diff` command without any option. +
 This time in my case, *it takes almost 3 hours* as for the `init` command.
 
 == Checking without hashing
 
-There is also the do not hash mode using the `-n` option that will not hash the files content.
+There is also the do not hash mode using the `-n` option that will not hash the file contents.
 It helps to detect faster changes but you will be able to detect only file names and file attributes that have changed. +
 This time in my case, *it takes 46 seconds*.
 

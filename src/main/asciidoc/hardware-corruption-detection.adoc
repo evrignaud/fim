@@ -1,7 +1,7 @@
 = Hardware corruption detection
 
-Fim is able to find changes likely caused by a hardware corruption or a filesystem bug. +
-A file is suspected to be corrupted when the content have changed, but the timestamps are not modified (creation time and modification time). +
+Fim is able to detect changes likely caused by a hardware corruption or a filesystem bug. +
+A file is suspected to be corrupted when his content have changed, but the timestamps are not modified (creation time and modification time). +
 To run hardware corruption detection use the `corrupt` command.
 
 The `diff` command can also be used to check if a file content have changed. +
@@ -11,7 +11,7 @@ The difference for the `corrupt` command is that only corrupted files are displa
 
 The `corrupt` command can produce false positive.
 
-For example here is a simulation of hardware corruption in the repository generated for the <<simple-example.adoc#_simple_example,Simple example>>:
+For example here is a simulation of hardware corruption based on the repository generated for the <<simple-example.adoc#_simple_example,Simple example>>:
 
 * Change the content of a file
 

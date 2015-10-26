@@ -3,7 +3,7 @@
 Here is a step by step example of Fim usage.
 For the purpose of this example we use small files.
 
-You can run yourself this example using the https://github.com/evrignaud/fim/blob/master/samples/simple-example.sh[`samples/simple-example.sh`] script.
+You can try it yourself by using the https://github.com/evrignaud/fim/blob/master/samples/simple-example.sh[`samples/simple-example.sh`] script.
 
 == Step by step
 
@@ -59,7 +59,7 @@ Added:            file10
 10 added
 ----
 
-=== A new `.fim` directory have been created
+=== A new `.fim` directory is created
 
 [source,shell]
 ----
@@ -113,7 +113,12 @@ simple-example$ cp file07 file07.dup1
 
 # Create the new file12
 simple-example$ echo "New File 12" > file12
+----
 
+Here is the content of the directories after the modifications.
+
+[source,shell]
+----
 simple-example$ ls -la
 total 68
 drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 .
@@ -204,15 +209,15 @@ simple-example$ fim fdup
 
 === From the `dir01` sub-directory
 
-We can run Fim on a subset of the repository. +
-More details regarding sub-directories can be found <<faq.adoc#_run_fim_commands_from_a_sub_directory,here>>.
+You can run Fim on a subset of the repository. +
+More details on using Fim from a sub-directory can be found <<faq.adoc#_run_fim_commands_from_a_sub_directory,here>>.
 
 [source,shell]
 ----
 simple-example$ cd dir01
 ----
 
-Inside this directory only one file is added.
+Inside this directory only one file is seen as added.
 
 [source,shell]
 ----
@@ -230,7 +235,7 @@ Added:            dir01/file01
 1 added
 ----
 
-No duplicated files as we are looking only inside the `dir01`.
+There are no duplicated files as we are looking only inside `dir01`.
 
 [source,shell]
 ----
@@ -263,7 +268,7 @@ Added:            dir01/file01
 1 added
 ----
 
-No more local modifications.
+There are no more local modifications.
 
 [source,shell]
 ----
@@ -290,6 +295,7 @@ simple-example/dir01$ cd ..
 
 [source,shell]
 ----
+simple-example$ fim ci -c "All modifications" -y
 2015/10/20 07:37:58 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
 2015/10/20 07:37:58 - Info  - SELinux is enabled on this system
@@ -360,6 +366,7 @@ Here is an extract of the State's 3 content. To simplify reading, hash are short
 
 [source]
 ----
+simple-example$ zmore .fim/states/state_3.json.gz
 {
   "stateHash": "95707f3180...ba2f3dca9e",
   "modelVersion": "4",

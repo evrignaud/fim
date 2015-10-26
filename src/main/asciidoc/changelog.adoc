@@ -25,8 +25,8 @@ https://github.com/evrignaud/fim/compare/1.0.0%2E%2E%2E1.0.1[image:icons/list.pn
 https://github.com/evrignaud/fim/releases/tag/1.0.1[image:icons/package.png[Package] Download]
 
 * Bug Fix
-* Update the State format in order to improve Fim commands. It allows for example to display more details in the log command
-* Add the ability to run Fim from sub-directories
+* Update the State format in order to improve Fim commands. It allows for example to display more details in the `log` command
+* Add the ability to run Fim from a sub-directory
 * Add Global hash mode to be able to change the default Fim behavior
 
 
@@ -39,6 +39,6 @@ https://github.com/evrignaud/fim/compare/Initial_commit%2E%2E%2E1.0.0[image:icon
 &nbsp;&nbsp; - &nbsp;&nbsp;
 https://github.com/evrignaud/fim/releases/tag/1.0.0[image:icons/package.png[Package] Download]
 
-* *First release of Fim.*
-* Setup all the basis to allow adding more and more stuff around the States.
-* Provides mainly init, commit and diff commands.
+* *First release of Fim*
+* Setup all the basis to allow adding more and more stuff around the States
+* Provides mainly `init`, `commit` and `diff` commands

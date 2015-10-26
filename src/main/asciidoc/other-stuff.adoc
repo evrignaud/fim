@@ -2,7 +2,7 @@
 
 = Fim requirements
 
-.This tool is written in Java.
+*This tool is written in Java*
 
 Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from http://www.oracle.com/technetwork/java/javase/downloads/index.html[here]. +
 You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.
@@ -23,7 +23,7 @@ http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html[+ Lire la 
 ________
 
 image:icons/english.png[English version] &nbsp;
-http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html[Check integrity of many files]
+http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html[Check integrity of many files] +
 *Fim (File Integrity Manager)* is a really great tool for managing the integrity of many files.
 http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html[+ Read more]
 ________
