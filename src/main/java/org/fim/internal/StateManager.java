@@ -112,7 +112,7 @@ public class StateManager
 	}
 
 	/**
-	 * @return the State file formatted like this: <statesDir>/state_<stateNumber>.json.gz
+	 * @return the State file formatted like this: &lt;statesDir&gt;/state_&lt;stateNumber&gt;.json.gz
 	 */
 	public Path getStateFile(int stateNumber)
 	{
