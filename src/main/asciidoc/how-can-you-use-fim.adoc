@@ -2,7 +2,7 @@
 
 == Download a Fim release
 
-You can download a prebuilt release of Fim from https://github.com/evrignaud/fim/releases[image:icons/download.png[Download] here]
+You can download a prebuilt release of Fim from https://github.com/evrignaud/fim/releases/latest[image:icons/download.png[Download] here]
 
 :leveloffset: 2
 

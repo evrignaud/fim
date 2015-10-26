@@ -2,14 +2,14 @@
 
 Fim is able to detect changes likely caused by a hardware corruption or a filesystem bug. +
 A file is suspected to be corrupted when his content have changed, but the timestamps are not modified (creation time and modification time). +
-To run hardware corruption detection use the `corrupt` command.
+To run hardware corruption detection use the `dcor` command.
 
 The `diff` command can also be used to check if a file content have changed. +
-The difference for the `corrupt` command is that only corrupted files are displayed. Files that you way have added or modified are not listed in the result.
+The difference for the `dcor` command is that only corrupted files are displayed. Files that you way have added or modified are not listed in the result.
 
 == False positive
 
-The `corrupt` command can produce false positive.
+The `dcor` command can produce false positive.
 
 For example here is a simulation of hardware corruption based on the repository generated for the <<simple-example.adoc#_simple_example,Simple example>>:
 
@@ -39,7 +39,7 @@ Set last modified: file05 	2015/10/23 09:18:14 -> 2015/10/23 07:16:12
 
 [source,shell]
 ----
-simple-example$ fim corrupt
+simple-example$ fim dcor
 2015/10/23 09:19:26 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
 2015/10/23 09:19:27 - Info  - SELinux is enabled on this system

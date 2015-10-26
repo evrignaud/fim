@@ -43,7 +43,7 @@ public class DiffCommand extends AbstractCommand
 	public String getDescription()
 	{
 		return "Compare the current directory State with the previous one.\n" +
-				"                                You can get a quick result by using the -m or -k or -f options";
+				"                                You can get a quick result by using the -f or -s or -n options";
 	}
 
 	@Override

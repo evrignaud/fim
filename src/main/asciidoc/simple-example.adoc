@@ -1,3 +1,5 @@
+[[simple-example]]&nbsp;
+
 = Simple example
 
 Here is a step by step example of Fim usage.
