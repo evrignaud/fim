@@ -38,7 +38,7 @@ public class PurgeStatesCommand extends AbstractCommand
 	@Override
 	public String getShortCmdName()
 	{
-		return "purge";
+		return "pst";
 	}
 
 	@Override

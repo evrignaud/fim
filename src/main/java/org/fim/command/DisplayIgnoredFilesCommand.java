@@ -41,7 +41,7 @@ public class DisplayIgnoredFilesCommand extends AbstractCommand
 	@Override
 	public String getShortCmdName()
 	{
-		return "di";
+		return "dign";
 	}
 
 	@Override
