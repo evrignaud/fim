@@ -18,6 +18,9 @@
 # along with Fim.  If not, see <http://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------------------------------------------------
 
+# You can see a run of this script here:
+#	http://evrignaud.github.io/fim/#_simple_example
+
 rm -rf simple-example
 mkdir simple-example
 
