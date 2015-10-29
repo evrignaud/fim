@@ -6,18 +6,18 @@ environment:
 
 install:
   - ps: >-
-      $MVNDIR = 'C:\bin\apache-maven-3.2.5\'
+      $MVNDIR = 'C:\bin\apache-maven-3.3.1\'
 
       if(!(Test-Path -Path $MVNDIR )){
         Write-Host (Test-Path -Path $MVNDIR)
         Write-Host 'Installing Maven'
-        cinst maven -Version 3.2.5
+        cinst maven -Version 3.3.1
       } else {
         Write-Host 'Found Maven cached installation'
       }
 # Note: env variables are not correctly updated by choco (setting it manually)
 # Prepend Java entry, remove Ruby entry (C:\Ruby193\bin;) from PATH
-  - cmd: SET PATH=C:\bin\apache-maven-3.2.5\bin;%JAVA_HOME%\bin;%PATH:C:\Ruby193\bin;=%
+  - cmd: SET PATH=C:\bin\apache-maven-3.3.1\bin;%JAVA_HOME%\bin;%PATH:C:\Ruby193\bin;=%
   - cmd: mvn --version
   - cmd: java -version
 
@@ -28,4 +28,4 @@ test_script:
   - mvn test -B
 
 cache:
-  - C:\bin\apache-maven-3.2.5\
+  - C:\bin\apache-maven-3.3.1\
