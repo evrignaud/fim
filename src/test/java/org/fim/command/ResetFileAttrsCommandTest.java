@@ -18,9 +18,9 @@
  */
 package org.fim.command;
 
+import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.hashAll;
-import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,7 +28,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.State;
@@ -36,9 +35,9 @@ import org.fim.tooling.RepositoryTool;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LinuxResetFileAttrsCommandTest
+public class ResetFileAttrsCommandTest
 {
-	private static Path rootDir = Paths.get("target/" + LinuxResetFileAttrsCommandTest.class.getSimpleName());
+	private static Path rootDir = Paths.get("target/" + ResetFileAttrsCommandTest.class.getSimpleName());
 
 	private InitCommand initCommand;
 	private DiffCommand diffCommand;
@@ -49,8 +48,6 @@ public class LinuxResetFileAttrsCommandTest
 	@Before
 	public void setup() throws IOException
 	{
-		assumeTrue(!SystemUtils.IS_OS_WINDOWS);
-
 		FileUtils.deleteDirectory(rootDir.toFile());
 		Files.createDirectories(rootDir);
 
@@ -78,8 +75,8 @@ public class LinuxResetFileAttrsCommandTest
 
 		CompareResult compareResult = (CompareResult) diffCommand.execute(context);
 		assertThat(compareResult.modifiedCount()).isEqualTo(3);
-		assertThat(compareResult.getDateModified().size()).isEqualTo(2);
-		assertThat(compareResult.getAttributesModified().size()).isEqualTo(1);
+		assertThat(compareResult.getDateModified().size()).isEqualTo(IS_OS_WINDOWS ? 3 : 2);
+		assertThat(compareResult.getAttributesModified().size()).isEqualTo(IS_OS_WINDOWS ? 0 : 1);
 
 		fileResetCount = (int) resetFileAttributesCommand.execute(context);
 		assertThat(fileResetCount).isEqualTo(3);
@@ -93,12 +90,12 @@ public class LinuxResetFileAttrsCommandTest
 		tool.sleepSafely(1_000); // Ensure to increase lastModified at least of 1 second
 
 		tool.touchCreationTime("file01");
-		tool.setPermissions("file01", "rwx------");
+		tool.setPermissions("file01", "rwx------", "AHRS");
 
 		tool.touchLastModified("file02");
-		tool.setPermissions("file02", "r-x------");
+		tool.setPermissions("file02", "r-x------", "H");
 
 		tool.touchLastModified("file03");
-		tool.setPermissions("file03", "r-xr-x---");
+		tool.setPermissions("file03", "r-xr-x---", "R");
 	}
 }

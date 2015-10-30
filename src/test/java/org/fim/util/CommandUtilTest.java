@@ -18,10 +18,11 @@
  */
 package org.fim.util;
 
+import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
+
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class CommandUtilTest
 	@Before
 	public void setup()
 	{
-		if (SystemUtils.IS_OS_WINDOWS)
+		if (IS_OS_WINDOWS)
 		{
 			cmdArray = Arrays.asList("cmd", "/c", "dir /AH");
 			badArgumentCmdArray = Arrays.asList("cmd", "/c", "dir /+++");

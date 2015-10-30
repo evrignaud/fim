@@ -31,8 +31,10 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.fim.model.Context;
 import org.fim.model.HashMode;
+import org.fim.util.DosFilePermissions;
 
 public class RepositoryTool
 {
@@ -136,11 +138,18 @@ public class RepositoryTool
 		Files.write(file, sb.toString().getBytes(), CREATE);
 	}
 
-	public void setPermissions(String fileName, String permissions) throws IOException
+	public void setPermissions(String fileName, String posixPermissions, String dosPermissions) throws IOException
 	{
 		Path file = rootDir.resolve(fileName);
-		Set<PosixFilePermission> permissionSet = PosixFilePermissions.fromString(permissions);
-		Files.getFileAttributeView(file, PosixFileAttributeView.class).setPermissions(permissionSet);
+		if (SystemUtils.IS_OS_WINDOWS)
+		{
+			DosFilePermissions.setPermissions(file, dosPermissions);
+		}
+		else
+		{
+			Set<PosixFilePermission> permissionSet = PosixFilePermissions.fromString(posixPermissions);
+			Files.getFileAttributeView(file, PosixFileAttributeView.class).setPermissions(permissionSet);
+		}
 	}
 
 	public void sleepSafely(int millis)
