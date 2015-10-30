@@ -18,8 +18,6 @@
  */
 package org.fim.util;
 
-import static org.junit.Assume.assumeTrue;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,37 +26,49 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LinuxCommandUtilTest
+public class CommandUtilTest
 {
+	private List<String> cmdArray;
+	private List<String> badArgumentCmdArray;
+
 	@Before
 	public void setup()
 	{
-		assumeTrue(!SystemUtils.IS_OS_WINDOWS);
+		if (SystemUtils.IS_OS_WINDOWS)
+		{
+			cmdArray = Arrays.asList("cmd", "/c", "dir /AH");
+			badArgumentCmdArray = Arrays.asList("cmd", "/c", "dir /+++");
+		}
+		else
+		{
+			cmdArray = Arrays.asList("ls", "-la");
+			badArgumentCmdArray = Arrays.asList("ls", "-+++");
+		}
 	}
 
 	@Test
 	public void weCanExecuteACommand() throws Exception
 	{
-		String output = CommandUtil.executeCommand(Arrays.asList("ls", "-la"));
+		String output = CommandUtil.executeCommand(cmdArray);
 		Assertions.assertThat(output.length()).isGreaterThan(10);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void executingACommandWithWrongArgumentsThrowAnException() throws Exception
 	{
-		CommandUtil.executeCommand(Arrays.asList("ls", "-LoL "));
+		CommandUtil.executeCommand(badArgumentCmdArray);
 	}
 
 	@Test
 	public void weCanExecuteACommandAndGetLines() throws Exception
 	{
-		List<String> lines = CommandUtil.executeCommandAndGetLines(Arrays.asList("ls", "-la"));
+		List<String> lines = CommandUtil.executeCommandAndGetLines(cmdArray);
 		Assertions.assertThat(lines.size()).isGreaterThan(5);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void executingACommandAndGetLinesWithWrongArgumentsThrowAnException() throws Exception
 	{
-		CommandUtil.executeCommandAndGetLines(Arrays.asList("ls", "-LoL "));
+		CommandUtil.executeCommandAndGetLines(badArgumentCmdArray);
 	}
 }
