@@ -18,15 +18,33 @@
  */
 package org.fim.util;
 
+import static java.nio.file.StandardOpenOption.CREATE;
+import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
+import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 public class DosFilePermissionsTest
 {
+	private static Path rootDir = Paths.get("target/" + DosFilePermissionsTest.class.getSimpleName());
+
+	@BeforeClass
+	public static void setupOnce() throws NoSuchAlgorithmException, IOException
+	{
+		FileUtils.deleteDirectory(rootDir.toFile());
+		Files.createDirectories(rootDir);
+	}
+
 	@Test
 	public void weCanRetrieveTheStringVersion()
 	{
@@ -45,5 +63,27 @@ public class DosFilePermissionsTest
 
 		Mockito.when(dosFileAttributes.isSystem()).thenReturn(true);
 		assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo("AHRS");
+	}
+
+	@Test
+	public void weCanSetPermissions() throws IOException
+	{
+		if (IS_OS_WINDOWS)
+		{
+			Path file = rootDir.resolve("file");
+			Files.write(file, "file content".getBytes(), CREATE);
+
+			assertWeCanSetPermissions(file, "A");
+			assertWeCanSetPermissions(file, "HR");
+			assertWeCanSetPermissions(file, "S");
+		}
+	}
+
+	private void assertWeCanSetPermissions(Path file, String permissions) throws IOException
+	{
+		DosFilePermissions.setPermissions(file, permissions);
+
+		DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
+		assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo(permissions);
 	}
 }
