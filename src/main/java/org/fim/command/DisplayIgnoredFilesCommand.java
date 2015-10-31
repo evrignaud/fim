@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
 import org.fim.model.State;
@@ -66,7 +67,8 @@ public class DisplayIgnoredFilesCommand extends AbstractCommand
 		if (Files.exists(statFile))
 		{
 			State state = manager.loadState(lastStateNumber);
-			System.out.printf("State #%d: %s (%d files)%n", lastStateNumber, formatDate(state.getTimestamp()), state.getFileCount());
+			System.out.printf("Files or directories ignored in State #%d: %s (%d files - %s)%n", lastStateNumber, formatDate(state.getTimestamp()),
+					state.getFileCount(), FileUtils.byteCountToDisplaySize(state.getFilesContentLength()));
 			if (state.getComment().length() > 0)
 			{
 				System.out.printf("\tComment: %s%n", state.getComment());
@@ -91,7 +93,6 @@ public class DisplayIgnoredFilesCommand extends AbstractCommand
 		else
 		{
 			Console.newLine();
-			System.out.println("Files or directories that are ignored into this State");
 
 			for (String ignoredFile : ignoredFiles)
 			{
