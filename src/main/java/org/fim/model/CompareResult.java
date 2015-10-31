@@ -233,7 +233,7 @@ public class CompareResult
 	private String getValue(Map<String, String> attributes, String key)
 	{
 		String value = attributes != null ? attributes.get(key) : null;
-		if (value == null)
+		if (value == null || value.length() == 0)
 		{
 			value = NOTHING;
 		}
