@@ -42,6 +42,9 @@
 		<coveralls-maven-plugin.version>4.0.0</coveralls-maven-plugin.version>
 		<asciidoctor-maven-plugin.version>1.5.2.1</asciidoctor-maven-plugin.version>
 
+		<serviceName>Local</serviceName>
+		<serviceJobId>0</serviceJobId>
+
 	</properties>
 
 	<!-- Licence -->
@@ -204,6 +207,8 @@
 				<version>${coveralls-maven-plugin.version}</version>
 				<configuration>
 					<repoToken>yz1HDUtMG2qPbkAFkTltCeNHsiajJSytu</repoToken>
+					<serviceName>${serviceName}</serviceName>
+					<serviceJobId>${serviceJobId}</serviceJobId>
 				</configuration>
 			</plugin>
 

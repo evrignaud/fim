@@ -26,7 +26,7 @@ build_script:
 
 test_script:
   - mvn test -B
-  - mvn clean cobertura:cobertura org.eluder.coveralls:coveralls-maven-plugin:report
+  - mvn clean cobertura:cobertura org.eluder.coveralls:coveralls-maven-plugin:report -DserviceName=appveyor-ci -DserviceJobId='{build}'
 
 cache:
   - C:\maven\
