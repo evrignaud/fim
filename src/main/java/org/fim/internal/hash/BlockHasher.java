@@ -150,16 +150,16 @@ public abstract class BlockHasher extends AbstractHasher
 			return null;
 		}
 
-		int position = (int) (range.getFrom() - filePosition);
-		int limit = (int) (range.getTo() - filePosition);
-		if (position > buffer.capacity() || limit > buffer.capacity())
+		long position = range.getFrom() - filePosition;
+		long limit = range.getTo() - filePosition;
+		if (position > (long) buffer.capacity() || limit > (long) buffer.capacity())
 		{
 			// We are too far. This range will be in a next buffer
 			return null;
 		}
 
-		buffer.limit(limit);
-		buffer.position(position);
+		buffer.limit((int) limit);
+		buffer.position((int) position);
 		return buffer.duplicate();
 	}
 
