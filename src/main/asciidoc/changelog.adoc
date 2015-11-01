@@ -2,7 +2,7 @@
 
 
 == Version 1.1.0
-*(Released 2015-11-0?)*
+*(Released 2015-11-01)*
 
 https://github.com/evrignaud/fim/tree/1.1.0[image:icons/octocat.png[GitHub] Sources]
 &nbsp;&nbsp; - &nbsp;&nbsp;
