@@ -24,6 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.attribute.DosFileAttributeView;
 import java.nio.file.attribute.DosFileAttributes;
 
+import org.fim.model.Context;
+
 public class DosFilePermissions
 {
 	public static String toString(DosFileAttributes dosFileAttributes)
@@ -48,7 +50,7 @@ public class DosFilePermissions
 		return builder.toString();
 	}
 
-	public static void setPermissions(Path file, String permissions)
+	public static void setPermissions(Context context, Path file, String permissions)
 	{
 		DosFileAttributeView fileAttributeView = Files.getFileAttributeView(file, DosFileAttributeView.class);
 		try
@@ -60,7 +62,7 @@ public class DosFilePermissions
 		}
 		catch (IOException ex)
 		{
-			Logger.error("Error setting permissions for '" + file + "'", ex);
+			Logger.error("Error setting permissions for '" + file + "'", ex, context.isDisplayStackTrace());
 		}
 	}
 }

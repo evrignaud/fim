@@ -153,7 +153,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand
 					}
 					catch (IOException ex)
 					{
-						Logger.error("Error deleting file", ex);
+						Logger.error("Error deleting file", ex, context.isDisplayStackTrace());
 					}
 				}
 			}

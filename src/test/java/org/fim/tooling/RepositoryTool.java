@@ -19,6 +19,7 @@
 package org.fim.tooling;
 
 import static java.nio.file.StandardOpenOption.CREATE;
+import static org.fim.model.HashMode.hashAll;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,11 +43,14 @@ public class RepositoryTool
 
 	private Path rootDir;
 	private int fileCount;
+	private Context context;
 
 	public RepositoryTool(Path rootDir)
 	{
 		this.rootDir = rootDir;
 		this.fileCount = 1;
+
+		createContext(hashAll, true); // Default context
 	}
 
 	public Context createContext(HashMode hashMode, boolean verbose)
@@ -58,6 +62,9 @@ public class RepositoryTool
 		context.setRepositoryRootDir(rootDir);
 		context.setVerbose(verbose);
 		context.setComment("Using hash mode " + hashMode);
+
+		this.context = context;
+
 		return context;
 	}
 
@@ -143,7 +150,7 @@ public class RepositoryTool
 		Path file = rootDir.resolve(fileName);
 		if (SystemUtils.IS_OS_WINDOWS)
 		{
-			DosFilePermissions.setPermissions(file, dosPermissions);
+			DosFilePermissions.setPermissions(context, file, dosPermissions);
 		}
 		else
 		{

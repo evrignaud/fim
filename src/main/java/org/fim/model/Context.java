@@ -42,6 +42,7 @@ public class Context
 	private boolean threadCountSpecified;
 	private String masterFimRepositoryDir;
 	private boolean alwaysYes;
+	private boolean displayStackTrace;
 
 	public Context()
 	{
@@ -161,6 +162,16 @@ public class Context
 	public void setAlwaysYes(boolean alwaysYes)
 	{
 		this.alwaysYes = alwaysYes;
+	}
+
+	public boolean isDisplayStackTrace()
+	{
+		return displayStackTrace;
+	}
+
+	public void setDisplayStackTrace(boolean displayStackTrace)
+	{
+		this.displayStackTrace = displayStackTrace;
 	}
 
 	public int getThreadCount()

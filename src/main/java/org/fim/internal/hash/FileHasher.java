@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.fim.model.Attribute;
+import org.fim.model.Context;
 import org.fim.model.FileAttribute;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
@@ -60,9 +61,11 @@ public class FileHasher implements Runnable
 	private final List<FileState> fileStates;
 
 	private final FrontHasher frontHasher;
+	private Context context;
 
-	public FileHasher(HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException
+	public FileHasher(Context context, HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException
 	{
+		this.context = context;
 		this.hashProgress = hashProgress;
 		this.filesToHashQueue = filesToHashQueue;
 		this.rootDir = rootDir;
@@ -113,7 +116,7 @@ public class FileHasher implements Runnable
 						fileAttributes = addAttribute(fileAttributes, FileAttribute.PosixFilePermissions, PosixFilePermissions.toString(posixFileAttributes.permissions()));
 						if (SELinux.ENABLED)
 						{
-							fileAttributes = addAttribute(fileAttributes, FileAttribute.SELinuxLabel, SELinux.getLabel(file));
+							fileAttributes = addAttribute(fileAttributes, FileAttribute.SELinuxLabel, SELinux.getLabel(context, file));
 						}
 						attributes = posixFileAttributes;
 					}
@@ -129,13 +132,13 @@ public class FileHasher implements Runnable
 				catch (Exception ex)
 				{
 					Console.newLine();
-					Logger.error("Skipping - Error hashing file", ex);
+					Logger.error("Skipping - Error hashing file '" + file + "'", ex, context.isDisplayStackTrace());
 				}
 			}
 		}
 		catch (InterruptedException ex)
 		{
-			Logger.error(ex);
+			Logger.error("Exception while hashing", ex, context.isDisplayStackTrace());
 		}
 	}
 

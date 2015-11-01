@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.fim.model.Context;
 
 public class SELinux
 {
@@ -65,7 +66,7 @@ public class SELinux
 	/**
 	 * Retrieve the SELinux label of the specified file.
 	 */
-	public static String getLabel(Path file)
+	public static String getLabel(Context context, Path file)
 	{
 		String fileName = file.normalize().toAbsolutePath().toString();
 		try
@@ -79,7 +80,7 @@ public class SELinux
 		}
 		catch (Exception ex)
 		{
-			Logger.error("Error retrieving SELinux label for '" + file + "'", ex);
+			Logger.error("Error retrieving SELinux label for '" + file + "'", ex, context.isDisplayStackTrace());
 		}
 
 		return null;
@@ -88,7 +89,7 @@ public class SELinux
 	/**
 	 * Set the SELinux label of the specified file.
 	 */
-	public static void setLabel(Path file, String label)
+	public static void setLabel(Context context, Path file, String label)
 	{
 		String fileName = file.normalize().toAbsolutePath().toString();
 		try
@@ -97,7 +98,7 @@ public class SELinux
 		}
 		catch (Exception ex)
 		{
-			Logger.error("Error setting SELinux label for '" + file + "'", ex);
+			Logger.error("Error setting SELinux label for '" + file + "'", ex, context.isDisplayStackTrace());
 		}
 	}
 }

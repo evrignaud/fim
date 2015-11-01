@@ -40,8 +40,8 @@ public class LoggerTest
 		}
 		catch (RuntimeException ex)
 		{
-			Logger.error(ex);
-			Logger.error("With a message", ex);
+			Logger.error("With a message", ex, false);
+			Logger.error("With a stack trace", ex, true);
 		}
 	}
 }

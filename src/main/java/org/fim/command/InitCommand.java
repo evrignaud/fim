@@ -98,8 +98,7 @@ public class InitCommand extends AbstractCommand
 		}
 		catch (IOException ex)
 		{
-			Logger.error(String.format("Not able to create the '%s' directory that holds the Fim repository: %s %s",
-					context.getRepositoryDotFimDir(), ex.getClass().getSimpleName(), ex.getMessage()));
+			Logger.error(String.format("Not able to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()), ex, context.isDisplayStackTrace());
 			throw new RepositoryCreationException();
 		}
 

@@ -87,7 +87,7 @@ public class FileHasherPerformanceTest extends StateAssert
 
 		when(hashProgress.getContext()).thenReturn(context);
 
-		cut = new FileHasher(hashProgress, null, rootDir.toString());
+		cut = new FileHasher(context, hashProgress, null, rootDir.toString());
 	}
 
 	@Test

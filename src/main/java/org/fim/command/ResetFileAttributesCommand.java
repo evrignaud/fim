@@ -102,7 +102,7 @@ public class ResetFileAttributesCommand extends AbstractCommand
 						DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
 						attributes = dosFileAttributes;
 
-						attributesModified = resetDosPermissions(file, fileState, dosFileAttributes) || attributesModified;
+						attributesModified = resetDosPermissions(context, file, fileState, dosFileAttributes) || attributesModified;
 					}
 					else
 					{
@@ -114,7 +114,7 @@ public class ResetFileAttributesCommand extends AbstractCommand
 
 					attributesModified = resetCreationTime(file, fileState, attributes) || attributesModified;
 					attributesModified = resetLastModified(file, fileState, attributes) || attributesModified;
-					attributesModified = resetSELinux(file, fileState) || attributesModified;
+					attributesModified = resetSELinux(context, file, fileState) || attributesModified;
 
 					if (attributesModified)
 					{
@@ -136,13 +136,13 @@ public class ResetFileAttributesCommand extends AbstractCommand
 		return fileResetCount;
 	}
 
-	private boolean resetDosPermissions(Path file, FileState fileState, DosFileAttributes dosFileAttributes)
+	private boolean resetDosPermissions(Context context, Path file, FileState fileState, DosFileAttributes dosFileAttributes)
 	{
 		String permissions = DosFilePermissions.toString(dosFileAttributes);
 		String previousPermissions = getAttribute(fileState, FileAttribute.DosFilePermissions);
 		if (previousPermissions != null && !Objects.equals(permissions, previousPermissions))
 		{
-			DosFilePermissions.setPermissions(file, previousPermissions);
+			DosFilePermissions.setPermissions(context, file, previousPermissions);
 			System.out.printf("Set permissions: %s \t%s -> %s%n", fileState.getFileName(), permissions, previousPermissions);
 			return true;
 		}
@@ -189,15 +189,15 @@ public class ResetFileAttributesCommand extends AbstractCommand
 		return false;
 	}
 
-	private boolean resetSELinux(Path file, FileState fileState)
+	private boolean resetSELinux(Context context, Path file, FileState fileState)
 	{
 		if (SELinux.ENABLED)
 		{
-			String label = SELinux.getLabel(file);
+			String label = SELinux.getLabel(context, file);
 			String previousLabel = getAttribute(fileState, FileAttribute.SELinuxLabel);
 			if (previousLabel != null && !Objects.equals(label, previousLabel))
 			{
-				SELinux.setLabel(file, previousLabel);
+				SELinux.setLabel(context, file, previousLabel);
 				System.out.printf("Set SELinux: %s \t%s -> %s%n", fileState.getFileName(), label, previousLabel);
 				return true;
 			}

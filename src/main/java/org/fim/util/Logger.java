@@ -48,14 +48,18 @@ public class Logger
 		writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Alert - ").append(message).toString());
 	}
 
-	public static void error(Exception ex)
+	public static void error(String message, Exception ex, boolean displayStackTrace)
 	{
-		error(exceptionStackTraceToString(ex));
-	}
-
-	public static void error(String message, Exception ex)
-	{
-		error(new StringBuilder().append(message).append(": ").append(ex.getClass().getSimpleName()).append(": ").append(ex.getMessage()).toString());
+		StringBuilder builder = new StringBuilder().append(message).append("\n");
+		if (displayStackTrace)
+		{
+			builder.append(exceptionStackTraceToString(ex));
+		}
+		else
+		{
+			builder.append(ex.getClass().getSimpleName()).append(": ").append(ex.getMessage());
+		}
+		error(builder.toString());
 	}
 
 	public static void error(String message)

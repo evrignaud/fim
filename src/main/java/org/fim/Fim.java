@@ -109,6 +109,7 @@ public class Fim
 	private Options buildOptions()
 	{
 		Options options = new Options();
+		options.addOption(createOption("e", "errors", false, "Display execution error details", false));
 		options.addOption(createOption("m", "master-fim-repository", true, "Fim repository directory that you want to use as remote master.\nOnly for the remove duplicated files command", false));
 		options.addOption(createOption("n", "do-not-hash", false, "Do not hash file content. Use only file names and modification dates", false));
 		options.addOption(createOption("s", "super-fast-mode", false, "Hash only 3 small blocks.\nOne at the beginning, one in the middle and one at the end", false));
@@ -151,6 +152,7 @@ public class Fim
 			context.setUseLastState(commandLine.hasOption('l'));
 			context.setMasterFimRepositoryDir(commandLine.getOptionValue('m'));
 			context.setAlwaysYes(commandLine.hasOption('y'));
+			context.setDisplayStackTrace(commandLine.hasOption('e'));
 
 			if (commandLine.hasOption('t'))
 			{
@@ -187,7 +189,7 @@ public class Fim
 		}
 		catch (Exception ex)
 		{
-			Logger.error(ex.getMessage());
+			Logger.error("Exception parsing command line", ex, context.isDisplayStackTrace());
 			printUsage();
 			throw new BadFimUsageException();
 		}

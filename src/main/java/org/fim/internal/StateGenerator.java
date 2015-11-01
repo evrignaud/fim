@@ -138,7 +138,7 @@ public class StateGenerator
 			String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
 			for (int index = 0; index < context.getThreadCount(); index++)
 			{
-				FileHasher hasher = new FileHasher(hashProgress, filesToHashQueue, normalizedRootDir);
+				FileHasher hasher = new FileHasher(context, hashProgress, filesToHashQueue, normalizedRootDir);
 				executorService.submit(hasher);
 				fileHashers.add(hasher);
 			}
@@ -155,7 +155,7 @@ public class StateGenerator
 		}
 		catch (InterruptedException ex)
 		{
-			Logger.error(ex);
+			Logger.error("Exception while waiting for files to be hashed", ex, context.isDisplayStackTrace());
 		}
 	}
 
@@ -223,7 +223,7 @@ public class StateGenerator
 		catch (IOException ex)
 		{
 			Console.newLine();
-			Logger.error("Skipping - Error scanning directory", ex);
+			Logger.error("Skipping - Error scanning directory '" + directory + "'", ex, context.isDisplayStackTrace());
 		}
 	}
 
@@ -235,7 +235,7 @@ public class StateGenerator
 		}
 		catch (InterruptedException ex)
 		{
-			Logger.error(ex);
+			Logger.error("Exception while enqueuing file '" + file + "'", ex, context.isDisplayStackTrace());
 		}
 	}
 }
