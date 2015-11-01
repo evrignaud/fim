@@ -499,7 +499,7 @@ table.CodeRay td.code>pre{padding:0}
 .CodeRay .change .change{color:#66f}
 .CodeRay .head .head{color:#f4f}
 </style>
-</head>
+<link rel="icon" type="image/x-icon" href="images/favicon/favicon.ico" /></head>
 <body class="book toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
@@ -565,7 +565,25 @@ table.CodeRay td.code>pre{padding:0}
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
-<link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,900' rel='stylesheet' type='text/css'>
+<link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="images/favicon/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
+<link rel="manifest" href="images/favicon/manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+
+<link href="http://fonts.googleapis.com/css?family=Roboto:400,500,700,900" rel="stylesheet" type="text/css">
 
 <link rel="stylesheet" href="css/style.css">
 
@@ -595,7 +613,7 @@ table.CodeRay td.code>pre{padding:0}
 <div class="openblock partintro">
 <div class="content">
 <div class="paragraph">
-<p>Version 1.1.0-SNAPSHOT</p>
+<p>Version 1.1.0</p>
 </div>
 <hr>
 <div class="paragraph">
@@ -638,12 +656,12 @@ This kind of file tree could not be managed by Git.</p>
 <h2 id="_why_do_you_need_fim">1. Why do you need Fim</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You can check the integrity of you files using filesystems capabilities. For example <code>brfs</code> comes with the
+<p>You can check the integrity of you files using filesystems capabilities. For example <code>btrfs</code> comes with the
 <a href="https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc">scrub</a> command that read all data from the disk and verify checksums.</p>
 </div>
 <div class="paragraph">
 <p>Fim have a different use case. It allows you to see files you are working on that you have modified, moved or deleted.<br>
-With <code>brfs</code> all those files would have appeared as OK.</p>
+With <code>btrfs</code> all those files would have appeared as OK.</p>
 </div>
 <div class="paragraph">
 <p>Fim allow you also to check the integrity of files with filesystems that does not maintain file checksums.<br>
@@ -805,7 +823,7 @@ For this, I just need to copy the <code>.fim</code> directory on the other compu
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="shell">$ fim help
 
-usage: fim &lt;command&gt; [-c &lt;arg&gt;] [-f] [-h] [-l] [-m &lt;arg&gt;] [-n] [-q] [-s] [-t &lt;arg&gt;] [-v] [-y]
+usage: fim &lt;command&gt; [-c &lt;arg&gt;] [-e] [-f] [-h] [-l] [-m &lt;arg&gt;] [-n] [-q] [-s] [-t &lt;arg&gt;] [-v] [-y]
 
 File Integrity Checker
 
@@ -820,14 +838,15 @@ Available commands:
      fdup / find-duplicates     Find local duplicated files in the Fim repository
      rdup / remove-duplicates   Remove duplicated files from local directory based on a remote master Fim repository
      log                        Display the history of the States and a summary of the changes that were made
-     di / display-ignored       Display the files or directories that are ignored into the last State
-     rb / rollback              Rollback the last commit. It will remove the last State
-     purge / purge-states       Purge previous States
+     dign / display-ignored     Display the files or directories that are ignored into the last State
+     rbk / rollback             Rollback the last commit. It will remove the last State
+     pst / purge-states         Purge previous States
      help                       Prints the Fim help
      version                    Prints the Fim version
 
 Available options:
      -c,--comment &lt;arg&gt;                 Sets that State comment during init and commit
+     -e,--errors                        Display execution error details
      -f,--fast-mode                     Hash only 3 medium blocks.
                                         One at the beginning, one in the middle and one at the end
      -h,--help                          Prints the Fim help
@@ -858,7 +877,56 @@ Available options:
 <div class="sect2">
 <h3 id="_fim_changelog">6.2. Fim changelog</h3>
 <div class="sect3">
-<h4 id="_version_1_0_2">6.2.1. Version 1.0.2</h4>
+<h4 id="_version_1_1_0">6.2.1. Version 1.1.0</h4>
+<div class="paragraph">
+<p><strong>(Released 2015-11-01)</strong></p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/evrignaud/fim/tree/1.1.0"><span class="image"><img src="images/icons/octocat.png" alt="GitHub"></span> Sources</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/compare/1.0.2%2E%2E%2E1.1.0"><span class="image"><img src="images/icons/list.png" alt="List"></span> Full Changelog</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/releases/tag/1.1.0"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Bug Fix</p>
+</li>
+<li>
+<p>Complete rewrite of the Hash algorithm in order to hash one block at the beginning, one in the middle and one at the end.
+Details <a href="#_how_does_it_work">here</a></p>
+</li>
+<li>
+<p>Fix <a href="https://github.com/evrignaud/fim/issues/2">issue #2</a> - Add the 'fim corrupt' command that find changes most likely caused by a hardware corruption or a filesystem bug.
+Change in content, but not in creation time and last modified time.
+Details <a href="#_hardware_corruption_detection">here</a></p>
+</li>
+<li>
+<p>Fix <a href="https://github.com/evrignaud/fim/issues/3">issue #3</a> - If available, store the SELinux label of each file.
+Details <a href="#_file_permissions_management">here</a></p>
+</li>
+<li>
+<p>Fix <a href="https://github.com/evrignaud/fim/issues/4">issue #4</a> - Fix <code>fim</code> shell script for Mac OS X</p>
+</li>
+<li>
+<p>Add the ability to ignore files or directory using a .fimignore file.
+Details <a href="#_ignoring_files_or_directories">here</a></p>
+</li>
+<li>
+<p>Add automatic build and testing of Fim using Travis CI for <a href="https://travis-ci.org/evrignaud/fim">Linux</a> and Appveyor for <a href="https://ci.appveyor.com/project/evrignaud/fim">Windows</a></p>
+</li>
+<li>
+<p>Add Unit test coverage using <a href="https://coveralls.io/github/evrignaud/fim?branch=master">Coveralls</a></p>
+</li>
+<li>
+<p>Moved the documentation to AsciiDoc using the <a href="http://asciidoctor.org/docs/asciidoctor-maven-plugin/">asciidoctor-maven-plugin</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_version_1_0_2">6.2.2. Version 1.0.2</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-09-04)</strong></p>
 </div>
@@ -882,7 +950,7 @@ Hash the second 4 KB / 1 MB block to ensure that the headers don&#8217;t increas
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_1">6.2.2. Version 1.0.1</h4>
+<h4 id="_version_1_0_1">6.2.3. Version 1.0.1</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-08-26)</strong></p>
 </div>
@@ -911,7 +979,7 @@ Hash the second 4 KB / 1 MB block to ensure that the headers don&#8217;t increas
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_0">6.2.3. Version 1.0.0</h4>
+<h4 id="_version_1_0_0">6.2.4. Version 1.0.0</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-07-29)</strong></p>
 </div>
@@ -2012,7 +2080,7 @@ is an open source tool which allows you to check the integrity of all your files
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-10-23 21:35:31 +02:00
+Last updated 2015-11-01 19:09:39 +01:00
 </div>
 </div>
 </body>
