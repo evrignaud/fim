@@ -60,6 +60,9 @@ Fim can be used on Linux, Mac OS X and Windows
 > &mdash; [Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers](https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers)
 >> [![English version](http://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Fim release 1.0.2, that verifies the integrity of your files](http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Fsortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers)
 
+> &mdash; [Fim 1.1.0](https://linuxfr.org/news/fim-1-1-0)
+>> [![English version](http://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Fim 1.1.0](http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Ffim-1-1-0)
+
 
 ## About
 
