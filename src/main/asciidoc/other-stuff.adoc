@@ -54,12 +54,11 @@ ____
 .*&bull; image:icons/linuxfr.org.png[linuxfr.org] &nbsp;&nbsp; LinuxFr.org*
 
 ____
+&mdash; https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers[Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers] +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Fsortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers[image:icons/english.png[English version] &nbsp; Fim release 1.0.2, that verifies the integrity of your file]
 
-&mdash; https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers[Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers]
-________
-
-http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Fsortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers[image:icons/english.png[English version] &nbsp; Fim release 1.0.2, that verifies the integrity of your file]
-________
+&mdash; https://linuxfr.org/news/fim-1-1-0[Fim 1.1.0] +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Ffim-1-1-0[image:icons/english.png[English version] &nbsp; Fim 1.1.0]
 ____
 
 
