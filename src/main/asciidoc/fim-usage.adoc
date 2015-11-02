@@ -26,7 +26,7 @@ Available commands:
      version                    Prints the Fim version
 
 Available options:
-     -c,--comment <arg>                 Sets that State comment during init and commit
+     -c,--comment <arg>                 Comment to set during init and commit
      -e,--errors                        Display execution error details
      -f,--fast-mode                     Hash only 3 medium blocks.
                                         One at the beginning, one in the middle and one at the end

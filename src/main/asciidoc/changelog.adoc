@@ -13,15 +13,15 @@ https://github.com/evrignaud/fim/releases/tag/1.1.0[image:icons/package.png[Pack
 * Bug Fix
 * Complete rewrite of the Hash algorithm in order to hash one block at the beginning, one in the middle and one at the end.
 Details <<how-does-it-work.adoc#_how_does_it_work,here>>
-* Fix https://github.com/evrignaud/fim/issues/2[issue #2] - Add the 'fim corrupt' command that find changes most likely caused by a hardware corruption or a filesystem bug.
+* Fix https://github.com/evrignaud/fim/issues/2[issue #2] - Add the 'fim dcor' command that find changes most likely caused by a hardware corruption or a filesystem bug.
 Change in content, but not in creation time and last modified time.
 Details <<hardware-corruption-detection.adoc#_hardware_corruption_detection,here>>
 * Fix https://github.com/evrignaud/fim/issues/3[issue #3] - If available, store the SELinux label of each file.
 Details <<file-permissions-management.adoc#_file_permissions_management,here>>
 * Fix https://github.com/evrignaud/fim/issues/4[issue #4] - Fix `fim` shell script for Mac OS X
-* Add the ability to ignore files or directory using a .fimignore file.
+* Add the ability to ignore files or directory using a `.fimignore` file.
 Details <<faq.adoc#_ignoring_files_or_directories,here>>
-* Add automatic build and testing of Fim using Travis CI for https://travis-ci.org/evrignaud/fim[Linux] and Appveyor for https://ci.appveyor.com/project/evrignaud/fim[Windows]
+* Add automatic build and testing of Fim using Travis CI for https://travis-ci.org/evrignaud/fim[Linux] and Appveyor CI for https://ci.appveyor.com/project/evrignaud/fim[Windows]
 * Add Unit test coverage using https://coveralls.io/github/evrignaud/fim?branch=master[Coveralls]
 * Moved the documentation to AsciiDoc using the http://asciidoctor.org/docs/asciidoctor-maven-plugin/[asciidoctor-maven-plugin]
 

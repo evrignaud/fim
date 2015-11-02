@@ -116,7 +116,7 @@ public class Fim
 		options.addOption(createOption("f", "fast-mode", false, "Hash only 3 medium blocks.\nOne at the beginning, one in the middle and one at the end", false));
 		options.addOption(createOption("h", "help", false, "Prints the Fim help", false));
 		options.addOption(createOption("l", "use-last-state", false, "Use the last committed State.\nOnly for the find local duplicated files command", false));
-		options.addOption(createOption("c", "comment", true, "Sets that State comment during init and commit", false));
+		options.addOption(createOption("c", "comment", true, "Comment to set during init and commit", false));
 		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
 		options.addOption(createOption("t", "thread-count", true, "Number of thread used to hash file contents in parallel", false));
 		options.addOption(createOption("v", "version", false, "Prints the Fim version", false));
