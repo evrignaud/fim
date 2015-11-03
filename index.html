@@ -657,14 +657,14 @@ This kind of file tree could not be managed by Git.</p>
 <div class="sectionbody">
 <div class="paragraph">
 <p>You can check the integrity of you files using filesystems capabilities. For example <code>btrfs</code> comes with the
-<a href="https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc">scrub</a> command that read all data from the disk and verify checksums.</p>
+<a href="https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc">scrub</a> command that reads all data from the disk and verifies checksums.</p>
 </div>
 <div class="paragraph">
-<p>Fim have a different use case. It allows you to see files you are working on that you have modified, moved or deleted.<br>
+<p>Fim has a different use case. It allows you to see files you are working on that you have modified, moved or deleted.<br>
 With <code>btrfs</code> all those files would have appeared as OK.</p>
 </div>
 <div class="paragraph">
-<p>Fim allow you also to check the integrity of files with filesystems that does not maintain file checksums.<br>
+<p>Fim allows you also to check the integrity of files with filesystems that do not maintain file checksums.<br>
 For example you will be able to detect hardware corruption on a DVD. You simply have to burn the complete Fim repository on the DVD. All the files and the <code>.fim</code> content.<br>
 You can verify the integrity of this DVD by going on the top of the DVD and type <code>fim diff</code> or <code>fim dcor</code>.
 More details <a href="#_hardware_corruption_detection">here</a>.</p>
@@ -2078,7 +2078,7 @@ is an open source tool which allows you to check the integrity of all your files
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-11-01 19:27:01 +01:00
+Last updated 2015-11-03 22:46:01 +01:00
 </div>
 </div>
 </body>
