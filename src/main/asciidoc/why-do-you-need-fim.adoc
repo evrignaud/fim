@@ -1,12 +1,12 @@
 = Why do you need Fim
 
 You can check the integrity of you files using filesystems capabilities. For example `btrfs` comes with the
-https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc[scrub] command that read all data from the disk and verify checksums.
+https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc[scrub] command that reads all data from the disk and verifies checksums.
 
-Fim have a different use case. It allows you to see files you are working on that you have modified, moved or deleted. +
+Fim has a different use case. It allows you to see files you are working on that you have modified, moved or deleted. +
 With `btrfs` all those files would have appeared as OK.
 
-Fim allow you also to check the integrity of files with filesystems that does not maintain file checksums. +
+Fim allows you also to check the integrity of files with filesystems that do not maintain file checksums. +
 For example you will be able to detect hardware corruption on a DVD. You simply have to burn the complete Fim repository on the DVD. All the files and the `.fim` content. +
 You can verify the integrity of this DVD by going on the top of the DVD and type `fim diff` or `fim dcor`.
 More details <<hardware-corruption-detection.adoc#_hardware_corruption_detection,here>>.
