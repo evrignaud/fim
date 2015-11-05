@@ -34,7 +34,7 @@ public class HashModeUtil
 				return "do not hash";
 
 			case hashSmallBlock:
-				return "super fast";
+				return "super-fast";
 
 			case hashMediumBlock:
 				return "fast";

@@ -26,16 +26,16 @@ If you want to remove them, Fim won't do it. It does not provide a smart way to 
 === Duplicates that are outside
 
 You can use Fim to remove duplicated files that are located outside a Fim repository using the `rdup` command.
-It can be useful if you want to cleanup old backups that are no more synchronized and you want to be sure to not loose any files that could have been modified or added.
+It can be useful if you want to cleanup old backups that are no more synchronized and you want to be sure to not lose any files that could have been modified or added.
 
 == Changing default hash mode
 
 If you never want to hash the complete content of your files you can set a global hash mode that will indicate the maximum hash mode you want to use for this repository.
 You can specify this to the init command:
 
-- `-f`: Set maximum hash mode to fast. You will be able to use `-f`, `-s` or `-n` after
-- `-s`: Set maximum hash mode to super fast. You will be able to use `-s` or `-n` after
-- `-n`: means always don't hash anything. You won't be able to use other hash mode after
+- `-f`: Sets maximum hash mode to fast. You will be able to use `-f`, `-s` or `-n` after
+- `-s`: Sets maximum hash mode to super-fast. You will be able to use `-s` or `-n` after
+- `-n`: Means always don't hash anything. You won't be able to use other hash mode after
 
 === Example
 
@@ -74,10 +74,10 @@ For example, `**/foo` matches a file or a directory named `foo` anywhere, starti
 == Hash files in multi-thread
 
 Fim hashes files using several threads.
-This allow taking advantage of the computer resources and maximize the overall performances of file hashing. +
+This allows taking advantage of the computer resources and maximizes the overall performances of file hashing. +
 By default, Fim use an arbitrary thread count that is the number of CPU core divided by two. +
 You can specify, using the `-t` option, the number of thread to be used for file hashing. +
-The best value depend on the kind of hard disk you have. The more throughput you have, the more thread you can use.
+The best value depends on the kind of hard disk you have. The more throughputs you have, the more thread you can use.
 
 == State integrity
 

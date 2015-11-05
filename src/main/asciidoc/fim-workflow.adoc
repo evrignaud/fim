@@ -24,7 +24,7 @@ You can compare quickly using the fast mode. *With this option you can miss some
 $ fim diff -f
 ----
 
-You can compare quicker using the super fast mode. *With this option you can miss some modified files.*
+You can compare quicker using the super-fast mode. *With this option you can miss some modified files.*
 
 [source,shell]
 ----

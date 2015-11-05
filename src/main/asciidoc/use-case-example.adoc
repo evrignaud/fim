@@ -5,7 +5,7 @@ Personally I use Fim to manage my photos and videos.
 When I have new photos, I put them at the right place in my pictures folder and then I do `fim&nbsp;ci` from the sub-directory
 containing the new photos to record a new State, as I could do with Git.
 As I do this from a sub-directory the commit is fast because Fim hashes only the files that I added and creates a new State
-by merging those new hash with the previous State.
+by merging those new hashes with the previous State.
 
 More details on using Fim from a sub-directory can be found <<faq.adoc#_run_fim_commands_from_a_sub_directory,here>>.
 

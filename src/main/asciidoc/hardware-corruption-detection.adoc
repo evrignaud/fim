@@ -1,10 +1,10 @@
 = Hardware corruption detection
 
 Fim is able to detect changes likely caused by a hardware corruption or a filesystem bug. +
-A file is suspected to be corrupted when his content have changed, but the timestamps are not modified (creation time and modification time). +
+A file is suspected to be corrupted when his content has changed, but the timestamps are not modified (creation time and modification time). +
 To run hardware corruption detection use the `dcor` command.
 
-The `diff` command can also be used to check if a file content have changed. +
+The `diff` command can also be used to check if some file content has changed. +
 The difference for the `dcor` command is that only corrupted files are displayed. Files that you way have added or modified are not listed in the result.
 
 == False positive

@@ -14,6 +14,6 @@ Currently the *SELinux label* is stored, if supported by the OS.
 
 You can check file permissions using the `diff` command. A quick result can be produced using the do not hash mode (`-n` option),
 but in this case Fim will not be able to detect file permissions change for files that have been renamed. +
-If some permissions have changed and you want to restore them use the `rfa` command.
+If some permission has changed and you want to restore them use the `rfa` command.
 
 When you use the same Fim repository with different OS, file permissions that are not supported are ignored.

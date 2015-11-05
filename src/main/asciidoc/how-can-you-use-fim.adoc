@@ -16,14 +16,14 @@ You can build Fim yourself to try the master version.
 
 [IMPORTANT]
 ====
-Fim comes with versioned prebuilt release. I recommend to use them as they are OK to be used. +
+Fim comes with versioned prebuilt release. I recommend using them as they are OK to be used. +
 If you clone Fim's master, a SNAPSHOT is retrieved and there is no guarantee that this particular build of Fim will work properly.
 ====
 
 * Get the code
 ** Download the https://github.com/evrignaud/fim/zipball/master[.zip] or the https://github.com/evrignaud/fim/tarball/master[.tar.gz]
-** or clone it using either `https://github.com/evrignaud/fim.git` or `git@github.com:evrignaud/fim.git`
-* build it by typing the following command (follow <<how-can-you-use-fim.adoc#_step_by_step_procedure,this procedure>> for more details):
+** Or clone it using either `https://github.com/evrignaud/fim.git` or `git@github.com:evrignaud/fim.git`
+* Build it by typing the following command (follow <<how-can-you-use-fim.adoc#_step_by_step_procedure,this procedure>> for more details):
 
 [source]
 ----

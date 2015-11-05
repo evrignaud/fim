@@ -73,4 +73,4 @@ https://twitter.com/evrignaud[image:icons/twitter.png[Twitter icon] Follow @evri
 
 This project is released under the link:LICENSE.html[GPLv3 license], for more details, take a look at the LICENSE file in the source.
 
-Basically, that allow you to use all or part of the project for you own business.
+Basically, that allows you to use all or part of the project for you own business.

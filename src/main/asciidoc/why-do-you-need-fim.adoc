@@ -7,7 +7,7 @@ Fim has a different use case. It allows you to see files you are working on that
 With `btrfs` all those files would have appeared as OK.
 
 Fim allows you also to check the integrity of files with filesystems that do not maintain file checksums. +
-For example you will be able to detect hardware corruption on a DVD. You simply have to burn the complete Fim repository on the DVD. All the files and the `.fim` content. +
+For example you will be able to detect hardware corruption on a DVD. You simply have to burn the complete Fim repository on the DVD, all the files and the `.fim` content. +
 You can verify the integrity of this DVD by going on the top of the DVD and type `fim diff` or `fim dcor`.
 More details <<hardware-corruption-detection.adoc#_hardware_corruption_detection,here>>.
 

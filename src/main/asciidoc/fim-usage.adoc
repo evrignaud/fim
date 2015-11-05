@@ -28,16 +28,16 @@ Available commands:
 Available options:
      -c,--comment <arg>                 Comment to set during init and commit
      -e,--errors                        Display execution error details
-     -f,--fast-mode                     Hash only 3 medium blocks.
+     -f,--fast-mode                     Use fast mode. Hash only 3 medium blocks.
                                         One at the beginning, one in the middle and one at the end
      -h,--help                          Prints the Fim help
      -l,--use-last-state                Use the last committed State.
                                         Only for the find local duplicated files command
      -m,--master-fim-repository <arg>   Fim repository directory that you want to use as remote master.
                                         Only for the remove duplicated files command
-     -n,--do-not-hash                   Do not hash file content. Use only file names and modification dates
+     -n,--do-not-hash                   Do not hash file content. Uses only file names and modification dates
      -q,--quiet                         Do not display details
-     -s,--super-fast-mode               Hash only 3 small blocks.
+     -s,--super-fast-mode               Use super-fast mode. Hash only 3 small blocks.
                                         One at the beginning, one in the middle and one at the end
      -t,--thread-count <arg>            Number of thread used to hash file contents in parallel
      -v,--version                       Prints the Fim version

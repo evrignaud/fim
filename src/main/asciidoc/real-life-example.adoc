@@ -28,13 +28,13 @@ No comment provided. You are going to initialize your repository using the defau
 
 == Check very quickly for differences
 
-It is possible to check the differences very quickly using the super fast mode using the `-s` option that will check only 3 small blocks of 4 KB. +
+It is possible to check the differences very quickly using the super-fast mode using the `-s` option that will check only 3 small blocks of 4 KB. +
 In my case *it takes 17 minutes :=)*.
 
 [source,shell]
 ----
 photos-videos$ fim diff -s
-2015/10/22 23:15:52 - Info  - Scanning recursively local files, using 'super fast' mode and 2 threads
+2015/10/22 23:15:52 - Info  - Scanning recursively local files, using 'super-fast' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
 2015/10/22 23:15:52 - Info  - SELinux is enabled on this system
 .................................................................o.o...o......8........O.........oo.
@@ -52,7 +52,7 @@ Nothing modified
 
 == Check more accurately for differences
 
-Using the super fast mode can produce inaccurate results. *You can miss some modified files.* +
+Using the super-fast mode can produce inaccurate results. *You can miss some modified files.* +
 To increase accuracy, you can use the fast mode using the `-f` option that will check 3 medium blocks. +
 Even if, using this mode increase accuracy, it cannot be completely accurate as we only hash 3 different 1 MB blocks of the files. +
 This time in my case, *it takes 42 minutes* to check the differences.
