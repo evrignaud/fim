@@ -64,11 +64,12 @@ public class InitCommand extends AbstractCommand
 	@Override
 	public Object execute(Context context) throws Exception
 	{
-		if (!Files.isWritable(context.getRepositoryDotFimDir()) && !Files.isWritable(context.getRepositoryRootDir())) {
+		if (!Files.isWritable(context.getRepositoryRootDir()))
+		{
 			Logger.error(String.format("Not able to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()));
 			throw new RepositoryCreationException();
 		}
-		
+
 		if (context.getComment().length() == 0)
 		{
 			System.out.println("No comment provided. You are going to initialize your repository using the default comment.");
