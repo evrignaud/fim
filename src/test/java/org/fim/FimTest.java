@@ -18,13 +18,17 @@
  */
 package org.fim;
 
+import static org.apache.commons.lang3.SystemUtils.*;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.fim.command.exception.BadFimUsageException;
+import org.fim.command.exception.RepositoryCreationException;
 import org.fim.model.Context;
 import org.fim.model.HashMode;
 import org.fim.tooling.RepositoryTool;
@@ -61,6 +65,26 @@ public class FimTest
 	{
 		initRepoAndCreateOneFile();
 		cut.run(new String[]{"init", "-y"}, context);
+	}
+
+	@Test(expected = RepositoryCreationException.class)
+	public void fimRepositoryNotWritable() throws Exception
+	{
+		if (IS_OS_WINDOWS)
+		{
+			// Ignore this test for Windows
+			throw new RepositoryCreationException();
+		}
+
+		tool.setReadOnly(rootDir);
+		try
+		{
+			cut.run(new String[]{"init", "-y"}, context);
+		}
+		finally
+		{
+			tool.setReadWrite(rootDir);
+		}
 	}
 
 	@Test(expected = BadFimUsageException.class)

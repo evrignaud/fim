@@ -145,6 +145,16 @@ public class RepositoryTool
 		Files.write(file, sb.toString().getBytes(), CREATE);
 	}
 
+	public void setReadOnly(Path rootDir) throws IOException
+	{
+		setPermissions(rootDir.toAbsolutePath().toString(), "r-xr-xr-x", "R");
+	}
+
+	public void setReadWrite(Path rootDir) throws IOException
+	{
+		setPermissions(rootDir.toAbsolutePath().toString(), "rwxrwxrwx", "");
+	}
+
 	public void setPermissions(String fileName, String posixPermissions, String dosPermissions) throws IOException
 	{
 		Path file = rootDir.resolve(fileName);
