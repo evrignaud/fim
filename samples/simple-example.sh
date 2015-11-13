@@ -21,8 +21,8 @@
 # You can see a run of this script here:
 #	http://evrignaud.github.io/fim/#_simple_example
 
-rm -rf simple-example
-mkdir simple-example
+rm -rf simple-example || exit $?
+mkdir simple-example || exit $?
 
 set +x
 (
@@ -34,7 +34,7 @@ set +x
 
 	echo
 	echo \# Initialize the Fim repository
-	fim init -c "First State"
+	fim init -c "First State" || exit $?
 
 	echo
 	echo \# A new .fim directory have been created
@@ -86,11 +86,11 @@ set +x
 
 	echo
 	echo \# Fim detects the modifications
-	fim diff
+	fim diff || exit $?
 
 	echo
 	echo \# Search for duplicated files
-	fim fdup
+	fim fdup || exit $?
 
 	echo
 	echo \# From the dir01 sub-directory
@@ -98,31 +98,31 @@ set +x
 
 	echo
 	echo \# Inside this directory only one file is added
-	fim diff
+	fim diff || exit $?
 
 	echo
 	echo \# No duplicated files as we are looking only inside the dir01
-	fim fdup
+	fim fdup || exit $?
 
 	echo
 	echo \# Commit only the local modifications done inside this directory
-	fim ci -c "Modifications from dir01" -y
+	fim ci -c "Modifications from dir01" -y || exit $?
 
 	echo
 	echo \# No more local modifications
-	fim diff
+	fim diff || exit $?
 
 	cd ..
 
 	echo
 	echo \# Commit the modifications
-	fim ci -c "All modifications" -y
+	fim ci -c "All modifications" -y || exit $?
 
 	echo
 	echo \# Nothing is modified now
-	fim diff
+	fim diff || exit $?
 
 	echo
 	echo \# Display the Fim log
-	fim log
+	fim log || exit $?
 )
