@@ -28,12 +28,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
+import org.atteo.evo.inflector.English;
 import org.fim.util.Console;
 
 public class CompareResult
 {
 	public static final String NOTHING = "[nothing]";
+
+	private static int MAX_DISPLAYED_DIFFERENCES = 200;
 
 	private static final Comparator<Difference> fileNameComparator = new Difference.FileNameComparator();
 
@@ -116,50 +120,41 @@ public class CompareResult
 
 		String stateFormat = "%-17s ";
 
-		for (Difference diff : added)
-		{
-			System.out.printf(stateFormat + "%s%n", "Added:", diff.getFileState().getFileName());
-		}
+		final String addedStr = String.format(stateFormat, "Added:");
+		displayDifferences(addedStr, added,
+			diff -> System.out.printf(addedStr + "%s%n", diff.getFileState().getFileName()));
 
-		for (Difference diff : copied)
-		{
-			System.out.printf(stateFormat + "%s \t(was %s)%n", "Copied:", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName());
-		}
+		final String copiedStr = String.format(stateFormat, "Copied:");
+		displayDifferences(copiedStr, copied,
+			diff -> System.out.printf(copiedStr + "%s \t(was %s)%n", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName()));
 
-		for (Difference diff : duplicated)
-		{
-			System.out.printf(stateFormat + "%s = %s%s%n", "Duplicated:", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName(), formatModifiedAttributes(diff, true));
-		}
+		final String duplicatedStr = String.format(stateFormat, "Duplicated:");
+		displayDifferences(duplicatedStr, duplicated,
+			diff -> System.out.printf(duplicatedStr + "%s = %s%s%n", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName(), formatModifiedAttributes(diff, true)));
 
-		for (Difference diff : dateModified)
-		{
-			System.out.printf(stateFormat + "%s \t%s%n", "Date modified:", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false));
-		}
+		final String dateModifiedStr = String.format(stateFormat, "Date modified:");
+		displayDifferences(dateModifiedStr, dateModified,
+			diff -> System.out.printf(dateModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
 
-		for (Difference diff : contentModified)
-		{
-			System.out.printf(stateFormat + "%s \t%s%n", "Content modified:", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false));
-		}
+		final String contentModifiedStr = String.format(stateFormat, "Content modified:");
+		displayDifferences(contentModifiedStr, contentModified,
+			diff -> System.out.printf(contentModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
 
-		for (Difference diff : attributesModified)
-		{
-			System.out.printf(stateFormat + "%s \t%s%n", "Attrs. modified:", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false));
-		}
+		final String attrsModifiedStr = String.format(stateFormat, "Attrs. modified:");
+		displayDifferences(attrsModifiedStr, attributesModified,
+			diff -> System.out.printf(attrsModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
 
-		for (Difference diff : renamed)
-		{
-			System.out.printf(stateFormat + "%s -> %s%s%n", "Renamed:", diff.getPreviousFileState().getFileName(), diff.getFileState().getFileName(), formatModifiedAttributes(diff, true));
-		}
+		final String renamedStr = String.format(stateFormat, "Renamed:");
+		displayDifferences(renamedStr, renamed,
+			diff -> System.out.printf(renamedStr + "%s -> %s%s%n", diff.getPreviousFileState().getFileName(), diff.getFileState().getFileName(), formatModifiedAttributes(diff, true)));
 
-		for (Difference diff : deleted)
-		{
-			System.out.printf(stateFormat + "%s%n", "Deleted:", diff.getFileState().getFileName());
-		}
+		final String deletedStr = String.format(stateFormat, "Deleted:");
+		displayDifferences(deletedStr, deleted,
+			diff -> System.out.printf(deletedStr + "%s%n", diff.getFileState().getFileName()));
 
-		for (Difference diff : corrupted)
-		{
-			System.out.printf(stateFormat + "%s \t%s%n", "Corrupted?:", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false));
-		}
+		final String corruptedStr = String.format(stateFormat, "Corrupted?:");
+		displayDifferences(corruptedStr, corrupted,
+			diff -> System.out.printf(corruptedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
 
 		if (somethingModified())
 		{
@@ -169,6 +164,23 @@ public class CompareResult
 		displayCounts();
 
 		return this;
+	}
+
+	private void displayDifferences(String actionStr, List<Difference> differences, Consumer<Difference> displayDifference)
+	{
+		for (int index = 0; index < differences.size(); index++)
+		{
+			Difference difference = differences.get(index);
+			if (index >= MAX_DISPLAYED_DIFFERENCES)
+			{
+				System.out.println(" [Too many lines. Cutting the output] ...");
+				int moreFiles = differences.size() - index;
+				System.out.printf(actionStr + "%d %s more%n", moreFiles, English.plural("file", moreFiles));
+				break;
+			}
+
+			displayDifference.accept(difference);
+		}
 	}
 
 	private String formatModifiedAttributes(Difference diff, boolean nextLine)
@@ -316,7 +328,7 @@ public class CompareResult
 	public int modifiedCount()
 	{
 		return added.size() + copied.size() + duplicated.size() + dateModified.size() + contentModified.size() +
-				attributesModified.size() + renamed.size() + deleted.size() + corrupted.size();
+			attributesModified.size() + renamed.size() + deleted.size() + corrupted.size();
 	}
 
 	public ModificationCounts getModificationCounts()

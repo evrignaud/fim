@@ -42,6 +42,8 @@ import org.fim.util.SELinux;
 
 public class StateComparator
 {
+	private static boolean logDebugEnabled = Boolean.getBoolean("DEBUG");
+
 	private final Context context;
 
 	private State lastState;
@@ -109,17 +111,17 @@ public class StateComparator
 	{
 		final AtomicBoolean attrRemoved = new AtomicBoolean(false);
 		state.getFileStates().stream()
-				.filter(fileState -> fileState.getFileAttributes() != null)
-				.forEach(fileState -> {
-					if (fileState.getFileAttributes().remove(unsupportedFileAttr) != null)
-					{
-						attrRemoved.set(true);
-					}
-					if (fileState.getFileAttributes().isEmpty())
-					{
-						fileState.setFileAttributes(null);
-					}
-				});
+			.filter(fileState -> fileState.getFileAttributes() != null)
+			.forEach(fileState -> {
+				if (fileState.getFileAttributes().remove(unsupportedFileAttr) != null)
+				{
+					attrRemoved.set(true);
+				}
+				if (fileState.getFileAttributes().isEmpty())
+				{
+					fileState.setFileAttributes(null);
+				}
+			});
 
 		if (attrRemoved.get())
 		{
@@ -155,14 +157,14 @@ public class StateComparator
 		if (lastState != null)
 		{
 			logDebug("---------------------------------------------------------------------",
-					"lastState", lastState.getFileStates(), "currentState", currentState.getFileStates());
+				"lastState", lastState.getFileStates(), "currentState", currentState.getFileStates());
 
 			previousFileStates.addAll(lastState.getFileStates());
 		}
 		else
 		{
 			logDebug("---------------------------------------------------------------------",
-					"currentState", currentState.getFileStates());
+				"currentState", currentState.getFileStates());
 		}
 
 		resetNewHash(previousFileStates);
@@ -246,7 +248,7 @@ public class StateComparator
 		{
 			FileState fileState = iterator.next();
 			if ((context.getHashMode() != dontHash) &&
-					((samePreviousHash = findFilesWithSameHash(fileState, previousFileStates)).size() > 0))
+				((samePreviousHash = findFilesWithSameHash(fileState, previousFileStates)).size() > 0))
 			{
 				FileState originalFileState = samePreviousHash.get(0);
 				if (notFoundInCurrentFileState.contains(originalFileState))
@@ -291,18 +293,18 @@ public class StateComparator
 		if (notModifiedCount + result.modifiedCount() != currentState.getFileCount())
 		{
 			throw new IllegalStateException(String.format("Comparison algorithm error: notModifiedCount=%d modifiedCount=%d currentStateFileCount=%d",
-					notModifiedCount, result.modifiedCount(), currentState.getFileCount()));
+				notModifiedCount, result.modifiedCount(), currentState.getFileCount()));
 		}
 	}
 
 	private void searchForDeleted()
 	{
 		notFoundInCurrentFileState.stream().
-				filter(fileState -> !isFileIgnored(fileState)).
-				forEach(fileState ->
-				{
-					result.getDeleted().add(new Difference(null, fileState));
-				});
+			filter(fileState -> !isFileIgnored(fileState)).
+			forEach(fileState ->
+			{
+				result.getDeleted().add(new Difference(null, fileState));
+			});
 	}
 
 	private boolean isFileIgnored(FileState fileState)
@@ -348,11 +350,19 @@ public class StateComparator
 
 	private void logDebug(String message)
 	{
-		// System.out.println(message);
+		if (logDebugEnabled)
+		{
+			System.out.println(message);
+		}
 	}
 
 	private String fileStatesToString(String message, List<FileState> fileStates)
 	{
+		if (!logDebugEnabled)
+		{
+			return "";
+		}
+
 		StringBuilder builder = new StringBuilder();
 		builder.append("  ").append(message).append(":\n");
 		for (FileState fileState : fileStates)
