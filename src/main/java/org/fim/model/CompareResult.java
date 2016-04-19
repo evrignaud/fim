@@ -168,13 +168,14 @@ public class CompareResult
 
 	private void displayDifferences(String actionStr, List<Difference> differences, Consumer<Difference> displayDifference)
 	{
-		for (int index = 0; index < differences.size(); index++)
+		int differencesSize = differences.size();
+		for (int index = 0; index < differencesSize; index++)
 		{
 			Difference difference = differences.get(index);
-			if (index >= MAX_DISPLAYED_DIFFERENCES)
+			if (index >= MAX_DISPLAYED_DIFFERENCES && (differencesSize - index) > 50)
 			{
 				System.out.println(" [Too many lines. Cutting the output] ...");
-				int moreFiles = differences.size() - index;
+				int moreFiles = differencesSize - index;
 				System.out.printf(actionStr + "%d %s more%n", moreFiles, English.plural("file", moreFiles));
 				break;
 			}
