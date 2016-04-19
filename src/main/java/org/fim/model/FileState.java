@@ -28,6 +28,7 @@ import java.util.Objects;
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.Hasher;
+import org.fim.util.ObjectsUtil;
 
 public class FileState implements Hashable
 {
@@ -164,6 +165,15 @@ public class FileState implements Hashable
 	public int hashCode()
 	{
 		return Objects.hash(fileName, fileLength, fileTime, fileHash, fileAttributes);
+	}
+
+	/**
+	 * Returns a long hash code value for the object.
+	 * A long is used to avoid hashCode collisions when we have a huge number of FileStates.
+     */
+	public long longHashCode()
+	{
+		return ObjectsUtil.longHash(fileName, fileLength, fileTime, fileHash, fileAttributes);
 	}
 
 	@Override

@@ -63,6 +63,14 @@ public class FileStateTest
 	}
 
 	@Test
+	public void longHashcodeIsWorking()
+	{
+		assertThat(a1.longHashCode()).isEqualTo(a2.longHashCode());
+
+		assertThat(a1.longHashCode()).isNotEqualTo(b.longHashCode());
+	}
+
+	@Test
 	public void allTheFileTimesAreTakenInAccount()
 	{
 		a1 = new FileState("file_1", 1L, new FileTime(10L, 20L), new FileHash("1", "11", "111"), null);
