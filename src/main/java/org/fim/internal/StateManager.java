@@ -56,6 +56,11 @@ public class StateManager
 
 	public State loadState(int stateNumber) throws IOException
 	{
+		return loadState(stateNumber, true);
+	}
+
+	public State loadState(int stateNumber, boolean loadFullState) throws IOException
+	{
 		Path stateFile = getStateFile(stateNumber);
 		if (!Files.exists(stateFile))
 		{
@@ -64,9 +69,12 @@ public class StateManager
 
 		try
 		{
-			State state = State.loadFromGZipFile(stateFile);
+			State state = State.loadFromGZipFile(stateFile, loadFullState);
 
-			adjustAccordingToHashMode(state);
+			if (loadFullState)
+			{
+				adjustAccordingToHashMode(state);
+			}
 
 			return state;
 		}

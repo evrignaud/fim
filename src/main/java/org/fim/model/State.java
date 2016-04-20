@@ -84,20 +84,23 @@ public class State implements Hashable
 		fileStates = new ArrayList<>();
 	}
 
-	public static State loadFromGZipFile(Path stateFile) throws IOException, CorruptedStateException
+	public static State loadFromGZipFile(Path stateFile, boolean loadFullState) throws IOException, CorruptedStateException
 	{
 		try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile.toFile()))))
 		{
 			Gson gson = new Gson();
 			State state = gson.fromJson(reader, State.class);
 
-			if (!CURRENT_MODEL_VERSION.equals(state.getModelVersion()))
+			if (loadFullState)
 			{
-				Logger.warning(String.format("State %s use a different model version. Some features will not work completely.", stateFile.getFileName().toString()));
-			}
-			else
-			{
-				checkIntegrity(state);
+				if (!CURRENT_MODEL_VERSION.equals(state.getModelVersion()))
+				{
+					Logger.warning(String.format("State %s use a different model version. Some features will not work completely.", stateFile.getFileName().toString()));
+				}
+				else
+				{
+					checkIntegrity(state);
+				}
 			}
 			return state;
 		}

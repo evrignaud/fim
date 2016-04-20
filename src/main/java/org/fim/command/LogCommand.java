@@ -53,19 +53,20 @@ public class LogCommand extends AbstractCommand
 	{
 		StateManager manager = new StateManager(context);
 
-		if (manager.getLastStateNumber() == -1)
+		int lastStateNumber = manager.getLastStateNumber();
+		if (lastStateNumber == -1)
 		{
 			Logger.error("No State found");
 			return null;
 		}
 
 		LogResult logResult = new LogResult();
-		for (int stateNumber = 1; stateNumber <= manager.getLastStateNumber(); stateNumber++)
+		for (int stateNumber = 1; stateNumber <= lastStateNumber; stateNumber++)
 		{
 			Path statFile = manager.getStateFile(stateNumber);
 			if (Files.exists(statFile))
 			{
-				State state = manager.loadState(stateNumber);
+				State state = manager.loadState(stateNumber, false);
 				LogEntry logEntry = new LogEntry();
 				logEntry.setStateNumber(stateNumber);
 				logEntry.setComment(state.getComment());
