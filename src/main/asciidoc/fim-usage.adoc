@@ -4,7 +4,7 @@
 --------
 $ fim help
 
-usage: fim <command> [-c <arg>] [-e] [-f] [-h] [-l] [-m <arg>] [-n] [-q] [-s] [-t <arg>] [-v] [-y]
+usage: fim <command> [-c <arg>] [-e] [-f] [-h] [-l] [-m <arg>] [-n] [-o <arg>] [-q] [-s] [-t <arg>] [-v] [-y]
 
 File Integrity Checker
 
@@ -36,6 +36,8 @@ Available options:
      -m,--master-fim-repository <arg>   Fim repository directory that you want to use as remote master.
                                         Only for the remove duplicated files command
      -n,--do-not-hash                   Do not hash file content. Uses only file names and modification dates
+     -o,--output-max-lines <arg>        Change the maximum number lines displayed for the same kind of modification.
+                                        Default value is 200 lines
      -q,--quiet                         Do not display details
      -s,--super-fast-mode               Use super-fast mode. Hash only 3 small blocks.
                                         One at the beginning, one in the middle and one at the end

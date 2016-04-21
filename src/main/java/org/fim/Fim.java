@@ -117,6 +117,7 @@ public class Fim
 		options.addOption(createOption("h", "help", false, "Prints the Fim help", false));
 		options.addOption(createOption("l", "use-last-state", false, "Use the last committed State.\nOnly for the find local duplicated files command", false));
 		options.addOption(createOption("c", "comment", true, "Comment to set during init and commit", false));
+		options.addOption(createOption("o", "output-max-lines", true, "Change the maximum number lines displayed for the same kind of modification. Default value is 200 lines", false));
 		options.addOption(createOption("q", "quiet", false, "Do not display details", false));
 		options.addOption(createOption("t", "thread-count", true, "Number of thread used to hash file contents in parallel", false));
 		options.addOption(createOption("v", "version", false, "Prints the Fim version", false));
@@ -158,6 +159,15 @@ public class Fim
 			{
 				context.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "1")));
 				context.setThreadCountSpecified(true);
+			}
+
+			if (commandLine.hasOption('o'))
+			{
+				context.setTruncateOutput(Integer.parseInt(commandLine.getOptionValue('o', "200")));
+				if (context.getTruncateOutput() < 0)
+				{
+					context.setTruncateOutput(0);
+				}
 			}
 
 			if (commandLine.hasOption('n'))

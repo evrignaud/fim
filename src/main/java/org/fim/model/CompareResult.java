@@ -37,8 +37,6 @@ public class CompareResult
 {
 	public static final String NOTHING = "[nothing]";
 
-	private static int MAX_DISPLAYED_DIFFERENCES = 200;
-
 	private static final Comparator<Difference> fileNameComparator = new Difference.FileNameComparator();
 
 	private List<Difference> added;
@@ -168,13 +166,21 @@ public class CompareResult
 
 	private void displayDifferences(String actionStr, List<Difference> differences, Consumer<Difference> displayDifference)
 	{
+		int truncateOutput = context.getTruncateOutput();
+		if (truncateOutput < 1)
+		{
+			return;
+		}
+
+		int quarter = truncateOutput / 4;
+
 		int differencesSize = differences.size();
 		for (int index = 0; index < differencesSize; index++)
 		{
 			Difference difference = differences.get(index);
-			if (index >= MAX_DISPLAYED_DIFFERENCES && (differencesSize - index) > 50)
+			if (index >= truncateOutput && (differencesSize - index) > quarter)
 			{
-				System.out.println(" [Too many lines. Cutting the output] ...");
+				System.out.println("  [Too many lines. Truncating the output] ...");
 				int moreFiles = differencesSize - index;
 				System.out.printf(actionStr + "%d %s more%n", moreFiles, English.plural("file", moreFiles));
 				break;

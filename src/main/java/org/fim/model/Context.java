@@ -43,6 +43,7 @@ public class Context
 	private String masterFimRepositoryDir;
 	private boolean alwaysYes;
 	private boolean displayStackTrace;
+	private int truncateOutput;
 
 	public Context()
 	{
@@ -204,5 +205,15 @@ public class Context
 	public Context clone()
 	{
 		return CLONER.deepClone(this);
+	}
+
+	public void setTruncateOutput(int truncateOutput)
+	{
+		this.truncateOutput = truncateOutput;
+	}
+
+	public int getTruncateOutput()
+	{
+		return truncateOutput;
 	}
 }
