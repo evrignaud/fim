@@ -18,6 +18,7 @@
  */
 package org.fim.model;
 
+import static java.lang.System.lineSeparator;
 import static org.assertj.core.api.Assertions.*;
 import static org.fim.model.CompareResult.addSeparator;
 import static org.fim.model.CompareResult.displayDifferences;
@@ -37,6 +38,7 @@ import org.fim.tooling.BuildableState;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemErrRule;
 
 public class CompareResultTest extends StateAssert
 {
@@ -153,6 +155,6 @@ public class CompareResultTest extends StateAssert
 		context.setTruncateOutput(2);
 		displayDifferences(printStream, context, actionStr, differences, differenceConsumer);
 		assertThat(called.get()).isEqualTo(true);
-		assertThat(outputStream.toString()).isEqualTo("  [Too many lines. Truncating the output] ...\naction: 1 file more\n");
+		assertThat(outputStream.toString()).isEqualTo("  [Too many lines. Truncating the output] ..." + lineSeparator() + "action: 1 file more" + lineSeparator());
 	}
 }
