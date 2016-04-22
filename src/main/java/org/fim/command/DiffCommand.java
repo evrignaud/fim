@@ -60,7 +60,7 @@ public class DiffCommand extends AbstractCommand
 		}
 
 		CompareResult result = new StateComparator(context, lastState, currentState).compare();
-		result.displayChanges();
+		result.displayChanges(System.out);
 		return result;
 	}
 }

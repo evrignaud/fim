@@ -81,7 +81,7 @@ public class CommitCommand extends AbstractCommand
 			lastStateToCompare = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
 		}
 
-		CompareResult result = new StateComparator(context, lastStateToCompare, currentState).compare().displayChanges();
+		CompareResult result = new StateComparator(context, lastStateToCompare, currentState).compare().displayChanges(System.out);
 		if (result.somethingModified())
 		{
 			Console.newLine();
