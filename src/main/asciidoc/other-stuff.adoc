@@ -7,11 +7,13 @@
 Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from http://www.oracle.com/technetwork/java/javase/downloads/index.html[here]. +
 You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.
 
+:leveloffset: 1
 = Supported OS
 
 Fim can be used on Linux, Mac OS X and Windows
 
 
+:leveloffset: 1
 = They talked about it
 
 .*&bull; image:icons/korben.info.png[Korben.info] &nbsp;&nbsp; http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html[Vérifier l’intégrité de très nombreux fichiers]*
