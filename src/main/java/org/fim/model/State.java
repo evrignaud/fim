@@ -138,15 +138,18 @@ public class State implements Hashable
 		String curDir = FileUtil.getNormalizedFileName(currentDirectory);
 		String subDirectory = FileUtil.getRelativeFileName(rootDir, curDir);
 
-		Iterator<FileState> iterator = filteredState.getFileStates().iterator();
-		while (iterator.hasNext())
+		List<FileState> fileStates = filteredState.getFileStates();
+		List<FileState> newFileStates = new ArrayList<>();
+		for (FileState fileState : fileStates)
 		{
-			FileState fileState = iterator.next();
-			if (fileState.getFileName().startsWith(subDirectory) != keepFilesInside)
+			if (fileState.getFileName().startsWith(subDirectory) == keepFilesInside)
 			{
-				iterator.remove();
+				newFileStates.add(fileState);
 			}
 		}
+
+		fileStates.clear();
+		fileStates.addAll(newFileStates);
 
 		return filteredState;
 	}
