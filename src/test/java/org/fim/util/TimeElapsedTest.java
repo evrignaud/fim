@@ -34,7 +34,7 @@ public class TimeElapsedTest {
 
         Thread.sleep(10);
 
-        assertThat(cut.getDuration()).isGreaterThan(10);
+        assertThat(cut.getDuration()).isGreaterThan(1);
         assertThat(stopCalled).isEqualTo(true);
         assertThat(startCalled).isEqualTo(true);
     }
