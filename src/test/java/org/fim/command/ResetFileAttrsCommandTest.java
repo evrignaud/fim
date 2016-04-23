@@ -18,15 +18,6 @@
  */
 package org.fim.command;
 
-import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.hashAll;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import org.apache.commons.io.FileUtils;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
@@ -35,67 +26,72 @@ import org.fim.tooling.RepositoryTool;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ResetFileAttrsCommandTest
-{
-	private static Path rootDir = Paths.get("target/" + ResetFileAttrsCommandTest.class.getSimpleName());
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-	private InitCommand initCommand;
-	private DiffCommand diffCommand;
-	private ResetFileAttributesCommand resetFileAttributesCommand;
+import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.fim.model.HashMode.hashAll;
 
-	private RepositoryTool tool;
+public class ResetFileAttrsCommandTest {
+    private static Path rootDir = Paths.get("target/" + ResetFileAttrsCommandTest.class.getSimpleName());
 
-	@Before
-	public void setup() throws IOException
-	{
-		FileUtils.deleteDirectory(rootDir.toFile());
-		Files.createDirectories(rootDir);
+    private InitCommand initCommand;
+    private DiffCommand diffCommand;
+    private ResetFileAttributesCommand resetFileAttributesCommand;
 
-		initCommand = new InitCommand();
-		diffCommand = new DiffCommand();
-		resetFileAttributesCommand = new ResetFileAttributesCommand();
+    private RepositoryTool tool;
 
-		tool = new RepositoryTool(rootDir);
-	}
+    @Before
+    public void setup() throws IOException {
+        FileUtils.deleteDirectory(rootDir.toFile());
+        Files.createDirectories(rootDir);
 
-	@Test
-	public void weCanResetFileAttributes() throws Exception
-	{
-		Context context = tool.createContext(hashAll, true);
+        initCommand = new InitCommand();
+        diffCommand = new DiffCommand();
+        resetFileAttributesCommand = new ResetFileAttributesCommand();
 
-		tool.createASetOfFiles(5);
+        tool = new RepositoryTool(rootDir);
+    }
 
-		State state = (State) initCommand.execute(context);
-		assertThat(state.getModificationCounts().getAdded()).isEqualTo(5);
+    @Test
+    public void weCanResetFileAttributes() throws Exception {
+        Context context = tool.createContext(hashAll, true);
 
-		int fileResetCount = (int) resetFileAttributesCommand.execute(context);
-		assertThat(fileResetCount).isEqualTo(0);
+        tool.createASetOfFiles(5);
 
-		doSomeModifications();
+        State state = (State) initCommand.execute(context);
+        assertThat(state.getModificationCounts().getAdded()).isEqualTo(5);
 
-		CompareResult compareResult = (CompareResult) diffCommand.execute(context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(3);
-		assertThat(compareResult.getDateModified().size()).isEqualTo(IS_OS_WINDOWS ? 3 : 2);
-		assertThat(compareResult.getAttributesModified().size()).isEqualTo(IS_OS_WINDOWS ? 0 : 1);
+        int fileResetCount = (int) resetFileAttributesCommand.execute(context);
+        assertThat(fileResetCount).isEqualTo(0);
 
-		fileResetCount = (int) resetFileAttributesCommand.execute(context);
-		assertThat(fileResetCount).isEqualTo(3);
+        doSomeModifications();
 
-		compareResult = (CompareResult) diffCommand.execute(context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(0);
-	}
+        CompareResult compareResult = (CompareResult) diffCommand.execute(context);
+        assertThat(compareResult.modifiedCount()).isEqualTo(3);
+        assertThat(compareResult.getDateModified().size()).isEqualTo(IS_OS_WINDOWS ? 3 : 2);
+        assertThat(compareResult.getAttributesModified().size()).isEqualTo(IS_OS_WINDOWS ? 0 : 1);
 
-	private void doSomeModifications() throws IOException
-	{
-		tool.sleepSafely(1_000); // Ensure to increase lastModified at least of 1 second
+        fileResetCount = (int) resetFileAttributesCommand.execute(context);
+        assertThat(fileResetCount).isEqualTo(3);
 
-		tool.touchCreationTime("file01");
-		tool.setPermissions("file01", "rwx------", "AHRS");
+        compareResult = (CompareResult) diffCommand.execute(context);
+        assertThat(compareResult.modifiedCount()).isEqualTo(0);
+    }
 
-		tool.touchLastModified("file02");
-		tool.setPermissions("file02", "r-x------", "H");
+    private void doSomeModifications() throws IOException {
+        tool.sleepSafely(1_000); // Ensure to increase lastModified at least of 1 second
 
-		tool.touchLastModified("file03");
-		tool.setPermissions("file03", "r-xr-x---", "R");
-	}
+        tool.touchCreationTime("file01");
+        tool.setPermissions("file01", "rwx------", "AHRS");
+
+        tool.touchLastModified("file02");
+        tool.setPermissions("file02", "r-x------", "H");
+
+        tool.touchLastModified("file03");
+        tool.setPermissions("file03", "r-xr-x---", "R");
+    }
 }

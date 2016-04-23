@@ -18,27 +18,23 @@
  */
 package org.fim.util;
 
+import org.fim.model.FileState;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.fim.model.FileState;
+public class FormatUtil {
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-public class FormatUtil
-{
-	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    public static String formatCreationTime(FileState fileState) {
+        return formatDate(fileState.getFileTime().getCreationTime());
+    }
 
-	public static String formatCreationTime(FileState fileState)
-	{
-		return formatDate(fileState.getFileTime().getCreationTime());
-	}
+    public static String formatLastModified(FileState fileState) {
+        return formatDate(fileState.getFileTime().getLastModified());
+    }
 
-	public static String formatLastModified(FileState fileState)
-	{
-		return formatDate(fileState.getFileTime().getLastModified());
-	}
-
-	public static String formatDate(long timestamp)
-	{
-		return dateFormat.format(new Date(timestamp));
-	}
+    public static String formatDate(long timestamp) {
+        return dateFormat.format(new Date(timestamp));
+    }
 }

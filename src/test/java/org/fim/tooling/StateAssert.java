@@ -18,153 +18,131 @@
  */
 package org.fim.tooling;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.fim.model.CompareResult;
 import org.fim.model.Difference;
 import org.fim.model.FileState;
 import org.fim.model.Modification;
 
-public class StateAssert
-{
-	protected BuildableContext defaultContext()
-	{
-		return new BuildableContext();
-	}
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-	protected void assertNothingModified(CompareResult result)
-	{
-		assertThat(result.somethingModified()).isFalse();
-	}
+import static org.assertj.core.api.Assertions.assertThat;
 
-	protected void assertOnlyFilesAdded(CompareResult result, String... fileNames)
-	{
-		assertGotOnlyModifications(result, Modification.added);
-		assertFilesModified(result, Modification.added, fileNames);
-	}
+public class StateAssert {
+    protected BuildableContext defaultContext() {
+        return new BuildableContext();
+    }
 
-	protected void assertOnlyFileCopied(CompareResult result, FileNameDiff... fileNameDiffs)
-	{
-		assertGotOnlyModifications(result, Modification.copied);
-		assertFilesModified(result, Modification.copied, fileNameDiffs);
-	}
+    protected void assertNothingModified(CompareResult result) {
+        assertThat(result.somethingModified()).isFalse();
+    }
 
-	protected void assertOnlyFileDuplicated(CompareResult result, FileNameDiff... fileNameDiffs)
-	{
-		assertGotOnlyModifications(result, Modification.duplicated);
-		assertFilesModified(result, Modification.duplicated, fileNameDiffs);
-	}
+    protected void assertOnlyFilesAdded(CompareResult result, String... fileNames) {
+        assertGotOnlyModifications(result, Modification.added);
+        assertFilesModified(result, Modification.added, fileNames);
+    }
 
-	protected void assertOnlyDatesModified(CompareResult result, String... fileNames)
-	{
-		assertGotOnlyModifications(result, Modification.dateModified);
-		assertFilesModified(result, Modification.dateModified, fileNames);
-	}
+    protected void assertOnlyFileCopied(CompareResult result, FileNameDiff... fileNameDiffs) {
+        assertGotOnlyModifications(result, Modification.copied);
+        assertFilesModified(result, Modification.copied, fileNameDiffs);
+    }
 
-	protected void assertOnlyContentModified(CompareResult result, String... fileNames)
-	{
-		assertGotOnlyModifications(result, Modification.contentModified);
-		assertFilesModified(result, Modification.contentModified, fileNames);
-	}
+    protected void assertOnlyFileDuplicated(CompareResult result, FileNameDiff... fileNameDiffs) {
+        assertGotOnlyModifications(result, Modification.duplicated);
+        assertFilesModified(result, Modification.duplicated, fileNameDiffs);
+    }
 
-	protected void assertOnlyFileRenamed(CompareResult result, FileNameDiff... fileNameDiffs)
-	{
-		assertGotOnlyModifications(result, Modification.renamed);
-		assertFilesModified(result, Modification.renamed, fileNameDiffs);
-	}
+    protected void assertOnlyDatesModified(CompareResult result, String... fileNames) {
+        assertGotOnlyModifications(result, Modification.dateModified);
+        assertFilesModified(result, Modification.dateModified, fileNames);
+    }
 
-	protected void assertOnlyFileDeleted(CompareResult result, String... fileNames)
-	{
-		assertGotOnlyModifications(result, Modification.deleted);
-		assertFilesModified(result, Modification.deleted, fileNames);
-	}
+    protected void assertOnlyContentModified(CompareResult result, String... fileNames) {
+        assertGotOnlyModifications(result, Modification.contentModified);
+        assertFilesModified(result, Modification.contentModified, fileNames);
+    }
 
-	protected void assertGotOnlyModifications(CompareResult result, Modification... modifications)
-	{
-		List<Modification> modificationsList = Arrays.asList(modifications);
+    protected void assertOnlyFileRenamed(CompareResult result, FileNameDiff... fileNameDiffs) {
+        assertGotOnlyModifications(result, Modification.renamed);
+        assertFilesModified(result, Modification.renamed, fileNameDiffs);
+    }
 
-		for (Modification modification : Modification.values())
-		{
-			List<Difference> differences = getDifferences(result, modification);
-			if (modificationsList.contains(modification) == false)
-			{
-				assertThat(differences.isEmpty()).isTrue();
-			}
-			else
-			{
-				assertThat(differences.isEmpty()).isFalse();
-			}
-		}
-	}
+    protected void assertOnlyFileDeleted(CompareResult result, String... fileNames) {
+        assertGotOnlyModifications(result, Modification.deleted);
+        assertFilesModified(result, Modification.deleted, fileNames);
+    }
 
-	protected void assertFilesModified(CompareResult result, Modification modification, String... fileNames)
-	{
-		List<String> fileNamesList = Arrays.asList(fileNames);
+    protected void assertGotOnlyModifications(CompareResult result, Modification... modifications) {
+        List<Modification> modificationsList = Arrays.asList(modifications);
 
-		List<Difference> differences = getDifferences(result, modification);
-		assertThat(fileNamesList.size()).isEqualTo(differences.size());
+        for (Modification modification : Modification.values()) {
+            List<Difference> differences = getDifferences(result, modification);
+            if (modificationsList.contains(modification) == false) {
+                assertThat(differences.isEmpty()).isTrue();
+            } else {
+                assertThat(differences.isEmpty()).isFalse();
+            }
+        }
+    }
 
-		for (Difference difference : differences)
-		{
-			assertThat(fileNamesList.contains(difference.getFileState().getFileName())).isTrue();
-		}
-	}
+    protected void assertFilesModified(CompareResult result, Modification modification, String... fileNames) {
+        List<String> fileNamesList = Arrays.asList(fileNames);
 
-	protected void assertFilesModified(CompareResult result, Modification modification, FileNameDiff... fileNameDiffs)
-	{
-		List<FileNameDiff> fileNameDiffsList = Arrays.asList(fileNameDiffs);
+        List<Difference> differences = getDifferences(result, modification);
+        assertThat(fileNamesList.size()).isEqualTo(differences.size());
 
-		List<Difference> differences = getDifferences(result, modification);
-		assertThat(fileNameDiffsList.size()).isEqualTo(differences.size());
+        for (Difference difference : differences) {
+            assertThat(fileNamesList.contains(difference.getFileState().getFileName())).isTrue();
+        }
+    }
 
-		for (Difference difference : differences)
-		{
-			assertThat(fileNameDiffsList.contains(new FileNameDiff(difference))).isTrue();
-		}
-	}
+    protected void assertFilesModified(CompareResult result, Modification modification, FileNameDiff... fileNameDiffs) {
+        List<FileNameDiff> fileNameDiffsList = Arrays.asList(fileNameDiffs);
 
-	private List<Difference> getDifferences(CompareResult result, Modification modification)
-	{
-		switch (modification)
-		{
-			case added:
-				return result.getAdded();
+        List<Difference> differences = getDifferences(result, modification);
+        assertThat(fileNameDiffsList.size()).isEqualTo(differences.size());
 
-			case copied:
-				return result.getCopied();
+        for (Difference difference : differences) {
+            assertThat(fileNameDiffsList.contains(new FileNameDiff(difference))).isTrue();
+        }
+    }
 
-			case duplicated:
-				return result.getDuplicated();
+    private List<Difference> getDifferences(CompareResult result, Modification modification) {
+        switch (modification) {
+            case added:
+                return result.getAdded();
 
-			case dateModified:
-				return result.getDateModified();
+            case copied:
+                return result.getCopied();
 
-			case contentModified:
-				return result.getContentModified();
+            case duplicated:
+                return result.getDuplicated();
 
-			case attributesModified:
-				return result.getAttributesModified();
+            case dateModified:
+                return result.getDateModified();
 
-			case renamed:
-				return result.getRenamed();
+            case contentModified:
+                return result.getContentModified();
 
-			case deleted:
-				return result.getDeleted();
+            case attributesModified:
+                return result.getAttributesModified();
 
-			case corrupted:
-				return result.getCorrupted();
-		}
+            case renamed:
+                return result.getRenamed();
 
-		throw new IllegalArgumentException("Invalid Modification " + modification);
-	}
+            case deleted:
+                return result.getDeleted();
 
-	protected List<String> toFileNames(List<FileState> fileStates)
-	{
-		List<String> fileNames = fileStates.stream().map(FileState::getFileName).collect(Collectors.toList());
-		return fileNames;
-	}
+            case corrupted:
+                return result.getCorrupted();
+        }
+
+        throw new IllegalArgumentException("Invalid Modification " + modification);
+    }
+
+    protected List<String> toFileNames(List<FileState> fileStates) {
+        List<String> fileNames = fileStates.stream().map(FileState::getFileName).collect(Collectors.toList());
+        return fileNames;
+    }
 }

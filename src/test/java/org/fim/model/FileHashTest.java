@@ -18,63 +18,58 @@
  */
 package org.fim.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Before;
 import org.junit.Test;
 
-public class FileHashTest
-{
-	private FileHash a1;
-	private FileHash a2;
-	private FileHash b;
-	private FileHash c;
+import static org.assertj.core.api.Assertions.assertThat;
 
-	@Before
-	public void setup()
-	{
-		a1 = new FileHash("hash_1", "hash_2", "hash_3");
-		a2 = new FileHash("hash_1", "hash_2", "hash_3");
+public class FileHashTest {
+    private FileHash a1;
+    private FileHash a2;
+    private FileHash b;
+    private FileHash c;
 
-		b = new FileHash("hash_1", "hash_2", "hash_4");
+    @Before
+    public void setup() {
+        a1 = new FileHash("hash_1", "hash_2", "hash_3");
+        a2 = new FileHash("hash_1", "hash_2", "hash_3");
 
-		c = new FileHash("hash_3", "hash_4", "hash_5");
-	}
+        b = new FileHash("hash_1", "hash_2", "hash_4");
 
-	@Test
-	public void equalsIsWorking()
-	{
-		assertThat(a1).isNotEqualTo(null);
+        c = new FileHash("hash_3", "hash_4", "hash_5");
+    }
 
-		assertThat(a1).isNotEqualTo("dummy_string");
+    @Test
+    public void equalsIsWorking() {
+        assertThat(a1).isNotEqualTo(null);
 
-		assertThat(a1).isEqualTo(a2);
-		assertThat(a2).isEqualTo(a1);
+        assertThat(a1).isNotEqualTo("dummy_string");
 
-		assertThat(a1).isNotEqualTo(b);
-		assertThat(b).isNotEqualTo(a1);
-	}
+        assertThat(a1).isEqualTo(a2);
+        assertThat(a2).isEqualTo(a1);
 
-	@Test
-	public void hashcodeIsWorking()
-	{
-		assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
+        assertThat(a1).isNotEqualTo(b);
+        assertThat(b).isNotEqualTo(a1);
+    }
 
-		assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
-	}
+    @Test
+    public void hashcodeIsWorking() {
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
 
-	@Test
-	public void compareIsWorking()
-	{
-		assertThat(a1.compareTo(a2)).isEqualTo(0);
-		assertThat(a2.compareTo(a1)).isEqualTo(0);
+        assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
+    }
 
-		assertThat(a1.compareTo(b)).isEqualTo(-1);
-		assertThat(b.compareTo(c)).isEqualTo(-2);
-		assertThat(a1.compareTo(c)).isEqualTo(-2);
+    @Test
+    public void compareIsWorking() {
+        assertThat(a1.compareTo(a2)).isEqualTo(0);
+        assertThat(a2.compareTo(a1)).isEqualTo(0);
 
-		assertThat(c.compareTo(b)).isEqualTo(2);
-		assertThat(b.compareTo(a1)).isEqualTo(1);
-		assertThat(c.compareTo(a1)).isEqualTo(2);
-	}
+        assertThat(a1.compareTo(b)).isEqualTo(-1);
+        assertThat(b.compareTo(c)).isEqualTo(-2);
+        assertThat(a1.compareTo(c)).isEqualTo(-2);
+
+        assertThat(c.compareTo(b)).isEqualTo(2);
+        assertThat(b.compareTo(a1)).isEqualTo(1);
+        assertThat(c.compareTo(a1)).isEqualTo(2);
+    }
 }

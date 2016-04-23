@@ -21,43 +21,36 @@ package org.fim.command;
 import org.fim.Fim;
 import org.fim.model.Context;
 
-public class HelpCommand extends AbstractCommand
-{
-	private final Fim fim;
+public class HelpCommand extends AbstractCommand {
+    private final Fim fim;
 
-	public HelpCommand(Fim fim)
-	{
-		this.fim = fim;
-	}
+    public HelpCommand(Fim fim) {
+        this.fim = fim;
+    }
 
-	@Override
-	public String getCmdName()
-	{
-		return "help";
-	}
+    @Override
+    public String getCmdName() {
+        return "help";
+    }
 
-	@Override
-	public String getShortCmdName()
-	{
-		return "";
-	}
+    @Override
+    public String getShortCmdName() {
+        return "";
+    }
 
-	@Override
-	public String getDescription()
-	{
-		return "Prints the Fim help";
-	}
+    @Override
+    public String getDescription() {
+        return "Prints the Fim help";
+    }
 
-	@Override
-	public FimReposConstraint getFimReposConstraint()
-	{
-		return FimReposConstraint.DONT_CARE;
-	}
+    @Override
+    public FimReposConstraint getFimReposConstraint() {
+        return FimReposConstraint.DONT_CARE;
+    }
 
-	@Override
-	public Object execute(Context context) throws Exception
-	{
-		fim.printUsage();
-		return null;
-	}
+    @Override
+    public Object execute(Context context) throws Exception {
+        fim.printUsage();
+        return null;
+    }
 }

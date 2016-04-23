@@ -24,59 +24,51 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class CommandUtil
-{
-	/**
-	 * Execute a command and return all the output.
-	 */
-	public static String executeCommand(List<String> cmdArray) throws IOException, InterruptedException
-	{
-		ProcessBuilder builder = new ProcessBuilder(cmdArray);
-		builder.redirectErrorStream(true);
-		Process process = builder.start();
+public class CommandUtil {
+    /**
+     * Execute a command and return all the output.
+     */
+    public static String executeCommand(List<String> cmdArray) throws IOException, InterruptedException {
+        ProcessBuilder builder = new ProcessBuilder(cmdArray);
+        builder.redirectErrorStream(true);
+        Process process = builder.start();
 
-		try (InputStream is = process.getInputStream();
-			 Scanner scanner = new Scanner(is).useDelimiter("$"))
-		{
-			String output = scanner.hasNext() ? scanner.next() : "";
+        try (InputStream is = process.getInputStream();
+             Scanner scanner = new Scanner(is).useDelimiter("$")) {
+            String output = scanner.hasNext() ? scanner.next() : "";
 
-			process.waitFor();
-			int exitValue = process.exitValue();
-			if (exitValue != 0)
-			{
-				throw new IllegalArgumentException(String.format("Command execution failed with status: %d\n%s", exitValue, output));
-			}
+            process.waitFor();
+            int exitValue = process.exitValue();
+            if (exitValue != 0) {
+                throw new IllegalArgumentException(String.format("Command execution failed with status: %d\n%s", exitValue, output));
+            }
 
-			return output;
-		}
-	}
+            return output;
+        }
+    }
 
-	/**
-	 * Execute a command and return all the lines of the output.
-	 */
-	public static List<String> executeCommandAndGetLines(List<String> cmdArray) throws IOException, InterruptedException
-	{
-		ProcessBuilder builder = new ProcessBuilder(cmdArray);
-		builder.redirectErrorStream(true);
-		Process process = builder.start();
+    /**
+     * Execute a command and return all the lines of the output.
+     */
+    public static List<String> executeCommandAndGetLines(List<String> cmdArray) throws IOException, InterruptedException {
+        ProcessBuilder builder = new ProcessBuilder(cmdArray);
+        builder.redirectErrorStream(true);
+        Process process = builder.start();
 
-		try (InputStream is = process.getInputStream();
-			 Scanner scanner = new Scanner(is).useDelimiter("\n"))
-		{
-			List<String> lines = new ArrayList<>();
-			while (scanner.hasNext())
-			{
-				lines.add(scanner.next());
-			}
+        try (InputStream is = process.getInputStream();
+             Scanner scanner = new Scanner(is).useDelimiter("\n")) {
+            List<String> lines = new ArrayList<>();
+            while (scanner.hasNext()) {
+                lines.add(scanner.next());
+            }
 
-			process.waitFor();
-			int exitValue = process.exitValue();
-			if (exitValue != 0)
-			{
-				throw new IllegalArgumentException(String.format("Command execution failed with status: %d\n%s", exitValue, lines));
-			}
+            process.waitFor();
+            int exitValue = process.exitValue();
+            if (exitValue != 0) {
+                throw new IllegalArgumentException(String.format("Command execution failed with status: %d\n%s", exitValue, lines));
+            }
 
-			return lines;
-		}
-	}
+            return lines;
+        }
+    }
 }

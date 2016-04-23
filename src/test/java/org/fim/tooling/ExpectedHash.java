@@ -18,39 +18,32 @@
  */
 package org.fim.tooling;
 
-public class ExpectedHash
-{
-	private String smallBlockHash;
-	private String mediumBlockHash;
-	private String fullFileHash;
+public class ExpectedHash {
+    private String smallBlockHash;
+    private String mediumBlockHash;
+    private String fullFileHash;
 
-	public String getSmallBlockHash()
-	{
-		return smallBlockHash;
-	}
+    public String getSmallBlockHash() {
+        return smallBlockHash;
+    }
 
-	public void setSmallBlockHash(String smallBlockHash)
-	{
-		this.smallBlockHash = smallBlockHash;
-	}
+    public void setSmallBlockHash(String smallBlockHash) {
+        this.smallBlockHash = smallBlockHash;
+    }
 
-	public String getMediumBlockHash()
-	{
-		return mediumBlockHash;
-	}
+    public String getMediumBlockHash() {
+        return mediumBlockHash;
+    }
 
-	public void setMediumBlockHash(String mediumBlockHash)
-	{
-		this.mediumBlockHash = mediumBlockHash;
-	}
+    public void setMediumBlockHash(String mediumBlockHash) {
+        this.mediumBlockHash = mediumBlockHash;
+    }
 
-	public String getFullFileHash()
-	{
-		return fullFileHash;
-	}
+    public String getFullFileHash() {
+        return fullFileHash;
+    }
 
-	public void setFullFileHash(String fullFileHash)
-	{
-		this.fullFileHash = fullFileHash;
-	}
+    public void setFullFileHash(String fullFileHash) {
+        this.fullFileHash = fullFileHash;
+    }
 }

@@ -18,14 +18,6 @@
  */
 package org.fim.command;
 
-import static org.fim.model.HashMode.dontHash;
-import static org.fim.model.HashMode.hashAll;
-import static org.fim.util.HashModeUtil.hashModeToString;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
-
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.internal.SettingsManager;
 import org.fim.model.Command;
@@ -33,96 +25,80 @@ import org.fim.model.Context;
 import org.fim.util.HashModeUtil;
 import org.fim.util.Logger;
 
-public abstract class AbstractCommand implements Command
-{
-	@Override
-	public FimReposConstraint getFimReposConstraint()
-	{
-		return FimReposConstraint.MUST_EXIST;
-	}
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
 
-	protected void fileContentHashingMandatory(Context context)
-	{
-		if (context.getHashMode() == dontHash)
-		{
-			Logger.error("File content hashing mandatory for this command.");
-			throw new BadFimUsageException();
-		}
-	}
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.util.HashModeUtil.hashModeToString;
 
-	protected void checkHashMode(Context context, Option... options)
-	{
-		List<Option> optionList = Arrays.asList(options);
-		SettingsManager settingsManager = new SettingsManager(context);
-		if (settingsManager.getGlobalHashMode() != hashAll)
-		{
-			if (HashModeUtil.isCompatible(settingsManager.getGlobalHashMode(), context.getHashMode()))
-			{
-				if (optionList.contains(Option.ALLOW_COMPATIBLE))
-				{
-					Logger.info(String.format("Using global hash mode '%s' that is compatible with the current one", hashModeToString(settingsManager.getGlobalHashMode())));
-				}
-				else
-				{
-					Logger.warning(String.format("Using global hash mode '%s' that is compatible with the current one, but is not allowed by this command. Hash mode forced",
-							hashModeToString(settingsManager.getGlobalHashMode())));
-					context.setHashMode(settingsManager.getGlobalHashMode());
-				}
-			}
-			else
-			{
-				Logger.warning(String.format("Using global hash mode '%s' that is not compatible with the current one. Hash mode forced", hashModeToString(settingsManager.getGlobalHashMode())));
-				context.setHashMode(settingsManager.getGlobalHashMode());
-			}
-		}
-		else if (context.getHashMode() != hashAll)
-		{
-			if (optionList.contains(Option.ALL_HASH_MANDATORY))
-			{
-				Logger.error("Computing all hash is mandatory");
-				throw new BadFimUsageException();
-			}
-		}
+public abstract class AbstractCommand implements Command {
+    @Override
+    public FimReposConstraint getFimReposConstraint() {
+        return FimReposConstraint.MUST_EXIST;
+    }
 
-		if ((context.getThreadCount() != 1) && (context.getHashMode() == dontHash))
-		{
-			context.setThreadCount(1);
-			if (context.isThreadCountSpecified())
-			{
-				Logger.info("Not hashing file content so thread count forced to 1");
-			}
-		}
-	}
+    protected void fileContentHashingMandatory(Context context) {
+        if (context.getHashMode() == dontHash) {
+            Logger.error("File content hashing mandatory for this command.");
+            throw new BadFimUsageException();
+        }
+    }
 
-	protected boolean confirmAction(Context context, String action)
-	{
-		return confirmAction(context, new Scanner(System.in), action);
-	}
+    protected void checkHashMode(Context context, Option... options) {
+        List<Option> optionList = Arrays.asList(options);
+        SettingsManager settingsManager = new SettingsManager(context);
+        if (settingsManager.getGlobalHashMode() != hashAll) {
+            if (HashModeUtil.isCompatible(settingsManager.getGlobalHashMode(), context.getHashMode())) {
+                if (optionList.contains(Option.ALLOW_COMPATIBLE)) {
+                    Logger.info(String.format("Using global hash mode '%s' that is compatible with the current one", hashModeToString(settingsManager.getGlobalHashMode())));
+                } else {
+                    Logger.warning(String.format("Using global hash mode '%s' that is compatible with the current one, but is not allowed by this command. Hash mode forced",
+                        hashModeToString(settingsManager.getGlobalHashMode())));
+                    context.setHashMode(settingsManager.getGlobalHashMode());
+                }
+            } else {
+                Logger.warning(String.format("Using global hash mode '%s' that is not compatible with the current one. Hash mode forced", hashModeToString(settingsManager.getGlobalHashMode())));
+                context.setHashMode(settingsManager.getGlobalHashMode());
+            }
+        } else if (context.getHashMode() != hashAll) {
+            if (optionList.contains(Option.ALL_HASH_MANDATORY)) {
+                Logger.error("Computing all hash is mandatory");
+                throw new BadFimUsageException();
+            }
+        }
 
-	protected boolean confirmAction(Context context, Scanner scanner, String action)
-	{
-		if (context.isAlwaysYes())
-		{
-			return true;
-		}
+        if ((context.getThreadCount() != 1) && (context.getHashMode() == dontHash)) {
+            context.setThreadCount(1);
+            if (context.isThreadCountSpecified()) {
+                Logger.info("Not hashing file content so thread count forced to 1");
+            }
+        }
+    }
 
-		System.out.printf("Do you really want to %s (y/n/A)? ", action);
-		String str = scanner.next();
-		if (str.equalsIgnoreCase("y"))
-		{
-			return true;
-		}
-		else if (str.equals("A"))
-		{
-			context.setAlwaysYes(true);
-			return true;
-		}
-		return false;
-	}
+    protected boolean confirmAction(Context context, String action) {
+        return confirmAction(context, new Scanner(System.in), action);
+    }
 
-	protected enum Option
-	{
-		ALLOW_COMPATIBLE,
-		ALL_HASH_MANDATORY
-	}
+    protected boolean confirmAction(Context context, Scanner scanner, String action) {
+        if (context.isAlwaysYes()) {
+            return true;
+        }
+
+        System.out.printf("Do you really want to %s (y/n/A)? ", action);
+        String str = scanner.next();
+        if (str.equalsIgnoreCase("y")) {
+            return true;
+        } else if (str.equals("A")) {
+            context.setAlwaysYes(true);
+            return true;
+        }
+        return false;
+    }
+
+    protected enum Option {
+        ALLOW_COMPATIBLE,
+        ALL_HASH_MANDATORY
+    }
 }

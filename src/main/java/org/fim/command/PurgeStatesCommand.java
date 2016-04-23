@@ -18,85 +18,72 @@
  */
 package org.fim.command;
 
+import org.fim.internal.StateManager;
+import org.fim.model.Context;
+import org.fim.util.Logger;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fim.internal.StateManager;
-import org.fim.model.Context;
-import org.fim.util.Logger;
+public class PurgeStatesCommand extends AbstractCommand {
+    @Override
+    public String getCmdName() {
+        return "purge-states";
+    }
 
-public class PurgeStatesCommand extends AbstractCommand
-{
-	@Override
-	public String getCmdName()
-	{
-		return "purge-states";
-	}
+    @Override
+    public String getShortCmdName() {
+        return "pst";
+    }
 
-	@Override
-	public String getShortCmdName()
-	{
-		return "pst";
-	}
+    @Override
+    public String getDescription() {
+        return "Purge previous States";
+    }
 
-	@Override
-	public String getDescription()
-	{
-		return "Purge previous States";
-	}
+    @Override
+    public FimReposConstraint getFimReposConstraint() {
+        return FimReposConstraint.MUST_EXIST;
+    }
 
-	@Override
-	public FimReposConstraint getFimReposConstraint()
-	{
-		return FimReposConstraint.MUST_EXIST;
-	}
+    @Override
+    public Object execute(Context context) throws Exception {
+        StateManager stateManager = new StateManager(context);
 
-	@Override
-	public Object execute(Context context) throws Exception
-	{
-		StateManager stateManager = new StateManager(context);
+        List<Path> statesToPurge = new ArrayList<>();
 
-		List<Path> statesToPurge = new ArrayList<>();
+        int index;
+        Path stateFile;
+        Path nextStateFile;
+        for (index = 1; ; index++) {
+            nextStateFile = stateManager.getStateFile(index + 1);
+            if (!Files.exists(nextStateFile)) {
+                break;
+            }
 
-		int index;
-		Path stateFile;
-		Path nextStateFile;
-		for (index = 1; ; index++)
-		{
-			nextStateFile = stateManager.getStateFile(index + 1);
-			if (!Files.exists(nextStateFile))
-			{
-				break;
-			}
+            stateFile = stateManager.getStateFile(index);
+            statesToPurge.add(stateFile);
+        }
 
-			stateFile = stateManager.getStateFile(index);
-			statesToPurge.add(stateFile);
-		}
+        int statesPurgedCount = statesToPurge.size();
+        if (statesPurgedCount == 0) {
+            Logger.info("No State to purge");
+        } else {
+            System.out.printf("You are going to delete the %d previous State files, keeping only the last one%n", statesPurgedCount);
+            if (confirmAction(context, "remove them")) {
+                for (Path stateToDelete : statesToPurge) {
+                    Files.delete(stateToDelete);
+                }
 
-		int statesPurgedCount = statesToPurge.size();
-		if (statesPurgedCount == 0)
-		{
-			Logger.info("No State to purge");
-		}
-		else
-		{
-			System.out.printf("You are going to delete the %d previous State files, keeping only the last one%n", statesPurgedCount);
-			if (confirmAction(context, "remove them"))
-			{
-				for (Path stateToDelete : statesToPurge)
-				{
-					Files.delete(stateToDelete);
-				}
+                stateFile = stateManager.getStateFile(index);
+                Path newStateFile = stateManager.getStateFile(1);
+                Files.move(stateFile, newStateFile);
 
-				stateFile = stateManager.getStateFile(index);
-				Path newStateFile = stateManager.getStateFile(1);
-				Files.move(stateFile, newStateFile);
-
-				stateManager.saveLastStateNumber(1);
-			}
-		}
-		return statesPurgedCount;
-	}
+                stateManager.saveLastStateNumber(1);
+            }
+        }
+        return statesPurgedCount;
+    }
 }

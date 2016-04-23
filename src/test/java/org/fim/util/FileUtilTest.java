@@ -18,42 +18,36 @@
  */
 package org.fim.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.nio.file.Paths;
-
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 
-public class FileUtilTest
-{
-	@Test
-	public void weCanNormalizeAFileName()
-	{
-		String normalizedFileName;
+import java.nio.file.Paths;
 
-		if (SystemUtils.IS_OS_WINDOWS)
-		{
-			normalizedFileName = FileUtil.getNormalizedFileName(Paths.get("C:\\dir1\\dir2"));
-			assertThat(normalizedFileName).isEqualTo("C:/dir1/dir2");
-		}
-		else
-		{
-			normalizedFileName = FileUtil.getNormalizedFileName(Paths.get("/dir1/dir2"));
-			assertThat(normalizedFileName).isEqualTo("/dir1/dir2");
-		}
-	}
+import static org.assertj.core.api.Assertions.assertThat;
 
-	@Test
-	public void weCanGetTheRelativeFileName()
-	{
-		String relativeFileName = FileUtil.getRelativeFileName("/dir1/dir2/dir3", "/dir1/dir2/dir3/dir4/file1");
-		assertThat(relativeFileName).isEqualTo("dir4/file1");
+public class FileUtilTest {
+    @Test
+    public void weCanNormalizeAFileName() {
+        String normalizedFileName;
 
-		relativeFileName = FileUtil.getRelativeFileName("/dir5/dir6/dir7", "/dir1/dir2/dir3/dir4/file1");
-		assertThat(relativeFileName).isEqualTo("dir1/dir2/dir3/dir4/file1");
+        if (SystemUtils.IS_OS_WINDOWS) {
+            normalizedFileName = FileUtil.getNormalizedFileName(Paths.get("C:\\dir1\\dir2"));
+            assertThat(normalizedFileName).isEqualTo("C:/dir1/dir2");
+        } else {
+            normalizedFileName = FileUtil.getNormalizedFileName(Paths.get("/dir1/dir2"));
+            assertThat(normalizedFileName).isEqualTo("/dir1/dir2");
+        }
+    }
 
-		relativeFileName = FileUtil.getRelativeFileName("/dir1/dir2/dir3", "dir4/file1");
-		assertThat(relativeFileName).isEqualTo("dir4/file1");
-	}
+    @Test
+    public void weCanGetTheRelativeFileName() {
+        String relativeFileName = FileUtil.getRelativeFileName("/dir1/dir2/dir3", "/dir1/dir2/dir3/dir4/file1");
+        assertThat(relativeFileName).isEqualTo("dir4/file1");
+
+        relativeFileName = FileUtil.getRelativeFileName("/dir5/dir6/dir7", "/dir1/dir2/dir3/dir4/file1");
+        assertThat(relativeFileName).isEqualTo("dir1/dir2/dir3/dir4/file1");
+
+        relativeFileName = FileUtil.getRelativeFileName("/dir1/dir2/dir3", "dir4/file1");
+        assertThat(relativeFileName).isEqualTo("dir4/file1");
+    }
 }

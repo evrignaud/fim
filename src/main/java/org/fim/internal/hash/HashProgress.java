@@ -18,139 +18,115 @@
  */
 package org.fim.internal.hash;
 
-import static org.fim.model.HashMode.dontHash;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.fim.model.Constants;
 import org.fim.model.Context;
 import org.fim.util.Console;
 
-public class HashProgress
-{
-	public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
-	private static final List<Pair<Character, Integer>> hashProgress = Arrays.asList(
-			Pair.of('.', 0),
-			Pair.of('o', Constants._20_MB),
-			Pair.of('8', Constants._50_MB),
-			Pair.of('O', Constants._100_MB),
-			Pair.of('@', Constants._200_MB),
-			Pair.of('#', Constants._1_GB)
-	);
+import static org.fim.model.HashMode.dontHash;
 
-	private final ReentrantLock progressLock;
-	private final Context context;
-	private long summedFileLength;
-	private int fileCount;
+public class HashProgress {
+    public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
 
-	public HashProgress(Context context)
-	{
-		this.context = context;
-		this.progressLock = new ReentrantLock();
-	}
+    private static final List<Pair<Character, Integer>> hashProgress = Arrays.asList(
+        Pair.of('.', 0),
+        Pair.of('o', Constants._20_MB),
+        Pair.of('8', Constants._50_MB),
+        Pair.of('O', Constants._100_MB),
+        Pair.of('@', Constants._200_MB),
+        Pair.of('#', Constants._1_GB)
+    );
 
-	public void outputInit()
-	{
-		summedFileLength = 0;
-		fileCount = 0;
-	}
+    private final ReentrantLock progressLock;
+    private final Context context;
+    private long summedFileLength;
+    private int fileCount;
 
-	public void updateOutput(long fileSize) throws IOException
-	{
-		progressLock.lock();
-		try
-		{
-			fileCount++;
+    public HashProgress(Context context) {
+        this.context = context;
+        this.progressLock = new ReentrantLock();
+    }
 
-			if (isProgressDisplayed())
-			{
-				summedFileLength += fileSize;
+    public void outputInit() {
+        summedFileLength = 0;
+        fileCount = 0;
+    }
 
-				if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0)
-				{
-					System.out.print(getProgressChar(summedFileLength));
-					summedFileLength = 0;
-				}
-			}
+    public void updateOutput(long fileSize) throws IOException {
+        progressLock.lock();
+        try {
+            fileCount++;
 
-			if (fileCount % (100 * PROGRESS_DISPLAY_FILE_COUNT) == 0)
-			{
-				if (isProgressDisplayed())
-				{
-					Console.newLine();
-				}
-			}
-		}
-		finally
-		{
-			progressLock.unlock();
-		}
-	}
+            if (isProgressDisplayed()) {
+                summedFileLength += fileSize;
 
-	public String hashLegend()
-	{
-		StringBuilder sb = new StringBuilder();
-		for (int progressIndex = hashProgress.size() - 1; progressIndex >= 0; progressIndex--)
-		{
-			Pair<Character, Integer> progressPair = hashProgress.get(progressIndex);
-			char marker = progressPair.getLeft();
-			sb.append(marker);
+                if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0) {
+                    System.out.print(getProgressChar(summedFileLength));
+                    summedFileLength = 0;
+                }
+            }
 
-			int fileLength = progressPair.getRight();
-			if (fileLength == 0)
-			{
-				sb.append(" otherwise");
-			}
-			else
-			{
-				sb.append(" > ").append(FileUtils.byteCountToDisplaySize(fileLength));
-			}
-			sb.append(", ");
-		}
-		String legend = sb.toString();
-		legend = legend.substring(0, legend.length() - 2);
-		return legend;
-	}
+            if (fileCount % (100 * PROGRESS_DISPLAY_FILE_COUNT) == 0) {
+                if (isProgressDisplayed()) {
+                    Console.newLine();
+                }
+            }
+        } finally {
+            progressLock.unlock();
+        }
+    }
 
-	protected char getProgressChar(long fileLength)
-	{
-		int progressIndex;
-		for (progressIndex = hashProgress.size() - 1; progressIndex >= 0; progressIndex--)
-		{
-			Pair<Character, Integer> progressPair = hashProgress.get(progressIndex);
-			if (fileLength >= progressPair.getRight())
-			{
-				return progressPair.getLeft();
-			}
-		}
+    public String hashLegend() {
+        StringBuilder sb = new StringBuilder();
+        for (int progressIndex = hashProgress.size() - 1; progressIndex >= 0; progressIndex--) {
+            Pair<Character, Integer> progressPair = hashProgress.get(progressIndex);
+            char marker = progressPair.getLeft();
+            sb.append(marker);
 
-		return ' ';
-	}
+            int fileLength = progressPair.getRight();
+            if (fileLength == 0) {
+                sb.append(" otherwise");
+            } else {
+                sb.append(" > ").append(FileUtils.byteCountToDisplaySize(fileLength));
+            }
+            sb.append(", ");
+        }
+        String legend = sb.toString();
+        legend = legend.substring(0, legend.length() - 2);
+        return legend;
+    }
 
-	public void outputStop()
-	{
-		if (isProgressDisplayed())
-		{
-			if (fileCount >= PROGRESS_DISPLAY_FILE_COUNT)
-			{
-				Console.newLine();
-			}
-		}
-	}
+    protected char getProgressChar(long fileLength) {
+        int progressIndex;
+        for (progressIndex = hashProgress.size() - 1; progressIndex >= 0; progressIndex--) {
+            Pair<Character, Integer> progressPair = hashProgress.get(progressIndex);
+            if (fileLength >= progressPair.getRight()) {
+                return progressPair.getLeft();
+            }
+        }
 
-	public boolean isProgressDisplayed()
-	{
-		return context.isVerbose() && context.getHashMode() != dontHash;
-	}
+        return ' ';
+    }
 
-	public Context getContext()
-	{
-		return context;
-	}
+    public void outputStop() {
+        if (isProgressDisplayed()) {
+            if (fileCount >= PROGRESS_DISPLAY_FILE_COUNT) {
+                Console.newLine();
+            }
+        }
+    }
+
+    public boolean isProgressDisplayed() {
+        return context.isVerbose() && context.getHashMode() != dontHash;
+    }
+
+    public Context getContext() {
+        return context;
+    }
 }

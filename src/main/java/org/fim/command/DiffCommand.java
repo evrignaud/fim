@@ -25,42 +25,36 @@ import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.State;
 
-public class DiffCommand extends AbstractCommand
-{
-	@Override
-	public String getCmdName()
-	{
-		return "diff";
-	}
+public class DiffCommand extends AbstractCommand {
+    @Override
+    public String getCmdName() {
+        return "diff";
+    }
 
-	@Override
-	public String getShortCmdName()
-	{
-		return "";
-	}
+    @Override
+    public String getShortCmdName() {
+        return "";
+    }
 
-	@Override
-	public String getDescription()
-	{
-		return "Compare the current directory State with the previous one.\n" +
-				"                                You can get a quick result by using the -f or -s or -n options";
-	}
+    @Override
+    public String getDescription() {
+        return "Compare the current directory State with the previous one.\n" +
+            "                                You can get a quick result by using the -f or -s or -n options";
+    }
 
-	@Override
-	public Object execute(Context context) throws Exception
-	{
-		checkHashMode(context, Option.ALLOW_COMPATIBLE);
+    @Override
+    public Object execute(Context context) throws Exception {
+        checkHashMode(context, Option.ALLOW_COMPATIBLE);
 
-		State currentState = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), context.getCurrentDirectory());
-		State lastState = new StateManager(context).loadLastState();
+        State currentState = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), context.getCurrentDirectory());
+        State lastState = new StateManager(context).loadLastState();
 
-		if (context.isInvokedFromSubDirectory())
-		{
-			lastState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
-		}
+        if (context.isInvokedFromSubDirectory()) {
+            lastState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
+        }
 
-		CompareResult result = new StateComparator(context, lastState, currentState).compare();
-		result.displayChanges(System.out);
-		return result;
-	}
+        CompareResult result = new StateComparator(context, lastState, currentState).compare();
+        result.displayChanges(System.out);
+        return result;
+    }
 }

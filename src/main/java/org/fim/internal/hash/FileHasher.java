@@ -18,8 +18,11 @@
  */
 package org.fim.internal.hash;
 
-import static org.fim.model.Constants.NO_HASH;
-import static org.fim.model.HashMode.dontHash;
+import org.apache.commons.lang3.SystemUtils;
+import org.fim.model.*;
+import org.fim.util.*;
+import sun.misc.Cleaner;
+import sun.nio.ch.DirectBuffer;
 
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
@@ -36,202 +39,156 @@ import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.fim.model.Attribute;
-import org.fim.model.Context;
-import org.fim.model.FileAttribute;
-import org.fim.model.FileHash;
-import org.fim.model.FileState;
-import org.fim.model.HashMode;
-import org.fim.model.Range;
-import org.fim.util.Console;
-import org.fim.util.DosFilePermissions;
-import org.fim.util.FileUtil;
-import org.fim.util.Logger;
-import org.fim.util.SELinux;
-import sun.misc.Cleaner;
-import sun.nio.ch.DirectBuffer;
+import static org.fim.model.Constants.NO_HASH;
+import static org.fim.model.HashMode.dontHash;
 
-public class FileHasher implements Runnable
-{
-	private final HashProgress hashProgress;
-	private final BlockingDeque<Path> filesToHashQueue;
-	private final String rootDir;
+public class FileHasher implements Runnable {
+    private final HashProgress hashProgress;
+    private final BlockingDeque<Path> filesToHashQueue;
+    private final String rootDir;
 
-	private final List<FileState> fileStates;
+    private final List<FileState> fileStates;
 
-	private final FrontHasher frontHasher;
-	private Context context;
+    private final FrontHasher frontHasher;
+    private Context context;
 
-	public FileHasher(Context context, HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException
-	{
-		this.context = context;
-		this.hashProgress = hashProgress;
-		this.filesToHashQueue = filesToHashQueue;
-		this.rootDir = rootDir;
+    public FileHasher(Context context, HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException {
+        this.context = context;
+        this.hashProgress = hashProgress;
+        this.filesToHashQueue = filesToHashQueue;
+        this.rootDir = rootDir;
 
-		this.fileStates = new ArrayList<>();
+        this.fileStates = new ArrayList<>();
 
-		HashMode hashMode = hashProgress.getContext().getHashMode();
-		frontHasher = new FrontHasher(hashMode);
-	}
+        HashMode hashMode = hashProgress.getContext().getHashMode();
+        frontHasher = new FrontHasher(hashMode);
+    }
 
-	public List<FileState> getFileStates()
-	{
-		return fileStates;
-	}
+    public List<FileState> getFileStates() {
+        return fileStates;
+    }
 
-	public long getTotalBytesHashed()
-	{
-		return frontHasher.getTotalBytesHashed();
-	}
+    public long getTotalBytesHashed() {
+        return frontHasher.getTotalBytesHashed();
+    }
 
-	protected FrontHasher getFrontHasher()
-	{
-		return frontHasher;
-	}
+    protected FrontHasher getFrontHasher() {
+        return frontHasher;
+    }
 
-	@Override
-	public void run()
-	{
-		try
-		{
-			Path file;
-			while ((file = filesToHashQueue.poll(500, TimeUnit.MILLISECONDS)) != null)
-			{
-				try
-				{
-					BasicFileAttributes attributes;
-					List<Attribute> fileAttributes = null;
+    @Override
+    public void run() {
+        try {
+            Path file;
+            while ((file = filesToHashQueue.poll(500, TimeUnit.MILLISECONDS)) != null) {
+                try {
+                    BasicFileAttributes attributes;
+                    List<Attribute> fileAttributes = null;
 
-					if (SystemUtils.IS_OS_WINDOWS)
-					{
-						DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
-						fileAttributes = addAttribute(fileAttributes, FileAttribute.DosFilePermissions, DosFilePermissions.toString(dosFileAttributes));
-						attributes = dosFileAttributes;
-					}
-					else
-					{
-						PosixFileAttributes posixFileAttributes = Files.readAttributes(file, PosixFileAttributes.class);
-						fileAttributes = addAttribute(fileAttributes, FileAttribute.PosixFilePermissions, PosixFilePermissions.toString(posixFileAttributes.permissions()));
-						if (SELinux.ENABLED)
-						{
-							fileAttributes = addAttribute(fileAttributes, FileAttribute.SELinuxLabel, SELinux.getLabel(context, file));
-						}
-						attributes = posixFileAttributes;
-					}
+                    if (SystemUtils.IS_OS_WINDOWS) {
+                        DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
+                        fileAttributes = addAttribute(fileAttributes, FileAttribute.DosFilePermissions, DosFilePermissions.toString(dosFileAttributes));
+                        attributes = dosFileAttributes;
+                    } else {
+                        PosixFileAttributes posixFileAttributes = Files.readAttributes(file, PosixFileAttributes.class);
+                        fileAttributes = addAttribute(fileAttributes, FileAttribute.PosixFilePermissions, PosixFilePermissions.toString(posixFileAttributes.permissions()));
+                        if (SELinux.ENABLED) {
+                            fileAttributes = addAttribute(fileAttributes, FileAttribute.SELinuxLabel, SELinux.getLabel(context, file));
+                        }
+                        attributes = posixFileAttributes;
+                    }
 
-					hashProgress.updateOutput(attributes.size());
+                    hashProgress.updateOutput(attributes.size());
 
-					FileHash fileHash = hashFile(file, attributes.size());
-					String normalizedFileName = FileUtil.getNormalizedFileName(file);
-					String relativeFileName = FileUtil.getRelativeFileName(rootDir, normalizedFileName);
+                    FileHash fileHash = hashFile(file, attributes.size());
+                    String normalizedFileName = FileUtil.getNormalizedFileName(file);
+                    String relativeFileName = FileUtil.getRelativeFileName(rootDir, normalizedFileName);
 
-					fileStates.add(new FileState(relativeFileName, attributes, fileHash, fileAttributes));
-				}
-				catch (Exception ex)
-				{
-					Console.newLine();
-					Logger.error("Skipping - Error hashing file '" + file + "'", ex, context.isDisplayStackTrace());
-				}
-			}
-		}
-		catch (InterruptedException ex)
-		{
-			Logger.error("Exception while hashing", ex, context.isDisplayStackTrace());
-		}
-	}
+                    fileStates.add(new FileState(relativeFileName, attributes, fileHash, fileAttributes));
+                } catch (Exception ex) {
+                    Console.newLine();
+                    Logger.error("Skipping - Error hashing file '" + file + "'", ex, context.isDisplayStackTrace());
+                }
+            }
+        } catch (InterruptedException ex) {
+            Logger.error("Exception while hashing", ex, context.isDisplayStackTrace());
+        }
+    }
 
-	private List<Attribute> addAttribute(List<Attribute> attributes, FileAttribute attribute, String value)
-	{
-		if (value == null)
-		{
-			return attributes;
-		}
+    private List<Attribute> addAttribute(List<Attribute> attributes, FileAttribute attribute, String value) {
+        if (value == null) {
+            return attributes;
+        }
 
-		List<Attribute> newAttributes = attributes;
-		if (newAttributes == null)
-		{
-			newAttributes = new ArrayList<>();
-		}
+        List<Attribute> newAttributes = attributes;
+        if (newAttributes == null) {
+            newAttributes = new ArrayList<>();
+        }
 
-		newAttributes.add(new Attribute(attribute.name(), value));
+        newAttributes.add(new Attribute(attribute.name(), value));
 
-		return newAttributes;
-	}
+        return newAttributes;
+    }
 
-	protected FileHash hashFile(Path file, long fileSize) throws IOException
-	{
-		HashMode hashMode = hashProgress.getContext().getHashMode();
+    protected FileHash hashFile(Path file, long fileSize) throws IOException {
+        HashMode hashMode = hashProgress.getContext().getHashMode();
 
-		if (hashMode == dontHash)
-		{
-			return new FileHash(NO_HASH, NO_HASH, NO_HASH);
-		}
+        if (hashMode == dontHash) {
+            return new FileHash(NO_HASH, NO_HASH, NO_HASH);
+        }
 
-		frontHasher.reset(fileSize);
+        frontHasher.reset(fileSize);
 
-		long filePosition = 0;
-		long blockSize;
-		int bufferSize;
+        long filePosition = 0;
+        long blockSize;
+        int bufferSize;
 
-		try (final FileChannel channel = FileChannel.open(file))
-		{
-			while (filePosition < fileSize)
-			{
-				Range nextRange = frontHasher.getNextRange(filePosition);
-				if (nextRange == null)
-				{
-					break;
-				}
+        try (final FileChannel channel = FileChannel.open(file)) {
+            while (filePosition < fileSize) {
+                Range nextRange = frontHasher.getNextRange(filePosition);
+                if (nextRange == null) {
+                    break;
+                }
 
-				filePosition = nextRange.getFrom();
-				blockSize = nextRange.getTo() - nextRange.getFrom();
-				bufferSize = hashBuffer(channel, filePosition, blockSize);
-				filePosition += bufferSize;
-			}
-		}
+                filePosition = nextRange.getFrom();
+                blockSize = nextRange.getTo() - nextRange.getFrom();
+                bufferSize = hashBuffer(channel, filePosition, blockSize);
+                filePosition += bufferSize;
+            }
+        }
 
-		if (false == frontHasher.hashComplete())
-		{
-			throw new RuntimeException(String.format("Fim is not working correctly for file '%s' (size=%d). Some Hasher have not completed: small=%s, medium=%s, full=%s",
-					file, fileSize, frontHasher.getSmallBlockHasher().hashComplete(), frontHasher.getMediumBlockHasher().hashComplete(), frontHasher.getFullHasher().hashComplete()));
-		}
+        if (false == frontHasher.hashComplete()) {
+            throw new RuntimeException(String.format("Fim is not working correctly for file '%s' (size=%d). Some Hasher have not completed: small=%s, medium=%s, full=%s",
+                file, fileSize, frontHasher.getSmallBlockHasher().hashComplete(), frontHasher.getMediumBlockHasher().hashComplete(), frontHasher.getFullHasher().hashComplete()));
+        }
 
-		return frontHasher.getFileHash();
-	}
+        return frontHasher.getFileHash();
+    }
 
-	private int hashBuffer(FileChannel channel, long filePosition, long size) throws IOException
-	{
-		MappedByteBuffer buffer = null;
-		try
-		{
-			buffer = channel.map(FileChannel.MapMode.READ_ONLY, filePosition, size);
-			int bufferSize = buffer.remaining();
+    private int hashBuffer(FileChannel channel, long filePosition, long size) throws IOException {
+        MappedByteBuffer buffer = null;
+        try {
+            buffer = channel.map(FileChannel.MapMode.READ_ONLY, filePosition, size);
+            int bufferSize = buffer.remaining();
 
-			frontHasher.update(filePosition, buffer);
+            frontHasher.update(filePosition, buffer);
 
-			return bufferSize;
-		}
-		finally
-		{
-			unmap(buffer);
-		}
-	}
+            return bufferSize;
+        } finally {
+            unmap(buffer);
+        }
+    }
 
-	/**
-	 * Comes from here: http://stackoverflow.com/questions/8553158/prevent-outofmemory-when-using-java-nio-mappedbytebuffer
-	 */
-	private void unmap(MappedByteBuffer bb)
-	{
-		if (bb == null)
-		{
-			return;
-		}
-		Cleaner cleaner = ((DirectBuffer) bb).cleaner();
-		if (cleaner != null)
-		{
-			cleaner.clean();
-		}
-	}
+    /**
+     * Comes from here: http://stackoverflow.com/questions/8553158/prevent-outofmemory-when-using-java-nio-mappedbytebuffer
+     */
+    private void unmap(MappedByteBuffer bb) {
+        if (bb == null) {
+            return;
+        }
+        Cleaner cleaner = ((DirectBuffer) bb).cleaner();
+        if (cleaner != null) {
+            cleaner.clean();
+        }
+    }
 }

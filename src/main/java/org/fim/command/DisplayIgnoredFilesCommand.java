@@ -18,12 +18,6 @@
  */
 package org.fim.command;
 
-import static org.fim.util.FormatUtil.formatDate;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Set;
-
 import org.apache.commons.io.FileUtils;
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
@@ -31,73 +25,66 @@ import org.fim.model.State;
 import org.fim.util.Console;
 import org.fim.util.Logger;
 
-public class DisplayIgnoredFilesCommand extends AbstractCommand
-{
-	@Override
-	public String getCmdName()
-	{
-		return "display-ignored";
-	}
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Set;
 
-	@Override
-	public String getShortCmdName()
-	{
-		return "dign";
-	}
+import static org.fim.util.FormatUtil.formatDate;
 
-	@Override
-	public String getDescription()
-	{
-		return "Display the files or directories that are ignored into the last State";
-	}
+public class DisplayIgnoredFilesCommand extends AbstractCommand {
+    @Override
+    public String getCmdName() {
+        return "display-ignored";
+    }
 
-	@Override
-	public Object execute(Context context) throws Exception
-	{
-		StateManager manager = new StateManager(context);
+    @Override
+    public String getShortCmdName() {
+        return "dign";
+    }
 
-		int lastStateNumber = manager.getLastStateNumber();
-		if (lastStateNumber == -1)
-		{
-			Logger.error("No State found");
-			return null;
-		}
+    @Override
+    public String getDescription() {
+        return "Display the files or directories that are ignored into the last State";
+    }
 
-		Path statFile = manager.getStateFile(lastStateNumber);
-		if (Files.exists(statFile))
-		{
-			State state = manager.loadState(lastStateNumber);
-			System.out.printf("Files or directories ignored in State #%d: %s (%d files - %s)%n", lastStateNumber, formatDate(state.getTimestamp()),
-					state.getFileCount(), FileUtils.byteCountToDisplaySize(state.getFilesContentLength()));
-			if (state.getComment().length() > 0)
-			{
-				System.out.printf("\tComment: %s%n", state.getComment());
-			}
-			Set<String> ignoredFiles = state.getIgnoredFiles();
-			displayIgnore(ignoredFiles);
-			Console.newLine();
+    @Override
+    public Object execute(Context context) throws Exception {
+        StateManager manager = new StateManager(context);
 
-			return ignoredFiles;
-		}
+        int lastStateNumber = manager.getLastStateNumber();
+        if (lastStateNumber == -1) {
+            Logger.error("No State found");
+            return null;
+        }
 
-		return null;
-	}
+        Path statFile = manager.getStateFile(lastStateNumber);
+        if (Files.exists(statFile)) {
+            State state = manager.loadState(lastStateNumber);
+            System.out.printf("Files or directories ignored in State #%d: %s (%d files - %s)%n", lastStateNumber, formatDate(state.getTimestamp()),
+                state.getFileCount(), FileUtils.byteCountToDisplaySize(state.getFilesContentLength()));
+            if (state.getComment().length() > 0) {
+                System.out.printf("\tComment: %s%n", state.getComment());
+            }
+            Set<String> ignoredFiles = state.getIgnoredFiles();
+            displayIgnore(ignoredFiles);
+            Console.newLine();
 
-	private void displayIgnore(Set<String> ignoredFiles)
-	{
-		if (ignoredFiles == null || ignoredFiles.isEmpty())
-		{
-			Console.newLine();
-			System.out.println("No files or directories ignored into this State");
-		}
-		else
-		{
-			Console.newLine();
+            return ignoredFiles;
+        }
 
-			for (String ignoredFile : ignoredFiles)
-			{
-				System.out.printf("\t%s%n", ignoredFile);
-			}
-		}
-	}
+        return null;
+    }
+
+    private void displayIgnore(Set<String> ignoredFiles) {
+        if (ignoredFiles == null || ignoredFiles.isEmpty()) {
+            Console.newLine();
+            System.out.println("No files or directories ignored into this State");
+        } else {
+            Console.newLine();
+
+            for (String ignoredFile : ignoredFiles) {
+                System.out.printf("\t%s%n", ignoredFile);
+            }
+        }
+    }
 }

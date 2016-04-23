@@ -21,24 +21,20 @@ package org.fim.model;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FimIgnore
-{
-	private Set<FileToIgnore> filesToIgnoreLocally;
-	private Set<FileToIgnore> filesToIgnoreInAllDirectories;
+public class FimIgnore {
+    private Set<FileToIgnore> filesToIgnoreLocally;
+    private Set<FileToIgnore> filesToIgnoreInAllDirectories;
 
-	public FimIgnore()
-	{
-		filesToIgnoreLocally = new HashSet<>();
-		filesToIgnoreInAllDirectories = new HashSet<>();
-	}
+    public FimIgnore() {
+        filesToIgnoreLocally = new HashSet<>();
+        filesToIgnoreInAllDirectories = new HashSet<>();
+    }
 
-	public Set<FileToIgnore> getFilesToIgnoreLocally()
-	{
-		return filesToIgnoreLocally;
-	}
+    public Set<FileToIgnore> getFilesToIgnoreLocally() {
+        return filesToIgnoreLocally;
+    }
 
-	public Set<FileToIgnore> getFilesToIgnoreInAllDirectories()
-	{
-		return filesToIgnoreInAllDirectories;
-	}
+    public Set<FileToIgnore> getFilesToIgnoreInAllDirectories() {
+        return filesToIgnoreInAllDirectories;
+    }
 }

@@ -18,45 +18,41 @@
  */
 package org.fim.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Before;
 import org.junit.Test;
 
-public class FileToIgnoreTest
-{
-	private FileToIgnore a1;
-	private FileToIgnore a2;
-	private FileToIgnore b;
+import static org.assertj.core.api.Assertions.assertThat;
 
-	@Before
-	public void setup()
-	{
-		a1 = new FileToIgnore("*.mp3");
-		a2 = new FileToIgnore("*.mp3");
+public class FileToIgnoreTest {
+    private FileToIgnore a1;
+    private FileToIgnore a2;
+    private FileToIgnore b;
 
-		b = new FileToIgnore("foo");
-	}
+    @Before
+    public void setup() {
+        a1 = new FileToIgnore("*.mp3");
+        a2 = new FileToIgnore("*.mp3");
 
-	@Test
-	public void equalsIsWorking()
-	{
-		assertThat(a1).isNotEqualTo(null);
+        b = new FileToIgnore("foo");
+    }
 
-		assertThat(a1).isNotEqualTo("dummy_string");
+    @Test
+    public void equalsIsWorking() {
+        assertThat(a1).isNotEqualTo(null);
 
-		assertThat(a1).isEqualTo(a2);
-		assertThat(a2).isEqualTo(a1);
+        assertThat(a1).isNotEqualTo("dummy_string");
 
-		assertThat(a1).isNotEqualTo(b);
-		assertThat(b).isNotEqualTo(a1);
-	}
+        assertThat(a1).isEqualTo(a2);
+        assertThat(a2).isEqualTo(a1);
 
-	@Test
-	public void hashcodeIsWorking()
-	{
-		assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
+        assertThat(a1).isNotEqualTo(b);
+        assertThat(b).isNotEqualTo(a1);
+    }
 
-		assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
-	}
+    @Test
+    public void hashcodeIsWorking() {
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
+
+        assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
+    }
 }

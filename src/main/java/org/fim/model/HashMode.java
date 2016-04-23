@@ -18,10 +18,9 @@
  */
 package org.fim.model;
 
-public enum HashMode
-{
-	dontHash,
-	hashSmallBlock,
-	hashMediumBlock,
-	hashAll
+public enum HashMode {
+    dontHash,
+    hashSmallBlock,
+    hashMediumBlock,
+    hashAll
 }

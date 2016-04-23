@@ -18,12 +18,11 @@
  */
 package org.fim.model;
 
-import static java.lang.System.lineSeparator;
-import static org.assertj.core.api.Assertions.*;
-import static org.fim.model.CompareResult.addSeparator;
-import static org.fim.model.CompareResult.displayDifferences;
-import static org.fim.model.CompareResult.formatModifiedAttributes;
-import static org.fim.model.CompareResult.getValue;
+import org.fim.tooling.BuildableContext;
+import org.fim.tooling.BuildableState;
+import org.fim.tooling.StateAssert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -33,127 +32,119 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-import org.fim.tooling.BuildableContext;
-import org.fim.tooling.BuildableState;
-import org.fim.tooling.StateAssert;
-import org.junit.Before;
-import org.junit.Test;
+import static java.lang.System.lineSeparator;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.fim.model.CompareResult.*;
 
-public class CompareResultTest extends StateAssert
-{
-	private GregorianCalendar calendar;
-	private long time;
+public class CompareResultTest extends StateAssert {
+    private GregorianCalendar calendar;
+    private long time;
 
-	private BuildableContext context;
+    private BuildableContext context;
 
-	private FileState fileState1;
-	private FileState fileState2;
+    private FileState fileState1;
+    private FileState fileState2;
 
-	private Difference difference;
+    private Difference difference;
 
-	@Before
-	public void setup()
-	{
-		context = defaultContext();
+    @Before
+    public void setup() {
+        context = defaultContext();
 
-		int year = 115;
-		int month = 11;
-		int day = 14;
-		int hrs = 13;
-		int min = 12;
-		int seconds = 10;
-		calendar = new GregorianCalendar(year + 1900, month - 1, day, hrs, min, seconds);
-		time = calendar.getTimeInMillis();
+        int year = 115;
+        int month = 11;
+        int day = 14;
+        int hrs = 13;
+        int min = 12;
+        int seconds = 10;
+        calendar = new GregorianCalendar(year + 1900, month - 1, day, hrs, min, seconds);
+        time = calendar.getTimeInMillis();
 
-		BuildableState s1 = new BuildableState(context).addFiles("file_01");
-		BuildableState s2 = s1.clone();
+        BuildableState s1 = new BuildableState(context).addFiles("file_01");
+        BuildableState s2 = s1.clone();
 
-		fileState1 = s1.getFileStates().get(0);
-		fileState1.getFileTime().setCreationTime(time + 1);
-		fileState1.getFileTime().setLastModified(time + 2);
+        fileState1 = s1.getFileStates().get(0);
+        fileState1.getFileTime().setCreationTime(time + 1);
+        fileState1.getFileTime().setLastModified(time + 2);
 
-		fileState2 = s2.getFileStates().get(0);
-		fileState2.getFileTime().setCreationTime(time + 1);
-		fileState2.getFileTime().setLastModified(time + 3);
+        fileState2 = s2.getFileStates().get(0);
+        fileState2.getFileTime().setCreationTime(time + 1);
+        fileState2.getFileTime().setLastModified(time + 3);
 
-		difference = new Difference(fileState1, fileState2);
-	}
+        difference = new Difference(fileState1, fileState2);
+    }
 
-	@Test
-	public void getValueTest()
-	{
-		assertThat(getValue(null, "key1")).isEqualTo("[nothing]");
+    @Test
+    public void getValueTest() {
+        assertThat(getValue(null, "key1")).isEqualTo("[nothing]");
 
-		HashMap<String, String> map = new HashMap<>();
-		map.put("key1", "val1");
-		map.put("key2", "val2");
+        HashMap<String, String> map = new HashMap<>();
+        map.put("key1", "val1");
+        map.put("key2", "val2");
 
-		assertThat(getValue(map, "key1")).isEqualTo("val1");
+        assertThat(getValue(map, "key1")).isEqualTo("val1");
 
-		assertThat(getValue(map, "_dummy_key_")).isEqualTo("[nothing]");
-	}
+        assertThat(getValue(map, "_dummy_key_")).isEqualTo("[nothing]");
+    }
 
-	@Test
-	public void addSeparatorTest()
-	{
-		StringBuilder modification;
+    @Test
+    public void addSeparatorTest() {
+        StringBuilder modification;
 
-		addSeparator(difference, (modification = new StringBuilder("")));
-		assertThat(modification.toString()).isEqualTo("");
+        addSeparator(difference, (modification = new StringBuilder("")));
+        assertThat(modification.toString()).isEqualTo("");
 
-		addSeparator(difference, (modification = new StringBuilder("content")));
-		assertThat(modification.toString()).isEqualTo("content\n                          \t");
-	}
+        addSeparator(difference, (modification = new StringBuilder("content")));
+        assertThat(modification.toString()).isEqualTo("content\n                          \t");
+    }
 
-	@Test
-	public void formatModifiedAttributesTest()
-	{
-		String modificationStr = "lastModified: 2015/11/14 13:12:10 -> 2015/11/14 13:12:10";
-		assertThat(formatModifiedAttributes(difference, true)).isEqualTo(" \n                          \t" + modificationStr);
+    @Test
+    public void formatModifiedAttributesTest() {
+        String modificationStr = "lastModified: 2015/11/14 13:12:10 -> 2015/11/14 13:12:10";
+        assertThat(formatModifiedAttributes(difference, true)).isEqualTo(" \n                          \t" + modificationStr);
 
-		assertThat(formatModifiedAttributes(difference, false)).isEqualTo(modificationStr);
-	}
+        assertThat(formatModifiedAttributes(difference, false)).isEqualTo(modificationStr);
+    }
 
-	@Test
-	public void displayDifferencesTest()
-	{
-		final AtomicBoolean called = new AtomicBoolean(false);
+    @Test
+    public void displayDifferencesTest() {
+        final AtomicBoolean called = new AtomicBoolean(false);
 
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		PrintStream printStream = new PrintStream(outputStream);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(outputStream);
 
-		ArrayList<Difference> differences = new ArrayList<>();
-		String actionStr = "action: ";
-		Consumer<Difference> differenceConsumer = diff -> called.set(true);
+        ArrayList<Difference> differences = new ArrayList<>();
+        String actionStr = "action: ";
+        Consumer<Difference> differenceConsumer = diff -> called.set(true);
 
-		// No differences
-		context.setTruncateOutput(0);
-		displayDifferences(printStream, context, actionStr, differences, differenceConsumer);
-		assertThat(called.get()).isEqualTo(false);
-		assertThat(outputStream.toString()).isEqualTo("");
+        // No differences
+        context.setTruncateOutput(0);
+        displayDifferences(printStream, context, actionStr, differences, differenceConsumer);
+        assertThat(called.get()).isEqualTo(false);
+        assertThat(outputStream.toString()).isEqualTo("");
 
-		// Only one with output truncated
-		called.set(false);
-		differences.add(difference);
-		context.setTruncateOutput(0);
-		displayDifferences(printStream, context, actionStr, differences, differenceConsumer);
-		assertThat(called.get()).isEqualTo(false);
-		assertThat(outputStream.toString()).isEqualTo("");
+        // Only one with output truncated
+        called.set(false);
+        differences.add(difference);
+        context.setTruncateOutput(0);
+        displayDifferences(printStream, context, actionStr, differences, differenceConsumer);
+        assertThat(called.get()).isEqualTo(false);
+        assertThat(outputStream.toString()).isEqualTo("");
 
-		// Only one with output set to one line
-		called.set(false);
-		context.setTruncateOutput(1);
-		displayDifferences(printStream, context, actionStr, differences, differenceConsumer);
-		assertThat(called.get()).isEqualTo(true);
-		assertThat(outputStream.toString()).isEqualTo("");
+        // Only one with output set to one line
+        called.set(false);
+        context.setTruncateOutput(1);
+        displayDifferences(printStream, context, actionStr, differences, differenceConsumer);
+        assertThat(called.get()).isEqualTo(true);
+        assertThat(outputStream.toString()).isEqualTo("");
 
-		// Three differences with output set to 2 lines
-		differences.add(difference);
-		differences.add(difference);
-		called.set(false);
-		context.setTruncateOutput(2);
-		displayDifferences(printStream, context, actionStr, differences, differenceConsumer);
-		assertThat(called.get()).isEqualTo(true);
-		assertThat(outputStream.toString()).isEqualTo("  [Too many lines. Truncating the output] ..." + lineSeparator() + "action: 1 file more" + lineSeparator());
-	}
+        // Three differences with output set to 2 lines
+        differences.add(difference);
+        differences.add(difference);
+        called.set(false);
+        context.setTruncateOutput(2);
+        displayDifferences(printStream, context, actionStr, differences, differenceConsumer);
+        assertThat(called.get()).isEqualTo(true);
+        assertThat(outputStream.toString()).isEqualTo("  [Too many lines. Truncating the output] ..." + lineSeparator() + "action: 1 file more" + lineSeparator());
+    }
 }

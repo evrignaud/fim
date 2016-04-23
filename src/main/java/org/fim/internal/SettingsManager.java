@@ -18,88 +18,66 @@
  */
 package org.fim.internal;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.fim.model.Context;
 import org.fim.model.HashMode;
 import org.fim.model.Settings;
 
-public class SettingsManager
-{
-	public static final String SETTINGS_FILE = "settings.json";
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-	private Path settingsFile;
-	private Settings settings;
+public class SettingsManager {
+    public static final String SETTINGS_FILE = "settings.json";
 
-	public SettingsManager(Context context)
-	{
-		settingsFile = context.getRepositoryDotFimDir().resolve(SETTINGS_FILE);
-		settings = new Settings();
+    private Path settingsFile;
+    private Settings settings;
 
-		if (isSaved())
-		{
-			load();
-		}
-	}
+    public SettingsManager(Context context) {
+        settingsFile = context.getRepositoryDotFimDir().resolve(SETTINGS_FILE);
+        settings = new Settings();
 
-	public boolean isSaved()
-	{
-		return Files.exists(settingsFile);
-	}
+        if (isSaved()) {
+            load();
+        }
+    }
 
-	private void load()
-	{
-		try (Reader reader = new InputStreamReader(new FileInputStream(settingsFile.toFile())))
-		{
-			Gson gson = new Gson();
-			settings = gson.fromJson(reader, Settings.class);
-		}
-		catch (IOException ex)
-		{
-			throw new RuntimeException("Error reading settings", ex);
-		}
-	}
+    public boolean isSaved() {
+        return Files.exists(settingsFile);
+    }
 
-	public void save()
-	{
-		try (Writer writer = new OutputStreamWriter(new FileOutputStream(settingsFile.toFile())))
-		{
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			gson.toJson(settings, writer);
-		}
-		catch (IOException ex)
-		{
-			throw new RuntimeException("Error saving settings", ex);
-		}
-	}
+    private void load() {
+        try (Reader reader = new InputStreamReader(new FileInputStream(settingsFile.toFile()))) {
+            Gson gson = new Gson();
+            settings = gson.fromJson(reader, Settings.class);
+        } catch (IOException ex) {
+            throw new RuntimeException("Error reading settings", ex);
+        }
+    }
 
-	public HashMode getGlobalHashMode()
-	{
-		return settings.getGlobalHashMode();
-	}
+    public void save() {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(settingsFile.toFile()))) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(settings, writer);
+        } catch (IOException ex) {
+            throw new RuntimeException("Error saving settings", ex);
+        }
+    }
 
-	public void setGlobalHashMode(HashMode globalHashMode)
-	{
-		settings.setGlobalHashMode(globalHashMode);
-	}
+    public HashMode getGlobalHashMode() {
+        return settings.getGlobalHashMode();
+    }
 
-	public int getLastStateNumber()
-	{
-		return settings.getLastStateNumber();
-	}
+    public void setGlobalHashMode(HashMode globalHashMode) {
+        settings.setGlobalHashMode(globalHashMode);
+    }
 
-	public void setLastStateNumber(int lastStateNumber)
-	{
-		settings.setLastStateNumber(lastStateNumber);
-	}
+    public int getLastStateNumber() {
+        return settings.getLastStateNumber();
+    }
+
+    public void setLastStateNumber(int lastStateNumber) {
+        settings.setLastStateNumber(lastStateNumber);
+    }
 }

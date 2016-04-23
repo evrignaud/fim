@@ -20,10 +20,9 @@ package org.fim.model;
 
 import com.google.common.hash.Hasher;
 
-public interface Hashable
-{
-	char HASH_OBJECT_SEPARATOR = '|';
-	char HASH_FIELD_SEPARATOR = '_';
+public interface Hashable {
+    char HASH_OBJECT_SEPARATOR = '|';
+    char HASH_FIELD_SEPARATOR = '_';
 
-	void hashObject(Hasher hasher);
+    void hashObject(Hasher hasher);
 }

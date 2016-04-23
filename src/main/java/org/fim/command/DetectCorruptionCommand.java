@@ -18,8 +18,6 @@
  */
 package org.fim.command;
 
-import static org.fim.model.HashMode.hashAll;
-
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
@@ -29,48 +27,43 @@ import org.fim.model.Context;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
-public class DetectCorruptionCommand extends AbstractCommand
-{
-	@Override
-	public String getCmdName()
-	{
-		return "detect-corruption";
-	}
+import static org.fim.model.HashMode.hashAll;
 
-	@Override
-	public String getShortCmdName()
-	{
-		return "dcor";
-	}
+public class DetectCorruptionCommand extends AbstractCommand {
+    @Override
+    public String getCmdName() {
+        return "detect-corruption";
+    }
 
-	@Override
-	public String getDescription()
-	{
-		return "Find changes most likely caused by a hardware corruption or a filesystem bug.\n" +
-				"                                Change in content, but not in creation time and last modified time";
-	}
+    @Override
+    public String getShortCmdName() {
+        return "dcor";
+    }
 
-	@Override
-	public Object execute(Context context) throws Exception
-	{
-		if (context.getHashMode() != hashAll)
-		{
-			Logger.error("Hardware corruption detection require to hash all the file content.");
-			throw new BadFimUsageException();
-		}
+    @Override
+    public String getDescription() {
+        return "Find changes most likely caused by a hardware corruption or a filesystem bug.\n" +
+            "                                Change in content, but not in creation time and last modified time";
+    }
 
-		checkHashMode(context, Option.ALLOW_COMPATIBLE);
+    @Override
+    public Object execute(Context context) throws Exception {
+        if (context.getHashMode() != hashAll) {
+            Logger.error("Hardware corruption detection require to hash all the file content.");
+            throw new BadFimUsageException();
+        }
 
-		State currentState = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), context.getCurrentDirectory());
-		State lastState = new StateManager(context).loadLastState();
+        checkHashMode(context, Option.ALLOW_COMPATIBLE);
 
-		if (context.isInvokedFromSubDirectory())
-		{
-			lastState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
-		}
+        State currentState = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), context.getCurrentDirectory());
+        State lastState = new StateManager(context).loadLastState();
 
-		CompareResult result = new StateComparator(context, lastState, currentState).searchForHardwareCorruption().compare();
-		result.displayChanges(System.out);
-		return result;
-	}
+        if (context.isInvokedFromSubDirectory()) {
+            lastState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
+        }
+
+        CompareResult result = new StateComparator(context, lastState, currentState).searchForHardwareCorruption().compare();
+        result.displayChanges(System.out);
+        return result;
+    }
 }

@@ -18,30 +18,26 @@
  */
 package org.fim.internal.hash;
 
-import static org.fim.model.Constants._4_KB;
-import static org.fim.model.HashMode.hashSmallBlock;
-
-import java.security.NoSuchAlgorithmException;
-
 import org.fim.model.HashMode;
 import org.fim.util.HashModeUtil;
 
-public class SmallBlockHasher extends BlockHasher
-{
-	public SmallBlockHasher(HashMode hashMode) throws NoSuchAlgorithmException
-	{
-		super(hashMode);
-	}
+import java.security.NoSuchAlgorithmException;
 
-	@Override
-	protected int getBlockSize()
-	{
-		return _4_KB;
-	}
+import static org.fim.model.Constants._4_KB;
+import static org.fim.model.HashMode.hashSmallBlock;
 
-	@Override
-	protected boolean isCompatible(HashMode hashMode)
-	{
-		return HashModeUtil.isCompatible(hashMode, hashSmallBlock);
-	}
+public class SmallBlockHasher extends BlockHasher {
+    public SmallBlockHasher(HashMode hashMode) throws NoSuchAlgorithmException {
+        super(hashMode);
+    }
+
+    @Override
+    protected int getBlockSize() {
+        return _4_KB;
+    }
+
+    @Override
+    protected boolean isCompatible(HashMode hashMode) {
+        return HashModeUtil.isCompatible(hashMode, hashSmallBlock);
+    }
 }

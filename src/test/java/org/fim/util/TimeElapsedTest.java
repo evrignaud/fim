@@ -18,43 +18,38 @@
  */
 package org.fim.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Test;
 
-public class TimeElapsedTest
-{
-	private boolean startCalled = false;
-	private boolean stopCalled = false;
+import static org.assertj.core.api.Assertions.assertThat;
 
-	@Test
-	public void weCanEstimateTheElapsedTime() throws InterruptedException
-	{
-		TimeElapsed cut = new MyTimeElapsed();
-		assertThat(startCalled).isEqualTo(true);
-		startCalled = false;
+public class TimeElapsedTest {
+    private boolean startCalled = false;
+    private boolean stopCalled = false;
 
-		Thread.sleep(10);
+    @Test
+    public void weCanEstimateTheElapsedTime() throws InterruptedException {
+        TimeElapsed cut = new MyTimeElapsed();
+        assertThat(startCalled).isEqualTo(true);
+        startCalled = false;
 
-		assertThat(cut.getDuration()).isGreaterThan(10);
-		assertThat(stopCalled).isEqualTo(true);
-		assertThat(startCalled).isEqualTo(true);
-	}
+        Thread.sleep(10);
 
-	private class MyTimeElapsed extends TimeElapsed
-	{
-		@Override
-		public void start()
-		{
-			startCalled = true;
-			super.start();
-		}
+        assertThat(cut.getDuration()).isGreaterThan(10);
+        assertThat(stopCalled).isEqualTo(true);
+        assertThat(startCalled).isEqualTo(true);
+    }
 
-		@Override
-		protected void stop()
-		{
-			stopCalled = true;
-			super.stop();
-		}
-	}
+    private class MyTimeElapsed extends TimeElapsed {
+        @Override
+        public void start() {
+            startCalled = true;
+            super.start();
+        }
+
+        @Override
+        protected void stop() {
+            stopCalled = true;
+            super.stop();
+        }
+    }
 }

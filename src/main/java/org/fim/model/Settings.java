@@ -20,28 +20,23 @@ package org.fim.model;
 
 import static org.fim.model.HashMode.hashAll;
 
-public class Settings
-{
-	private HashMode globalHashMode = hashAll;
-	private int lastStateNumber = 0;
+public class Settings {
+    private HashMode globalHashMode = hashAll;
+    private int lastStateNumber = 0;
 
-	public HashMode getGlobalHashMode()
-	{
-		return globalHashMode;
-	}
+    public HashMode getGlobalHashMode() {
+        return globalHashMode;
+    }
 
-	public void setGlobalHashMode(HashMode globalHashMode)
-	{
-		this.globalHashMode = globalHashMode;
-	}
+    public void setGlobalHashMode(HashMode globalHashMode) {
+        this.globalHashMode = globalHashMode;
+    }
 
-	public int getLastStateNumber()
-	{
-		return lastStateNumber;
-	}
+    public int getLastStateNumber() {
+        return lastStateNumber;
+    }
 
-	public void setLastStateNumber(int lastStateNumber)
-	{
-		this.lastStateNumber = lastStateNumber;
-	}
+    public void setLastStateNumber(int lastStateNumber) {
+        this.lastStateNumber = lastStateNumber;
+    }
 }

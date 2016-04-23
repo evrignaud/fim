@@ -18,66 +18,57 @@
  */
 package org.fim.internal.hash;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.hashAll;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.security.NoSuchAlgorithmException;
-
 import org.fim.model.HashMode;
 import org.fim.model.Range;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AbstractHasherTest
-{
-	private AbstractHasher cut;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.security.NoSuchAlgorithmException;
 
-	@Before
-	public void setup() throws NoSuchAlgorithmException, IOException
-	{
-		cut = new AbstractHasher(hashAll)
-		{
-			@Override
-			public Range getNextRange(long filePosition)
-			{
-				return null;
-			}
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.fim.model.HashMode.hashAll;
 
-			@Override
-			public boolean hashComplete()
-			{
-				return false;
-			}
+public class AbstractHasherTest {
+    private AbstractHasher cut;
 
-			@Override
-			protected boolean isCompatible(HashMode hashMode)
-			{
-				return false;
-			}
+    @Before
+    public void setup() throws NoSuchAlgorithmException, IOException {
+        cut = new AbstractHasher(hashAll) {
+            @Override
+            public Range getNextRange(long filePosition) {
+                return null;
+            }
 
-			@Override
-			protected ByteBuffer getNextBlockToHash(long filePosition, long currentPosition, ByteBuffer buffer)
-			{
-				return null;
-			}
-		};
-	}
+            @Override
+            public boolean hashComplete() {
+                return false;
+            }
 
-	@Test
-	public void weCanConvertToHexa()
-	{
-		byte[] bytes = new byte[]{(byte) 0xa4, (byte) 0xb0, (byte) 0xe5, (byte) 0xfd};
-		String hexString = cut.toHexString(bytes);
-		assertThat(hexString).isEqualTo("a4b0e5fd");
-	}
+            @Override
+            protected boolean isCompatible(HashMode hashMode) {
+                return false;
+            }
 
-	@Test
-	public void weCanConvertToHexaWithZero()
-	{
-		byte[] bytes = new byte[]{(byte) 0xa0, 0x40, 0x0b, 0x00, (byte) 0xe0, 0x05, 0x0f, 0x0d};
-		String hexString = cut.toHexString(bytes);
-		assertThat(hexString).isEqualTo("a0400b00e0050f0d");
-	}
+            @Override
+            protected ByteBuffer getNextBlockToHash(long filePosition, long currentPosition, ByteBuffer buffer) {
+                return null;
+            }
+        };
+    }
+
+    @Test
+    public void weCanConvertToHexa() {
+        byte[] bytes = new byte[]{(byte) 0xa4, (byte) 0xb0, (byte) 0xe5, (byte) 0xfd};
+        String hexString = cut.toHexString(bytes);
+        assertThat(hexString).isEqualTo("a4b0e5fd");
+    }
+
+    @Test
+    public void weCanConvertToHexaWithZero() {
+        byte[] bytes = new byte[]{(byte) 0xa0, 0x40, 0x0b, 0x00, (byte) 0xe0, 0x05, 0x0f, 0x0d};
+        String hexString = cut.toHexString(bytes);
+        assertThat(hexString).isEqualTo("a0400b00e0050f0d");
+    }
 }

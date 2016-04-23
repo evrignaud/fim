@@ -18,65 +18,59 @@
  */
 package org.fim.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Arrays;
-
 import org.junit.Before;
 import org.junit.Test;
 
-public class FileStateTest
-{
-	private FileState a1;
-	private FileState a2;
-	private FileState b;
+import java.util.Arrays;
 
-	@Before
-	public void setup()
-	{
-		a1 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), Arrays.asList(new Attribute("n1", "v1"), new Attribute("n2", "v2"), new Attribute("n3", "v3")));
-		a2 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), Arrays.asList(new Attribute("n3", "v3"), new Attribute("n2", "v2"), new Attribute("n1", "v1")));
+import static org.assertj.core.api.Assertions.assertThat;
 
-		b = new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"), Arrays.asList(new Attribute("n1", "v1"), new Attribute("n2", "v2"), new Attribute("n3", "v3")));
-	}
+public class FileStateTest {
+    private FileState a1;
+    private FileState a2;
+    private FileState b;
 
-	@Test
-	public void equalsIsWorking()
-	{
-		assertThat(a1).isNotEqualTo(null);
+    @Before
+    public void setup() {
+        a1 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), Arrays.asList(new Attribute("n1", "v1"), new Attribute("n2", "v2"), new Attribute("n3", "v3")));
+        a2 = new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), Arrays.asList(new Attribute("n3", "v3"), new Attribute("n2", "v2"), new Attribute("n1", "v1")));
 
-		assertThat(a1).isNotEqualTo("dummy_string");
+        b = new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"), Arrays.asList(new Attribute("n1", "v1"), new Attribute("n2", "v2"), new Attribute("n3", "v3")));
+    }
 
-		assertThat(a1).isEqualTo(a2);
-		assertThat(a2).isEqualTo(a1);
+    @Test
+    public void equalsIsWorking() {
+        assertThat(a1).isNotEqualTo(null);
 
-		assertThat(a1).isNotEqualTo(b);
-		assertThat(b).isNotEqualTo(a1);
-	}
+        assertThat(a1).isNotEqualTo("dummy_string");
 
-	@Test
-	public void hashcodeIsWorking()
-	{
-		assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
+        assertThat(a1).isEqualTo(a2);
+        assertThat(a2).isEqualTo(a1);
 
-		assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
-	}
+        assertThat(a1).isNotEqualTo(b);
+        assertThat(b).isNotEqualTo(a1);
+    }
 
-	@Test
-	public void longHashcodeIsWorking()
-	{
-		assertThat(a1.longHashCode()).isEqualTo(a2.longHashCode());
+    @Test
+    public void hashcodeIsWorking() {
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
 
-		assertThat(a1.longHashCode()).isNotEqualTo(b.longHashCode());
-	}
+        assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
+    }
 
-	@Test
-	public void allTheFileTimesAreTakenInAccount()
-	{
-		a1 = new FileState("file_1", 1L, new FileTime(10L, 20L), new FileHash("1", "11", "111"), null);
-		a2 = new FileState("file_1", 1L, new FileTime(11L, 20L), new FileHash("1", "11", "111"), null);
+    @Test
+    public void longHashcodeIsWorking() {
+        assertThat(a1.longHashCode()).isEqualTo(a2.longHashCode());
 
-		assertThat(a1).isNotEqualTo(a2);
-		assertThat(a1.hashCode()).isNotEqualTo(a2.hashCode());
-	}
+        assertThat(a1.longHashCode()).isNotEqualTo(b.longHashCode());
+    }
+
+    @Test
+    public void allTheFileTimesAreTakenInAccount() {
+        a1 = new FileState("file_1", 1L, new FileTime(10L, 20L), new FileHash("1", "11", "111"), null);
+        a2 = new FileState("file_1", 1L, new FileTime(11L, 20L), new FileHash("1", "11", "111"), null);
+
+        assertThat(a1).isNotEqualTo(a2);
+        assertThat(a1.hashCode()).isNotEqualTo(a2.hashCode());
+    }
 }

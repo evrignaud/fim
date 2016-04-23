@@ -18,48 +18,41 @@
  */
 package org.fim.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.dontHash;
-import static org.fim.model.HashMode.hashAll;
-import static org.fim.model.HashMode.hashMediumBlock;
-import static org.fim.model.HashMode.hashSmallBlock;
-
 import org.fim.model.HashMode;
 import org.junit.Test;
 
-public class HashModeUtilTest
-{
-	@Test
-	public void checkHashModeCompatibility()
-	{
-		assertCompatible(hashAll, hashAll);
-		assertCompatible(hashAll, hashMediumBlock);
-		assertCompatible(hashAll, hashSmallBlock);
-		assertCompatible(hashAll, dontHash);
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.fim.model.HashMode.*;
 
-		assertNotCompatible(hashMediumBlock, hashAll);
-		assertCompatible(hashMediumBlock, hashMediumBlock);
-		assertCompatible(hashMediumBlock, hashSmallBlock);
-		assertCompatible(hashMediumBlock, dontHash);
+public class HashModeUtilTest {
+    @Test
+    public void checkHashModeCompatibility() {
+        assertCompatible(hashAll, hashAll);
+        assertCompatible(hashAll, hashMediumBlock);
+        assertCompatible(hashAll, hashSmallBlock);
+        assertCompatible(hashAll, dontHash);
 
-		assertNotCompatible(hashSmallBlock, hashAll);
-		assertNotCompatible(hashSmallBlock, hashMediumBlock);
-		assertCompatible(hashSmallBlock, hashSmallBlock);
-		assertCompatible(hashSmallBlock, dontHash);
+        assertNotCompatible(hashMediumBlock, hashAll);
+        assertCompatible(hashMediumBlock, hashMediumBlock);
+        assertCompatible(hashMediumBlock, hashSmallBlock);
+        assertCompatible(hashMediumBlock, dontHash);
 
-		assertNotCompatible(dontHash, hashAll);
-		assertNotCompatible(dontHash, hashMediumBlock);
-		assertNotCompatible(dontHash, hashSmallBlock);
-		assertCompatible(dontHash, dontHash);
-	}
+        assertNotCompatible(hashSmallBlock, hashAll);
+        assertNotCompatible(hashSmallBlock, hashMediumBlock);
+        assertCompatible(hashSmallBlock, hashSmallBlock);
+        assertCompatible(hashSmallBlock, dontHash);
 
-	private void assertCompatible(HashMode hashMode, HashMode toCheck)
-	{
-		assertThat(HashModeUtil.isCompatible(hashMode, toCheck)).isTrue();
-	}
+        assertNotCompatible(dontHash, hashAll);
+        assertNotCompatible(dontHash, hashMediumBlock);
+        assertNotCompatible(dontHash, hashSmallBlock);
+        assertCompatible(dontHash, dontHash);
+    }
 
-	private void assertNotCompatible(HashMode hashMode, HashMode toCheck)
-	{
-		assertThat(HashModeUtil.isCompatible(hashMode, toCheck)).isFalse();
-	}
+    private void assertCompatible(HashMode hashMode, HashMode toCheck) {
+        assertThat(HashModeUtil.isCompatible(hashMode, toCheck)).isTrue();
+    }
+
+    private void assertNotCompatible(HashMode hashMode, HashMode toCheck) {
+        assertThat(HashModeUtil.isCompatible(hashMode, toCheck)).isFalse();
+    }
 }

@@ -18,69 +18,58 @@
  */
 package org.fim.internal.hash;
 
-import static java.lang.Math.min;
-import static org.fim.model.Constants._1_MB;
-import static org.fim.model.HashMode.hashAll;
-
-import java.nio.ByteBuffer;
-import java.security.NoSuchAlgorithmException;
-
 import org.fim.model.HashMode;
 import org.fim.model.Range;
 import org.fim.util.HashModeUtil;
 
-public class FullHasher extends AbstractHasher
-{
-	public static final int BLOCK_SIZE = 30 * _1_MB;
+import java.nio.ByteBuffer;
+import java.security.NoSuchAlgorithmException;
 
-	private long fileSize;
+import static java.lang.Math.min;
+import static org.fim.model.Constants._1_MB;
+import static org.fim.model.HashMode.hashAll;
 
-	public FullHasher(HashMode hashMode) throws NoSuchAlgorithmException
-	{
-		super(hashMode);
-	}
+public class FullHasher extends AbstractHasher {
+    public static final int BLOCK_SIZE = 30 * _1_MB;
 
-	@Override
-	protected boolean isCompatible(HashMode hashMode)
-	{
-		return HashModeUtil.isCompatible(hashMode, hashAll);
-	}
+    private long fileSize;
 
-	@Override
-	public void reset(long fileSize)
-	{
-		super.reset(fileSize);
+    public FullHasher(HashMode hashMode) throws NoSuchAlgorithmException {
+        super(hashMode);
+    }
 
-		if (isActive())
-		{
-			this.fileSize = fileSize;
-		}
-	}
+    @Override
+    protected boolean isCompatible(HashMode hashMode) {
+        return HashModeUtil.isCompatible(hashMode, hashAll);
+    }
 
-	@Override
-	public Range getNextRange(long filePosition)
-	{
-		long from = filePosition;
-		long to = min(fileSize, filePosition + BLOCK_SIZE);
-		return new Range(from, to);
-	}
+    @Override
+    public void reset(long fileSize) {
+        super.reset(fileSize);
 
-	@Override
-	protected ByteBuffer getNextBlockToHash(long filePosition, long currentPosition, ByteBuffer buffer)
-	{
-		return buffer;
-	}
+        if (isActive()) {
+            this.fileSize = fileSize;
+        }
+    }
 
-	@Override
-	public boolean hashComplete()
-	{
-		if (isActive())
-		{
-			return getBytesHashed() == fileSize;
-		}
-		else
-		{
-			return true;
-		}
-	}
+    @Override
+    public Range getNextRange(long filePosition) {
+        long from = filePosition;
+        long to = min(fileSize, filePosition + BLOCK_SIZE);
+        return new Range(from, to);
+    }
+
+    @Override
+    protected ByteBuffer getNextBlockToHash(long filePosition, long currentPosition, ByteBuffer buffer) {
+        return buffer;
+    }
+
+    @Override
+    public boolean hashComplete() {
+        if (isActive()) {
+            return getBytesHashed() == fileSize;
+        } else {
+            return true;
+        }
+    }
 }

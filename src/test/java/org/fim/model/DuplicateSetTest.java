@@ -18,63 +18,58 @@
  */
 package org.fim.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Arrays;
-
 import org.junit.Before;
 import org.junit.Test;
 
-public class DuplicateSetTest
-{
-	private DuplicateSet a1;
-	private DuplicateSet a2;
-	private DuplicateSet b;
+import java.util.Arrays;
 
-	@Before
-	public void setup()
-	{
-		a1 = new DuplicateSet(Arrays.asList(
-				new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), null),
-				new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"), null)
-		));
+import static org.assertj.core.api.Assertions.assertThat;
 
-		a2 = new DuplicateSet(Arrays.asList(
-				new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), null),
-				new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"), null)
-		));
+public class DuplicateSetTest {
+    private DuplicateSet a1;
+    private DuplicateSet a2;
+    private DuplicateSet b;
 
-		b = new DuplicateSet(Arrays.asList(
-				new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), null),
-				new FileState("file_3", 3L, new FileTime(3L), new FileHash("3", "33", "333"), null)
-		));
-	}
+    @Before
+    public void setup() {
+        a1 = new DuplicateSet(Arrays.asList(
+            new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), null),
+            new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"), null)
+        ));
 
-	@Test
-	public void equalsIsWorking()
-	{
-		assertThat(a1).isNotEqualTo(null);
+        a2 = new DuplicateSet(Arrays.asList(
+            new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), null),
+            new FileState("file_2", 2L, new FileTime(2L), new FileHash("2", "22", "222"), null)
+        ));
 
-		assertThat(a1).isNotEqualTo("dummy_string");
+        b = new DuplicateSet(Arrays.asList(
+            new FileState("file_1", 1L, new FileTime(1L), new FileHash("1", "11", "111"), null),
+            new FileState("file_3", 3L, new FileTime(3L), new FileHash("3", "33", "333"), null)
+        ));
+    }
 
-		assertThat(a1).isEqualTo(a2);
-		assertThat(a2).isEqualTo(a1);
+    @Test
+    public void equalsIsWorking() {
+        assertThat(a1).isNotEqualTo(null);
 
-		assertThat(a1).isNotEqualTo(b);
-		assertThat(b).isNotEqualTo(a1);
-	}
+        assertThat(a1).isNotEqualTo("dummy_string");
 
-	@Test
-	public void hashcodeIsWorking()
-	{
-		assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
+        assertThat(a1).isEqualTo(a2);
+        assertThat(a2).isEqualTo(a1);
 
-		assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
-	}
+        assertThat(a1).isNotEqualTo(b);
+        assertThat(b).isNotEqualTo(a1);
+    }
 
-	@Test
-	public void toStringIsWorking()
-	{
-		assertThat(a1.toString().contains("duplicatedFiles")).isTrue();
-	}
+    @Test
+    public void hashcodeIsWorking() {
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
+
+        assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
+    }
+
+    @Test
+    public void toStringIsWorking() {
+        assertThat(a1.toString().contains("duplicatedFiles")).isTrue();
+    }
 }

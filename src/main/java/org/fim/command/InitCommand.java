@@ -18,12 +18,6 @@
  */
 package org.fim.command;
 
-import static org.fim.model.HashMode.hashAll;
-import static org.fim.util.HashModeUtil.hashModeToString;
-
-import java.io.IOException;
-import java.nio.file.Files;
-
 import org.fim.command.exception.DontWantToContinueException;
 import org.fim.command.exception.RepositoryCreationException;
 import org.fim.internal.SettingsManager;
@@ -35,86 +29,77 @@ import org.fim.model.Context;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
-public class InitCommand extends AbstractCommand
-{
-	@Override
-	public String getCmdName()
-	{
-		return "init";
-	}
+import java.io.IOException;
+import java.nio.file.Files;
 
-	@Override
-	public String getShortCmdName()
-	{
-		return "";
-	}
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.util.HashModeUtil.hashModeToString;
 
-	@Override
-	public String getDescription()
-	{
-		return "Initialize a Fim repository and create the first State";
-	}
+public class InitCommand extends AbstractCommand {
+    @Override
+    public String getCmdName() {
+        return "init";
+    }
 
-	@Override
-	public FimReposConstraint getFimReposConstraint()
-	{
-		return FimReposConstraint.MUST_NOT_EXIST;
-	}
+    @Override
+    public String getShortCmdName() {
+        return "";
+    }
 
-	@Override
-	public Object execute(Context context) throws Exception
-	{
-		if (!Files.isWritable(context.getRepositoryRootDir()))
-		{
-			Logger.error(String.format("Not able to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()));
-			throw new RepositoryCreationException();
-		}
+    @Override
+    public String getDescription() {
+        return "Initialize a Fim repository and create the first State";
+    }
 
-		if (context.getComment().length() == 0)
-		{
-			System.out.println("No comment provided. You are going to initialize your repository using the default comment.");
-			if (!confirmAction(context, "continue"))
-			{
-				throw new DontWantToContinueException();
-			}
-		}
+    @Override
+    public FimReposConstraint getFimReposConstraint() {
+        return FimReposConstraint.MUST_NOT_EXIST;
+    }
 
-		String comment = context.getComment();
-		if (comment.length() == 0)
-		{
-			comment = "Initial State";
-		}
-		State currentState = new StateGenerator(context).generateState(comment, context.getCurrentDirectory(), context.getCurrentDirectory());
+    @Override
+    public Object execute(Context context) throws Exception {
+        if (!Files.isWritable(context.getRepositoryRootDir())) {
+            Logger.error(String.format("Not able to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()));
+            throw new RepositoryCreationException();
+        }
 
-		CompareResult result = new StateComparator(context, null, currentState).compare().displayChanges(System.out);
-		currentState.setModificationCounts(result.getModificationCounts());
+        if (context.getComment().length() == 0) {
+            System.out.println("No comment provided. You are going to initialize your repository using the default comment.");
+            if (!confirmAction(context, "continue")) {
+                throw new DontWantToContinueException();
+            }
+        }
 
-		createRepository(context);
+        String comment = context.getComment();
+        if (comment.length() == 0) {
+            comment = "Initial State";
+        }
+        State currentState = new StateGenerator(context).generateState(comment, context.getCurrentDirectory(), context.getCurrentDirectory());
 
-		new StateManager(context).createNewState(currentState);
+        CompareResult result = new StateComparator(context, null, currentState).compare().displayChanges(System.out);
+        currentState.setModificationCounts(result.getModificationCounts());
 
-		return currentState;
-	}
+        createRepository(context);
 
-	private void createRepository(Context context)
-	{
-		try
-		{
-			Files.createDirectories(context.getRepositoryStatesDir());
-		}
-		catch (IOException ex)
-		{
-			Logger.error(String.format("Not able to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()), ex, context.isDisplayStackTrace());
-			throw new RepositoryCreationException();
-		}
+        new StateManager(context).createNewState(currentState);
 
-		if (context.getHashMode() != hashAll)
-		{
-			SettingsManager settingsManager = new SettingsManager(context);
-			settingsManager.setGlobalHashMode(context.getHashMode());
-			settingsManager.save();
+        return currentState;
+    }
 
-			Logger.warning(String.format("Global hash mode set to '%s'%n", hashModeToString(context.getHashMode())));
-		}
-	}
+    private void createRepository(Context context) {
+        try {
+            Files.createDirectories(context.getRepositoryStatesDir());
+        } catch (IOException ex) {
+            Logger.error(String.format("Not able to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()), ex, context.isDisplayStackTrace());
+            throw new RepositoryCreationException();
+        }
+
+        if (context.getHashMode() != hashAll) {
+            SettingsManager settingsManager = new SettingsManager(context);
+            settingsManager.setGlobalHashMode(context.getHashMode());
+            settingsManager.save();
+
+            Logger.warning(String.format("Global hash mode set to '%s'%n", hashModeToString(context.getHashMode())));
+        }
+    }
 }

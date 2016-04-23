@@ -20,53 +20,43 @@ package org.fim.model;
 
 import java.util.Comparator;
 
-public class Difference
-{
-	private FileState previousFileState;
-	private FileState fileState;
+public class Difference {
+    private FileState previousFileState;
+    private FileState fileState;
 
-	public Difference(FileState previousFileState, FileState fileState)
-	{
-		this.setPreviousFileState(previousFileState);
-		this.setFileState(fileState);
-	}
+    public Difference(FileState previousFileState, FileState fileState) {
+        this.setPreviousFileState(previousFileState);
+        this.setFileState(fileState);
+    }
 
-	public FileState getPreviousFileState()
-	{
-		return previousFileState;
-	}
+    public FileState getPreviousFileState() {
+        return previousFileState;
+    }
 
-	public void setPreviousFileState(FileState previousFileState)
-	{
-		this.previousFileState = previousFileState;
-	}
+    public void setPreviousFileState(FileState previousFileState) {
+        this.previousFileState = previousFileState;
+    }
 
-	public FileState getFileState()
-	{
-		return fileState;
-	}
+    public FileState getFileState() {
+        return fileState;
+    }
 
-	public void setFileState(FileState fileState)
-	{
-		this.fileState = fileState;
-	}
+    public void setFileState(FileState fileState) {
+        this.fileState = fileState;
+    }
 
-	public boolean isCreationTimeChanged()
-	{
-		return previousFileState.getFileTime().getCreationTime() != fileState.getFileTime().getCreationTime();
-	}
+    public boolean isCreationTimeChanged() {
+        return previousFileState.getFileTime().getCreationTime() != fileState.getFileTime().getCreationTime();
+    }
 
-	public boolean isLastModifiedChanged()
-	{
-		return previousFileState.getFileTime().getLastModified() != fileState.getFileTime().getLastModified();
-	}
+    public boolean isLastModifiedChanged() {
+        return previousFileState.getFileTime().getLastModified() != fileState.getFileTime().getLastModified();
+    }
 
-	public static class FileNameComparator implements Comparator<Difference>
-	{
-		@Override
-		public int compare(Difference diff1, Difference diff2)
-		{
-			return diff1.getFileState().getFileName().compareTo(diff2.getFileState().getFileName());
-		}
-	}
+    public static class FileNameComparator implements Comparator<Difference> {
+        @Override
+        public int compare(Difference diff1, Difference diff2) {
+            return diff1.getFileState().getFileName().compareTo(diff2.getFileState().getFileName());
+        }
+    }
 }

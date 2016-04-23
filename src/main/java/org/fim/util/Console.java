@@ -18,10 +18,8 @@
  */
 package org.fim.util;
 
-public class Console
-{
-	public static void newLine()
-	{
-		System.out.println("");
-	}
+public class Console {
+    public static void newLine() {
+        System.out.println("");
+    }
 }

@@ -18,238 +18,198 @@
  */
 package org.fim.model;
 
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.Hasher;
 import org.fim.util.ObjectsUtil;
 
-public class FileState implements Hashable
-{
-	private String fileName;
-	private long fileLength;
-	private FileTime fileTime;
-	private Modification modification;
-	private FileHash fileHash;
-	private Map<String, String> fileAttributes;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
 
-	private transient FileHash newFileHash; // Used by StateComparator to detect accurately duplicates
+public class FileState implements Hashable {
+    private String fileName;
+    private long fileLength;
+    private FileTime fileTime;
+    private Modification modification;
+    private FileHash fileHash;
+    private Map<String, String> fileAttributes;
 
-	public FileState(String fileName, long fileLength, FileTime fileTime, FileHash fileHash, List<Attribute> attributeList)
-	{
-		if (fileName == null)
-		{
-			throw new IllegalArgumentException("Invalid null fileName");
-		}
-		if (fileHash == null)
-		{
-			throw new IllegalArgumentException("Invalid null hash");
-		}
+    private transient FileHash newFileHash; // Used by StateComparator to detect accurately duplicates
 
-		setFileName(fileName);
-		setFileLength(fileLength);
-		setFileTime(fileTime);
-		setFileHash(fileHash);
-		setFileAttributes(toMap(attributeList));
-	}
+    public FileState(String fileName, long fileLength, FileTime fileTime, FileHash fileHash, List<Attribute> attributeList) {
+        if (fileName == null) {
+            throw new IllegalArgumentException("Invalid null fileName");
+        }
+        if (fileHash == null) {
+            throw new IllegalArgumentException("Invalid null hash");
+        }
 
-	public FileState(String fileName, BasicFileAttributes attributes, FileHash fileHash, List<Attribute> attributeList)
-	{
-		this(fileName, attributes.size(), new FileTime(attributes), fileHash, attributeList);
-	}
+        setFileName(fileName);
+        setFileLength(fileLength);
+        setFileTime(fileTime);
+        setFileHash(fileHash);
+        setFileAttributes(toMap(attributeList));
+    }
 
-	public String getFileName()
-	{
-		return fileName;
-	}
+    public FileState(String fileName, BasicFileAttributes attributes, FileHash fileHash, List<Attribute> attributeList) {
+        this(fileName, attributes.size(), new FileTime(attributes), fileHash, attributeList);
+    }
 
-	public void setFileName(String fileName)
-	{
-		this.fileName = fileName;
-	}
+    public String getFileName() {
+        return fileName;
+    }
 
-	public long getFileLength()
-	{
-		return fileLength;
-	}
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
-	public void setFileLength(long fileLength)
-	{
-		this.fileLength = fileLength;
-	}
+    public long getFileLength() {
+        return fileLength;
+    }
 
-	public FileTime getFileTime()
-	{
-		return fileTime;
-	}
+    public void setFileLength(long fileLength) {
+        this.fileLength = fileLength;
+    }
 
-	public void setFileTime(FileTime fileTime)
-	{
-		this.fileTime = fileTime;
-	}
+    public FileTime getFileTime() {
+        return fileTime;
+    }
 
-	public Modification getModification()
-	{
-		return modification;
-	}
+    public void setFileTime(FileTime fileTime) {
+        this.fileTime = fileTime;
+    }
 
-	public void setModification(Modification modification)
-	{
-		this.modification = modification;
-	}
+    public Modification getModification() {
+        return modification;
+    }
 
-	public FileHash getFileHash()
-	{
-		return fileHash;
-	}
+    public void setModification(Modification modification) {
+        this.modification = modification;
+    }
 
-	public void setFileHash(FileHash fileHash)
-	{
-		this.fileHash = fileHash;
-	}
+    public FileHash getFileHash() {
+        return fileHash;
+    }
 
-	public Map<String, String> getFileAttributes()
-	{
-		return fileAttributes;
-	}
+    public void setFileHash(FileHash fileHash) {
+        this.fileHash = fileHash;
+    }
 
-	public void setFileAttributes(Map<String, String> fileAttributes)
-	{
-		this.fileAttributes = fileAttributes;
-	}
+    public Map<String, String> getFileAttributes() {
+        return fileAttributes;
+    }
 
-	public FileHash getNewFileHash()
-	{
-		return newFileHash;
-	}
+    public void setFileAttributes(Map<String, String> fileAttributes) {
+        this.fileAttributes = fileAttributes;
+    }
 
-	public void setNewFileHash(FileHash newFileHash)
-	{
-		this.newFileHash = newFileHash;
-	}
+    public FileHash getNewFileHash() {
+        return newFileHash;
+    }
 
-	public void resetNewHash()
-	{
-		newFileHash = fileHash;
-	}
+    public void setNewFileHash(FileHash newFileHash) {
+        this.newFileHash = newFileHash;
+    }
 
-	@Override
-	public boolean equals(Object other)
-	{
-		if (this == other)
-		{
-			return true;
-		}
+    public void resetNewHash() {
+        newFileHash = fileHash;
+    }
 
-		if (other == null || !(other instanceof FileState))
-		{
-			return false;
-		}
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
 
-		FileState otherFileState = (FileState) other;
+        if (other == null || !(other instanceof FileState)) {
+            return false;
+        }
 
-		return Objects.equals(this.fileName, otherFileState.fileName)
-				&& Objects.equals(this.fileLength, otherFileState.fileLength)
-				&& Objects.equals(this.fileTime, otherFileState.fileTime)
-				&& Objects.equals(this.fileHash, otherFileState.fileHash)
-				&& Objects.equals(this.fileAttributes, otherFileState.fileAttributes);
-	}
+        FileState otherFileState = (FileState) other;
 
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(fileName, fileLength, fileTime, fileHash, fileAttributes);
-	}
+        return Objects.equals(this.fileName, otherFileState.fileName)
+            && Objects.equals(this.fileLength, otherFileState.fileLength)
+            && Objects.equals(this.fileTime, otherFileState.fileTime)
+            && Objects.equals(this.fileHash, otherFileState.fileHash)
+            && Objects.equals(this.fileAttributes, otherFileState.fileAttributes);
+    }
 
-	/**
-	 * Returns a long hash code value for the object.
-	 * A long is used to avoid hashCode collisions when we have a huge number of FileStates.
+    @Override
+    public int hashCode() {
+        return Objects.hash(fileName, fileLength, fileTime, fileHash, fileAttributes);
+    }
+
+    /**
+     * Returns a long hash code value for the object.
+     * A long is used to avoid hashCode collisions when we have a huge number of FileStates.
      */
-	public long longHashCode()
-	{
-		return ObjectsUtil.longHash(fileName, fileLength, fileTime, fileHash, fileAttributes);
-	}
+    public long longHashCode() {
+        return ObjectsUtil.longHash(fileName, fileLength, fileTime, fileHash, fileAttributes);
+    }
 
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(this)
-				.add("fileName", fileName)
-				.add("fileLength", fileLength)
-				.add("fileTime", fileTime)
-				.add("fileHash", fileHash)
-				.add("fileAttributes", fileAttributes)
-				.add("newFileHash", newFileHash)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+            .add("fileName", fileName)
+            .add("fileLength", fileLength)
+            .add("fileTime", fileTime)
+            .add("fileHash", fileHash)
+            .add("fileAttributes", fileAttributes)
+            .add("newFileHash", newFileHash)
+            .toString();
+    }
 
-	@Override
-	public void hashObject(Hasher hasher)
-	{
-		hasher
-				.putString("FileState", Charsets.UTF_8)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putString(fileName, Charsets.UTF_8)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putLong(fileLength);
+    @Override
+    public void hashObject(Hasher hasher) {
+        hasher
+            .putString("FileState", Charsets.UTF_8)
+            .putChar(HASH_FIELD_SEPARATOR)
+            .putString(fileName, Charsets.UTF_8)
+            .putChar(HASH_FIELD_SEPARATOR)
+            .putLong(fileLength);
 
-		hasher.putChar(HASH_OBJECT_SEPARATOR);
-		fileTime.hashObject(hasher);
+        hasher.putChar(HASH_OBJECT_SEPARATOR);
+        fileTime.hashObject(hasher);
 
-		hasher.putChar(HASH_OBJECT_SEPARATOR);
-		fileHash.hashObject(hasher);
+        hasher.putChar(HASH_OBJECT_SEPARATOR);
+        fileHash.hashObject(hasher);
 
-		hasher.putChar(HASH_OBJECT_SEPARATOR);
-		if (fileAttributes != null)
-		{
-			for (String key : fileAttributes.keySet())
-			{
-				hasher
-						.putString(key, Charsets.UTF_8)
-						.putChar(':')
-						.putChar(':')
-						.putString(fileAttributes.get(key), Charsets.UTF_8);
-				hasher.putChar(HASH_OBJECT_SEPARATOR);
-			}
-		}
-	}
+        hasher.putChar(HASH_OBJECT_SEPARATOR);
+        if (fileAttributes != null) {
+            for (String key : fileAttributes.keySet()) {
+                hasher
+                    .putString(key, Charsets.UTF_8)
+                    .putChar(':')
+                    .putChar(':')
+                    .putString(fileAttributes.get(key), Charsets.UTF_8);
+                hasher.putChar(HASH_OBJECT_SEPARATOR);
+            }
+        }
+    }
 
-	private Map<String, String> toMap(List<Attribute> attrs)
-	{
-		if (attrs == null)
-		{
-			return null;
-		}
+    private Map<String, String> toMap(List<Attribute> attrs) {
+        if (attrs == null) {
+            return null;
+        }
 
-		Map<String, String> map = new HashMap<>();
-		for (Attribute attr : attrs)
-		{
-			map.put(attr.getName(), attr.getValue());
-		}
-		return map;
-	}
+        Map<String, String> map = new HashMap<>();
+        for (Attribute attr : attrs) {
+            map.put(attr.getName(), attr.getValue());
+        }
+        return map;
+    }
 
-	public static class FileNameComparator implements Comparator<FileState>
-	{
-		@Override
-		public int compare(FileState fs1, FileState fs2)
-		{
-			return fs1.getFileName().compareTo(fs2.getFileName());
-		}
-	}
+    public static class FileNameComparator implements Comparator<FileState> {
+        @Override
+        public int compare(FileState fs1, FileState fs2) {
+            return fs1.getFileName().compareTo(fs2.getFileName());
+        }
+    }
 
-	public static class HashComparator implements Comparator<FileState>
-	{
-		@Override
-		public int compare(FileState fs1, FileState fs2)
-		{
-			return fs1.getFileHash().compareTo(fs2.getFileHash());
-		}
-	}
+    public static class HashComparator implements Comparator<FileState> {
+        @Override
+        public int compare(FileState fs1, FileState fs2) {
+            return fs1.getFileHash().compareTo(fs2.getFileHash());
+        }
+    }
 }

@@ -27,48 +27,40 @@ import org.fim.model.State;
 import org.fim.util.Console;
 import org.fim.util.Logger;
 
-public class FindDuplicatesCommand extends AbstractCommand
-{
-	@Override
-	public String getCmdName()
-	{
-		return "find-duplicates";
-	}
+public class FindDuplicatesCommand extends AbstractCommand {
+    @Override
+    public String getCmdName() {
+        return "find-duplicates";
+    }
 
-	@Override
-	public String getShortCmdName()
-	{
-		return "fdup";
-	}
+    @Override
+    public String getShortCmdName() {
+        return "fdup";
+    }
 
-	@Override
-	public String getDescription()
-	{
-		return "Find local duplicated files in the Fim repository";
-	}
+    @Override
+    public String getDescription() {
+        return "Find local duplicated files in the Fim repository";
+    }
 
-	@Override
-	public Object execute(Context context) throws Exception
-	{
-		checkHashMode(context, Option.ALLOW_COMPATIBLE);
+    @Override
+    public Object execute(Context context) throws Exception {
+        checkHashMode(context, Option.ALLOW_COMPATIBLE);
 
-		fileContentHashingMandatory(context);
+        fileContentHashingMandatory(context);
 
-		Logger.info(String.format("Searching for duplicated files%s", context.isUseLastState() ? " from the last committed State" : ""));
-		Console.newLine();
+        Logger.info(String.format("Searching for duplicated files%s", context.isUseLastState() ? " from the last committed State" : ""));
+        Console.newLine();
 
-		State state;
-		if (context.isUseLastState())
-		{
-			state = new StateManager(context).loadLastState();
-		}
-		else
-		{
-			state = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), context.getCurrentDirectory());
-		}
+        State state;
+        if (context.isUseLastState()) {
+            state = new StateManager(context).loadLastState();
+        } else {
+            state = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), context.getCurrentDirectory());
+        }
 
-		DuplicateResult result = new DuplicateFinder(context).findDuplicates(state);
-		result.displayDuplicates();
-		return result;
-	}
+        DuplicateResult result = new DuplicateFinder(context).findDuplicates(state);
+        result.displayDuplicates();
+        return result;
+    }
 }

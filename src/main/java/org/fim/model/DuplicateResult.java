@@ -18,83 +18,69 @@
  */
 package org.fim.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.fim.util.Console;
 
-public class DuplicateResult
-{
-	private final Context context;
-	private final List<DuplicateSet> duplicateSets;
-	private long duplicatedFilesCount;
-	private long wastedSpace;
+import java.util.ArrayList;
+import java.util.List;
 
-	public DuplicateResult(Context context)
-	{
-		this.context = context;
-		this.duplicateSets = new ArrayList<>();
-		this.duplicatedFilesCount = 0;
-		this.wastedSpace = 0;
-	}
+public class DuplicateResult {
+    private final Context context;
+    private final List<DuplicateSet> duplicateSets;
+    private long duplicatedFilesCount;
+    private long wastedSpace;
 
-	public void addDuplicatedFiles(List<FileState> duplicatedFiles)
-	{
-		if (duplicatedFiles.size() > 1)
-		{
-			duplicatedFilesCount += duplicatedFiles.size() - 1;
+    public DuplicateResult(Context context) {
+        this.context = context;
+        this.duplicateSets = new ArrayList<>();
+        this.duplicatedFilesCount = 0;
+        this.wastedSpace = 0;
+    }
 
-			duplicatedFiles.stream()
-					.filter(fileState -> duplicatedFiles.indexOf(fileState) > 0)
-					.forEach(fileState -> wastedSpace += fileState.getFileLength());
+    public void addDuplicatedFiles(List<FileState> duplicatedFiles) {
+        if (duplicatedFiles.size() > 1) {
+            duplicatedFilesCount += duplicatedFiles.size() - 1;
 
-			DuplicateSet duplicateSet = new DuplicateSet(duplicatedFiles);
-			duplicateSets.add(duplicateSet);
-		}
-	}
+            duplicatedFiles.stream()
+                .filter(fileState -> duplicatedFiles.indexOf(fileState) > 0)
+                .forEach(fileState -> wastedSpace += fileState.getFileLength());
 
-	public DuplicateResult displayDuplicates()
-	{
-		if (context.isVerbose())
-		{
-			for (DuplicateSet duplicateSet : duplicateSets)
-			{
-				System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
-				System.out.println("- Duplicate set #" + (duplicateSets.indexOf(duplicateSet) + 1));
-				List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
-				for (FileState fileState : duplicatedFiles)
-				{
-					if (duplicatedFiles.indexOf(fileState) == 0)
-					{
-						System.out.printf("  %s duplicated %d times%n", fileState.getFileName(), duplicatedFiles.size() - 1);
-					}
-					else
-					{
-						System.out.printf("      %s - %s%n", FileUtils.byteCountToDisplaySize(fileState.getFileLength()), fileState.getFileName());
-					}
-				}
-				Console.newLine();
-			}
-		}
-		System.out.printf("%d duplicated files spread into %d duplicate sets, %s of wasted space%n",
-				duplicatedFilesCount, duplicateSets.size(), FileUtils.byteCountToDisplaySize(wastedSpace));
+            DuplicateSet duplicateSet = new DuplicateSet(duplicatedFiles);
+            duplicateSets.add(duplicateSet);
+        }
+    }
 
-		return this;
-	}
+    public DuplicateResult displayDuplicates() {
+        if (context.isVerbose()) {
+            for (DuplicateSet duplicateSet : duplicateSets) {
+                System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
+                System.out.println("- Duplicate set #" + (duplicateSets.indexOf(duplicateSet) + 1));
+                List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
+                for (FileState fileState : duplicatedFiles) {
+                    if (duplicatedFiles.indexOf(fileState) == 0) {
+                        System.out.printf("  %s duplicated %d times%n", fileState.getFileName(), duplicatedFiles.size() - 1);
+                    } else {
+                        System.out.printf("      %s - %s%n", FileUtils.byteCountToDisplaySize(fileState.getFileLength()), fileState.getFileName());
+                    }
+                }
+                Console.newLine();
+            }
+        }
+        System.out.printf("%d duplicated files spread into %d duplicate sets, %s of wasted space%n",
+            duplicatedFilesCount, duplicateSets.size(), FileUtils.byteCountToDisplaySize(wastedSpace));
 
-	public long getDuplicatedFilesCount()
-	{
-		return duplicatedFilesCount;
-	}
+        return this;
+    }
 
-	public long getWastedSpace()
-	{
-		return wastedSpace;
-	}
+    public long getDuplicatedFilesCount() {
+        return duplicatedFilesCount;
+    }
 
-	public List<DuplicateSet> getDuplicateSets()
-	{
-		return duplicateSets;
-	}
+    public long getWastedSpace() {
+        return wastedSpace;
+    }
+
+    public List<DuplicateSet> getDuplicateSets() {
+        return duplicateSets;
+    }
 }

@@ -18,8 +18,6 @@
  */
 package org.fim.command;
 
-import java.io.IOException;
-
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.DontWantToContinueException;
 import org.fim.internal.StateComparator;
@@ -31,89 +29,76 @@ import org.fim.model.State;
 import org.fim.util.Console;
 import org.fim.util.Logger;
 
-public class CommitCommand extends AbstractCommand
-{
-	@Override
-	public String getCmdName()
-	{
-		return "commit";
-	}
+import java.io.IOException;
 
-	@Override
-	public String getShortCmdName()
-	{
-		return "ci";
-	}
+public class CommitCommand extends AbstractCommand {
+    @Override
+    public String getCmdName() {
+        return "commit";
+    }
 
-	@Override
-	public String getDescription()
-	{
-		return "Commit the current directory State";
-	}
+    @Override
+    public String getShortCmdName() {
+        return "ci";
+    }
 
-	@Override
-	public Object execute(Context context) throws Exception
-	{
-		checkHashMode(context, Option.ALL_HASH_MANDATORY);
+    @Override
+    public String getDescription() {
+        return "Commit the current directory State";
+    }
 
-		if (context.getComment().length() == 0)
-		{
-			System.out.println("No comment provided. You are going to commit your modifications without any comment.");
-			if (!confirmAction(context, "continue"))
-			{
-				throw new DontWantToContinueException();
-			}
-		}
+    @Override
+    public Object execute(Context context) throws Exception {
+        checkHashMode(context, Option.ALL_HASH_MANDATORY);
 
-		StateManager manager = new StateManager(context);
-		State lastState = manager.loadLastState();
-		State lastStateToCompare = lastState;
-		State currentState = new StateGenerator(context).generateState(context.getComment(), context.getRepositoryRootDir(), context.getCurrentDirectory());
+        if (context.getComment().length() == 0) {
+            System.out.println("No comment provided. You are going to commit your modifications without any comment.");
+            if (!confirmAction(context, "continue")) {
+                throw new DontWantToContinueException();
+            }
+        }
 
-		if (context.isInvokedFromSubDirectory())
-		{
-			if (!lastState.getModelVersion().equals(currentState.getModelVersion()))
-			{
-				Logger.error("Not able to incrementally commit into the last State that use a different model version.");
-				throw new BadFimUsageException();
-			}
+        StateManager manager = new StateManager(context);
+        State lastState = manager.loadLastState();
+        State lastStateToCompare = lastState;
+        State currentState = new StateGenerator(context).generateState(context.getComment(), context.getRepositoryRootDir(), context.getCurrentDirectory());
 
-			lastStateToCompare = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
-		}
+        if (context.isInvokedFromSubDirectory()) {
+            if (!lastState.getModelVersion().equals(currentState.getModelVersion())) {
+                Logger.error("Not able to incrementally commit into the last State that use a different model version.");
+                throw new BadFimUsageException();
+            }
 
-		CompareResult result = new StateComparator(context, lastStateToCompare, currentState).compare().displayChanges(System.out);
-		if (result.somethingModified())
-		{
-			Console.newLine();
-			if (confirmAction(context, "commit"))
-			{
-				currentState.setModificationCounts(result.getModificationCounts());
+            lastStateToCompare = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
+        }
 
-				if (context.isInvokedFromSubDirectory())
-				{
-					currentState = createConsolidatedState(context, lastState, currentState);
-				}
+        CompareResult result = new StateComparator(context, lastStateToCompare, currentState).compare().displayChanges(System.out);
+        if (result.somethingModified()) {
+            Console.newLine();
+            if (confirmAction(context, "commit")) {
+                currentState.setModificationCounts(result.getModificationCounts());
 
-				manager.createNewState(currentState);
-			}
-			else
-			{
-				Logger.info("Nothing committed");
-			}
-		}
+                if (context.isInvokedFromSubDirectory()) {
+                    currentState = createConsolidatedState(context, lastState, currentState);
+                }
 
-		return result;
-	}
+                manager.createNewState(currentState);
+            } else {
+                Logger.info("Nothing committed");
+            }
+        }
 
-	private State createConsolidatedState(Context context, State lastState, State currentState) throws IOException
-	{
-		State filteredState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), false);
+        return result;
+    }
 
-		State consolidatedState = currentState.clone();
-		consolidatedState.getFileStates().addAll(filteredState.getFileStates());
-		consolidatedState.getModificationCounts().add(filteredState.getModificationCounts());
-		consolidatedState.getIgnoredFiles().addAll(lastState.getIgnoredFiles());
+    private State createConsolidatedState(Context context, State lastState, State currentState) throws IOException {
+        State filteredState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), false);
 
-		return consolidatedState;
-	}
+        State consolidatedState = currentState.clone();
+        consolidatedState.getFileStates().addAll(filteredState.getFileStates());
+        consolidatedState.getModificationCounts().add(filteredState.getModificationCounts());
+        consolidatedState.getIgnoredFiles().addAll(lastState.getIgnoredFiles());
+
+        return consolidatedState;
+    }
 }

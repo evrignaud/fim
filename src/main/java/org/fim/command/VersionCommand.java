@@ -20,42 +20,35 @@ package org.fim.command;
 
 import org.fim.model.Context;
 
-public class VersionCommand extends AbstractCommand
-{
-	@Override
-	public String getCmdName()
-	{
-		return "version";
-	}
+public class VersionCommand extends AbstractCommand {
+    @Override
+    public String getCmdName() {
+        return "version";
+    }
 
-	@Override
-	public String getShortCmdName()
-	{
-		return "";
-	}
+    @Override
+    public String getShortCmdName() {
+        return "";
+    }
 
-	@Override
-	public String getDescription()
-	{
-		return "Prints the Fim version";
-	}
+    @Override
+    public String getDescription() {
+        return "Prints the Fim version";
+    }
 
-	@Override
-	public FimReposConstraint getFimReposConstraint()
-	{
-		return FimReposConstraint.DONT_CARE;
-	}
+    @Override
+    public FimReposConstraint getFimReposConstraint() {
+        return FimReposConstraint.DONT_CARE;
+    }
 
-	@Override
-	public Object execute(Context context) throws Exception
-	{
-		String implementationVersion = this.getClass().getPackage().getImplementationVersion();
-		if (implementationVersion == null)
-		{
-			implementationVersion = "dev";
-		}
+    @Override
+    public Object execute(Context context) throws Exception {
+        String implementationVersion = this.getClass().getPackage().getImplementationVersion();
+        if (implementationVersion == null) {
+            implementationVersion = "dev";
+        }
 
-		System.out.println("Fim version " + implementationVersion);
-		return null;
-	}
+        System.out.println("Fim version " + implementationVersion);
+        return null;
+    }
 }

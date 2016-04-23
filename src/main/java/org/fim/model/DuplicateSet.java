@@ -18,56 +18,48 @@
  */
 package org.fim.model;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.common.base.MoreObjects;
+public class DuplicateSet {
+    private List<FileState> duplicatedFiles;
 
-public class DuplicateSet
-{
-	private List<FileState> duplicatedFiles;
+    public DuplicateSet(List<FileState> duplicatedFiles) {
+        this.duplicatedFiles = new ArrayList<>(duplicatedFiles);
+    }
 
-	public DuplicateSet(List<FileState> duplicatedFiles)
-	{
-		this.duplicatedFiles = new ArrayList<>(duplicatedFiles);
-	}
+    public List<FileState> getDuplicatedFiles() {
+        return duplicatedFiles;
+    }
 
-	public List<FileState> getDuplicatedFiles()
-	{
-		return duplicatedFiles;
-	}
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
 
-	@Override
-	public boolean equals(Object other)
-	{
-		if (this == other)
-		{
-			return true;
-		}
+        if (other == null || !(other instanceof DuplicateSet)) {
+            return false;
+        }
 
-		if (other == null || !(other instanceof DuplicateSet))
-		{
-			return false;
-		}
+        DuplicateSet duplicateSet = (DuplicateSet) other;
 
-		DuplicateSet duplicateSet = (DuplicateSet) other;
+        return Objects.equals(this.duplicatedFiles, duplicateSet.duplicatedFiles);
 
-		return Objects.equals(this.duplicatedFiles, duplicateSet.duplicatedFiles);
+    }
 
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(duplicatedFiles);
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(duplicatedFiles);
-	}
-
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(this)
-				.add("duplicatedFiles", duplicatedFiles)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+            .add("duplicatedFiles", duplicatedFiles)
+            .toString();
+    }
 }

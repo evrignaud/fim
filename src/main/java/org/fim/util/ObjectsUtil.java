@@ -18,20 +18,16 @@
  */
 package org.fim.util;
 
-public class ObjectsUtil
-{
-	public static long longHash(Object... values)
-	{
-		if (values == null)
-		{
-			return 0;
-		}
+public class ObjectsUtil {
+    public static long longHash(Object... values) {
+        if (values == null) {
+            return 0;
+        }
 
-		long result = 1;
-		for (Object value : values)
-		{
-			result = 31 * result + (value == null ? 0 : value.hashCode());
-		}
-		return result;
-	}
+        long result = 1;
+        for (Object value : values) {
+            result = 31 * result + (value == null ? 0 : value.hashCode());
+        }
+        return result;
+    }
 }

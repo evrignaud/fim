@@ -18,6 +18,5 @@
  */
 package org.fim.command.exception;
 
-public class BadFimUsageException extends RuntimeException
-{
+public class BadFimUsageException extends RuntimeException {
 }

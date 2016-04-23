@@ -18,31 +18,26 @@
  */
 package org.fim.util;
 
-public class TimeElapsed
-{
-	private long startTime;
-	private long endTime;
+public class TimeElapsed {
+    private long startTime;
+    private long endTime;
 
-	public TimeElapsed()
-	{
-		start();
-	}
+    public TimeElapsed() {
+        start();
+    }
 
-	public long getDuration()
-	{
-		stop();
-		long duration = endTime - startTime;
-		start();
-		return duration;
-	}
+    public long getDuration() {
+        stop();
+        long duration = endTime - startTime;
+        start();
+        return duration;
+    }
 
-	public void start()
-	{
-		startTime = System.currentTimeMillis();
-	}
+    public void start() {
+        startTime = System.currentTimeMillis();
+    }
 
-	protected void stop()
-	{
-		endTime = System.currentTimeMillis();
-	}
+    protected void stop() {
+        endTime = System.currentTimeMillis();
+    }
 }

@@ -18,53 +18,48 @@
  */
 package org.fim.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Arrays;
-
 import org.junit.Before;
 import org.junit.Test;
 
-public class DuplicatedFilesTest
-{
-	private DuplicatedFiles a1;
-	private DuplicatedFiles a2;
-	private DuplicatedFiles b;
+import java.util.Arrays;
 
-	@Before
-	public void setup()
-	{
-		a1 = new DuplicatedFiles(Arrays.asList("file_1", "file_2"));
-		a2 = new DuplicatedFiles(Arrays.asList("file_1", "file_2"));
+import static org.assertj.core.api.Assertions.assertThat;
 
-		b = new DuplicatedFiles(Arrays.asList("file_1", "file_3"));
-	}
+public class DuplicatedFilesTest {
+    private DuplicatedFiles a1;
+    private DuplicatedFiles a2;
+    private DuplicatedFiles b;
 
-	@Test
-	public void equalsIsWorking()
-	{
-		assertThat(a1).isNotEqualTo(null);
+    @Before
+    public void setup() {
+        a1 = new DuplicatedFiles(Arrays.asList("file_1", "file_2"));
+        a2 = new DuplicatedFiles(Arrays.asList("file_1", "file_2"));
 
-		assertThat(a1).isNotEqualTo("dummy_string");
+        b = new DuplicatedFiles(Arrays.asList("file_1", "file_3"));
+    }
 
-		assertThat(a1).isEqualTo(a2);
-		assertThat(a2).isEqualTo(a1);
+    @Test
+    public void equalsIsWorking() {
+        assertThat(a1).isNotEqualTo(null);
 
-		assertThat(a1).isNotEqualTo(b);
-		assertThat(b).isNotEqualTo(a1);
-	}
+        assertThat(a1).isNotEqualTo("dummy_string");
 
-	@Test
-	public void hashcodeIsWorking()
-	{
-		assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
+        assertThat(a1).isEqualTo(a2);
+        assertThat(a2).isEqualTo(a1);
 
-		assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
-	}
+        assertThat(a1).isNotEqualTo(b);
+        assertThat(b).isNotEqualTo(a1);
+    }
 
-	@Test
-	public void toStringIsWorking()
-	{
-		assertThat(a1.toString().contains("duplicates")).isTrue();
-	}
+    @Test
+    public void hashcodeIsWorking() {
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
+
+        assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
+    }
+
+    @Test
+    public void toStringIsWorking() {
+        assertThat(a1.toString().contains("duplicates")).isTrue();
+    }
 }

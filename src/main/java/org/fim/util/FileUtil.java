@@ -21,30 +21,24 @@ package org.fim.util;
 import java.io.File;
 import java.nio.file.Path;
 
-public class FileUtil
-{
-	public static String getNormalizedFileName(Path file)
-	{
-		String normalizedFileName = file.toAbsolutePath().normalize().toString();
-		if (File.separatorChar != '/')
-		{
-			normalizedFileName = normalizedFileName.replace(File.separatorChar, '/');
-		}
-		return normalizedFileName;
-	}
+public class FileUtil {
+    public static String getNormalizedFileName(Path file) {
+        String normalizedFileName = file.toAbsolutePath().normalize().toString();
+        if (File.separatorChar != '/') {
+            normalizedFileName = normalizedFileName.replace(File.separatorChar, '/');
+        }
+        return normalizedFileName;
+    }
 
-	public static String getRelativeFileName(String directory, String fileName)
-	{
-		String relativeFileName = fileName;
-		if (relativeFileName.startsWith(directory))
-		{
-			relativeFileName = relativeFileName.substring(directory.length());
-		}
+    public static String getRelativeFileName(String directory, String fileName) {
+        String relativeFileName = fileName;
+        if (relativeFileName.startsWith(directory)) {
+            relativeFileName = relativeFileName.substring(directory.length());
+        }
 
-		if (relativeFileName.startsWith("/"))
-		{
-			relativeFileName = relativeFileName.substring(1);
-		}
-		return relativeFileName;
-	}
+        if (relativeFileName.startsWith("/")) {
+            relativeFileName = relativeFileName.substring(1);
+        }
+        return relativeFileName;
+    }
 }

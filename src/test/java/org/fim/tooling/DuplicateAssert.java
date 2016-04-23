@@ -18,56 +18,47 @@
  */
 package org.fim.tooling;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.fim.model.DuplicateResult;
 import org.fim.model.DuplicateSet;
 import org.fim.model.DuplicatedFiles;
 import org.fim.model.FileState;
 
-public class DuplicateAssert extends StateAssert
-{
-	protected void assertFilesDuplicated(DuplicateResult result, DuplicatedFiles... duplicatedFiles)
-	{
-		List<DuplicateSet> duplicateSets = result.getDuplicateSets();
-		assertThat(duplicateSets.size()).isEqualTo(duplicatedFiles.length);
-		for (DuplicateSet duplicateSet : duplicateSets)
-		{
-			int index = duplicateSets.indexOf(duplicateSet);
-			List<String> duplicatesToCheck = duplicatedFiles[index].getDuplicates();
+import java.util.Arrays;
+import java.util.List;
 
-			assertThat(duplicateSet.getDuplicatedFiles().size()).isEqualTo(duplicatesToCheck.size());
+import static org.assertj.core.api.Assertions.assertThat;
 
-			for (FileState fileState : duplicateSet.getDuplicatedFiles())
-			{
-				assertThat(duplicatesToCheck.contains(fileState.getFileName()));
-			}
+public class DuplicateAssert extends StateAssert {
+    protected void assertFilesDuplicated(DuplicateResult result, DuplicatedFiles... duplicatedFiles) {
+        List<DuplicateSet> duplicateSets = result.getDuplicateSets();
+        assertThat(duplicateSets.size()).isEqualTo(duplicatedFiles.length);
+        for (DuplicateSet duplicateSet : duplicateSets) {
+            int index = duplicateSets.indexOf(duplicateSet);
+            List<String> duplicatesToCheck = duplicatedFiles[index].getDuplicates();
 
-			for (String fileName : duplicatesToCheck)
-			{
-				assertThat(containsFileName(duplicateSet, fileName)).isEqualTo(true);
-			}
-		}
-	}
+            assertThat(duplicateSet.getDuplicatedFiles().size()).isEqualTo(duplicatesToCheck.size());
 
-	protected boolean containsFileName(DuplicateSet duplicateSet, String fileName)
-	{
-		for (FileState fileState : duplicateSet.getDuplicatedFiles())
-		{
-			if (fileState.getFileName().equals(fileName))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+            for (FileState fileState : duplicateSet.getDuplicatedFiles()) {
+                assertThat(duplicatesToCheck.contains(fileState.getFileName()));
+            }
 
-	protected DuplicatedFiles duplicatedFiles(String... duplicates)
-	{
-		return new DuplicatedFiles(Arrays.asList(duplicates));
-	}
+            for (String fileName : duplicatesToCheck) {
+                assertThat(containsFileName(duplicateSet, fileName)).isEqualTo(true);
+            }
+        }
+    }
+
+    protected boolean containsFileName(DuplicateSet duplicateSet, String fileName) {
+        for (FileState fileState : duplicateSet.getDuplicatedFiles()) {
+            if (fileState.getFileName().equals(fileName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected DuplicatedFiles duplicatedFiles(String... duplicates) {
+        return new DuplicatedFiles(Arrays.asList(duplicates));
+    }
 
 }

@@ -18,27 +18,6 @@
  */
 package org.fim.internal;
 
-import static org.fim.internal.hash.HashProgress.PROGRESS_DISPLAY_FILE_COUNT;
-import static org.fim.model.HashMode.dontHash;
-import static org.fim.util.HashModeUtil.hashModeToString;
-
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.atteo.evo.inflector.English;
@@ -52,190 +31,173 @@ import org.fim.util.Console;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 
-public class StateGenerator
-{
-	public static final int FILES_QUEUE_CAPACITY = 500;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.*;
 
-	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
+import static org.fim.internal.hash.HashProgress.PROGRESS_DISPLAY_FILE_COUNT;
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.util.HashModeUtil.hashModeToString;
 
-	private final Context context;
-	private final HashProgress hashProgress;
-	private final FimIgnoreManager fimIgnoreManager;
+public class StateGenerator {
+    public static final int FILES_QUEUE_CAPACITY = 500;
 
-	private ExecutorService executorService;
+    private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
-	private Path rootDir;
-	private BlockingDeque<Path> filesToHashQueue;
-	private boolean fileHashersStarted;
-	private List<FileHasher> fileHashers;
-	private long overallTotalBytesHashed;
+    private final Context context;
+    private final HashProgress hashProgress;
+    private final FimIgnoreManager fimIgnoreManager;
 
-	public StateGenerator(Context context)
-	{
-		this.context = context;
-		this.hashProgress = new HashProgress(context);
-		this.fimIgnoreManager = new FimIgnoreManager(context);
-	}
+    private ExecutorService executorService;
 
-	public State generateState(String comment, Path rootDir, Path dirToScan) throws NoSuchAlgorithmException
-	{
-		this.rootDir = rootDir;
+    private Path rootDir;
+    private BlockingDeque<Path> filesToHashQueue;
+    private boolean fileHashersStarted;
+    private List<FileHasher> fileHashers;
+    private long overallTotalBytesHashed;
 
-		int threadCount = context.getThreadCount();
-		Logger.info(String.format("Scanning recursively local files, using '%s' mode and %d %s",
-				hashModeToString(context.getHashMode()), threadCount, English.plural("thread", threadCount)));
-		if (hashProgress.isProgressDisplayed())
-		{
-			System.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgress.hashLegend());
-		}
+    public StateGenerator(Context context) {
+        this.context = context;
+        this.hashProgress = new HashProgress(context);
+        this.fimIgnoreManager = new FimIgnoreManager(context);
+    }
 
-		State state = new State();
-		state.setComment(comment);
-		state.setHashMode(context.getHashMode());
+    public State generateState(String comment, Path rootDir, Path dirToScan) throws NoSuchAlgorithmException {
+        this.rootDir = rootDir;
 
-		long start = System.currentTimeMillis();
-		hashProgress.outputInit();
+        int threadCount = context.getThreadCount();
+        Logger.info(String.format("Scanning recursively local files, using '%s' mode and %d %s",
+            hashModeToString(context.getHashMode()), threadCount, English.plural("thread", threadCount)));
+        if (hashProgress.isProgressDisplayed()) {
+            System.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgress.hashLegend());
+        }
 
-		filesToHashQueue = new LinkedBlockingDeque<>(FILES_QUEUE_CAPACITY);
-		initializeFileHashers();
+        State state = new State();
+        state.setComment(comment);
+        state.setHashMode(context.getHashMode());
 
-		FimIgnore initialFimIgnore = fimIgnoreManager.loadInitialFimIgnore();
-		scanFileTree(filesToHashQueue, dirToScan, initialFimIgnore);
+        long start = System.currentTimeMillis();
+        hashProgress.outputInit();
 
-		// In case the FileHashers have not already been started
-		startFileHashers();
+        filesToHashQueue = new LinkedBlockingDeque<>(FILES_QUEUE_CAPACITY);
+        initializeFileHashers();
 
-		waitAllFilesToBeHashed();
+        FimIgnore initialFimIgnore = fimIgnoreManager.loadInitialFimIgnore();
+        scanFileTree(filesToHashQueue, dirToScan, initialFimIgnore);
 
-		overallTotalBytesHashed = 0;
-		for (FileHasher fileHasher : fileHashers)
-		{
-			state.getFileStates().addAll(fileHasher.getFileStates());
-			overallTotalBytesHashed += fileHasher.getTotalBytesHashed();
-		}
+        // In case the FileHashers have not already been started
+        startFileHashers();
 
-		Collections.sort(state.getFileStates(), fileNameComparator);
+        waitAllFilesToBeHashed();
 
-		state.setIgnoredFiles(fimIgnoreManager.getIgnoredFiles());
+        overallTotalBytesHashed = 0;
+        for (FileHasher fileHasher : fileHashers) {
+            state.getFileStates().addAll(fileHasher.getFileStates());
+            overallTotalBytesHashed += fileHasher.getTotalBytesHashed();
+        }
 
-		hashProgress.outputStop();
-		displayStatistics(start, state);
+        Collections.sort(state.getFileStates(), fileNameComparator);
 
-		return state;
-	}
+        state.setIgnoredFiles(fimIgnoreManager.getIgnoredFiles());
 
-	private void initializeFileHashers()
-	{
-		fileHashersStarted = false;
-		fileHashers = new ArrayList<>();
-		executorService = Executors.newFixedThreadPool(context.getThreadCount());
-	}
+        hashProgress.outputStop();
+        displayStatistics(start, state);
 
-	private void startFileHashers() throws NoSuchAlgorithmException
-	{
-		if (!fileHashersStarted)
-		{
-			String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
-			for (int index = 0; index < context.getThreadCount(); index++)
-			{
-				FileHasher hasher = new FileHasher(context, hashProgress, filesToHashQueue, normalizedRootDir);
-				executorService.submit(hasher);
-				fileHashers.add(hasher);
-			}
-			fileHashersStarted = true;
-		}
-	}
+        return state;
+    }
 
-	private void waitAllFilesToBeHashed()
-	{
-		try
-		{
-			executorService.shutdown();
-			executorService.awaitTermination(3, TimeUnit.DAYS);
-		}
-		catch (InterruptedException ex)
-		{
-			Logger.error("Exception while waiting for files to be hashed", ex, context.isDisplayStackTrace());
-		}
-	}
+    private void initializeFileHashers() {
+        fileHashersStarted = false;
+        fileHashers = new ArrayList<>();
+        executorService = Executors.newFixedThreadPool(context.getThreadCount());
+    }
 
-	private void displayStatistics(long start, State state)
-	{
-		long duration = System.currentTimeMillis() - start;
+    private void startFileHashers() throws NoSuchAlgorithmException {
+        if (!fileHashersStarted) {
+            String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
+            for (int index = 0; index < context.getThreadCount(); index++) {
+                FileHasher hasher = new FileHasher(context, hashProgress, filesToHashQueue, normalizedRootDir);
+                executorService.submit(hasher);
+                fileHashers.add(hasher);
+            }
+            fileHashersStarted = true;
+        }
+    }
 
-		String totalFileContentLengthStr = FileUtils.byteCountToDisplaySize(state.getFilesContentLength());
-		String totalBytesHashedStr = FileUtils.byteCountToDisplaySize(overallTotalBytesHashed);
-		String durationStr = DurationFormatUtils.formatDuration(duration, "HH:mm:ss");
+    private void waitAllFilesToBeHashed() {
+        try {
+            executorService.shutdown();
+            executorService.awaitTermination(3, TimeUnit.DAYS);
+        } catch (InterruptedException ex) {
+            Logger.error("Exception while waiting for files to be hashed", ex, context.isDisplayStackTrace());
+        }
+    }
 
-		long durationSeconds = duration / 1000;
-		if (durationSeconds <= 0)
-		{
-			durationSeconds = 1;
-		}
+    private void displayStatistics(long start, State state) {
+        long duration = System.currentTimeMillis() - start;
 
-		long globalThroughput = overallTotalBytesHashed / durationSeconds;
-		String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
+        String totalFileContentLengthStr = FileUtils.byteCountToDisplaySize(state.getFilesContentLength());
+        String totalBytesHashedStr = FileUtils.byteCountToDisplaySize(overallTotalBytesHashed);
+        String durationStr = DurationFormatUtils.formatDuration(duration, "HH:mm:ss");
 
-		if (context.getHashMode() == dontHash)
-		{
-			Logger.info(String.format("Scanned %d files (%s), during %s%n",
-					state.getFileCount(), totalFileContentLengthStr, durationStr));
-		}
-		else
-		{
-			Logger.info(String.format("Scanned %d files (%s), hashed %s (avg %s/s), during %s%n",
-					state.getFileCount(), totalFileContentLengthStr, totalBytesHashedStr, throughputStr, durationStr));
-		}
-	}
+        long durationSeconds = duration / 1000;
+        if (durationSeconds <= 0) {
+            durationSeconds = 1;
+        }
 
-	private void scanFileTree(BlockingDeque<Path> filesToHashQueue, Path directory, FimIgnore parentFimIgnore) throws NoSuchAlgorithmException
-	{
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory))
-		{
-			FimIgnore fimIgnore = fimIgnoreManager.loadLocalIgnore(directory, parentFimIgnore);
+        long globalThroughput = overallTotalBytesHashed / durationSeconds;
+        String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
 
-			for (Path file : stream)
-			{
-				if (!fileHashersStarted && filesToHashQueue.size() > FILES_QUEUE_CAPACITY / 2)
-				{
-					startFileHashers();
-				}
+        if (context.getHashMode() == dontHash) {
+            Logger.info(String.format("Scanned %d files (%s), during %s%n",
+                state.getFileCount(), totalFileContentLengthStr, durationStr));
+        } else {
+            Logger.info(String.format("Scanned %d files (%s), hashed %s (avg %s/s), during %s%n",
+                state.getFileCount(), totalFileContentLengthStr, totalBytesHashedStr, throughputStr, durationStr));
+        }
+    }
 
-				BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
-				String fileName = file.getFileName().toString();
-				if (fimIgnoreManager.isIgnored(fileName, attributes, fimIgnore))
-				{
-					fimIgnoreManager.ignoreThisFiles(file, attributes);
-				}
-				else
-				{
-					if (attributes.isRegularFile())
-					{
-						enqueueFile(filesToHashQueue, file);
-					}
-					else if (attributes.isDirectory())
-					{
-						scanFileTree(filesToHashQueue, file, fimIgnore);
-					}
-				}
-			}
-		}
-		catch (IOException ex)
-		{
-			Console.newLine();
-			Logger.error("Skipping - Error scanning directory '" + directory + "'", ex, context.isDisplayStackTrace());
-		}
-	}
+    private void scanFileTree(BlockingDeque<Path> filesToHashQueue, Path directory, FimIgnore parentFimIgnore) throws NoSuchAlgorithmException {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {
+            FimIgnore fimIgnore = fimIgnoreManager.loadLocalIgnore(directory, parentFimIgnore);
 
-	private void enqueueFile(BlockingDeque<Path> filesToHashQueue, Path file)
-	{
-		try
-		{
-			filesToHashQueue.offer(file, 120, TimeUnit.MINUTES);
-		}
-		catch (InterruptedException ex)
-		{
-			Logger.error("Exception while enqueuing file '" + file + "'", ex, context.isDisplayStackTrace());
-		}
-	}
+            for (Path file : stream) {
+                if (!fileHashersStarted && filesToHashQueue.size() > FILES_QUEUE_CAPACITY / 2) {
+                    startFileHashers();
+                }
+
+                BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+                String fileName = file.getFileName().toString();
+                if (fimIgnoreManager.isIgnored(fileName, attributes, fimIgnore)) {
+                    fimIgnoreManager.ignoreThisFiles(file, attributes);
+                } else {
+                    if (attributes.isRegularFile()) {
+                        enqueueFile(filesToHashQueue, file);
+                    } else if (attributes.isDirectory()) {
+                        scanFileTree(filesToHashQueue, file, fimIgnore);
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            Console.newLine();
+            Logger.error("Skipping - Error scanning directory '" + directory + "'", ex, context.isDisplayStackTrace());
+        }
+    }
+
+    private void enqueueFile(BlockingDeque<Path> filesToHashQueue, Path file) {
+        try {
+            filesToHashQueue.offer(file, 120, TimeUnit.MINUTES);
+        } catch (InterruptedException ex) {
+            Logger.error("Exception while enqueuing file '" + file + "'", ex, context.isDisplayStackTrace());
+        }
+    }
 }

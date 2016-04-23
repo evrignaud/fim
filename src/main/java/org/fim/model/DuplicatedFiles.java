@@ -18,56 +18,48 @@
  */
 package org.fim.model;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.List;
 import java.util.Objects;
 
-import com.google.common.base.MoreObjects;
+public class DuplicatedFiles {
+    private List<String> duplicates;
 
-public class DuplicatedFiles
-{
-	private List<String> duplicates;
+    public DuplicatedFiles(List<String> duplicates) {
+        this.duplicates = duplicates;
+    }
 
-	public DuplicatedFiles(List<String> duplicates)
-	{
-		this.duplicates = duplicates;
-	}
+    public List<String> getDuplicates() {
+        return duplicates;
+    }
 
-	public List<String> getDuplicates()
-	{
-		return duplicates;
-	}
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
 
-	@Override
-	public boolean equals(Object other)
-	{
-		if (this == other)
-		{
-			return true;
-		}
+        if (other == null || !(other instanceof DuplicatedFiles)) {
+            return false;
+        }
 
-		if (other == null || !(other instanceof DuplicatedFiles))
-		{
-			return false;
-		}
+        DuplicatedFiles duplicatedFiles = (DuplicatedFiles) other;
 
-		DuplicatedFiles duplicatedFiles = (DuplicatedFiles) other;
+        return Objects.equals(this.duplicates, duplicatedFiles.duplicates);
 
-		return Objects.equals(this.duplicates, duplicatedFiles.duplicates);
+    }
 
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(duplicates);
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(duplicates);
-	}
-
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(this)
-				.add("duplicates", duplicates)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+            .add("duplicates", duplicates)
+            .toString();
+    }
 
 }

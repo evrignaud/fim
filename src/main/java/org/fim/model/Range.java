@@ -18,130 +18,112 @@
  */
 package org.fim.model;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+import com.google.common.base.MoreObjects;
 
 import java.util.Objects;
 
-import com.google.common.base.MoreObjects;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
-public class Range implements Comparable<Range>
-{
-	private long from;
-	private long to;
+public class Range implements Comparable<Range> {
+    private long from;
+    private long to;
 
-	/**
-	 * @param from    the initial index of the range, inclusive
-	 * @param to    the final index of the range, exclusive
-	 */
-	public Range(long from, long to)
-	{
-		if (from > to)
-		{
-			throw new RuntimeException("'to' must be greater than 'from'");
-		}
+    /**
+     * @param from the initial index of the range, inclusive
+     * @param to   the final index of the range, exclusive
+     */
+    public Range(long from, long to) {
+        if (from > to) {
+            throw new RuntimeException("'to' must be greater than 'from'");
+        }
 
-		this.from = from;
-		this.to = to;
-	}
+        this.from = from;
+        this.to = to;
+    }
 
-	/**
-	 * Return the initial index of the range, inclusive
-	 */
-	public long getFrom()
-	{
-		return from;
-	}
+    /**
+     * Return the initial index of the range, inclusive
+     */
+    public long getFrom() {
+        return from;
+    }
 
-	/**
-	 * Return the final index of the range, exclusive
-	 */
-	public long getTo()
-	{
-		return to;
-	}
+    /**
+     * Return the final index of the range, exclusive
+     */
+    public long getTo() {
+        return to;
+    }
 
-	/**
-	 * Return the union of this Range and the specified Range.
-	 */
-	public Range union(Range range)
-	{
-		if (range == null)
-		{
-			return new Range(from, to);
-		}
+    /**
+     * Return the union of this Range and the specified Range.
+     */
+    public Range union(Range range) {
+        if (range == null) {
+            return new Range(from, to);
+        }
 
-		long unionFrom = min(from, range.getFrom());
-		long unionTo = max(to, range.getTo());
-		return new Range(unionFrom, unionTo);
-	}
+        long unionFrom = min(from, range.getFrom());
+        long unionTo = max(to, range.getTo());
+        return new Range(unionFrom, unionTo);
+    }
 
-	/**
-	 * If the specified Range starts before the end of this Range and finish after, then return a bigger Range.
-	 * The specified Range must begin inside the current Range.
-	 */
-	public Range adjustToRange(Range range)
-	{
-		if (range != null)
-		{
-			if (range.getFrom() < from)
-			{
-				throw new RuntimeException("The Range must begin inside the current Range");
-			}
+    /**
+     * If the specified Range starts before the end of this Range and finish after, then return a bigger Range.
+     * The specified Range must begin inside the current Range.
+     */
+    public Range adjustToRange(Range range) {
+        if (range != null) {
+            if (range.getFrom() < from) {
+                throw new RuntimeException("The Range must begin inside the current Range");
+            }
 
-			if (range.getFrom() < to && range.getTo() > to)
-			{
-				return new Range(from, range.getTo());
-			}
-		}
+            if (range.getFrom() < to && range.getTo() > to) {
+                return new Range(from, range.getTo());
+            }
+        }
 
-		return new Range(from, to);
-	}
+        return new Range(from, to);
+    }
 
-	@Override
-	public boolean equals(Object other)
-	{
-		if (this == other)
-		{
-			return true;
-		}
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
 
-		if (other == null || !(other instanceof Range))
-		{
-			return false;
-		}
+        if (other == null || !(other instanceof Range)) {
+            return false;
+        }
 
-		Range range = (Range) other;
+        Range range = (Range) other;
 
-		return Objects.equals(this.from, range.from)
-				&& Objects.equals(this.to, range.to);
-	}
+        return Objects.equals(this.from, range.from)
+            && Objects.equals(this.to, range.to);
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(from, to);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(from, to);
+    }
 
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(this)
-				.add("from", from)
-				.add("to", to)
-				.add("length", to - from)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+            .add("from", from)
+            .add("to", to)
+            .add("length", to - from)
+            .toString();
+    }
 
-	@Override
-	public int compareTo(Range other)
-	{
-		int value = Long.compare(from, other.from);
-		if (value != 0)
-		{
-			return value;
-		}
+    @Override
+    public int compareTo(Range other) {
+        int value = Long.compare(from, other.from);
+        if (value != 0) {
+            return value;
+        }
 
-		return Long.compare(to, other.to);
-	}
+        return Long.compare(to, other.to);
+    }
 }

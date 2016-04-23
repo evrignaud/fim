@@ -5,7 +5,7 @@
 root = true
 
 [*]
-indent_style = tab
+indent_style = space
 indent_size = 4
 end_of_line = lf
 insert_final_newline = true
@@ -13,6 +13,6 @@ trim_trailing_whitespace = true
 charset = utf-8
 
 curly_bracket_next_line = false
-indent_brace_style = Allman
+indent_brace_style = 1TBS
 spaces_around_operators = true
 spaces_around_brackets = none

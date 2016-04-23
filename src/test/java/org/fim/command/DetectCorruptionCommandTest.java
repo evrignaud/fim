@@ -18,20 +18,6 @@
  */
 package org.fim.command;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.dontHash;
-import static org.fim.model.HashMode.hashAll;
-import static org.fim.model.HashMode.hashMediumBlock;
-import static org.fim.model.HashMode.hashSmallBlock;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributeView;
-import java.nio.file.attribute.BasicFileAttributes;
-
 import org.apache.commons.io.FileUtils;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.model.CompareResult;
@@ -42,101 +28,104 @@ import org.fim.tooling.RepositoryTool;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DetectCorruptionCommandTest
-{
-	private static Path rootDir = Paths.get("target/" + DetectCorruptionCommandTest.class.getSimpleName());
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
 
-	private InitCommand initCommand;
-	private DiffCommand diffCommand;
-	private DetectCorruptionCommand detectCorruptionCommand;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.fim.model.HashMode.*;
 
-	private RepositoryTool tool;
+public class DetectCorruptionCommandTest {
+    private static Path rootDir = Paths.get("target/" + DetectCorruptionCommandTest.class.getSimpleName());
 
-	@Before
-	public void setup() throws IOException
-	{
-		FileUtils.deleteDirectory(rootDir.toFile());
-		Files.createDirectories(rootDir);
+    private InitCommand initCommand;
+    private DiffCommand diffCommand;
+    private DetectCorruptionCommand detectCorruptionCommand;
 
-		initCommand = new InitCommand();
-		diffCommand = new DiffCommand();
-		detectCorruptionCommand = new DetectCorruptionCommand();
+    private RepositoryTool tool;
 
-		tool = new RepositoryTool(rootDir);
-	}
+    @Before
+    public void setup() throws IOException {
+        FileUtils.deleteDirectory(rootDir.toFile());
+        Files.createDirectories(rootDir);
 
-	@Test(expected = BadFimUsageException.class)
-	public void dontHash_NotAllowed() throws Exception
-	{
-		Context context = tool.createContext(dontHash, false);
-		detectCorruptionCommand.execute(context);
-	}
+        initCommand = new InitCommand();
+        diffCommand = new DiffCommand();
+        detectCorruptionCommand = new DetectCorruptionCommand();
 
-	@Test(expected = BadFimUsageException.class)
-	public void hashSmallBlock_NotAllowed() throws Exception
-	{
-		Context context = tool.createContext(hashSmallBlock, false);
-		detectCorruptionCommand.execute(context);
-	}
+        tool = new RepositoryTool(rootDir);
+    }
 
-	@Test(expected = BadFimUsageException.class)
-	public void hashMediumBlock_NotAllowed() throws Exception
-	{
-		Context context = tool.createContext(hashMediumBlock, false);
-		detectCorruptionCommand.execute(context);
-	}
+    @Test(expected = BadFimUsageException.class)
+    public void dontHash_NotAllowed() throws Exception {
+        Context context = tool.createContext(dontHash, false);
+        detectCorruptionCommand.execute(context);
+    }
 
-	@Test
-	public void weCanDetectHardwareCorruption() throws Exception
-	{
-		Context context = tool.createContext(hashAll, true);
+    @Test(expected = BadFimUsageException.class)
+    public void hashSmallBlock_NotAllowed() throws Exception {
+        Context context = tool.createContext(hashSmallBlock, false);
+        detectCorruptionCommand.execute(context);
+    }
 
-		tool.createASetOfFiles(5);
+    @Test(expected = BadFimUsageException.class)
+    public void hashMediumBlock_NotAllowed() throws Exception {
+        Context context = tool.createContext(hashMediumBlock, false);
+        detectCorruptionCommand.execute(context);
+    }
 
-		State state = (State) initCommand.execute(context);
-		assertThat(state.getModificationCounts().getAdded()).isEqualTo(5);
+    @Test
+    public void weCanDetectHardwareCorruption() throws Exception {
+        Context context = tool.createContext(hashAll, true);
 
-		CompareResult compareResult = (CompareResult) detectCorruptionCommand.execute(context);
-		assertThat(compareResult.getCorrupted().size()).isEqualTo(0);
+        tool.createASetOfFiles(5);
 
-		doSomeModifications();
+        State state = (State) initCommand.execute(context);
+        assertThat(state.getModificationCounts().getAdded()).isEqualTo(5);
 
-		compareResult = (CompareResult) diffCommand.execute(context);
-		assertThat(compareResult.modifiedCount()).isEqualTo(3);
+        CompareResult compareResult = (CompareResult) detectCorruptionCommand.execute(context);
+        assertThat(compareResult.getCorrupted().size()).isEqualTo(0);
 
-		compareResult = (CompareResult) detectCorruptionCommand.execute(context);
-		assertThat(compareResult.getCorrupted().size()).isEqualTo(1);
-		FileState fileState = compareResult.getCorrupted().get(0).getFileState();
-		assertThat(fileState.getFileName()).isEqualTo("file03");
-	}
+        doSomeModifications();
 
-	private void doSomeModifications() throws IOException
-	{
-		tool.sleepSafely(1_000); // Ensure to increase lastModified at least of 1 second
+        compareResult = (CompareResult) diffCommand.execute(context);
+        assertThat(compareResult.modifiedCount()).isEqualTo(3);
 
-		tool.touchLastModified("file01");
+        compareResult = (CompareResult) detectCorruptionCommand.execute(context);
+        assertThat(compareResult.getCorrupted().size()).isEqualTo(1);
+        FileState fileState = compareResult.getCorrupted().get(0).getFileState();
+        assertThat(fileState.getFileName()).isEqualTo("file03");
+    }
 
-		tool.setFileContent("file02", "file02 new content");
+    private void doSomeModifications() throws IOException {
+        tool.sleepSafely(1_000); // Ensure to increase lastModified at least of 1 second
 
-		simulateHardwareCorruption("file03");
+        tool.touchLastModified("file01");
 
-		// Do nothing on file04 and file05
-	}
+        tool.setFileContent("file02", "file02 new content");
 
-	private void simulateHardwareCorruption(String fileName) throws IOException
-	{
-		Path file = rootDir.resolve(fileName);
-		// Keep original timestamps
-		BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
+        simulateHardwareCorruption("file03");
 
-		// A zero byte appears in the middle of the file
-		byte[] bytes = Files.readAllBytes(file);
-		bytes[bytes.length / 2] = 0;
+        // Do nothing on file04 and file05
+    }
 
-		Files.delete(file);
-		Files.write(file, bytes, CREATE);
+    private void simulateHardwareCorruption(String fileName) throws IOException {
+        Path file = rootDir.resolve(fileName);
+        // Keep original timestamps
+        BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
 
-		// Restore the original timestamps
-		Files.getFileAttributeView(file, BasicFileAttributeView.class).setTimes(attributes.lastModifiedTime(), attributes.lastAccessTime(), attributes.creationTime());
-	}
+        // A zero byte appears in the middle of the file
+        byte[] bytes = Files.readAllBytes(file);
+        bytes[bytes.length / 2] = 0;
+
+        Files.delete(file);
+        Files.write(file, bytes, CREATE);
+
+        // Restore the original timestamps
+        Files.getFileAttributeView(file, BasicFileAttributeView.class).setTimes(attributes.lastModifiedTime(), attributes.lastAccessTime(), attributes.creationTime());
+    }
 }

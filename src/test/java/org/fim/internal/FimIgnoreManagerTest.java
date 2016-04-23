@@ -18,16 +18,6 @@
  */
 package org.fim.internal;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.security.NoSuchAlgorithmException;
-
 import org.apache.commons.io.FileUtils;
 import org.fim.model.FileToIgnore;
 import org.fim.model.FimIgnore;
@@ -36,100 +26,102 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class FimIgnoreManagerTest extends StateAssert
-{
-	private static Path rootDir = Paths.get("target/" + FimIgnoreManagerTest.class.getSimpleName());
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.security.NoSuchAlgorithmException;
 
-	private FimIgnoreManager cut = new FimIgnoreManager(defaultContext());
+import static java.nio.file.StandardOpenOption.CREATE;
+import static org.assertj.core.api.Assertions.assertThat;
 
-	private BasicFileAttributes fileAttributes;
+public class FimIgnoreManagerTest extends StateAssert {
+    private static Path rootDir = Paths.get("target/" + FimIgnoreManagerTest.class.getSimpleName());
 
-	@BeforeClass
-	public static void setupOnce() throws NoSuchAlgorithmException, IOException
-	{
-		FileUtils.deleteDirectory(rootDir.toFile());
-		Files.createDirectories(rootDir);
-	}
+    private FimIgnoreManager cut = new FimIgnoreManager(defaultContext());
 
-	@Test
-	public void filesCanBeIgnored()
-	{
-		fileAttributes = Mockito.mock(BasicFileAttributes.class);
-		Mockito.when(fileAttributes.isDirectory()).thenReturn(false);
+    private BasicFileAttributes fileAttributes;
 
-		FimIgnore fimIgnore = new FimIgnore();
-		ignoreFile(fimIgnore, "foo");
-		ignoreFile(fimIgnore, "bar*");
-		ignoreFile(fimIgnore, "*baz*");
-		ignoreFile(fimIgnore, "*.mp3");
-		ignoreFile(fimIgnore, "$Data[1]|2(3)*");
-		ignoreFile(fimIgnore, "****qux****");
+    @BeforeClass
+    public static void setupOnce() throws NoSuchAlgorithmException, IOException {
+        FileUtils.deleteDirectory(rootDir.toFile());
+        Files.createDirectories(rootDir);
+    }
 
-		assertFileIgnored("foo", fimIgnore);
-		assertFileNotIgnored("a_foo", fimIgnore);
+    @Test
+    public void filesCanBeIgnored() {
+        fileAttributes = Mockito.mock(BasicFileAttributes.class);
+        Mockito.when(fileAttributes.isDirectory()).thenReturn(false);
 
-		assertFileIgnored("bar_yes", fimIgnore);
-		assertFileNotIgnored("yes_bar", fimIgnore);
+        FimIgnore fimIgnore = new FimIgnore();
+        ignoreFile(fimIgnore, "foo");
+        ignoreFile(fimIgnore, "bar*");
+        ignoreFile(fimIgnore, "*baz*");
+        ignoreFile(fimIgnore, "*.mp3");
+        ignoreFile(fimIgnore, "$Data[1]|2(3)*");
+        ignoreFile(fimIgnore, "****qux****");
 
-		assertFileIgnored("no_baz_yes", fimIgnore);
+        assertFileIgnored("foo", fimIgnore);
+        assertFileNotIgnored("a_foo", fimIgnore);
 
-		assertFileIgnored("track12.mp3", fimIgnore);
-		assertFileNotIgnored("track12_mp3", fimIgnore);
+        assertFileIgnored("bar_yes", fimIgnore);
+        assertFileNotIgnored("yes_bar", fimIgnore);
 
-		assertFileIgnored("$Data[1]|2(3)_file", fimIgnore);
+        assertFileIgnored("no_baz_yes", fimIgnore);
 
-		assertFileIgnored("****qux****", fimIgnore);
-	}
+        assertFileIgnored("track12.mp3", fimIgnore);
+        assertFileNotIgnored("track12_mp3", fimIgnore);
 
-	@Test
-	public void fileToIgnoreListDontAllowDuplicates()
-	{
-		FimIgnore fimIgnore = new FimIgnore();
-		ignoreFile(fimIgnore, "foo");
-		ignoreFile(fimIgnore, "foo");
+        assertFileIgnored("$Data[1]|2(3)_file", fimIgnore);
 
-		assertThat(fimIgnore.getFilesToIgnoreLocally().size()).isEqualTo(1);
-	}
+        assertFileIgnored("****qux****", fimIgnore);
+    }
 
-	@Test
-	public void weCanLoadCorrectlyAFimIgnore() throws IOException
-	{
-		FimIgnore fimIgnore = cut.loadFimIgnore(rootDir);
-		assertThat(fimIgnore.getFilesToIgnoreLocally().size()).isEqualTo(0);
-		assertThat(fimIgnore.getFilesToIgnoreInAllDirectories().size()).isEqualTo(0);
+    @Test
+    public void fileToIgnoreListDontAllowDuplicates() {
+        FimIgnore fimIgnore = new FimIgnore();
+        ignoreFile(fimIgnore, "foo");
+        ignoreFile(fimIgnore, "foo");
 
-		String fileContent = "**/*.mp3\n" +
-				"*.mp4\n" +
-				"**/.git\n" +
-				"foo\n" +
-				"**/bar";
-		Files.write(rootDir.resolve(".fimignore"), fileContent.getBytes(), CREATE);
+        assertThat(fimIgnore.getFilesToIgnoreLocally().size()).isEqualTo(1);
+    }
 
-		fimIgnore = cut.loadFimIgnore(rootDir);
-		assertThat(fimIgnore.getFilesToIgnoreLocally().toString()).isEqualTo(
-				"[FileToIgnore{fileNamePattern=foo, compiledPattern=^foo$}," +
-						" FileToIgnore{fileNamePattern=*.mp4, compiledPattern=^.*\\.mp4$}]");
+    @Test
+    public void weCanLoadCorrectlyAFimIgnore() throws IOException {
+        FimIgnore fimIgnore = cut.loadFimIgnore(rootDir);
+        assertThat(fimIgnore.getFilesToIgnoreLocally().size()).isEqualTo(0);
+        assertThat(fimIgnore.getFilesToIgnoreInAllDirectories().size()).isEqualTo(0);
 
-		assertThat(fimIgnore.getFilesToIgnoreInAllDirectories().toString()).isEqualTo(
-				"[FileToIgnore{fileNamePattern=bar, compiledPattern=^bar$}," +
-						" FileToIgnore{fileNamePattern=.git, compiledPattern=^\\.git$}," +
-						" FileToIgnore{fileNamePattern=*.mp3, compiledPattern=^.*\\.mp3$}]");
-	}
+        String fileContent = "**/*.mp3\n" +
+            "*.mp4\n" +
+            "**/.git\n" +
+            "foo\n" +
+            "**/bar";
+        Files.write(rootDir.resolve(".fimignore"), fileContent.getBytes(), CREATE);
 
-	private void assertFileIgnored(String fileName, FimIgnore fimIgnore)
-	{
-		assertThat(cut.isIgnored(fileName, fileAttributes, fimIgnore)).isTrue();
-	}
+        fimIgnore = cut.loadFimIgnore(rootDir);
+        assertThat(fimIgnore.getFilesToIgnoreLocally().toString()).isEqualTo(
+            "[FileToIgnore{fileNamePattern=foo, compiledPattern=^foo$}," +
+                " FileToIgnore{fileNamePattern=*.mp4, compiledPattern=^.*\\.mp4$}]");
 
-	private void assertFileNotIgnored(String fileName, FimIgnore fimIgnore)
-	{
-		assertThat(cut.isIgnored(fileName, fileAttributes, fimIgnore)).isFalse();
-	}
+        assertThat(fimIgnore.getFilesToIgnoreInAllDirectories().toString()).isEqualTo(
+            "[FileToIgnore{fileNamePattern=bar, compiledPattern=^bar$}," +
+                " FileToIgnore{fileNamePattern=.git, compiledPattern=^\\.git$}," +
+                " FileToIgnore{fileNamePattern=*.mp3, compiledPattern=^.*\\.mp3$}]");
+    }
 
-	private void ignoreFile(FimIgnore fimIgnore, String fileNamePattern)
-	{
-		FileToIgnore fileToIgnore;
-		fileToIgnore = new FileToIgnore(fileNamePattern);
-		fimIgnore.getFilesToIgnoreLocally().add(fileToIgnore);
-	}
+    private void assertFileIgnored(String fileName, FimIgnore fimIgnore) {
+        assertThat(cut.isIgnored(fileName, fileAttributes, fimIgnore)).isTrue();
+    }
+
+    private void assertFileNotIgnored(String fileName, FimIgnore fimIgnore) {
+        assertThat(cut.isIgnored(fileName, fileAttributes, fimIgnore)).isFalse();
+    }
+
+    private void ignoreFile(FimIgnore fimIgnore, String fileNamePattern) {
+        FileToIgnore fileToIgnore;
+        fileToIgnore = new FileToIgnore(fileNamePattern);
+        fimIgnore.getFilesToIgnoreLocally().add(fileToIgnore);
+    }
 }

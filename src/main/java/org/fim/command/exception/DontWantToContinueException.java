@@ -18,6 +18,5 @@
  */
 package org.fim.command.exception;
 
-public class DontWantToContinueException extends RuntimeException
-{
+public class DontWantToContinueException extends RuntimeException {
 }

@@ -20,28 +20,22 @@ package org.fim.util;
 
 import org.junit.Test;
 
-public class LoggerTest
-{
-	@Test
-	public void weCanLogMessages()
-	{
-		Logger.info("Info message");
-		Logger.warning("Warning message");
-		Logger.alert("Alert message");
-		Logger.error("Error message");
-	}
+public class LoggerTest {
+    @Test
+    public void weCanLogMessages() {
+        Logger.info("Info message");
+        Logger.warning("Warning message");
+        Logger.alert("Alert message");
+        Logger.error("Error message");
+    }
 
-	@Test
-	public void weCanLogAnException()
-	{
-		try
-		{
-			throw new RuntimeException("Exception for test");
-		}
-		catch (RuntimeException ex)
-		{
-			Logger.error("With a message", ex, false);
-			Logger.error("With a stack trace", ex, true);
-		}
-	}
+    @Test
+    public void weCanLogAnException() {
+        try {
+            throw new RuntimeException("Exception for test");
+        } catch (RuntimeException ex) {
+            Logger.error("With a message", ex, false);
+            Logger.error("With a stack trace", ex, true);
+        }
+    }
 }

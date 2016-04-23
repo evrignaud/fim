@@ -18,12 +18,6 @@
  */
 package org.fim.util;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 import org.fim.model.Attribute;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
@@ -31,46 +25,47 @@ import org.fim.model.FileTime;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FormatUtilTest
-{
-	Calendar calendar;
-	FileState fileState;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
-	@Before
-	public void setup()
-	{
-		int year = 115;
-		int month = 11;
-		int day = 14;
-		int hrs = 13;
-		int min = 12;
-		int seconds = 10;
-		calendar = new GregorianCalendar(year + 1900, month - 1, day, hrs, min, seconds);
+import static org.assertj.core.api.Assertions.assertThat;
 
-		long fileLength = 512;
-		FileTime fileTime = new FileTime(0, 0);
-		FileHash fileHash = new FileHash("", "", "");
-		List<Attribute> attributeList = null;
-		fileState = new FileState("fileName", fileLength, fileTime, fileHash, attributeList);
-	}
+public class FormatUtilTest {
+    Calendar calendar;
+    FileState fileState;
 
-	@Test
-	public void weCanFormatADate()
-	{
-		assertThat(FormatUtil.formatDate(calendar.getTimeInMillis())).isEqualTo("2015/11/14 13:12:10");
-	}
+    @Before
+    public void setup() {
+        int year = 115;
+        int month = 11;
+        int day = 14;
+        int hrs = 13;
+        int min = 12;
+        int seconds = 10;
+        calendar = new GregorianCalendar(year + 1900, month - 1, day, hrs, min, seconds);
 
-	@Test
-	public void weCanFormatCreationTime()
-	{
-		fileState.getFileTime().setCreationTime(calendar.getTimeInMillis());
-		assertThat(FormatUtil.formatCreationTime(fileState)).isEqualTo("2015/11/14 13:12:10");
-	}
+        long fileLength = 512;
+        FileTime fileTime = new FileTime(0, 0);
+        FileHash fileHash = new FileHash("", "", "");
+        List<Attribute> attributeList = null;
+        fileState = new FileState("fileName", fileLength, fileTime, fileHash, attributeList);
+    }
 
-	@Test
-	public void weCanFormatLastModified()
-	{
-		fileState.getFileTime().setLastModified(calendar.getTimeInMillis());
-		assertThat(FormatUtil.formatLastModified(fileState)).isEqualTo("2015/11/14 13:12:10");
-	}
+    @Test
+    public void weCanFormatADate() {
+        assertThat(FormatUtil.formatDate(calendar.getTimeInMillis())).isEqualTo("2015/11/14 13:12:10");
+    }
+
+    @Test
+    public void weCanFormatCreationTime() {
+        fileState.getFileTime().setCreationTime(calendar.getTimeInMillis());
+        assertThat(FormatUtil.formatCreationTime(fileState)).isEqualTo("2015/11/14 13:12:10");
+    }
+
+    @Test
+    public void weCanFormatLastModified() {
+        fileState.getFileTime().setLastModified(calendar.getTimeInMillis());
+        assertThat(FormatUtil.formatLastModified(fileState)).isEqualTo("2015/11/14 13:12:10");
+    }
 }

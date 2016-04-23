@@ -18,135 +18,123 @@
  */
 package org.fim.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.nio.file.Paths;
-import java.text.ParseException;
-import java.util.Arrays;
-
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StateTest extends StateAssert
-{
-	// public static final String MODIFICATION_TIME = "2015/07/23 23:24:10";
-	public static final long MODIFICATION_TIMESTAMP = 1437686650000L; // MODIFICATION_TIME translated in milliseconds
+import java.nio.file.Paths;
+import java.text.ParseException;
+import java.util.Arrays;
 
-	private BuildableState a1;
-	private BuildableState a2;
-	private BuildableState b;
+import static org.assertj.core.api.Assertions.assertThat;
 
-	@Before
-	public void setup()
-	{
-		a1 = new BuildableState(defaultContext()).addFiles("file_1", "file_2");
-		a2 = a1.clone();
-		a2.setTimestamp(a1.getTimestamp());
+public class StateTest extends StateAssert {
+    // public static final String MODIFICATION_TIME = "2015/07/23 23:24:10";
+    public static final long MODIFICATION_TIMESTAMP = 1437686650000L; // MODIFICATION_TIME translated in milliseconds
 
-		b = a1.delete("file_2").addFiles("file_3");
-		b.setTimestamp(a1.getTimestamp());
-	}
+    private BuildableState a1;
+    private BuildableState a2;
+    private BuildableState b;
 
-	@Test
-	public void equalsIsWorking()
-	{
-		assertThat(a1).isNotEqualTo(null);
+    @Before
+    public void setup() {
+        a1 = new BuildableState(defaultContext()).addFiles("file_1", "file_2");
+        a2 = a1.clone();
+        a2.setTimestamp(a1.getTimestamp());
 
-		assertThat(a1).isNotEqualTo("dummy_string");
+        b = a1.delete("file_2").addFiles("file_3");
+        b.setTimestamp(a1.getTimestamp());
+    }
 
-		assertThat(a1).isEqualTo(a2);
-		assertThat(a2).isEqualTo(a1);
+    @Test
+    public void equalsIsWorking() {
+        assertThat(a1).isNotEqualTo(null);
 
-		assertThat(a1).isNotEqualTo(b);
-		assertThat(b).isNotEqualTo(a1);
-	}
+        assertThat(a1).isNotEqualTo("dummy_string");
 
-	@Test
-	public void hashcodeIsWorking()
-	{
-		assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
+        assertThat(a1).isEqualTo(a2);
+        assertThat(a2).isEqualTo(a1);
 
-		assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
-	}
+        assertThat(a1).isNotEqualTo(b);
+        assertThat(b).isNotEqualTo(a1);
+    }
 
-	@Test
-	public void toStringIsWorking()
-	{
-		assertThat(a1.toString().contains("modelVersion")).isTrue();
-	}
+    @Test
+    public void hashcodeIsWorking() {
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
 
-	@Test
-	public void weCanHashAState() throws ParseException
-	{
-		fixTimeStamps(a1);
+        assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
+    }
 
-		String a1_hash = a1.hashState();
-		assertThat(a1_hash.length()).isEqualTo(128);
-		assertThat(a1_hash).isEqualTo("b4ac7d25e35fca118786a3f148b99fc4a3b9e01aa9dc8cd670ec7a25f0a7122c1c0b598aa5d7729ce20f44c48f89a4d570c00cd6a936b27004358f4b73067fff");
-	}
+    @Test
+    public void toStringIsWorking() {
+        assertThat(a1.toString().contains("modelVersion")).isTrue();
+    }
 
-	@Test
-	public void hashDependsOnContent() throws ParseException
-	{
-		fixTimeStamps(a1);
-		fixTimeStamps(a2);
-		fixTimeStamps(b);
+    @Test
+    public void weCanHashAState() throws ParseException {
+        fixTimeStamps(a1);
 
-		String a1_hash = a1.hashState();
-		String a2_hash = a2.hashState();
-		String b_hash = b.hashState();
+        String a1_hash = a1.hashState();
+        assertThat(a1_hash.length()).isEqualTo(128);
+        assertThat(a1_hash).isEqualTo("b4ac7d25e35fca118786a3f148b99fc4a3b9e01aa9dc8cd670ec7a25f0a7122c1c0b598aa5d7729ce20f44c48f89a4d570c00cd6a936b27004358f4b73067fff");
+    }
 
-		assertThat(a1_hash).isEqualTo(a2_hash);
+    @Test
+    public void hashDependsOnContent() throws ParseException {
+        fixTimeStamps(a1);
+        fixTimeStamps(a2);
+        fixTimeStamps(b);
 
-		assertThat(a1_hash).isNotEqualTo(b_hash);
-	}
+        String a1_hash = a1.hashState();
+        String a2_hash = a2.hashState();
+        String b_hash = b.hashState();
 
-	@Test
-	public void aStateCanBeCloned()
-	{
-		State s = a1.clone();
-		assertThat(s.hashState()).isEqualTo(a1.hashState());
+        assertThat(a1_hash).isEqualTo(a2_hash);
 
-		s.getModificationCounts().setAdded(1);
-		State clone = s.clone();
-		assertThat(clone.getModificationCounts().getAdded()).isEqualTo(1);
-	}
+        assertThat(a1_hash).isNotEqualTo(b_hash);
+    }
 
-	@Test
-	public void weCanFilterFilesInside()
-	{
-		State s = a1.addFiles("dir_1/file_1", "dir_1/file_2", "dir_2/file_1", "dir_2/file_2");
+    @Test
+    public void aStateCanBeCloned() {
+        State s = a1.clone();
+        assertThat(s.hashState()).isEqualTo(a1.hashState());
 
-		State filteredState = s.filterDirectory(Paths.get("."), Paths.get("dir_1"), true);
+        s.getModificationCounts().setAdded(1);
+        State clone = s.clone();
+        assertThat(clone.getModificationCounts().getAdded()).isEqualTo(1);
+    }
 
-		assertThat(toFileNames(filteredState.getFileStates())).isEqualTo(Arrays.asList("dir_1/file_1", "dir_1/file_2"));
-	}
+    @Test
+    public void weCanFilterFilesInside() {
+        State s = a1.addFiles("dir_1/file_1", "dir_1/file_2", "dir_2/file_1", "dir_2/file_2");
 
-	@Test
-	public void weCanFilterFilesOutside()
-	{
-		State s = a1.addFiles("dir_1/file_1", "dir_1/file_2", "dir_2/file_1", "dir_2/file_2");
+        State filteredState = s.filterDirectory(Paths.get("."), Paths.get("dir_1"), true);
 
-		State filteredState = s.filterDirectory(Paths.get("."), Paths.get("dir_1"), false);
+        assertThat(toFileNames(filteredState.getFileStates())).isEqualTo(Arrays.asList("dir_1/file_1", "dir_1/file_2"));
+    }
 
-		assertThat(toFileNames(filteredState.getFileStates())).isEqualTo(Arrays.asList("dir_2/file_1", "dir_2/file_2", "file_1", "file_2"));
-	}
+    @Test
+    public void weCanFilterFilesOutside() {
+        State s = a1.addFiles("dir_1/file_1", "dir_1/file_2", "dir_2/file_1", "dir_2/file_2");
 
-	private void fixTimeStamps(BuildableState s) throws ParseException
-	{
-		// Fix the timeStamps in order that state hash can be verified
+        State filteredState = s.filterDirectory(Paths.get("."), Paths.get("dir_1"), false);
 
-		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-		// Date date = sdf.parse(MODIFICATION_TIME);
-		// long timestamp = date.getTime();
-		long timestamp = MODIFICATION_TIMESTAMP;
+        assertThat(toFileNames(filteredState.getFileStates())).isEqualTo(Arrays.asList("dir_2/file_1", "dir_2/file_2", "file_1", "file_2"));
+    }
 
-		s.setTimestamp(timestamp);
-		for (FileState fileState : s.getFileStates())
-		{
-			fileState.getFileTime().reset(timestamp);
-		}
-	}
+    private void fixTimeStamps(BuildableState s) throws ParseException {
+        // Fix the timeStamps in order that state hash can be verified
+
+        // SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+        // Date date = sdf.parse(MODIFICATION_TIME);
+        // long timestamp = date.getTime();
+        long timestamp = MODIFICATION_TIMESTAMP;
+
+        s.setTimestamp(timestamp);
+        for (FileState fileState : s.getFileStates()) {
+            fileState.getFileTime().reset(timestamp);
+        }
+    }
 }

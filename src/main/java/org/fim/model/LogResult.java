@@ -18,87 +18,72 @@
  */
 package org.fim.model;
 
-import static org.fim.util.FormatUtil.formatDate;
+import org.apache.commons.io.FileUtils;
+import org.fim.util.Console;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.fim.util.Console;
+import static org.fim.util.FormatUtil.formatDate;
 
-public class LogResult
-{
-	private List<LogEntry> logEntries = new ArrayList<>();
+public class LogResult {
+    private List<LogEntry> logEntries = new ArrayList<>();
 
-	public void add(LogEntry logEntry)
-	{
-		logEntries.add(logEntry);
-	}
+    public void add(LogEntry logEntry) {
+        logEntries.add(logEntry);
+    }
 
-	public List<LogEntry> getLogEntries()
-	{
-		return logEntries;
-	}
+    public List<LogEntry> getLogEntries() {
+        return logEntries;
+    }
 
-	public void displayEntries()
-	{
-		for (LogEntry logEntry : logEntries)
-		{
-			System.out.printf("State #%d: %s (%d files - %s)%n", logEntry.getStateNumber(), formatDate(logEntry.getTimestamp()),
-					logEntry.getFileCount(), FileUtils.byteCountToDisplaySize(logEntry.getFilesContentLength()));
-			if (logEntry.getComment().length() > 0)
-			{
-				System.out.printf("\tComment: %s%n", logEntry.getComment());
-			}
-			displayCounts(logEntry.getModificationCounts());
-			Console.newLine();
-		}
-	}
+    public void displayEntries() {
+        for (LogEntry logEntry : logEntries) {
+            System.out.printf("State #%d: %s (%d files - %s)%n", logEntry.getStateNumber(), formatDate(logEntry.getTimestamp()),
+                logEntry.getFileCount(), FileUtils.byteCountToDisplaySize(logEntry.getFilesContentLength()));
+            if (logEntry.getComment().length() > 0) {
+                System.out.printf("\tComment: %s%n", logEntry.getComment());
+            }
+            displayCounts(logEntry.getModificationCounts());
+            Console.newLine();
+        }
+    }
 
-	private void displayCounts(ModificationCounts modificationCounts)
-	{
-		if (modificationCounts == null)
-		{
-			return;
-		}
+    private void displayCounts(ModificationCounts modificationCounts) {
+        if (modificationCounts == null) {
+            return;
+        }
 
-		String message = "";
-		if (modificationCounts.getAdded() > 0)
-		{
-			message += "" + modificationCounts.getAdded() + " added, ";
-		}
+        String message = "";
+        if (modificationCounts.getAdded() > 0) {
+            message += "" + modificationCounts.getAdded() + " added, ";
+        }
 
-		if (modificationCounts.getCopied() > 0)
-		{
-			message += "" + modificationCounts.getCopied() + " copied, ";
-		}
+        if (modificationCounts.getCopied() > 0) {
+            message += "" + modificationCounts.getCopied() + " copied, ";
+        }
 
-		if (modificationCounts.getDuplicated() > 0)
-		{
-			message += "" + modificationCounts.getDuplicated() + " duplicated, ";
-		}
+        if (modificationCounts.getDuplicated() > 0) {
+            message += "" + modificationCounts.getDuplicated() + " duplicated, ";
+        }
 
-		if (modificationCounts.getDateModified() > 0)
-		{
-			message += "" + modificationCounts.getDateModified() + " date modified, ";
-		}
+        if (modificationCounts.getDateModified() > 0) {
+            message += "" + modificationCounts.getDateModified() + " date modified, ";
+        }
 
-		if (modificationCounts.getContentModified() > 0)
-		{
-			message += "" + modificationCounts.getContentModified() + " content modified, ";
-		}
+        if (modificationCounts.getContentModified() > 0) {
+            message += "" + modificationCounts.getContentModified() + " content modified, ";
+        }
 
-		if (modificationCounts.getRenamed() > 0)
-		{
-			message += "" + modificationCounts.getRenamed() + " renamed, ";
-		}
+        if (modificationCounts.getRenamed() > 0) {
+            message += "" + modificationCounts.getRenamed() + " renamed, ";
+        }
 
-		if (modificationCounts.getDeleted() > 0)
-		{
-			message += "" + modificationCounts.getDeleted() + " deleted, ";
-		}
+        if (modificationCounts.getDeleted() > 0) {
+            message += "" + modificationCounts.getDeleted() + " deleted, ";
+        }
 
-		message = message.replaceAll(", $", "");
-		System.out.printf("\t%s%n", message);
-	}
+        message = message.replaceAll(", $", "");
+        System.out.printf("\t%s%n", message);
+    }
 }

@@ -18,87 +18,69 @@
  */
 package org.fim.util;
 
+import org.apache.commons.lang3.SystemUtils;
+import org.fim.model.Context;
+
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.fim.model.Context;
+public class SELinux {
+    public static final boolean ENABLED = isEnabled();
 
-public class SELinux
-{
-	public static final boolean ENABLED = isEnabled();
+    /**
+     * Check whether SELinux is enabled or not.
+     */
+    private static boolean isEnabled() {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            return false;
+        }
 
-	/**
-	 * Check whether SELinux is enabled or not.
-	 */
-	private static boolean isEnabled()
-	{
-		if (SystemUtils.IS_OS_WINDOWS)
-		{
-			return false;
-		}
+        try {
+            List<String> lines = CommandUtil.executeCommandAndGetLines(Arrays.asList("sestatus"));
+            for (String line : lines) {
+                if (line.contains("SELinux status")) {
+                    if (line.contains("enabled")) {
+                        Logger.info("SELinux is enabled on this system");
+                        return true;
+                    }
 
-		try
-		{
-			List<String> lines = CommandUtil.executeCommandAndGetLines(Arrays.asList("sestatus"));
-			for (String line : lines)
-			{
-				if (line.contains("SELinux status"))
-				{
-					if (line.contains("enabled"))
-					{
-						Logger.info("SELinux is enabled on this system");
-						return true;
-					}
+                    return false;
+                }
+            }
+        } catch (Exception ex) {
+            // Never mind
+        }
+        return false;
+    }
 
-					return false;
-				}
-			}
-		}
-		catch (Exception ex)
-		{
-			// Never mind
-		}
-		return false;
-	}
+    /**
+     * Retrieve the SELinux label of the specified file.
+     */
+    public static String getLabel(Context context, Path file) {
+        String fileName = file.normalize().toAbsolutePath().toString();
+        try {
+            String line = CommandUtil.executeCommand(Arrays.asList("ls", "-1Z", fileName));
+            String[] strings = line.split(" ");
+            if (strings.length == 2) {
+                return strings[0];
+            }
+        } catch (Exception ex) {
+            Logger.error("Error retrieving SELinux label for '" + file + "'", ex, context.isDisplayStackTrace());
+        }
 
-	/**
-	 * Retrieve the SELinux label of the specified file.
-	 */
-	public static String getLabel(Context context, Path file)
-	{
-		String fileName = file.normalize().toAbsolutePath().toString();
-		try
-		{
-			String line = CommandUtil.executeCommand(Arrays.asList("ls", "-1Z", fileName));
-			String[] strings = line.split(" ");
-			if (strings.length == 2)
-			{
-				return strings[0];
-			}
-		}
-		catch (Exception ex)
-		{
-			Logger.error("Error retrieving SELinux label for '" + file + "'", ex, context.isDisplayStackTrace());
-		}
+        return null;
+    }
 
-		return null;
-	}
-
-	/**
-	 * Set the SELinux label of the specified file.
-	 */
-	public static void setLabel(Context context, Path file, String label)
-	{
-		String fileName = file.normalize().toAbsolutePath().toString();
-		try
-		{
-			CommandUtil.executeCommand(Arrays.asList("chcon", label, fileName));
-		}
-		catch (Exception ex)
-		{
-			Logger.error("Error setting SELinux label for '" + file + "'", ex, context.isDisplayStackTrace());
-		}
-	}
+    /**
+     * Set the SELinux label of the specified file.
+     */
+    public static void setLabel(Context context, Path file, String label) {
+        String fileName = file.normalize().toAbsolutePath().toString();
+        try {
+            CommandUtil.executeCommand(Arrays.asList("chcon", label, fileName));
+        } catch (Exception ex) {
+            Logger.error("Error setting SELinux label for '" + file + "'", ex, context.isDisplayStackTrace());
+        }
+    }
 }

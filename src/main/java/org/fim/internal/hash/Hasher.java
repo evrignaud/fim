@@ -18,25 +18,24 @@
  */
 package org.fim.internal.hash;
 
-import java.nio.ByteBuffer;
-
 import org.fim.model.Range;
 
-public interface Hasher
-{
-	boolean isActive();
+import java.nio.ByteBuffer;
 
-	void reset(long fileSize);
+public interface Hasher {
+    boolean isActive();
 
-	Range getNextRange(long filePosition);
+    void reset(long fileSize);
 
-	void update(long filePosition, ByteBuffer buffer);
+    Range getNextRange(long filePosition);
 
-	String getHash();
+    void update(long filePosition, ByteBuffer buffer);
 
-	long getBytesHashed();
+    String getHash();
 
-	boolean hashComplete();
+    long getBytesHashed();
 
-	long getTotalBytesHashed();
+    boolean hashComplete();
+
+    long getTotalBytesHashed();
 }

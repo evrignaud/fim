@@ -18,118 +18,100 @@
  */
 package org.fim.model;
 
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Objects;
-
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.Hasher;
 
-public class FileTime implements Comparable<FileTime>, Hashable
-{
-	private long creationTime;
-	private long lastModified;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Objects;
 
-	public FileTime(long creationTime, long lastModified)
-	{
-		setCreationTime(creationTime);
-		setLastModified(lastModified);
-	}
+public class FileTime implements Comparable<FileTime>, Hashable {
+    private long creationTime;
+    private long lastModified;
 
-	public FileTime(BasicFileAttributes attributes)
-	{
-		this(attributes.creationTime().toMillis(), attributes.lastModifiedTime().toMillis());
-	}
+    public FileTime(long creationTime, long lastModified) {
+        setCreationTime(creationTime);
+        setLastModified(lastModified);
+    }
 
-	public FileTime(long timestamp)
-	{
-		this(timestamp, timestamp);
-	}
+    public FileTime(BasicFileAttributes attributes) {
+        this(attributes.creationTime().toMillis(), attributes.lastModifiedTime().toMillis());
+    }
 
-	public FileTime(FileTime fileTime)
-	{
-		this(fileTime.getCreationTime(), fileTime.getLastModified());
-	}
+    public FileTime(long timestamp) {
+        this(timestamp, timestamp);
+    }
 
-	public long getCreationTime()
-	{
-		return creationTime;
-	}
+    public FileTime(FileTime fileTime) {
+        this(fileTime.getCreationTime(), fileTime.getLastModified());
+    }
 
-	public void setCreationTime(long creationTime)
-	{
-		this.creationTime = creationTime;
-	}
+    public long getCreationTime() {
+        return creationTime;
+    }
 
-	public long getLastModified()
-	{
-		return lastModified;
-	}
+    public void setCreationTime(long creationTime) {
+        this.creationTime = creationTime;
+    }
 
-	public void setLastModified(long lastModified)
-	{
-		this.lastModified = lastModified;
-	}
+    public long getLastModified() {
+        return lastModified;
+    }
 
-	public void reset(long timestamp)
-	{
-		setCreationTime(timestamp);
-		setLastModified(timestamp);
-	}
+    public void setLastModified(long lastModified) {
+        this.lastModified = lastModified;
+    }
 
-	@Override
-	public boolean equals(Object other)
-	{
-		if (this == other)
-		{
-			return true;
-		}
+    public void reset(long timestamp) {
+        setCreationTime(timestamp);
+        setLastModified(timestamp);
+    }
 
-		if (other == null || !(other instanceof FileTime))
-		{
-			return false;
-		}
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
 
-		FileTime otherFileTime = (FileTime) other;
+        if (other == null || !(other instanceof FileTime)) {
+            return false;
+        }
 
-		return Objects.equals(this.creationTime, otherFileTime.creationTime)
-				&& Objects.equals(this.lastModified, otherFileTime.lastModified);
-	}
+        FileTime otherFileTime = (FileTime) other;
 
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(creationTime, lastModified);
-	}
+        return Objects.equals(this.creationTime, otherFileTime.creationTime)
+            && Objects.equals(this.lastModified, otherFileTime.lastModified);
+    }
 
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(this)
-				.add("creationTime", creationTime)
-				.add("lastModified", lastModified)
-				.toString();
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(creationTime, lastModified);
+    }
 
-	@Override
-	public int compareTo(FileTime other)
-	{
-		if (creationTime != other.creationTime)
-		{
-			return Long.compare(creationTime, other.creationTime);
-		}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+            .add("creationTime", creationTime)
+            .add("lastModified", lastModified)
+            .toString();
+    }
 
-		return Long.compare(lastModified, other.lastModified);
-	}
+    @Override
+    public int compareTo(FileTime other) {
+        if (creationTime != other.creationTime) {
+            return Long.compare(creationTime, other.creationTime);
+        }
 
-	@Override
-	public void hashObject(Hasher hasher)
-	{
-		hasher
-				.putString("FileTime", Charsets.UTF_8)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putLong(creationTime)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putLong(lastModified);
-	}
+        return Long.compare(lastModified, other.lastModified);
+    }
+
+    @Override
+    public void hashObject(Hasher hasher) {
+        hasher
+            .putString("FileTime", Charsets.UTF_8)
+            .putChar(HASH_FIELD_SEPARATOR)
+            .putLong(creationTime)
+            .putChar(HASH_FIELD_SEPARATOR)
+            .putLong(lastModified);
+    }
 }

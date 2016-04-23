@@ -18,14 +18,6 @@
  */
 package org.fim.command;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.hashAll;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import org.apache.commons.io.FileUtils;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
@@ -35,73 +27,76 @@ import org.fim.tooling.RepositoryTool;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PurgeStatesCommandTest
-{
-	private static Path rootDir = Paths.get("target/" + PurgeStatesCommandTest.class.getSimpleName());
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-	private InitCommand initCommand;
-	private CommitCommand commitCommand;
-	private LogCommand logCommand;
-	private PurgeStatesCommand purgeStatesCommand;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.fim.model.HashMode.hashAll;
 
-	private RepositoryTool tool;
+public class PurgeStatesCommandTest {
+    private static Path rootDir = Paths.get("target/" + PurgeStatesCommandTest.class.getSimpleName());
 
-	@Before
-	public void setup() throws IOException
-	{
-		FileUtils.deleteDirectory(rootDir.toFile());
-		Files.createDirectories(rootDir);
+    private InitCommand initCommand;
+    private CommitCommand commitCommand;
+    private LogCommand logCommand;
+    private PurgeStatesCommand purgeStatesCommand;
 
-		initCommand = new InitCommand();
-		commitCommand = new CommitCommand();
-		purgeStatesCommand = new PurgeStatesCommand();
-		logCommand = new LogCommand();
+    private RepositoryTool tool;
 
-		tool = new RepositoryTool(rootDir);
-	}
+    @Before
+    public void setup() throws IOException {
+        FileUtils.deleteDirectory(rootDir.toFile());
+        Files.createDirectories(rootDir);
 
-	@Test
-	public void weCanPurgePreviousStates() throws Exception
-	{
-		Context context = tool.createContext(hashAll, true);
+        initCommand = new InitCommand();
+        commitCommand = new CommitCommand();
+        purgeStatesCommand = new PurgeStatesCommand();
+        logCommand = new LogCommand();
 
-		tool.createOneFile();
-		State state = (State) initCommand.execute(context);
-		assertThat(state.getModificationCounts().getAdded()).isEqualTo(1);
+        tool = new RepositoryTool(rootDir);
+    }
 
-		assertLogSizeIsEqualTo(context, 1);
+    @Test
+    public void weCanPurgePreviousStates() throws Exception {
+        Context context = tool.createContext(hashAll, true);
 
-		tool.createOneFile();
-		commitAndAssertModificationCountIsEqualTo(context, 1);
+        tool.createOneFile();
+        State state = (State) initCommand.execute(context);
+        assertThat(state.getModificationCounts().getAdded()).isEqualTo(1);
 
-		assertLogSizeIsEqualTo(context, 2);
+        assertLogSizeIsEqualTo(context, 1);
 
-		tool.createOneFile();
-		commitAndAssertModificationCountIsEqualTo(context, 1);
+        tool.createOneFile();
+        commitAndAssertModificationCountIsEqualTo(context, 1);
 
-		assertLogSizeIsEqualTo(context, 3);
+        assertLogSizeIsEqualTo(context, 2);
 
-		int statesPurgedCount = (int) purgeStatesCommand.execute(context);
-		assertThat(statesPurgedCount).isEqualTo(2);
+        tool.createOneFile();
+        commitAndAssertModificationCountIsEqualTo(context, 1);
 
-		assertLogSizeIsEqualTo(context, 1);
+        assertLogSizeIsEqualTo(context, 3);
 
-		// We cannot purge more
-		statesPurgedCount = (int) purgeStatesCommand.execute(context);
-		assertThat(statesPurgedCount).isEqualTo(0);
+        int statesPurgedCount = (int) purgeStatesCommand.execute(context);
+        assertThat(statesPurgedCount).isEqualTo(2);
 
-		assertLogSizeIsEqualTo(context, 1);
-	}
+        assertLogSizeIsEqualTo(context, 1);
 
-	private void commitAndAssertModificationCountIsEqualTo(Context context, int expectedModificationCount) throws Exception
-	{
-		CompareResult compareResult = (CompareResult) commitCommand.execute(context);
-		assertThat(compareResult.getModificationCounts().getAdded()).isEqualTo(expectedModificationCount);
-	}
+        // We cannot purge more
+        statesPurgedCount = (int) purgeStatesCommand.execute(context);
+        assertThat(statesPurgedCount).isEqualTo(0);
 
-	private void assertLogSizeIsEqualTo(Context context, int expectedLogSize) throws Exception
-	{
-		LogResult logResult = (LogResult) logCommand.execute(context);
-		assertThat(logResult.getLogEntries().size()).isEqualTo(expectedLogSize);
-	}
+        assertLogSizeIsEqualTo(context, 1);
+    }
+
+    private void commitAndAssertModificationCountIsEqualTo(Context context, int expectedModificationCount) throws Exception {
+        CompareResult compareResult = (CompareResult) commitCommand.execute(context);
+        assertThat(compareResult.getModificationCounts().getAdded()).isEqualTo(expectedModificationCount);
+    }
+
+    private void assertLogSizeIsEqualTo(Context context, int expectedLogSize) throws Exception {
+        LogResult logResult = (LogResult) logCommand.execute(context);
+        assertThat(logResult.getLogEntries().size()).isEqualTo(expectedLogSize);
+    }
 }

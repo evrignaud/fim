@@ -18,51 +18,44 @@
  */
 package org.fim.util;
 
-import static org.fim.model.HashMode.dontHash;
-import static org.fim.model.HashMode.hashAll;
-import static org.fim.model.HashMode.hashMediumBlock;
-
 import org.fim.model.HashMode;
 
-public class HashModeUtil
-{
-	public static String hashModeToString(HashMode hashMode)
-	{
-		switch (hashMode)
-		{
-			case dontHash:
-				return "do not hash";
+import static org.fim.model.HashMode.*;
 
-			case hashSmallBlock:
-				return "super-fast";
+public class HashModeUtil {
+    public static String hashModeToString(HashMode hashMode) {
+        switch (hashMode) {
+            case dontHash:
+                return "do not hash";
 
-			case hashMediumBlock:
-				return "fast";
+            case hashSmallBlock:
+                return "super-fast";
 
-			case hashAll:
-				return "full";
-		}
+            case hashMediumBlock:
+                return "fast";
 
-		throw new IllegalArgumentException("Invalid hash mode " + hashMode);
-	}
+            case hashAll:
+                return "full";
+        }
 
-	public static boolean isCompatible(HashMode hashMode, HashMode toCheck)
-	{
-		switch (hashMode)
-		{
-			case hashAll:
-				return true;
+        throw new IllegalArgumentException("Invalid hash mode " + hashMode);
+    }
 
-			case hashMediumBlock:
-				return toCheck != hashAll;
+    public static boolean isCompatible(HashMode hashMode, HashMode toCheck) {
+        switch (hashMode) {
+            case hashAll:
+                return true;
 
-			case hashSmallBlock:
-				return toCheck != hashAll && toCheck != hashMediumBlock;
+            case hashMediumBlock:
+                return toCheck != hashAll;
 
-			case dontHash:
-				return toCheck == dontHash;
-		}
+            case hashSmallBlock:
+                return toCheck != hashAll && toCheck != hashMediumBlock;
 
-		return false;
-	}
+            case dontHash:
+                return toCheck == dontHash;
+        }
+
+        return false;
+    }
 }

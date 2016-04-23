@@ -18,126 +18,108 @@
  */
 package org.fim.model;
 
-import java.util.Objects;
-
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.Hasher;
 
-public class FileHash implements Comparable<FileHash>, Hashable
-{
-	private String smallBlockHash;
-	private String mediumBlockHash;
-	private String fullHash;
+import java.util.Objects;
 
-	public FileHash(String smallBlockHash, String mediumBlockHash, String fullHash)
-	{
-		this.smallBlockHash = smallBlockHash;
-		this.mediumBlockHash = mediumBlockHash;
-		this.fullHash = fullHash;
-	}
+public class FileHash implements Comparable<FileHash>, Hashable {
+    private String smallBlockHash;
+    private String mediumBlockHash;
+    private String fullHash;
 
-	public FileHash(FileHash fileHash)
-	{
-		this.smallBlockHash = fileHash.getSmallBlockHash();
-		this.mediumBlockHash = fileHash.getMediumBlockHash();
-		this.fullHash = fileHash.getFullHash();
-	}
+    public FileHash(String smallBlockHash, String mediumBlockHash, String fullHash) {
+        this.smallBlockHash = smallBlockHash;
+        this.mediumBlockHash = mediumBlockHash;
+        this.fullHash = fullHash;
+    }
 
-	public String getSmallBlockHash()
-	{
-		return smallBlockHash;
-	}
+    public FileHash(FileHash fileHash) {
+        this.smallBlockHash = fileHash.getSmallBlockHash();
+        this.mediumBlockHash = fileHash.getMediumBlockHash();
+        this.fullHash = fileHash.getFullHash();
+    }
 
-	public void setSmallBlockHash(String smallBlockHash)
-	{
-		this.smallBlockHash = smallBlockHash;
-	}
+    public String getSmallBlockHash() {
+        return smallBlockHash;
+    }
 
-	public String getMediumBlockHash()
-	{
-		return mediumBlockHash;
-	}
+    public void setSmallBlockHash(String smallBlockHash) {
+        this.smallBlockHash = smallBlockHash;
+    }
 
-	public void setMediumBlockHash(String mediumBlockHash)
-	{
-		this.mediumBlockHash = mediumBlockHash;
-	}
+    public String getMediumBlockHash() {
+        return mediumBlockHash;
+    }
 
-	public String getFullHash()
-	{
-		return fullHash;
-	}
+    public void setMediumBlockHash(String mediumBlockHash) {
+        this.mediumBlockHash = mediumBlockHash;
+    }
 
-	public void setFullHash(String fullHash)
-	{
-		this.fullHash = fullHash;
-	}
+    public String getFullHash() {
+        return fullHash;
+    }
 
-	@Override
-	public boolean equals(Object other)
-	{
-		if (this == other)
-		{
-			return true;
-		}
+    public void setFullHash(String fullHash) {
+        this.fullHash = fullHash;
+    }
 
-		if (other == null || !(other instanceof FileHash))
-		{
-			return false;
-		}
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
 
-		FileHash otherFileHash = (FileHash) other;
+        if (other == null || !(other instanceof FileHash)) {
+            return false;
+        }
 
-		return Objects.equals(this.smallBlockHash, otherFileHash.smallBlockHash)
-				&& Objects.equals(this.mediumBlockHash, otherFileHash.mediumBlockHash)
-				&& Objects.equals(this.fullHash, otherFileHash.fullHash);
-	}
+        FileHash otherFileHash = (FileHash) other;
 
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(smallBlockHash, mediumBlockHash, fullHash);
-	}
+        return Objects.equals(this.smallBlockHash, otherFileHash.smallBlockHash)
+            && Objects.equals(this.mediumBlockHash, otherFileHash.mediumBlockHash)
+            && Objects.equals(this.fullHash, otherFileHash.fullHash);
+    }
 
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(this)
-				.add("smallBlockHash", smallBlockHash)
-				.add("mediumBlockHash", mediumBlockHash)
-				.add("fullHash", fullHash)
-				.toString();
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(smallBlockHash, mediumBlockHash, fullHash);
+    }
 
-	@Override
-	public int compareTo(FileHash other)
-	{
-		int value = smallBlockHash.compareTo(other.smallBlockHash);
-		if (value != 0)
-		{
-			return value;
-		}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+            .add("smallBlockHash", smallBlockHash)
+            .add("mediumBlockHash", mediumBlockHash)
+            .add("fullHash", fullHash)
+            .toString();
+    }
 
-		value = mediumBlockHash.compareTo(other.mediumBlockHash);
-		if (value != 0)
-		{
-			return value;
-		}
+    @Override
+    public int compareTo(FileHash other) {
+        int value = smallBlockHash.compareTo(other.smallBlockHash);
+        if (value != 0) {
+            return value;
+        }
 
-		return fullHash.compareTo(other.fullHash);
-	}
+        value = mediumBlockHash.compareTo(other.mediumBlockHash);
+        if (value != 0) {
+            return value;
+        }
 
-	@Override
-	public void hashObject(Hasher hasher)
-	{
-		hasher
-				.putString("FileHash", Charsets.UTF_8)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putString(smallBlockHash, Charsets.UTF_8)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putString(mediumBlockHash, Charsets.UTF_8)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putString(fullHash, Charsets.UTF_8);
-	}
+        return fullHash.compareTo(other.fullHash);
+    }
+
+    @Override
+    public void hashObject(Hasher hasher) {
+        hasher
+            .putString("FileHash", Charsets.UTF_8)
+            .putChar(HASH_FIELD_SEPARATOR)
+            .putString(smallBlockHash, Charsets.UTF_8)
+            .putChar(HASH_FIELD_SEPARATOR)
+            .putString(mediumBlockHash, Charsets.UTF_8)
+            .putChar(HASH_FIELD_SEPARATOR)
+            .putString(fullHash, Charsets.UTF_8);
+    }
 }

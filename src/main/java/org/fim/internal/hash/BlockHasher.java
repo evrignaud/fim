@@ -18,161 +18,132 @@
  */
 package org.fim.internal.hash;
 
-import static java.lang.Math.min;
+import org.fim.model.HashMode;
+import org.fim.model.Range;
 
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fim.model.HashMode;
-import org.fim.model.Range;
+import static java.lang.Math.min;
 
-public abstract class BlockHasher extends AbstractHasher
-{
-	private Range[] ranges;
-	private long fileSize;
-	private long sizeToHash;
+public abstract class BlockHasher extends AbstractHasher {
+    private Range[] ranges;
+    private long fileSize;
+    private long sizeToHash;
 
-	public BlockHasher(HashMode hashMode) throws NoSuchAlgorithmException
-	{
-		super(hashMode);
-	}
+    public BlockHasher(HashMode hashMode) throws NoSuchAlgorithmException {
+        super(hashMode);
+    }
 
-	protected abstract int getBlockSize();
+    protected abstract int getBlockSize();
 
-	@Override
-	public void reset(long fileSize)
-	{
-		super.reset(fileSize);
+    @Override
+    public void reset(long fileSize) {
+        super.reset(fileSize);
 
-		if (isActive())
-		{
-			this.fileSize = fileSize;
+        if (isActive()) {
+            this.fileSize = fileSize;
 
-			List<Long> blockIndexes = buildBlockIndexes();
-			buildRanges(blockIndexes);
-		}
-	}
+            List<Long> blockIndexes = buildBlockIndexes();
+            buildRanges(blockIndexes);
+        }
+    }
 
-	protected List<Long> buildBlockIndexes()
-	{
-		// When it's possible ignore the first block to ensure that the headers don't increase the collision probability when doing a rapid check
+    protected List<Long> buildBlockIndexes() {
+        // When it's possible ignore the first block to ensure that the headers don't increase the collision probability when doing a rapid check
 
-		int blockSize = getBlockSize();
-		List<Long> blockIndexes = new ArrayList<>();
-		long middleBlockIndex = getMiddleBlockIndex();
-		long endBlockIndex = getEndBlockIndex();
-		if (fileSize > (blockSize * 4))
-		{
-			blockIndexes.add(1L);
-			blockIndexes.add(middleBlockIndex);
-			blockIndexes.add(endBlockIndex);
-		}
-		else if (fileSize > (blockSize * 3))
-		{
-			blockIndexes.add(1L);
-			blockIndexes.add(endBlockIndex);
-		}
-		else if (fileSize > (blockSize * 2))
-		{
-			blockIndexes.add(1L);
-		}
-		else
-		{
-			blockIndexes.add(0L);
-		}
+        int blockSize = getBlockSize();
+        List<Long> blockIndexes = new ArrayList<>();
+        long middleBlockIndex = getMiddleBlockIndex();
+        long endBlockIndex = getEndBlockIndex();
+        if (fileSize > (blockSize * 4)) {
+            blockIndexes.add(1L);
+            blockIndexes.add(middleBlockIndex);
+            blockIndexes.add(endBlockIndex);
+        } else if (fileSize > (blockSize * 3)) {
+            blockIndexes.add(1L);
+            blockIndexes.add(endBlockIndex);
+        } else if (fileSize > (blockSize * 2)) {
+            blockIndexes.add(1L);
+        } else {
+            blockIndexes.add(0L);
+        }
 
-		return blockIndexes;
-	}
+        return blockIndexes;
+    }
 
-	private void buildRanges(List<Long> blockIndexes)
-	{
-		ranges = new Range[blockIndexes.size()];
-		int rangeIndex = 0;
-		sizeToHash = 0;
-		for (Long blockIndex : blockIndexes)
-		{
-			Range range = getRange(blockIndex);
-			sizeToHash += range.getTo() - range.getFrom();
+    private void buildRanges(List<Long> blockIndexes) {
+        ranges = new Range[blockIndexes.size()];
+        int rangeIndex = 0;
+        sizeToHash = 0;
+        for (Long blockIndex : blockIndexes) {
+            Range range = getRange(blockIndex);
+            sizeToHash += range.getTo() - range.getFrom();
 
-			ranges[rangeIndex] = range;
-			rangeIndex++;
-		}
-	}
+            ranges[rangeIndex] = range;
+            rangeIndex++;
+        }
+    }
 
-	protected Range getRange(long blockIndex)
-	{
-		int blockSize = getBlockSize();
-		long from = min(fileSize, blockIndex * blockSize);
-		long to = min(fileSize, from + blockSize);
-		return new Range(from, to);
-	}
+    protected Range getRange(long blockIndex) {
+        int blockSize = getBlockSize();
+        long from = min(fileSize, blockIndex * blockSize);
+        long to = min(fileSize, from + blockSize);
+        return new Range(from, to);
+    }
 
-	protected long getSizeToHash()
-	{
-		return sizeToHash;
-	}
+    protected long getSizeToHash() {
+        return sizeToHash;
+    }
 
-	protected long getMiddleBlockIndex()
-	{
-		return (fileSize / getBlockSize()) / 2;
-	}
+    protected long getMiddleBlockIndex() {
+        return (fileSize / getBlockSize()) / 2;
+    }
 
-	protected long getEndBlockIndex()
-	{
-		return (fileSize / getBlockSize()) - 1;
-	}
+    protected long getEndBlockIndex() {
+        return (fileSize / getBlockSize()) - 1;
+    }
 
-	protected Range[] getRanges()
-	{
-		return ranges;
-	}
+    protected Range[] getRanges() {
+        return ranges;
+    }
 
-	public Range getNextRange(long filePosition)
-	{
-		for (Range range : ranges)
-		{
-			if (range.getFrom() >= filePosition)
-			{
-				return range;
-			}
-		}
-		return null;
-	}
+    public Range getNextRange(long filePosition) {
+        for (Range range : ranges) {
+            if (range.getFrom() >= filePosition) {
+                return range;
+            }
+        }
+        return null;
+    }
 
-	@Override
-	protected ByteBuffer getNextBlockToHash(long filePosition, long currentPosition, ByteBuffer buffer)
-	{
-		Range range = getNextRange(currentPosition);
-		if (range == null)
-		{
-			return null;
-		}
+    @Override
+    protected ByteBuffer getNextBlockToHash(long filePosition, long currentPosition, ByteBuffer buffer) {
+        Range range = getNextRange(currentPosition);
+        if (range == null) {
+            return null;
+        }
 
-		long position = range.getFrom() - filePosition;
-		long limit = range.getTo() - filePosition;
-		if (position > (long) buffer.capacity() || limit > (long) buffer.capacity())
-		{
-			// We are too far. This range will be in a next buffer
-			return null;
-		}
+        long position = range.getFrom() - filePosition;
+        long limit = range.getTo() - filePosition;
+        if (position > (long) buffer.capacity() || limit > (long) buffer.capacity()) {
+            // We are too far. This range will be in a next buffer
+            return null;
+        }
 
-		buffer.limit((int) limit);
-		buffer.position((int) position);
-		return buffer.duplicate();
-	}
+        buffer.limit((int) limit);
+        buffer.position((int) position);
+        return buffer.duplicate();
+    }
 
-	@Override
-	public boolean hashComplete()
-	{
-		if (isActive())
-		{
-			return getBytesHashed() == sizeToHash;
-		}
-		else
-		{
-			return true;
-		}
-	}
+    @Override
+    public boolean hashComplete() {
+        if (isActive()) {
+            return getBytesHashed() == sizeToHash;
+        } else {
+            return true;
+        }
+    }
 }

@@ -24,66 +24,51 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Logger
-{
-	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+public class Logger {
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-	public static String getCurrentDate()
-	{
-		return dateFormat.format(new Date());
-	}
+    public static String getCurrentDate() {
+        return dateFormat.format(new Date());
+    }
 
-	public static void info(String message)
-	{
-		writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Info  - ").append(message).toString());
-	}
+    public static void info(String message) {
+        writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Info  - ").append(message).toString());
+    }
 
-	public static void warning(String message)
-	{
-		writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Warn  - ").append(message).toString());
-	}
+    public static void warning(String message) {
+        writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Warn  - ").append(message).toString());
+    }
 
-	public static void alert(String message)
-	{
-		writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Alert - ").append(message).toString());
-	}
+    public static void alert(String message) {
+        writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Alert - ").append(message).toString());
+    }
 
-	public static void error(String message, Exception ex, boolean displayStackTrace)
-	{
-		StringBuilder builder = new StringBuilder().append(message).append("\n");
-		if (displayStackTrace)
-		{
-			builder.append(exceptionStackTraceToString(ex));
-		}
-		else
-		{
-			builder.append(ex.getClass().getSimpleName()).append(": ").append(ex.getMessage());
-		}
-		error(builder.toString());
-	}
+    public static void error(String message, Exception ex, boolean displayStackTrace) {
+        StringBuilder builder = new StringBuilder().append(message).append("\n");
+        if (displayStackTrace) {
+            builder.append(exceptionStackTraceToString(ex));
+        } else {
+            builder.append(ex.getClass().getSimpleName()).append(": ").append(ex.getMessage());
+        }
+        error(builder.toString());
+    }
 
-	public static void error(String message)
-	{
-		writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Error - ").append(message).toString());
-	}
+    public static void error(String message) {
+        writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Error - ").append(message).toString());
+    }
 
-	private static String exceptionStackTraceToString(Exception ex)
-	{
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
-		{
-			PrintStream ps = new PrintStream(baos);
-			ex.printStackTrace(ps);
-			return baos.toString();
-		}
-		catch (IOException e)
-		{
-			return ex.getMessage();
-		}
-	}
+    private static String exceptionStackTraceToString(Exception ex) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            PrintStream ps = new PrintStream(baos);
+            ex.printStackTrace(ps);
+            return baos.toString();
+        } catch (IOException e) {
+            return ex.getMessage();
+        }
+    }
 
-	private static void writeLogMessage(String message)
-	{
-		System.out.println(message);
-		System.out.flush();
-	}
+    private static void writeLogMessage(String message) {
+        System.out.println(message);
+        System.out.flush();
+    }
 }

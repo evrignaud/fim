@@ -18,26 +18,24 @@
  */
 package org.fim.internal.hash;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.fim.tooling.StateAssert;
 import org.junit.Test;
 
-public class HashProgressTest extends StateAssert
-{
-	private HashProgress cut = new HashProgress(defaultContext());
+import static org.assertj.core.api.Assertions.assertThat;
 
-	@Test
-	public void weCanGetProgressChar()
-	{
-		assertThat(cut.getProgressChar(-1)).isEqualTo(' ');
+public class HashProgressTest extends StateAssert {
+    private HashProgress cut = new HashProgress(defaultContext());
 
-		assertThat(cut.getProgressChar(0)).isEqualTo('.');
+    @Test
+    public void weCanGetProgressChar() {
+        assertThat(cut.getProgressChar(-1)).isEqualTo(' ');
 
-		assertThat(cut.getProgressChar(10 * 1024 * 1024)).isEqualTo('.');
+        assertThat(cut.getProgressChar(0)).isEqualTo('.');
 
-		assertThat(cut.getProgressChar(20 * 1024 * 1024)).isEqualTo('o');
+        assertThat(cut.getProgressChar(10 * 1024 * 1024)).isEqualTo('.');
 
-		assertThat(cut.getProgressChar(30 * 1024 * 1024)).isEqualTo('o');
-	}
+        assertThat(cut.getProgressChar(20 * 1024 * 1024)).isEqualTo('o');
+
+        assertThat(cut.getProgressChar(30 * 1024 * 1024)).isEqualTo('o');
+    }
 }

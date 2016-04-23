@@ -18,58 +18,49 @@
  */
 package org.fim.util;
 
-import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CommandUtilTest
-{
-	private List<String> cmdArray;
-	private List<String> badArgumentCmdArray;
+import java.util.Arrays;
+import java.util.List;
 
-	@Before
-	public void setup()
-	{
-		if (IS_OS_WINDOWS)
-		{
-			cmdArray = Arrays.asList("cmd", "/c", "dir /AH");
-			badArgumentCmdArray = Arrays.asList("cmd", "/c", "dir /+++");
-		}
-		else
-		{
-			cmdArray = Arrays.asList("ls", "-la");
-			badArgumentCmdArray = Arrays.asList("ls", "-+++");
-		}
-	}
+import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
 
-	@Test
-	public void weCanExecuteACommand() throws Exception
-	{
-		String output = CommandUtil.executeCommand(cmdArray);
-		Assertions.assertThat(output.length()).isGreaterThan(10);
-	}
+public class CommandUtilTest {
+    private List<String> cmdArray;
+    private List<String> badArgumentCmdArray;
 
-	@Test(expected = IllegalArgumentException.class)
-	public void executingACommandWithWrongArgumentsThrowAnException() throws Exception
-	{
-		CommandUtil.executeCommand(badArgumentCmdArray);
-	}
+    @Before
+    public void setup() {
+        if (IS_OS_WINDOWS) {
+            cmdArray = Arrays.asList("cmd", "/c", "dir /AH");
+            badArgumentCmdArray = Arrays.asList("cmd", "/c", "dir /+++");
+        } else {
+            cmdArray = Arrays.asList("ls", "-la");
+            badArgumentCmdArray = Arrays.asList("ls", "-+++");
+        }
+    }
 
-	@Test
-	public void weCanExecuteACommandAndGetLines() throws Exception
-	{
-		List<String> lines = CommandUtil.executeCommandAndGetLines(cmdArray);
-		Assertions.assertThat(lines.size()).isGreaterThan(5);
-	}
+    @Test
+    public void weCanExecuteACommand() throws Exception {
+        String output = CommandUtil.executeCommand(cmdArray);
+        Assertions.assertThat(output.length()).isGreaterThan(10);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void executingACommandAndGetLinesWithWrongArgumentsThrowAnException() throws Exception
-	{
-		CommandUtil.executeCommandAndGetLines(badArgumentCmdArray);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void executingACommandWithWrongArgumentsThrowAnException() throws Exception {
+        CommandUtil.executeCommand(badArgumentCmdArray);
+    }
+
+    @Test
+    public void weCanExecuteACommandAndGetLines() throws Exception {
+        List<String> lines = CommandUtil.executeCommandAndGetLines(cmdArray);
+        Assertions.assertThat(lines.size()).isGreaterThan(5);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void executingACommandAndGetLinesWithWrongArgumentsThrowAnException() throws Exception {
+        CommandUtil.executeCommandAndGetLines(badArgumentCmdArray);
+    }
 }

@@ -18,110 +18,96 @@
  */
 package org.fim.internal.hash;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.hashSmallBlock;
-import static org.fim.tooling.TestConstants._12_KB;
-import static org.fim.tooling.TestConstants._16_KB;
-import static org.fim.tooling.TestConstants._1_KB;
-import static org.fim.tooling.TestConstants._20_KB;
-import static org.fim.tooling.TestConstants._4_KB;
-import static org.fim.tooling.TestConstants._5_KB;
-import static org.fim.tooling.TestConstants._8_KB;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
 import org.fim.model.HashMode;
 import org.fim.model.Range;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BlockHasherTest
-{
-	private BlockHasher cut;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
-	@Before
-	public void setup() throws NoSuchAlgorithmException, IOException
-	{
-		cut = new BlockHasher(hashSmallBlock)
-		{
-			@Override
-			protected int getBlockSize()
-			{
-				return _4_KB;
-			}
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.fim.model.HashMode.hashSmallBlock;
+import static org.fim.tooling.TestConstants.*;
 
-			@Override
-			protected boolean isCompatible(HashMode hashMode)
-			{
-				return true;
-			}
-		};
-	}
+public class BlockHasherTest {
+    private BlockHasher cut;
 
-	@Test
-	public void calculateBlockIndex()
-	{
-		cut.reset(31);
-		assertThat(cut.getMiddleBlockIndex()).isEqualTo(0);
+    @Before
+    public void setup() throws NoSuchAlgorithmException, IOException {
+        cut = new BlockHasher(hashSmallBlock) {
+            @Override
+            protected int getBlockSize() {
+                return _4_KB;
+            }
 
-		cut.reset(_4_KB + 109);
-		assertThat(cut.getMiddleBlockIndex()).isEqualTo(0);
+            @Override
+            protected boolean isCompatible(HashMode hashMode) {
+                return true;
+            }
+        };
+    }
 
-		cut.reset(_8_KB + 205);
-		assertThat(cut.getMiddleBlockIndex()).isEqualTo(1);
+    @Test
+    public void calculateBlockIndex() {
+        cut.reset(31);
+        assertThat(cut.getMiddleBlockIndex()).isEqualTo(0);
 
-		cut.reset(_12_KB + 301);
-		assertThat(cut.getMiddleBlockIndex()).isEqualTo(1);
-		assertThat(cut.getEndBlockIndex()).isEqualTo(2);
+        cut.reset(_4_KB + 109);
+        assertThat(cut.getMiddleBlockIndex()).isEqualTo(0);
 
-		cut.reset(_16_KB + 407);
-		assertThat(cut.getMiddleBlockIndex()).isEqualTo(2);
-		assertThat(cut.getEndBlockIndex()).isEqualTo(3);
+        cut.reset(_8_KB + 205);
+        assertThat(cut.getMiddleBlockIndex()).isEqualTo(1);
 
-		cut.reset(_20_KB + 509);
-		assertThat(cut.getMiddleBlockIndex()).isEqualTo(2);
-		assertThat(cut.getEndBlockIndex()).isEqualTo(4);
-	}
+        cut.reset(_12_KB + 301);
+        assertThat(cut.getMiddleBlockIndex()).isEqualTo(1);
+        assertThat(cut.getEndBlockIndex()).isEqualTo(2);
 
-	@Test
-	public void rangesAreCalculatedCorrectly()
-	{
-		cut.reset(31);
-		assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(0, 31)});
+        cut.reset(_16_KB + 407);
+        assertThat(cut.getMiddleBlockIndex()).isEqualTo(2);
+        assertThat(cut.getEndBlockIndex()).isEqualTo(3);
 
-		cut.reset(_4_KB + 109);
-		assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(0, _4_KB)});
+        cut.reset(_20_KB + 509);
+        assertThat(cut.getMiddleBlockIndex()).isEqualTo(2);
+        assertThat(cut.getEndBlockIndex()).isEqualTo(4);
+    }
 
-		cut.reset(_8_KB + 205);
-		assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB)});
+    @Test
+    public void rangesAreCalculatedCorrectly() {
+        cut.reset(31);
+        assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(0, 31)});
 
-		cut.reset(_12_KB + 301);
-		assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB), new Range(_8_KB, _12_KB)});
+        cut.reset(_4_KB + 109);
+        assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(0, _4_KB)});
 
-		cut.reset(_16_KB + 407);
-		assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB), new Range(_8_KB, _12_KB), new Range(_12_KB, _16_KB)});
+        cut.reset(_8_KB + 205);
+        assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB)});
 
-		cut.reset(_20_KB + 509);
-		assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB), new Range(_8_KB, _12_KB), new Range(_16_KB, _20_KB)});
-	}
+        cut.reset(_12_KB + 301);
+        assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB), new Range(_8_KB, _12_KB)});
 
-	@Test
-	public void weCanRetrieveTheNextRange()
-	{
-		cut.reset(_20_KB + 509);
-		assertThat(cut.getNextRange(0)).isEqualTo(new Range(_4_KB, _8_KB));
+        cut.reset(_16_KB + 407);
+        assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB), new Range(_8_KB, _12_KB), new Range(_12_KB, _16_KB)});
 
-		assertThat(cut.getNextRange(_1_KB)).isEqualTo(new Range(_4_KB, _8_KB));
+        cut.reset(_20_KB + 509);
+        assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB), new Range(_8_KB, _12_KB), new Range(_16_KB, _20_KB)});
+    }
 
-		assertThat(cut.getNextRange(_4_KB)).isEqualTo(new Range(_4_KB, _8_KB));
+    @Test
+    public void weCanRetrieveTheNextRange() {
+        cut.reset(_20_KB + 509);
+        assertThat(cut.getNextRange(0)).isEqualTo(new Range(_4_KB, _8_KB));
 
-		assertThat(cut.getNextRange(_4_KB + 1)).isEqualTo(new Range(_8_KB, _12_KB));
+        assertThat(cut.getNextRange(_1_KB)).isEqualTo(new Range(_4_KB, _8_KB));
 
-		assertThat(cut.getNextRange(_5_KB)).isEqualTo(new Range(_8_KB, _12_KB));
+        assertThat(cut.getNextRange(_4_KB)).isEqualTo(new Range(_4_KB, _8_KB));
 
-		assertThat(cut.getNextRange(_12_KB)).isEqualTo(new Range(_16_KB, _20_KB));
+        assertThat(cut.getNextRange(_4_KB + 1)).isEqualTo(new Range(_8_KB, _12_KB));
 
-		assertThat(cut.getNextRange(_20_KB)).isEqualTo(null);
-	}
+        assertThat(cut.getNextRange(_5_KB)).isEqualTo(new Range(_8_KB, _12_KB));
+
+        assertThat(cut.getNextRange(_12_KB)).isEqualTo(new Range(_16_KB, _20_KB));
+
+        assertThat(cut.getNextRange(_20_KB)).isEqualTo(null);
+    }
 }

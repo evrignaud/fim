@@ -18,22 +18,6 @@
  */
 package org.fim.internal;
 
-import static org.fim.model.HashMode.dontHash;
-import static org.fim.model.HashMode.hashAll;
-import static org.fim.model.HashMode.hashMediumBlock;
-import static org.fim.model.HashMode.hashSmallBlock;
-import static org.fim.model.Modification.added;
-import static org.fim.model.Modification.contentModified;
-import static org.fim.model.Modification.copied;
-import static org.fim.model.Modification.corrupted;
-import static org.fim.model.Modification.dateModified;
-import static org.fim.model.Modification.deleted;
-import static org.fim.model.Modification.duplicated;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.fim.model.CompareResult;
 import org.fim.model.HashMode;
 import org.fim.tooling.BuildableContext;
@@ -46,156 +30,139 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.fim.model.HashMode.*;
+import static org.fim.model.Modification.*;
+
 @RunWith(Parameterized.class)
-public class StateComparatorTest extends StateAssert
-{
-	private HashMode hashMode;
-	private BuildableContext context;
-	private BuildableState s1;
-	private BuildableState s2;
+public class StateComparatorTest extends StateAssert {
+    private HashMode hashMode;
+    private BuildableContext context;
+    private BuildableState s1;
+    private BuildableState s2;
 
-	public StateComparatorTest(final HashMode hashMode)
-	{
-		this.hashMode = hashMode;
-	}
+    public StateComparatorTest(final HashMode hashMode) {
+        this.hashMode = hashMode;
+    }
 
-	@Parameters(name = "Hash mode: {0}")
-	public static Collection<Object[]> parameters()
-	{
-		return Arrays.asList(new Object[][]{
-				{dontHash},
-				{hashSmallBlock},
-				{hashMediumBlock},
-				{hashAll}
-		});
-	}
+    @Parameters(name = "Hash mode: {0}")
+    public static Collection<Object[]> parameters() {
+        return Arrays.asList(new Object[][]{
+            {dontHash},
+            {hashSmallBlock},
+            {hashMediumBlock},
+            {hashAll}
+        });
+    }
 
-	@Before
-	public void setup() throws IOException
-	{
-		context = defaultContext();
-		context.setHashMode(hashMode);
-		s1 = new BuildableState(context).addFiles("file_01", "file_02", "file_03", "file_04");
-	}
+    @Before
+    public void setup() throws IOException {
+        context = defaultContext();
+        context.setHashMode(hashMode);
+        s1 = new BuildableState(context).addFiles("file_01", "file_02", "file_03", "file_04");
+    }
 
-	@Test
-	public void weCanDoCompareOnSimpleOperations()
-	{
-		// Set the same file content
-		s2 = s1.setContent("file_01", "file_01");
-		CompareResult result = new StateComparator(context, s1, s2).compare();
-		assertNothingModified(result);
+    @Test
+    public void weCanDoCompareOnSimpleOperations() {
+        // Set the same file content
+        s2 = s1.setContent("file_01", "file_01");
+        CompareResult result = new StateComparator(context, s1, s2).compare();
+        assertNothingModified(result);
 
-		s2 = s1.addFiles("file_05");
-		result = new StateComparator(context, s1, s2).compare();
-		assertOnlyFilesAdded(result, "file_05");
+        s2 = s1.addFiles("file_05");
+        result = new StateComparator(context, s1, s2).compare();
+        assertOnlyFilesAdded(result, "file_05");
 
-		s2 = s1.touch("file_01");
-		result = new StateComparator(context, s1, s2).compare();
-		assertOnlyDatesModified(result, "file_01");
+        s2 = s1.touch("file_01");
+        result = new StateComparator(context, s1, s2).compare();
+        assertOnlyDatesModified(result, "file_01");
 
-		s2 = s1.appendContent("file_01", "append_01");
-		result = new StateComparator(context, s1, s2).compare();
-		if (hashMode == dontHash)
-		{
-			assertNothingModified(result);
-		}
-		else
-		{
-			assertOnlyContentModified(result, "file_01");
-		}
+        s2 = s1.appendContent("file_01", "append_01");
+        result = new StateComparator(context, s1, s2).compare();
+        if (hashMode == dontHash) {
+            assertNothingModified(result);
+        } else {
+            assertOnlyContentModified(result, "file_01");
+        }
 
-		s2 = s1.rename("file_01", "file_06");
-		result = new StateComparator(context, s1, s2).compare();
-		if (hashMode == dontHash)
-		{
-			assertGotOnlyModifications(result, added, deleted);
-			assertFilesModified(result, deleted, "file_01");
-			assertFilesModified(result, added, "file_06");
-		}
-		else
-		{
-			assertOnlyFileRenamed(result, new FileNameDiff("file_01", "file_06"));
-		}
+        s2 = s1.rename("file_01", "file_06");
+        result = new StateComparator(context, s1, s2).compare();
+        if (hashMode == dontHash) {
+            assertGotOnlyModifications(result, added, deleted);
+            assertFilesModified(result, deleted, "file_01");
+            assertFilesModified(result, added, "file_06");
+        } else {
+            assertOnlyFileRenamed(result, new FileNameDiff("file_01", "file_06"));
+        }
 
-		s2 = s1.copy("file_01", "file_06");
-		result = new StateComparator(context, s1, s2).compare();
-		if (hashMode == dontHash)
-		{
-			assertOnlyFilesAdded(result, "file_06");
-		}
-		else
-		{
-			assertOnlyFileDuplicated(result, new FileNameDiff("file_01", "file_06"));
-		}
+        s2 = s1.copy("file_01", "file_06");
+        result = new StateComparator(context, s1, s2).compare();
+        if (hashMode == dontHash) {
+            assertOnlyFilesAdded(result, "file_06");
+        } else {
+            assertOnlyFileDuplicated(result, new FileNameDiff("file_01", "file_06"));
+        }
 
-		s2 = s1.delete("file_01");
-		result = new StateComparator(context, s1, s2).compare();
-		assertOnlyFileDeleted(result, "file_01");
-	}
+        s2 = s1.delete("file_01");
+        result = new StateComparator(context, s1, s2).compare();
+        assertOnlyFileDeleted(result, "file_01");
+    }
 
-	@Test
-	public void weCanCopyAFileAndChangeDate()
-	{
-		s2 = s1.copy("file_01", "file_00")
-				.copy("file_01", "file_06")
-				.touch("file_01");
-		CompareResult result = new StateComparator(context, s1, s2).compare();
-		if (hashMode == dontHash)
-		{
-			assertGotOnlyModifications(result, added, dateModified);
-			assertFilesModified(result, added, "file_00", "file_06");
-		}
-		else
-		{
-			assertGotOnlyModifications(result, duplicated, dateModified);
-			assertFilesModified(result, duplicated, new FileNameDiff("file_01", "file_00"), new FileNameDiff("file_01", "file_06"));
-		}
-		assertFilesModified(result, dateModified, "file_01");
-	}
+    @Test
+    public void weCanCopyAFileAndChangeDate() {
+        s2 = s1.copy("file_01", "file_00")
+            .copy("file_01", "file_06")
+            .touch("file_01");
+        CompareResult result = new StateComparator(context, s1, s2).compare();
+        if (hashMode == dontHash) {
+            assertGotOnlyModifications(result, added, dateModified);
+            assertFilesModified(result, added, "file_00", "file_06");
+        } else {
+            assertGotOnlyModifications(result, duplicated, dateModified);
+            assertFilesModified(result, duplicated, new FileNameDiff("file_01", "file_00"), new FileNameDiff("file_01", "file_06"));
+        }
+        assertFilesModified(result, dateModified, "file_01");
+    }
 
-	@Test
-	public void weCanCopyAFileAndChangeContent()
-	{
-		s2 = s1.copy("file_01", "file_00")
-				.copy("file_01", "file_06")
-				.appendContent("file_01", "append_01");
-		CompareResult result = new StateComparator(context, s1, s2).compare();
-		if (hashMode == dontHash)
-		{
-			assertGotOnlyModifications(result, added);
-			assertFilesModified(result, added, "file_00", "file_06");
-		}
-		else
-		{
-			assertGotOnlyModifications(result, copied, contentModified);
-			assertFilesModified(result, copied, new FileNameDiff("file_01", "file_00"), new FileNameDiff("file_01", "file_06"));
-			assertFilesModified(result, contentModified, "file_01");
-		}
-	}
+    @Test
+    public void weCanCopyAFileAndChangeContent() {
+        s2 = s1.copy("file_01", "file_00")
+            .copy("file_01", "file_06")
+            .appendContent("file_01", "append_01");
+        CompareResult result = new StateComparator(context, s1, s2).compare();
+        if (hashMode == dontHash) {
+            assertGotOnlyModifications(result, added);
+            assertFilesModified(result, added, "file_00", "file_06");
+        } else {
+            assertGotOnlyModifications(result, copied, contentModified);
+            assertFilesModified(result, copied, new FileNameDiff("file_01", "file_00"), new FileNameDiff("file_01", "file_06"));
+            assertFilesModified(result, contentModified, "file_01");
+        }
+    }
 
 
-	@Test
-	public void weCanDetectHardwareCorruption()
-	{
-		if (hashMode == dontHash)
-		{
-			return;
-		}
+    @Test
+    public void weCanDetectHardwareCorruption() {
+        if (hashMode == dontHash) {
+            return;
+        }
 
-		s2 = s1.clone();
-		CompareResult result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
-		assertNothingModified(result);
+        s2 = s1.clone();
+        CompareResult result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
+        assertNothingModified(result);
 
-		s2 = s2.setContent("file_01", "XXXX");
-		result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
-		assertGotOnlyModifications(result, corrupted);
-		assertFilesModified(result, corrupted, "file_01");
+        s2 = s2.setContent("file_01", "XXXX");
+        result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
+        assertGotOnlyModifications(result, corrupted);
+        assertFilesModified(result, corrupted, "file_01");
 
-		// file_02 is deleted and file_05 is added, they are not detected as corrupted
-		s2 = s2.delete("file_02").addFiles("file_05");
-		result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
-		assertGotOnlyModifications(result, corrupted);
-		assertFilesModified(result, corrupted, "file_01");
-	}
+        // file_02 is deleted and file_05 is added, they are not detected as corrupted
+        s2 = s2.delete("file_02").addFiles("file_05");
+        result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
+        assertGotOnlyModifications(result, corrupted);
+        assertFilesModified(result, corrupted, "file_01");
+    }
 }

@@ -18,51 +18,41 @@
  */
 package org.fim.util;
 
+import org.fim.model.Context;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.DosFileAttributeView;
 import java.nio.file.attribute.DosFileAttributes;
 
-import org.fim.model.Context;
+public class DosFilePermissions {
+    public static String toString(DosFileAttributes dosFileAttributes) {
+        StringBuilder builder = new StringBuilder();
+        if (dosFileAttributes.isArchive()) {
+            builder.append('A');
+        }
+        if (dosFileAttributes.isHidden()) {
+            builder.append('H');
+        }
+        if (dosFileAttributes.isReadOnly()) {
+            builder.append('R');
+        }
+        if (dosFileAttributes.isSystem()) {
+            builder.append('S');
+        }
+        return builder.toString();
+    }
 
-public class DosFilePermissions
-{
-	public static String toString(DosFileAttributes dosFileAttributes)
-	{
-		StringBuilder builder = new StringBuilder();
-		if (dosFileAttributes.isArchive())
-		{
-			builder.append('A');
-		}
-		if (dosFileAttributes.isHidden())
-		{
-			builder.append('H');
-		}
-		if (dosFileAttributes.isReadOnly())
-		{
-			builder.append('R');
-		}
-		if (dosFileAttributes.isSystem())
-		{
-			builder.append('S');
-		}
-		return builder.toString();
-	}
-
-	public static void setPermissions(Context context, Path file, String permissions)
-	{
-		DosFileAttributeView fileAttributeView = Files.getFileAttributeView(file, DosFileAttributeView.class);
-		try
-		{
-			fileAttributeView.setArchive(permissions.contains("A"));
-			fileAttributeView.setHidden(permissions.contains("H"));
-			fileAttributeView.setReadOnly(permissions.contains("R"));
-			fileAttributeView.setSystem(permissions.contains("S"));
-		}
-		catch (IOException ex)
-		{
-			Logger.error("Error setting permissions for '" + file + "'", ex, context.isDisplayStackTrace());
-		}
-	}
+    public static void setPermissions(Context context, Path file, String permissions) {
+        DosFileAttributeView fileAttributeView = Files.getFileAttributeView(file, DosFileAttributeView.class);
+        try {
+            fileAttributeView.setArchive(permissions.contains("A"));
+            fileAttributeView.setHidden(permissions.contains("H"));
+            fileAttributeView.setReadOnly(permissions.contains("R"));
+            fileAttributeView.setSystem(permissions.contains("S"));
+        } catch (IOException ex) {
+            Logger.error("Error setting permissions for '" + file + "'", ex, context.isDisplayStackTrace());
+        }
+    }
 }

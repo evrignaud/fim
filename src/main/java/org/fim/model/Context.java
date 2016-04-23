@@ -18,202 +18,167 @@
  */
 package org.fim.model;
 
-import static org.fim.model.HashMode.hashAll;
+import com.rits.cloning.Cloner;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.rits.cloning.Cloner;
+import static org.fim.model.HashMode.hashAll;
 
-public class Context
-{
-	public static final String DOT_FIM_DIR = ".fim";
+public class Context {
+    public static final String DOT_FIM_DIR = ".fim";
 
-	private static final Cloner CLONER = new Cloner();
+    private static final Cloner CLONER = new Cloner();
 
-	private boolean invokedFromSubDirectory;
-	private Path currentDirectory;
-	private Path repositoryRootDir;
-	private boolean verbose;
-	private HashMode hashMode;
-	private String comment;
-	private boolean useLastState;
-	private int threadCount;
-	private boolean threadCountSpecified;
-	private String masterFimRepositoryDir;
-	private boolean alwaysYes;
-	private boolean displayStackTrace;
-	private int truncateOutput;
+    private boolean invokedFromSubDirectory;
+    private Path currentDirectory;
+    private Path repositoryRootDir;
+    private boolean verbose;
+    private HashMode hashMode;
+    private String comment;
+    private boolean useLastState;
+    private int threadCount;
+    private boolean threadCountSpecified;
+    private String masterFimRepositoryDir;
+    private boolean alwaysYes;
+    private boolean displayStackTrace;
+    private int truncateOutput;
 
-	public Context()
-	{
-		setInvokedFromSubDirectory(false);
-		setCurrentDirectory(Paths.get("."));
-		setRepositoryRootDir(getCurrentDirectory());
-		setVerbose(true);
-		setHashMode(hashAll);
-		setComment("");
-		setUseLastState(false);
-		setThreadCount(Runtime.getRuntime().availableProcessors() / 2);
-		setThreadCountSpecified(false);
-		setMasterFimRepositoryDir(null);
-		setAlwaysYes(false);
-	}
+    public Context() {
+        setInvokedFromSubDirectory(false);
+        setCurrentDirectory(Paths.get("."));
+        setRepositoryRootDir(getCurrentDirectory());
+        setVerbose(true);
+        setHashMode(hashAll);
+        setComment("");
+        setUseLastState(false);
+        setThreadCount(Runtime.getRuntime().availableProcessors() / 2);
+        setThreadCountSpecified(false);
+        setMasterFimRepositoryDir(null);
+        setAlwaysYes(false);
+    }
 
-	public boolean isInvokedFromSubDirectory()
-	{
-		return invokedFromSubDirectory;
-	}
+    public boolean isInvokedFromSubDirectory() {
+        return invokedFromSubDirectory;
+    }
 
-	public void setInvokedFromSubDirectory(boolean invokedFromSubDirectory)
-	{
-		this.invokedFromSubDirectory = invokedFromSubDirectory;
-	}
+    public void setInvokedFromSubDirectory(boolean invokedFromSubDirectory) {
+        this.invokedFromSubDirectory = invokedFromSubDirectory;
+    }
 
-	public Path getCurrentDirectory()
-	{
-		return currentDirectory;
-	}
+    public Path getCurrentDirectory() {
+        return currentDirectory;
+    }
 
-	public void setCurrentDirectory(Path currentDirectory)
-	{
-		this.currentDirectory = currentDirectory;
-	}
+    public void setCurrentDirectory(Path currentDirectory) {
+        this.currentDirectory = currentDirectory;
+    }
 
-	public Path getAbsoluteCurrentDirectory()
-	{
-		return currentDirectory.toAbsolutePath().normalize();
-	}
+    public Path getAbsoluteCurrentDirectory() {
+        return currentDirectory.toAbsolutePath().normalize();
+    }
 
-	public Path getRepositoryRootDir()
-	{
-		return repositoryRootDir;
-	}
+    public Path getRepositoryRootDir() {
+        return repositoryRootDir;
+    }
 
-	public void setRepositoryRootDir(Path repositoryRootDir)
-	{
-		this.repositoryRootDir = repositoryRootDir.toAbsolutePath().normalize();
-	}
+    public void setRepositoryRootDir(Path repositoryRootDir) {
+        this.repositoryRootDir = repositoryRootDir.toAbsolutePath().normalize();
+    }
 
-	public Path getRepositoryDotFimDir()
-	{
-		return repositoryRootDir.resolve(DOT_FIM_DIR);
-	}
+    public Path getRepositoryDotFimDir() {
+        return repositoryRootDir.resolve(DOT_FIM_DIR);
+    }
 
-	public Path getRepositoryStatesDir()
-	{
-		return getRepositoryDotFimDir().resolve("states");
-	}
+    public Path getRepositoryStatesDir() {
+        return getRepositoryDotFimDir().resolve("states");
+    }
 
-	public boolean isVerbose()
-	{
-		return verbose;
-	}
+    public boolean isVerbose() {
+        return verbose;
+    }
 
-	public void setVerbose(boolean verbose)
-	{
-		this.verbose = verbose;
-	}
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
+    }
 
-	public HashMode getHashMode()
-	{
-		return hashMode;
-	}
+    public HashMode getHashMode() {
+        return hashMode;
+    }
 
-	public void setHashMode(HashMode hashMode)
-	{
-		this.hashMode = hashMode;
-	}
+    public void setHashMode(HashMode hashMode) {
+        this.hashMode = hashMode;
+    }
 
-	public String getComment()
-	{
-		return comment;
-	}
+    public String getComment() {
+        return comment;
+    }
 
-	public void setComment(String comment)
-	{
-		this.comment = comment;
-	}
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
-	public boolean isUseLastState()
-	{
-		return useLastState;
-	}
+    public boolean isUseLastState() {
+        return useLastState;
+    }
 
-	public void setUseLastState(boolean useLastState)
-	{
-		this.useLastState = useLastState;
-	}
+    public void setUseLastState(boolean useLastState) {
+        this.useLastState = useLastState;
+    }
 
-	public String getMasterFimRepositoryDir()
-	{
-		return masterFimRepositoryDir;
-	}
+    public String getMasterFimRepositoryDir() {
+        return masterFimRepositoryDir;
+    }
 
-	public void setMasterFimRepositoryDir(String masterFimRepositoryDir)
-	{
-		this.masterFimRepositoryDir = masterFimRepositoryDir;
-	}
+    public void setMasterFimRepositoryDir(String masterFimRepositoryDir) {
+        this.masterFimRepositoryDir = masterFimRepositoryDir;
+    }
 
-	public boolean isAlwaysYes()
-	{
-		return alwaysYes;
-	}
+    public boolean isAlwaysYes() {
+        return alwaysYes;
+    }
 
-	public void setAlwaysYes(boolean alwaysYes)
-	{
-		this.alwaysYes = alwaysYes;
-	}
+    public void setAlwaysYes(boolean alwaysYes) {
+        this.alwaysYes = alwaysYes;
+    }
 
-	public boolean isDisplayStackTrace()
-	{
-		return displayStackTrace;
-	}
+    public boolean isDisplayStackTrace() {
+        return displayStackTrace;
+    }
 
-	public void setDisplayStackTrace(boolean displayStackTrace)
-	{
-		this.displayStackTrace = displayStackTrace;
-	}
+    public void setDisplayStackTrace(boolean displayStackTrace) {
+        this.displayStackTrace = displayStackTrace;
+    }
 
-	public int getThreadCount()
-	{
-		return threadCount;
-	}
+    public int getThreadCount() {
+        return threadCount;
+    }
 
-	public void setThreadCount(int threadCount)
-	{
-		if (threadCount < 1)
-		{
-			this.threadCount = 1;
-		}
-		else
-		{
-			this.threadCount = threadCount;
-		}
-	}
+    public void setThreadCount(int threadCount) {
+        if (threadCount < 1) {
+            this.threadCount = 1;
+        } else {
+            this.threadCount = threadCount;
+        }
+    }
 
-	public boolean isThreadCountSpecified()
-	{
-		return threadCountSpecified;
-	}
+    public boolean isThreadCountSpecified() {
+        return threadCountSpecified;
+    }
 
-	public void setThreadCountSpecified(boolean threadCountSpecified)
-	{
-		this.threadCountSpecified = threadCountSpecified;
-	}
+    public void setThreadCountSpecified(boolean threadCountSpecified) {
+        this.threadCountSpecified = threadCountSpecified;
+    }
 
-	public Context clone()
-	{
-		return CLONER.deepClone(this);
-	}
+    public Context clone() {
+        return CLONER.deepClone(this);
+    }
 
-	public void setTruncateOutput(int truncateOutput)
-	{
-		this.truncateOutput = truncateOutput;
-	}
+    public void setTruncateOutput(int truncateOutput) {
+        this.truncateOutput = truncateOutput;
+    }
 
-	public int getTruncateOutput()
-	{
-		return truncateOutput;
-	}
+    public int getTruncateOutput() {
+        return truncateOutput;
+    }
 }

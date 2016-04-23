@@ -18,6 +18,5 @@
  */
 package org.fim.model;
 
-public class CorruptedStateException extends Exception
-{
+public class CorruptedStateException extends Exception {
 }

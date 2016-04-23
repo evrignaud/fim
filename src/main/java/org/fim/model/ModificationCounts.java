@@ -18,106 +18,88 @@
  */
 package org.fim.model;
 
-public class ModificationCounts
-{
-	private int added;
-	private int copied;
-	private int duplicated;
-	private int dateModified;
-	private int contentModified;
-	private int attributesModified;
-	private int renamed;
-	private int deleted;
+public class ModificationCounts {
+    private int added;
+    private int copied;
+    private int duplicated;
+    private int dateModified;
+    private int contentModified;
+    private int attributesModified;
+    private int renamed;
+    private int deleted;
 
-	public int getAdded()
-	{
-		return added;
-	}
+    public int getAdded() {
+        return added;
+    }
 
-	public void setAdded(int added)
-	{
-		this.added = added;
-	}
+    public void setAdded(int added) {
+        this.added = added;
+    }
 
-	public int getCopied()
-	{
-		return copied;
-	}
+    public int getCopied() {
+        return copied;
+    }
 
-	public void setCopied(int copied)
-	{
-		this.copied = copied;
-	}
+    public void setCopied(int copied) {
+        this.copied = copied;
+    }
 
-	public int getDuplicated()
-	{
-		return duplicated;
-	}
+    public int getDuplicated() {
+        return duplicated;
+    }
 
-	public void setDuplicated(int duplicated)
-	{
-		this.duplicated = duplicated;
-	}
+    public void setDuplicated(int duplicated) {
+        this.duplicated = duplicated;
+    }
 
-	public int getDateModified()
-	{
-		return dateModified;
-	}
+    public int getDateModified() {
+        return dateModified;
+    }
 
-	public void setDateModified(int dateModified)
-	{
-		this.dateModified = dateModified;
-	}
+    public void setDateModified(int dateModified) {
+        this.dateModified = dateModified;
+    }
 
-	public int getContentModified()
-	{
-		return contentModified;
-	}
+    public int getContentModified() {
+        return contentModified;
+    }
 
-	public void setContentModified(int contentModified)
-	{
-		this.contentModified = contentModified;
-	}
+    public void setContentModified(int contentModified) {
+        this.contentModified = contentModified;
+    }
 
-	public int getAttributesModified()
-	{
-		return attributesModified;
-	}
+    public int getAttributesModified() {
+        return attributesModified;
+    }
 
-	public void setAttributesModified(int attributesModified)
-	{
-		this.attributesModified = attributesModified;
-	}
+    public void setAttributesModified(int attributesModified) {
+        this.attributesModified = attributesModified;
+    }
 
-	public int getRenamed()
-	{
-		return renamed;
-	}
+    public int getRenamed() {
+        return renamed;
+    }
 
-	public void setRenamed(int renamed)
-	{
-		this.renamed = renamed;
-	}
+    public void setRenamed(int renamed) {
+        this.renamed = renamed;
+    }
 
-	public int getDeleted()
-	{
-		return deleted;
-	}
+    public int getDeleted() {
+        return deleted;
+    }
 
-	public void setDeleted(int deleted)
-	{
-		this.deleted = deleted;
-	}
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
+    }
 
-	public void add(ModificationCounts modificationCounts)
-	{
-		added += modificationCounts.getAdded();
-		copied += modificationCounts.getCopied();
-		duplicated += modificationCounts.getDuplicated();
-		dateModified += modificationCounts.getDateModified();
-		contentModified += modificationCounts.getContentModified();
-		attributesModified += modificationCounts.getAttributesModified();
-		renamed += modificationCounts.getRenamed();
-		deleted += modificationCounts.getDeleted();
-	}
+    public void add(ModificationCounts modificationCounts) {
+        added += modificationCounts.getAdded();
+        copied += modificationCounts.getCopied();
+        duplicated += modificationCounts.getDuplicated();
+        dateModified += modificationCounts.getDateModified();
+        contentModified += modificationCounts.getContentModified();
+        attributesModified += modificationCounts.getAttributesModified();
+        renamed += modificationCounts.getRenamed();
+        deleted += modificationCounts.getDeleted();
+    }
 }

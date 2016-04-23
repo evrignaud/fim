@@ -18,51 +18,41 @@
  */
 package org.fim.internal;
 
+import org.fim.model.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.fim.model.Constants;
-import org.fim.model.Context;
-import org.fim.model.DuplicateResult;
-import org.fim.model.FileHash;
-import org.fim.model.FileState;
-import org.fim.model.State;
+public class DuplicateFinder {
+    private final Context context;
+    private final Comparator<FileState> hashComparator;
 
-public class DuplicateFinder
-{
-	private final Context context;
-	private final Comparator<FileState> hashComparator;
+    public DuplicateFinder(Context context) {
+        this.context = context;
+        this.hashComparator = new FileState.HashComparator();
+    }
 
-	public DuplicateFinder(Context context)
-	{
-		this.context = context;
-		this.hashComparator = new FileState.HashComparator();
-	}
+    public DuplicateResult findDuplicates(State state) {
+        DuplicateResult result = new DuplicateResult(context);
 
-	public DuplicateResult findDuplicates(State state)
-	{
-		DuplicateResult result = new DuplicateResult(context);
+        List<FileState> fileStates = new ArrayList<>(state.getFileStates());
+        Collections.sort(fileStates, hashComparator);
 
-		List<FileState> fileStates = new ArrayList<>(state.getFileStates());
-		Collections.sort(fileStates, hashComparator);
+        List<FileState> duplicatedFiles = new ArrayList<>();
+        FileHash previousFileHash = new FileHash(Constants.NO_HASH, Constants.NO_HASH, Constants.NO_HASH);
+        for (FileState fileState : fileStates) {
+            if (!previousFileHash.equals(fileState.getFileHash())) {
+                result.addDuplicatedFiles(duplicatedFiles);
+                duplicatedFiles.clear();
+            }
 
-		List<FileState> duplicatedFiles = new ArrayList<>();
-		FileHash previousFileHash = new FileHash(Constants.NO_HASH, Constants.NO_HASH, Constants.NO_HASH);
-		for (FileState fileState : fileStates)
-		{
-			if (!previousFileHash.equals(fileState.getFileHash()))
-			{
-				result.addDuplicatedFiles(duplicatedFiles);
-				duplicatedFiles.clear();
-			}
+            previousFileHash = fileState.getFileHash();
+            duplicatedFiles.add(fileState);
+        }
+        result.addDuplicatedFiles(duplicatedFiles);
 
-			previousFileHash = fileState.getFileHash();
-			duplicatedFiles.add(fileState);
-		}
-		result.addDuplicatedFiles(duplicatedFiles);
-
-		return result;
-	}
+        return result;
+    }
 }

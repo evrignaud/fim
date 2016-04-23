@@ -18,27 +18,6 @@
  */
 package org.fim.model;
 
-import static org.fim.model.HashMode.hashAll;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.HashCode;
@@ -51,286 +30,252 @@ import com.rits.cloning.Cloner;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 
-public class State implements Hashable
-{
-	public static final String CURRENT_MODEL_VERSION = "4";
+import java.io.*;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
-	private static final Cloner CLONER = new Cloner();
-	private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
+import static org.fim.model.HashMode.hashAll;
 
-	private String stateHash; // Ensure the integrity of the complete State content
+public class State implements Hashable {
+    public static final String CURRENT_MODEL_VERSION = "4";
 
-	private String modelVersion;
-	private long timestamp;
-	private String comment;
-	private int fileCount;
-	private long filesContentLength;
-	private HashMode hashMode;
+    private static final Cloner CLONER = new Cloner();
+    private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
-	private ModificationCounts modificationCounts; // Not taken in account in equals(), hashCode(), hashObject()
-	private Set<String> ignoredFiles;
-	private List<FileState> fileStates;
+    private String stateHash; // Ensure the integrity of the complete State content
 
-	public State()
-	{
-		modelVersion = CURRENT_MODEL_VERSION;
-		timestamp = System.currentTimeMillis();
-		comment = "";
-		fileCount = 0;
-		filesContentLength = 0;
-		hashMode = hashAll;
-		modificationCounts = new ModificationCounts();
-		ignoredFiles = new HashSet<>();
-		fileStates = new ArrayList<>();
-	}
+    private String modelVersion;
+    private long timestamp;
+    private String comment;
+    private int fileCount;
+    private long filesContentLength;
+    private HashMode hashMode;
 
-	public static State loadFromGZipFile(Path stateFile, boolean loadFullState) throws IOException, CorruptedStateException
-	{
-		try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile.toFile()))))
-		{
-			Gson gson = new Gson();
-			State state = gson.fromJson(reader, State.class);
+    private ModificationCounts modificationCounts; // Not taken in account in equals(), hashCode(), hashObject()
+    private Set<String> ignoredFiles;
+    private List<FileState> fileStates;
 
-			if (loadFullState)
-			{
-				if (!CURRENT_MODEL_VERSION.equals(state.getModelVersion()))
-				{
-					Logger.warning(String.format("State %s use a different model version. Some features will not work completely.", stateFile.getFileName().toString()));
-				}
-				else
-				{
-					checkIntegrity(state);
-				}
-			}
-			return state;
-		}
-	}
+    public State() {
+        modelVersion = CURRENT_MODEL_VERSION;
+        timestamp = System.currentTimeMillis();
+        comment = "";
+        fileCount = 0;
+        filesContentLength = 0;
+        hashMode = hashAll;
+        modificationCounts = new ModificationCounts();
+        ignoredFiles = new HashSet<>();
+        fileStates = new ArrayList<>();
+    }
 
-	private static void checkIntegrity(State state) throws CorruptedStateException
-	{
-		String hash = state.hashState();
-		if (!state.stateHash.equals(hash))
-		{
-			throw new CorruptedStateException();
-		}
-	}
+    public static State loadFromGZipFile(Path stateFile, boolean loadFullState) throws IOException, CorruptedStateException {
+        try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile.toFile())))) {
+            Gson gson = new Gson();
+            State state = gson.fromJson(reader, State.class);
 
-	public void saveToGZipFile(Path stateFile) throws IOException
-	{
-		Collections.sort(fileStates, fileNameComparator);
+            if (loadFullState) {
+                if (!CURRENT_MODEL_VERSION.equals(state.getModelVersion())) {
+                    Logger.warning(String.format("State %s use a different model version. Some features will not work completely.", stateFile.getFileName().toString()));
+                } else {
+                    checkIntegrity(state);
+                }
+            }
+            return state;
+        }
+    }
 
-		updateFileCount();
-		updateFilesContentLength();
-		stateHash = hashState();
+    private static void checkIntegrity(State state) throws CorruptedStateException {
+        String hash = state.hashState();
+        if (!state.stateHash.equals(hash)) {
+            throw new CorruptedStateException();
+        }
+    }
 
-		try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile.toFile()))))
-		{
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			gson.toJson(this, writer);
-		}
-	}
+    public void saveToGZipFile(Path stateFile) throws IOException {
+        Collections.sort(fileStates, fileNameComparator);
 
-	public State filterDirectory(Path repositoryRootDir, Path currentDirectory, boolean keepFilesInside)
-	{
-		State filteredState = clone();
+        updateFileCount();
+        updateFilesContentLength();
+        stateHash = hashState();
 
-		String rootDir = FileUtil.getNormalizedFileName(repositoryRootDir);
-		String curDir = FileUtil.getNormalizedFileName(currentDirectory);
-		String subDirectory = FileUtil.getRelativeFileName(rootDir, curDir);
+        try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile.toFile())))) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(this, writer);
+        }
+    }
 
-		List<FileState> fileStates = filteredState.getFileStates();
-		List<FileState> newFileStates = new ArrayList<>();
-		for (FileState fileState : fileStates)
-		{
-			if (fileState.getFileName().startsWith(subDirectory) == keepFilesInside)
-			{
-				newFileStates.add(fileState);
-			}
-		}
+    public State filterDirectory(Path repositoryRootDir, Path currentDirectory, boolean keepFilesInside) {
+        State filteredState = clone();
 
-		fileStates.clear();
-		fileStates.addAll(newFileStates);
+        String rootDir = FileUtil.getNormalizedFileName(repositoryRootDir);
+        String curDir = FileUtil.getNormalizedFileName(currentDirectory);
+        String subDirectory = FileUtil.getRelativeFileName(rootDir, curDir);
 
-		return filteredState;
-	}
+        List<FileState> fileStates = filteredState.getFileStates();
+        List<FileState> newFileStates = new ArrayList<>();
+        for (FileState fileState : fileStates) {
+            if (fileState.getFileName().startsWith(subDirectory) == keepFilesInside) {
+                newFileStates.add(fileState);
+            }
+        }
 
-	public void updateFileCount()
-	{
-		fileCount = fileStates.size();
-	}
+        fileStates.clear();
+        fileStates.addAll(newFileStates);
 
-	public void updateFilesContentLength()
-	{
-		filesContentLength = 0;
-		for (FileState fileState : fileStates)
-		{
-			filesContentLength += fileState.getFileLength();
-		}
-	}
+        return filteredState;
+    }
 
-	public String getModelVersion()
-	{
-		return modelVersion;
-	}
+    public void updateFileCount() {
+        fileCount = fileStates.size();
+    }
 
-	public long getTimestamp()
-	{
-		return timestamp;
-	}
+    public void updateFilesContentLength() {
+        filesContentLength = 0;
+        for (FileState fileState : fileStates) {
+            filesContentLength += fileState.getFileLength();
+        }
+    }
 
-	protected void setTimestamp(long timestamp)
-	{
-		this.timestamp = timestamp;
-	}
+    public String getModelVersion() {
+        return modelVersion;
+    }
 
-	public String getComment()
-	{
-		return comment;
-	}
+    public long getTimestamp() {
+        return timestamp;
+    }
 
-	public void setComment(String comment)
-	{
-		this.comment = comment;
-	}
+    protected void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 
-	public int getFileCount()
-	{
-		updateFileCount();
-		return fileCount;
-	}
+    public String getComment() {
+        return comment;
+    }
 
-	public long getFilesContentLength()
-	{
-		updateFilesContentLength();
-		return filesContentLength;
-	}
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
-	public HashMode getHashMode()
-	{
-		return hashMode;
-	}
+    public int getFileCount() {
+        updateFileCount();
+        return fileCount;
+    }
 
-	public void setHashMode(HashMode hashMode)
-	{
-		this.hashMode = hashMode;
-	}
+    public long getFilesContentLength() {
+        updateFilesContentLength();
+        return filesContentLength;
+    }
 
-	public Set<String> getIgnoredFiles()
-	{
-		return ignoredFiles;
-	}
+    public HashMode getHashMode() {
+        return hashMode;
+    }
 
-	public void setIgnoredFiles(Set<String> ignoredFiles)
-	{
-		this.ignoredFiles = ignoredFiles;
-	}
+    public void setHashMode(HashMode hashMode) {
+        this.hashMode = hashMode;
+    }
 
-	public List<FileState> getFileStates()
-	{
-		return fileStates;
-	}
+    public Set<String> getIgnoredFiles() {
+        return ignoredFiles;
+    }
 
-	public ModificationCounts getModificationCounts()
-	{
-		return modificationCounts;
-	}
+    public void setIgnoredFiles(Set<String> ignoredFiles) {
+        this.ignoredFiles = ignoredFiles;
+    }
 
-	public void setModificationCounts(ModificationCounts modificationCounts)
-	{
-		this.modificationCounts = modificationCounts;
-	}
+    public List<FileState> getFileStates() {
+        return fileStates;
+    }
 
-	public String hashState()
-	{
-		HashFunction hashFunction = Hashing.sha512();
-		Hasher hasher = hashFunction.newHasher(Constants._10_MB);
-		hashObject(hasher);
-		HashCode hash = hasher.hash();
-		return hash.toString();
-	}
+    public ModificationCounts getModificationCounts() {
+        return modificationCounts;
+    }
 
-	@Override
-	public boolean equals(Object other)
-	{
-		if (this == other)
-		{
-			return true;
-		}
+    public void setModificationCounts(ModificationCounts modificationCounts) {
+        this.modificationCounts = modificationCounts;
+    }
 
-		if (other == null || !(other instanceof State))
-		{
-			return false;
-		}
+    public String hashState() {
+        HashFunction hashFunction = Hashing.sha512();
+        Hasher hasher = hashFunction.newHasher(Constants._10_MB);
+        hashObject(hasher);
+        HashCode hash = hasher.hash();
+        return hash.toString();
+    }
 
-		State state = (State) other;
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
 
-		return Objects.equals(this.modelVersion, state.modelVersion)
-				&& Objects.equals(this.timestamp, state.timestamp)
-				&& Objects.equals(this.comment, state.comment)
-				&& Objects.equals(this.fileCount, state.fileCount)
-				&& Objects.equals(this.filesContentLength, state.filesContentLength)
-				&& Objects.equals(this.hashMode, state.hashMode)
-				&& Objects.equals(this.ignoredFiles, state.ignoredFiles)
-				&& Objects.equals(this.fileStates, state.fileStates);
-	}
+        if (other == null || !(other instanceof State)) {
+            return false;
+        }
 
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(modelVersion, timestamp, comment, fileCount, filesContentLength, hashMode, ignoredFiles, fileStates);
-	}
+        State state = (State) other;
 
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(this)
-				.add("modelVersion", modelVersion)
-				.add("timestamp", timestamp)
-				.add("comment", comment)
-				.add("fileCount", fileCount)
-				.add("filesContentLength", filesContentLength)
-				.add("hashMode", hashMode)
-				.add("ignoredFiles", ignoredFiles)
-				.add("fileStates", fileStates)
-				.toString();
-	}
+        return Objects.equals(this.modelVersion, state.modelVersion)
+            && Objects.equals(this.timestamp, state.timestamp)
+            && Objects.equals(this.comment, state.comment)
+            && Objects.equals(this.fileCount, state.fileCount)
+            && Objects.equals(this.filesContentLength, state.filesContentLength)
+            && Objects.equals(this.hashMode, state.hashMode)
+            && Objects.equals(this.ignoredFiles, state.ignoredFiles)
+            && Objects.equals(this.fileStates, state.fileStates);
+    }
 
-	@Override
-	public void hashObject(Hasher hasher)
-	{
-		hasher
-				.putString("State", Charsets.UTF_8)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putString(modelVersion, Charsets.UTF_8)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putLong(timestamp)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putString(comment, Charsets.UTF_8)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putInt(fileCount)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putLong(filesContentLength)
-				.putChar(HASH_FIELD_SEPARATOR)
-				.putString(hashMode.name(), Charsets.UTF_8);
+    @Override
+    public int hashCode() {
+        return Objects.hash(modelVersion, timestamp, comment, fileCount, filesContentLength, hashMode, ignoredFiles, fileStates);
+    }
 
-		hasher.putChar(HASH_OBJECT_SEPARATOR);
-		for (String ignoredFile : ignoredFiles)
-		{
-			hasher
-					.putString(ignoredFile, Charsets.UTF_8)
-					.putChar(HASH_OBJECT_SEPARATOR);
-		}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+            .add("modelVersion", modelVersion)
+            .add("timestamp", timestamp)
+            .add("comment", comment)
+            .add("fileCount", fileCount)
+            .add("filesContentLength", filesContentLength)
+            .add("hashMode", hashMode)
+            .add("ignoredFiles", ignoredFiles)
+            .add("fileStates", fileStates)
+            .toString();
+    }
 
-		hasher.putChar(HASH_OBJECT_SEPARATOR);
-		for (FileState fileState : fileStates)
-		{
-			fileState.hashObject(hasher);
-			hasher.putChar(HASH_OBJECT_SEPARATOR);
-		}
-	}
+    @Override
+    public void hashObject(Hasher hasher) {
+        hasher
+            .putString("State", Charsets.UTF_8)
+            .putChar(HASH_FIELD_SEPARATOR)
+            .putString(modelVersion, Charsets.UTF_8)
+            .putChar(HASH_FIELD_SEPARATOR)
+            .putLong(timestamp)
+            .putChar(HASH_FIELD_SEPARATOR)
+            .putString(comment, Charsets.UTF_8)
+            .putChar(HASH_FIELD_SEPARATOR)
+            .putInt(fileCount)
+            .putChar(HASH_FIELD_SEPARATOR)
+            .putLong(filesContentLength)
+            .putChar(HASH_FIELD_SEPARATOR)
+            .putString(hashMode.name(), Charsets.UTF_8);
 
-	public State clone()
-	{
-		return CLONER.deepClone(this);
-	}
+        hasher.putChar(HASH_OBJECT_SEPARATOR);
+        for (String ignoredFile : ignoredFiles) {
+            hasher
+                .putString(ignoredFile, Charsets.UTF_8)
+                .putChar(HASH_OBJECT_SEPARATOR);
+        }
+
+        hasher.putChar(HASH_OBJECT_SEPARATOR);
+        for (FileState fileState : fileStates) {
+            fileState.hashObject(hasher);
+            hasher.putChar(HASH_OBJECT_SEPARATOR);
+        }
+    }
+
+    public State clone() {
+        return CLONER.deepClone(this);
+    }
 }

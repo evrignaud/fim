@@ -18,170 +18,141 @@
  */
 package org.fim.internal.hash;
 
-import static java.lang.Math.max;
-
-import java.nio.ByteBuffer;
-import java.security.NoSuchAlgorithmException;
-
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
 import org.fim.model.Range;
 
-public class FrontHasher implements Hasher
-{
-	private final BlockHasher smallBlockHasher;
-	private final BlockHasher mediumBlockHasher;
-	private final Hasher fullHasher;
+import java.nio.ByteBuffer;
+import java.security.NoSuchAlgorithmException;
 
-	public FrontHasher(HashMode hashMode) throws NoSuchAlgorithmException
-	{
-		this.smallBlockHasher = new SmallBlockHasher(hashMode);
-		this.mediumBlockHasher = new MediumBlockHasher(hashMode);
-		this.fullHasher = new FullHasher(hashMode);
-	}
+import static java.lang.Math.max;
 
-	@Override
-	public boolean isActive()
-	{
-		return smallBlockHasher.isActive() && mediumBlockHasher.isActive() && fullHasher.isActive();
-	}
+public class FrontHasher implements Hasher {
+    private final BlockHasher smallBlockHasher;
+    private final BlockHasher mediumBlockHasher;
+    private final Hasher fullHasher;
 
-	public void reset(long fileSize)
-	{
-		smallBlockHasher.reset(fileSize);
-		mediumBlockHasher.reset(fileSize);
-		fullHasher.reset(fileSize);
-	}
+    public FrontHasher(HashMode hashMode) throws NoSuchAlgorithmException {
+        this.smallBlockHasher = new SmallBlockHasher(hashMode);
+        this.mediumBlockHasher = new MediumBlockHasher(hashMode);
+        this.fullHasher = new FullHasher(hashMode);
+    }
 
-	public Range getNextRange(long filePosition)
-	{
-		Range nextSmallRange;
-		Range nextMediumRange;
-		Range nextFullRange;
+    @Override
+    public boolean isActive() {
+        return smallBlockHasher.isActive() && mediumBlockHasher.isActive() && fullHasher.isActive();
+    }
 
-		if (fullHasher.isActive())
-		{
-			nextSmallRange = smallBlockHasher.getNextRange(filePosition);
-			nextMediumRange = mediumBlockHasher.getNextRange(filePosition);
-			nextFullRange = fullHasher.getNextRange(filePosition);
+    public void reset(long fileSize) {
+        smallBlockHasher.reset(fileSize);
+        mediumBlockHasher.reset(fileSize);
+        fullHasher.reset(fileSize);
+    }
 
-			Range nextRange = nextFullRange.adjustToRange(nextSmallRange);
-			nextRange = nextRange.adjustToRange(nextMediumRange);
+    public Range getNextRange(long filePosition) {
+        Range nextSmallRange;
+        Range nextMediumRange;
+        Range nextFullRange;
 
-			return nextRange;
-		}
-		else if (smallBlockHasher.isActive() && mediumBlockHasher.isActive())
-		{
-			nextSmallRange = smallBlockHasher.getNextRange(filePosition);
-			nextMediumRange = mediumBlockHasher.getNextRange(filePosition);
+        if (fullHasher.isActive()) {
+            nextSmallRange = smallBlockHasher.getNextRange(filePosition);
+            nextMediumRange = mediumBlockHasher.getNextRange(filePosition);
+            nextFullRange = fullHasher.getNextRange(filePosition);
 
-			if (nextSmallRange == null && nextMediumRange == null)
-			{
-				return null;
-			}
+            Range nextRange = nextFullRange.adjustToRange(nextSmallRange);
+            nextRange = nextRange.adjustToRange(nextMediumRange);
 
-			if (nextSmallRange == null)
-			{
-				return nextMediumRange;
-			}
+            return nextRange;
+        } else if (smallBlockHasher.isActive() && mediumBlockHasher.isActive()) {
+            nextSmallRange = smallBlockHasher.getNextRange(filePosition);
+            nextMediumRange = mediumBlockHasher.getNextRange(filePosition);
 
-			if (nextMediumRange == null)
-			{
-				return nextSmallRange;
-			}
+            if (nextSmallRange == null && nextMediumRange == null) {
+                return null;
+            }
 
-			if (nextSmallRange.getTo() <= nextMediumRange.getFrom())
-			{
-				// Next small block is before the next medium block
-				return nextSmallRange;
-			}
+            if (nextSmallRange == null) {
+                return nextMediumRange;
+            }
 
-			if (nextMediumRange.getTo() <= nextSmallRange.getFrom())
-			{
-				// Next medium block is before the next small block
-				return nextMediumRange;
-			}
+            if (nextMediumRange == null) {
+                return nextSmallRange;
+            }
 
-			return nextSmallRange.union(nextMediumRange);
-		}
-		else if (smallBlockHasher.isActive())
-		{
-			nextSmallRange = smallBlockHasher.getNextRange(filePosition);
-			return nextSmallRange;
-		}
-		throw new RuntimeException(String.format("Fim is not working correctly. Unable to getNextRange for filePosition " + filePosition));
-	}
+            if (nextSmallRange.getTo() <= nextMediumRange.getFrom()) {
+                // Next small block is before the next medium block
+                return nextSmallRange;
+            }
 
-	public void update(long filePosition, ByteBuffer buffer)
-	{
-		update(smallBlockHasher, filePosition, buffer);
-		update(mediumBlockHasher, filePosition, buffer);
-		update(fullHasher, filePosition, buffer);
-	}
+            if (nextMediumRange.getTo() <= nextSmallRange.getFrom()) {
+                // Next medium block is before the next small block
+                return nextMediumRange;
+            }
 
-	private void update(Hasher hasher, long filePosition, ByteBuffer buffer)
-	{
-		if (hasher.isActive())
-		{
-			int bufferPosition = buffer.position();
-			int bufferLimit = buffer.limit();
-			try
-			{
-				hasher.update(filePosition, buffer);
-			}
-			finally
-			{
-				buffer.limit(bufferLimit);
-				buffer.position(bufferPosition);
-			}
-		}
-	}
+            return nextSmallRange.union(nextMediumRange);
+        } else if (smallBlockHasher.isActive()) {
+            nextSmallRange = smallBlockHasher.getNextRange(filePosition);
+            return nextSmallRange;
+        }
+        throw new RuntimeException(String.format("Fim is not working correctly. Unable to getNextRange for filePosition " + filePosition));
+    }
 
-	@Override
-	public String getHash()
-	{
-		throw new RuntimeException("Not implemented");
-	}
+    public void update(long filePosition, ByteBuffer buffer) {
+        update(smallBlockHasher, filePosition, buffer);
+        update(mediumBlockHasher, filePosition, buffer);
+        update(fullHasher, filePosition, buffer);
+    }
 
-	@Override
-	public long getBytesHashed()
-	{
-		long bytesHashed =
-				max(smallBlockHasher.getBytesHashed(),
-						max(mediumBlockHasher.getBytesHashed(), fullHasher.getBytesHashed()));
-		return bytesHashed;
-	}
+    private void update(Hasher hasher, long filePosition, ByteBuffer buffer) {
+        if (hasher.isActive()) {
+            int bufferPosition = buffer.position();
+            int bufferLimit = buffer.limit();
+            try {
+                hasher.update(filePosition, buffer);
+            } finally {
+                buffer.limit(bufferLimit);
+                buffer.position(bufferPosition);
+            }
+        }
+    }
 
-	public long getTotalBytesHashed()
-	{
-		long totalBytesHashed =
-				max(smallBlockHasher.getTotalBytesHashed(),
-						max(mediumBlockHasher.getTotalBytesHashed(), fullHasher.getTotalBytesHashed()));
-		return totalBytesHashed;
-	}
+    @Override
+    public String getHash() {
+        throw new RuntimeException("Not implemented");
+    }
 
-	public boolean hashComplete()
-	{
-		return smallBlockHasher.hashComplete() && mediumBlockHasher.hashComplete() && fullHasher.hashComplete();
-	}
+    @Override
+    public long getBytesHashed() {
+        long bytesHashed =
+            max(smallBlockHasher.getBytesHashed(),
+                max(mediumBlockHasher.getBytesHashed(), fullHasher.getBytesHashed()));
+        return bytesHashed;
+    }
 
-	public FileHash getFileHash()
-	{
-		return new FileHash(smallBlockHasher.getHash(), mediumBlockHasher.getHash(), fullHasher.getHash());
-	}
+    public long getTotalBytesHashed() {
+        long totalBytesHashed =
+            max(smallBlockHasher.getTotalBytesHashed(),
+                max(mediumBlockHasher.getTotalBytesHashed(), fullHasher.getTotalBytesHashed()));
+        return totalBytesHashed;
+    }
 
-	protected Hasher getSmallBlockHasher()
-	{
-		return smallBlockHasher;
-	}
+    public boolean hashComplete() {
+        return smallBlockHasher.hashComplete() && mediumBlockHasher.hashComplete() && fullHasher.hashComplete();
+    }
 
-	protected Hasher getMediumBlockHasher()
-	{
-		return mediumBlockHasher;
-	}
+    public FileHash getFileHash() {
+        return new FileHash(smallBlockHasher.getHash(), mediumBlockHasher.getHash(), fullHasher.getHash());
+    }
 
-	protected Hasher getFullHasher()
-	{
-		return fullHasher;
-	}
+    protected Hasher getSmallBlockHasher() {
+        return smallBlockHasher;
+    }
+
+    protected Hasher getMediumBlockHasher() {
+        return mediumBlockHasher;
+    }
+
+    protected Hasher getFullHasher() {
+        return fullHasher;
+    }
 }

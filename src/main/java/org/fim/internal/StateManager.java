@@ -18,159 +18,129 @@
  */
 package org.fim.internal;
 
+import org.fim.model.*;
+import org.fim.util.Logger;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.fim.model.Constants;
-import org.fim.model.Context;
-import org.fim.model.CorruptedStateException;
-import org.fim.model.FileState;
-import org.fim.model.State;
-import org.fim.util.Logger;
+public class StateManager {
+    public static final String STATE_EXTENSION = ".json.gz";
 
-public class StateManager
-{
-	public static final String STATE_EXTENSION = ".json.gz";
+    private final Context context;
 
-	private final Context context;
+    public StateManager(Context context) {
+        this.context = context;
+    }
 
-	public StateManager(Context context)
-	{
-		this.context = context;
-	}
+    public void createNewState(State state) throws IOException {
+        int lastStateNumber = getLastStateNumber();
+        lastStateNumber++;
+        state.saveToGZipFile(getStateFile(lastStateNumber));
+        saveLastStateNumber(lastStateNumber);
+    }
 
-	public void createNewState(State state) throws IOException
-	{
-		int lastStateNumber = getLastStateNumber();
-		lastStateNumber++;
-		state.saveToGZipFile(getStateFile(lastStateNumber));
-		saveLastStateNumber(lastStateNumber);
-	}
+    public State loadLastState() throws IOException {
+        int lastStateNumber = getLastStateNumber();
+        return loadState(lastStateNumber);
+    }
 
-	public State loadLastState() throws IOException
-	{
-		int lastStateNumber = getLastStateNumber();
-		return loadState(lastStateNumber);
-	}
+    public State loadState(int stateNumber) throws IOException {
+        return loadState(stateNumber, true);
+    }
 
-	public State loadState(int stateNumber) throws IOException
-	{
-		return loadState(stateNumber, true);
-	}
+    public State loadState(int stateNumber, boolean loadFullState) throws IOException {
+        Path stateFile = getStateFile(stateNumber);
+        if (!Files.exists(stateFile)) {
+            throw new IllegalStateException(String.format("Unable to load State file %d from directory %s", stateNumber, context.getRepositoryStatesDir()));
+        }
 
-	public State loadState(int stateNumber, boolean loadFullState) throws IOException
-	{
-		Path stateFile = getStateFile(stateNumber);
-		if (!Files.exists(stateFile))
-		{
-			throw new IllegalStateException(String.format("Unable to load State file %d from directory %s", stateNumber, context.getRepositoryStatesDir()));
-		}
+        try {
+            State state = State.loadFromGZipFile(stateFile, loadFullState);
 
-		try
-		{
-			State state = State.loadFromGZipFile(stateFile, loadFullState);
+            if (loadFullState) {
+                adjustAccordingToHashMode(state);
+            }
 
-			if (loadFullState)
-			{
-				adjustAccordingToHashMode(state);
-			}
+            return state;
+        } catch (CorruptedStateException e) {
+            throw new IllegalStateException(String.format("The content of the State file #%d have been modified and may be corrupted", stateNumber));
+        }
+    }
 
-			return state;
-		}
-		catch (CorruptedStateException e)
-		{
-			throw new IllegalStateException(String.format("The content of the State file #%d have been modified and may be corrupted", stateNumber));
-		}
-	}
+    private void adjustAccordingToHashMode(State state) {
+        // Replace by 'no_hash' accurately to be able to compare the FileState entry
+        switch (context.getHashMode()) {
+            case dontHash:
+                for (FileState fileState : state.getFileStates()) {
+                    fileState.getFileHash().setSmallBlockHash(Constants.NO_HASH);
+                    fileState.getFileHash().setMediumBlockHash(Constants.NO_HASH);
+                    fileState.getFileHash().setFullHash(Constants.NO_HASH);
+                }
+                break;
 
-	private void adjustAccordingToHashMode(State state)
-	{
-		// Replace by 'no_hash' accurately to be able to compare the FileState entry
-		switch (context.getHashMode())
-		{
-			case dontHash:
-				for (FileState fileState : state.getFileStates())
-				{
-					fileState.getFileHash().setSmallBlockHash(Constants.NO_HASH);
-					fileState.getFileHash().setMediumBlockHash(Constants.NO_HASH);
-					fileState.getFileHash().setFullHash(Constants.NO_HASH);
-				}
-				break;
+            case hashSmallBlock:
+                for (FileState fileState : state.getFileStates()) {
+                    fileState.getFileHash().setMediumBlockHash(Constants.NO_HASH);
+                    fileState.getFileHash().setFullHash(Constants.NO_HASH);
+                }
+                break;
 
-			case hashSmallBlock:
-				for (FileState fileState : state.getFileStates())
-				{
-					fileState.getFileHash().setMediumBlockHash(Constants.NO_HASH);
-					fileState.getFileHash().setFullHash(Constants.NO_HASH);
-				}
-				break;
+            case hashMediumBlock:
+                for (FileState fileState : state.getFileStates()) {
+                    fileState.getFileHash().setFullHash(Constants.NO_HASH);
+                }
+                break;
 
-			case hashMediumBlock:
-				for (FileState fileState : state.getFileStates())
-				{
-					fileState.getFileHash().setFullHash(Constants.NO_HASH);
-				}
-				break;
+            case hashAll:
+                // Nothing to do
+                break;
+        }
+    }
 
-			case hashAll:
-				// Nothing to do
-				break;
-		}
-	}
+    /**
+     * @return the State file formatted like this: &lt;statesDir&gt;/state_&lt;stateNumber&gt;.json.gz
+     */
+    public Path getStateFile(int stateNumber) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("state_").append(stateNumber).append(STATE_EXTENSION);
+        return context.getRepositoryStatesDir().resolve(builder.toString());
+    }
 
-	/**
-	 * @return the State file formatted like this: &lt;statesDir&gt;/state_&lt;stateNumber&gt;.json.gz
-	 */
-	public Path getStateFile(int stateNumber)
-	{
-		StringBuilder builder = new StringBuilder();
-		builder.append("state_").append(stateNumber).append(STATE_EXTENSION);
-		return context.getRepositoryStatesDir().resolve(builder.toString());
-	}
+    public int getLastStateNumber() {
+        int number;
+        boolean lastStateFileDesynchronized = false;
 
-	public int getLastStateNumber()
-	{
-		int number;
-		boolean lastStateFileDesynchronized = false;
+        SettingsManager settingsManager = new SettingsManager(context);
+        if (settingsManager.isSaved()) {
+            number = settingsManager.getLastStateNumber();
+            if (Files.exists(getStateFile(number)) && !Files.exists(getStateFile(number + 1))) {
+                return number;
+            }
 
-		SettingsManager settingsManager = new SettingsManager(context);
-		if (settingsManager.isSaved())
-		{
-			number = settingsManager.getLastStateNumber();
-			if (Files.exists(getStateFile(number)) && !Files.exists(getStateFile(number + 1)))
-			{
-				return number;
-			}
+            if (number > 0) {
+                lastStateFileDesynchronized = true;
+            }
+        }
 
-			if (number > 0)
-			{
-				lastStateFileDesynchronized = true;
-			}
-		}
+        for (int index = 1; ; index++) {
+            if (!Files.exists(getStateFile(index))) {
+                number = index - 1;
+                if (lastStateFileDesynchronized) {
+                    Logger.error(String.format("lastStateNumber desynchronized. Resetting it to %d.", number));
+                    saveLastStateNumber(number);
+                }
+                return number;
+            }
+        }
+    }
 
-		for (int index = 1; ; index++)
-		{
-			if (!Files.exists(getStateFile(index)))
-			{
-				number = index - 1;
-				if (lastStateFileDesynchronized)
-				{
-					Logger.error(String.format("lastStateNumber desynchronized. Resetting it to %d.", number));
-					saveLastStateNumber(number);
-				}
-				return number;
-			}
-		}
-	}
-
-	public void saveLastStateNumber(int lastStateNumber)
-	{
-		if (lastStateNumber != -1)
-		{
-			SettingsManager settingsManager = new SettingsManager(context);
-			settingsManager.setLastStateNumber(lastStateNumber);
-			settingsManager.save();
-		}
-	}
+    public void saveLastStateNumber(int lastStateNumber) {
+        if (lastStateNumber != -1) {
+            SettingsManager settingsManager = new SettingsManager(context);
+            settingsManager.setLastStateNumber(lastStateNumber);
+            settingsManager.save();
+        }
+    }
 }

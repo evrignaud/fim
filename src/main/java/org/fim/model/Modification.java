@@ -18,15 +18,14 @@
  */
 package org.fim.model;
 
-public enum Modification
-{
-	added,
-	copied,
-	duplicated,
-	dateModified,
-	contentModified,
-	attributesModified,
-	renamed,
-	deleted,
-	corrupted
+public enum Modification {
+    added,
+    copied,
+    duplicated,
+    dateModified,
+    contentModified,
+    attributesModified,
+    renamed,
+    deleted,
+    corrupted
 }

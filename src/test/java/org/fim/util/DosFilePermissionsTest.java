@@ -18,10 +18,12 @@
  */
 package org.fim.util;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import org.apache.commons.io.FileUtils;
+import org.fim.model.Context;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,70 +32,61 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.commons.io.FileUtils;
-import org.fim.model.Context;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.mockito.Mockito;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
-public class DosFilePermissionsTest
-{
-	private static Path rootDir = Paths.get("target/" + DosFilePermissionsTest.class.getSimpleName());
-	private Context context;
+public class DosFilePermissionsTest {
+    private static Path rootDir = Paths.get("target/" + DosFilePermissionsTest.class.getSimpleName());
+    private Context context;
 
-	@BeforeClass
-	public static void setupOnce() throws NoSuchAlgorithmException, IOException
-	{
-		FileUtils.deleteDirectory(rootDir.toFile());
-		Files.createDirectories(rootDir);
-	}
+    @BeforeClass
+    public static void setupOnce() throws NoSuchAlgorithmException, IOException {
+        FileUtils.deleteDirectory(rootDir.toFile());
+        Files.createDirectories(rootDir);
+    }
 
-	@Before
-	public void setup() throws NoSuchAlgorithmException, IOException
-	{
-		context = mock(Context.class);
-	}
+    @Before
+    public void setup() throws NoSuchAlgorithmException, IOException {
+        context = mock(Context.class);
+    }
 
-	@Test
-	public void weCanRetrieveTheStringVersion()
-	{
-		DosFileAttributes dosFileAttributes = mock(DosFileAttributes.class);
+    @Test
+    public void weCanRetrieveTheStringVersion() {
+        DosFileAttributes dosFileAttributes = mock(DosFileAttributes.class);
 
-		assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo("");
+        assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo("");
 
-		Mockito.when(dosFileAttributes.isArchive()).thenReturn(true);
-		assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo("A");
+        Mockito.when(dosFileAttributes.isArchive()).thenReturn(true);
+        assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo("A");
 
-		Mockito.when(dosFileAttributes.isHidden()).thenReturn(true);
-		assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo("AH");
+        Mockito.when(dosFileAttributes.isHidden()).thenReturn(true);
+        assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo("AH");
 
-		Mockito.when(dosFileAttributes.isReadOnly()).thenReturn(true);
-		assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo("AHR");
+        Mockito.when(dosFileAttributes.isReadOnly()).thenReturn(true);
+        assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo("AHR");
 
-		Mockito.when(dosFileAttributes.isSystem()).thenReturn(true);
-		assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo("AHRS");
-	}
+        Mockito.when(dosFileAttributes.isSystem()).thenReturn(true);
+        assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo("AHRS");
+    }
 
-	@Test
-	public void weCanSetPermissions() throws IOException
-	{
-		if (IS_OS_WINDOWS)
-		{
-			Path file = rootDir.resolve("file");
-			Files.write(file, "file content".getBytes(), CREATE);
+    @Test
+    public void weCanSetPermissions() throws IOException {
+        if (IS_OS_WINDOWS) {
+            Path file = rootDir.resolve("file");
+            Files.write(file, "file content".getBytes(), CREATE);
 
-			assertWeCanSetPermissions(file, "A");
-			assertWeCanSetPermissions(file, "HR");
-			assertWeCanSetPermissions(file, "S");
-		}
-	}
+            assertWeCanSetPermissions(file, "A");
+            assertWeCanSetPermissions(file, "HR");
+            assertWeCanSetPermissions(file, "S");
+        }
+    }
 
-	private void assertWeCanSetPermissions(Path file, String permissions) throws IOException
-	{
-		DosFilePermissions.setPermissions(context, file, permissions);
+    private void assertWeCanSetPermissions(Path file, String permissions) throws IOException {
+        DosFilePermissions.setPermissions(context, file, permissions);
 
-		DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
-		assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo(permissions);
-	}
+        DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
+        assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo(permissions);
+    }
 }

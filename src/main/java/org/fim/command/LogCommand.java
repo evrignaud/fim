@@ -18,9 +18,6 @@
  */
 package org.fim.command;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
 import org.fim.model.LogEntry;
@@ -28,57 +25,52 @@ import org.fim.model.LogResult;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
-public class LogCommand extends AbstractCommand
-{
-	@Override
-	public String getCmdName()
-	{
-		return "log";
-	}
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-	@Override
-	public String getShortCmdName()
-	{
-		return "";
-	}
+public class LogCommand extends AbstractCommand {
+    @Override
+    public String getCmdName() {
+        return "log";
+    }
 
-	@Override
-	public String getDescription()
-	{
-		return "Display the history of the States and a summary of the changes that were made";
-	}
+    @Override
+    public String getShortCmdName() {
+        return "";
+    }
 
-	@Override
-	public Object execute(Context context) throws Exception
-	{
-		StateManager manager = new StateManager(context);
+    @Override
+    public String getDescription() {
+        return "Display the history of the States and a summary of the changes that were made";
+    }
 
-		int lastStateNumber = manager.getLastStateNumber();
-		if (lastStateNumber == -1)
-		{
-			Logger.error("No State found");
-			return null;
-		}
+    @Override
+    public Object execute(Context context) throws Exception {
+        StateManager manager = new StateManager(context);
 
-		LogResult logResult = new LogResult();
-		for (int stateNumber = 1; stateNumber <= lastStateNumber; stateNumber++)
-		{
-			Path statFile = manager.getStateFile(stateNumber);
-			if (Files.exists(statFile))
-			{
-				State state = manager.loadState(stateNumber, false);
-				LogEntry logEntry = new LogEntry();
-				logEntry.setStateNumber(stateNumber);
-				logEntry.setComment(state.getComment());
-				logEntry.setTimestamp(state.getTimestamp());
-				logEntry.setFileCount(state.getFileCount());
-				logEntry.setFilesContentLength(state.getFilesContentLength());
-				logEntry.setModificationCounts(state.getModificationCounts());
-				logResult.add(logEntry);
-			}
-		}
+        int lastStateNumber = manager.getLastStateNumber();
+        if (lastStateNumber == -1) {
+            Logger.error("No State found");
+            return null;
+        }
 
-		logResult.displayEntries();
-		return logResult;
-	}
+        LogResult logResult = new LogResult();
+        for (int stateNumber = 1; stateNumber <= lastStateNumber; stateNumber++) {
+            Path statFile = manager.getStateFile(stateNumber);
+            if (Files.exists(statFile)) {
+                State state = manager.loadState(stateNumber, false);
+                LogEntry logEntry = new LogEntry();
+                logEntry.setStateNumber(stateNumber);
+                logEntry.setComment(state.getComment());
+                logEntry.setTimestamp(state.getTimestamp());
+                logEntry.setFileCount(state.getFileCount());
+                logEntry.setFilesContentLength(state.getFilesContentLength());
+                logEntry.setModificationCounts(state.getModificationCounts());
+                logResult.add(logEntry);
+            }
+        }
+
+        logResult.displayEntries();
+        return logResult;
+    }
 }

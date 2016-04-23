@@ -18,72 +18,59 @@
  */
 package org.fim.model;
 
-public class LogEntry
-{
-	private int stateNumber;
-	private String comment;
-	private long timestamp;
-	private int fileCount;
-	private ModificationCounts modificationCounts;
-	private long filesContentLength;
+public class LogEntry {
+    private int stateNumber;
+    private String comment;
+    private long timestamp;
+    private int fileCount;
+    private ModificationCounts modificationCounts;
+    private long filesContentLength;
 
-	public int getStateNumber()
-	{
-		return stateNumber;
-	}
+    public int getStateNumber() {
+        return stateNumber;
+    }
 
-	public void setStateNumber(int stateNumber)
-	{
-		this.stateNumber = stateNumber;
-	}
+    public void setStateNumber(int stateNumber) {
+        this.stateNumber = stateNumber;
+    }
 
-	public String getComment()
-	{
-		return comment;
-	}
+    public String getComment() {
+        return comment;
+    }
 
-	public void setComment(String comment)
-	{
-		this.comment = comment;
-	}
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
-	public long getTimestamp()
-	{
-		return timestamp;
-	}
+    public long getTimestamp() {
+        return timestamp;
+    }
 
-	public void setTimestamp(long timestamp)
-	{
-		this.timestamp = timestamp;
-	}
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 
-	public int getFileCount()
-	{
-		return fileCount;
-	}
+    public int getFileCount() {
+        return fileCount;
+    }
 
-	public void setFileCount(int fileCount)
-	{
-		this.fileCount = fileCount;
-	}
+    public void setFileCount(int fileCount) {
+        this.fileCount = fileCount;
+    }
 
-	public long getFilesContentLength()
-	{
-		return filesContentLength;
-	}
+    public long getFilesContentLength() {
+        return filesContentLength;
+    }
 
-	public void setFilesContentLength(long filesContentLength)
-	{
-		this.filesContentLength = filesContentLength;
-	}
+    public void setFilesContentLength(long filesContentLength) {
+        this.filesContentLength = filesContentLength;
+    }
 
-	public ModificationCounts getModificationCounts()
-	{
-		return modificationCounts;
-	}
+    public ModificationCounts getModificationCounts() {
+        return modificationCounts;
+    }
 
-	public void setModificationCounts(ModificationCounts modificationCounts)
-	{
-		this.modificationCounts = modificationCounts;
-	}
+    public void setModificationCounts(ModificationCounts modificationCounts) {
+        this.modificationCounts = modificationCounts;
+    }
 }

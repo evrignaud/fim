@@ -18,15 +18,7 @@
  */
 package org.fim;
 
-import static org.apache.commons.lang3.SystemUtils.*;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.RepositoryCreationException;
 import org.fim.model.Context;
@@ -37,131 +29,118 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
-public class FimTest
-{
-	private static Path rootDir = Paths.get("target/" + FullScenarioTest.class.getSimpleName());
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-	@Rule
-	public final ExpectedSystemExit exit = ExpectedSystemExit.none();
+import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
 
-	private Fim cut;
-	private RepositoryTool tool;
-	private Context context;
+public class FimTest {
+    private static Path rootDir = Paths.get("target/" + FullScenarioTest.class.getSimpleName());
 
-	@Before
-	public void setUp() throws IOException
-	{
-		FileUtils.deleteDirectory(rootDir.toFile());
-		Files.createDirectories(rootDir);
+    @Rule
+    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
-		cut = new Fim();
+    private Fim cut;
+    private RepositoryTool tool;
+    private Context context;
 
-		tool = new RepositoryTool(rootDir);
-		context = tool.createContext(HashMode.hashAll, true);
-	}
+    @Before
+    public void setUp() throws IOException {
+        FileUtils.deleteDirectory(rootDir.toFile());
+        Files.createDirectories(rootDir);
 
-	@Test(expected = BadFimUsageException.class)
-	public void fimRepositoryAlreadyExist() throws Exception
-	{
-		initRepoAndCreateOneFile();
-		cut.run(new String[]{"init", "-y"}, context);
-	}
+        cut = new Fim();
 
-	@Test(expected = RepositoryCreationException.class)
-	public void fimRepositoryNotWritable() throws Exception
-	{
-		if (IS_OS_WINDOWS)
-		{
-			// Ignore this test for Windows
-			throw new RepositoryCreationException();
-		}
+        tool = new RepositoryTool(rootDir);
+        context = tool.createContext(HashMode.hashAll, true);
+    }
 
-		tool.setReadOnly(rootDir);
-		try
-		{
-			cut.run(new String[]{"init", "-y"}, context);
-		}
-		finally
-		{
-			tool.setReadWrite(rootDir);
-		}
-	}
+    @Test(expected = BadFimUsageException.class)
+    public void fimRepositoryAlreadyExist() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"init", "-y"}, context);
+    }
 
-	@Test(expected = BadFimUsageException.class)
-	public void fimDoesNotExist() throws Exception
-	{
-		cut.run(new String[]{"diff"}, context);
-	}
+    @Test(expected = RepositoryCreationException.class)
+    public void fimRepositoryNotWritable() throws Exception {
+        if (IS_OS_WINDOWS) {
+            // Ignore this test for Windows
+            throw new RepositoryCreationException();
+        }
 
-	@Test
-	public void weCanPrintUsage() throws Exception
-	{
-		exit.expectSystemExitWithStatus(0);
-		Fim.main(new String[]{"help"});
-	}
+        tool.setReadOnly(rootDir);
+        try {
+            cut.run(new String[]{"init", "-y"}, context);
+        } finally {
+            tool.setReadWrite(rootDir);
+        }
+    }
 
-	@Test
-	public void invalidOptionIsDetected() throws Exception
-	{
-		exit.expectSystemExitWithStatus(-1);
-		Fim.main(new String[]{"-9"});
-	}
+    @Test(expected = BadFimUsageException.class)
+    public void fimDoesNotExist() throws Exception {
+        cut.run(new String[]{"diff"}, context);
+    }
 
-	@Test
-	public void weCanCommitUsingFim() throws Exception
-	{
-		initRepoAndCreateOneFile();
-		cut.run(new String[]{"ci", "-y"}, context);
-	}
+    @Test
+    public void weCanPrintUsage() throws Exception {
+        exit.expectSystemExitWithStatus(0);
+        Fim.main(new String[]{"help"});
+    }
 
-	@Test
-	public void doNotHashOption() throws Exception
-	{
-		initRepoAndCreateOneFile();
-		cut.run(new String[]{"diff", "-n"}, context);
-	}
+    @Test
+    public void invalidOptionIsDetected() throws Exception {
+        exit.expectSystemExitWithStatus(-1);
+        Fim.main(new String[]{"-9"});
+    }
 
-	@Test
-	public void fastModeOption() throws Exception
-	{
-		initRepoAndCreateOneFile();
-		cut.run(new String[]{"diff", "-f"}, context);
-	}
+    @Test
+    public void weCanCommitUsingFim() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"ci", "-y"}, context);
+    }
 
-	@Test
-	public void superFastModeOption() throws Exception
-	{
-		initRepoAndCreateOneFile();
-		cut.run(new String[]{"diff", "-s"}, context);
-	}
+    @Test
+    public void doNotHashOption() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"diff", "-n"}, context);
+    }
 
-	@Test
-	public void weCanRunVersionCommand() throws Exception
-	{
-		cut.run(new String[]{"-v"}, context);
-	}
+    @Test
+    public void fastModeOption() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"diff", "-f"}, context);
+    }
 
-	@Test
-	public void weCanRunHelpCommand() throws Exception
-	{
-		cut.run(new String[]{"-h"}, context);
-	}
+    @Test
+    public void superFastModeOption() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"diff", "-s"}, context);
+    }
 
-	@Test(expected = BadFimUsageException.class)
-	public void noArgumentSpecified() throws Exception
-	{
-		cut.run(new String[]{""}, context);
-	}
+    @Test
+    public void weCanRunVersionCommand() throws Exception {
+        cut.run(new String[]{"-v"}, context);
+    }
 
-	@Test(expected = BadFimUsageException.class)
-	public void noCommandSpecified() throws Exception
-	{
-		cut.run(new String[]{"-s"}, context);
-	}
+    @Test
+    public void weCanRunHelpCommand() throws Exception {
+        cut.run(new String[]{"-h"}, context);
+    }
 
-	private void initRepoAndCreateOneFile() throws Exception
-	{
-		cut.run(new String[]{"init", "-y"}, context);
-		tool.createOneFile();
-	}
+    @Test(expected = BadFimUsageException.class)
+    public void noArgumentSpecified() throws Exception {
+        cut.run(new String[]{""}, context);
+    }
+
+    @Test(expected = BadFimUsageException.class)
+    public void noCommandSpecified() throws Exception {
+        cut.run(new String[]{"-s"}, context);
+    }
+
+    private void initRepoAndCreateOneFile() throws Exception {
+        cut.run(new String[]{"init", "-y"}, context);
+        tool.createOneFile();
+    }
 }

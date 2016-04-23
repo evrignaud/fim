@@ -18,22 +18,20 @@
  */
 package org.fim.model;
 
-public interface Command
-{
-	String getCmdName();
+public interface Command {
+    String getCmdName();
 
-	String getShortCmdName();
+    String getShortCmdName();
 
-	String getDescription();
+    String getDescription();
 
-	FimReposConstraint getFimReposConstraint();
+    FimReposConstraint getFimReposConstraint();
 
-	Object execute(Context context) throws Exception;
+    Object execute(Context context) throws Exception;
 
-	enum FimReposConstraint
-	{
-		MUST_NOT_EXIST,
-		MUST_EXIST,
-		DONT_CARE
-	}
+    enum FimReposConstraint {
+        MUST_NOT_EXIST,
+        MUST_EXIST,
+        DONT_CARE
+    }
 }

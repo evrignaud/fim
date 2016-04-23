@@ -18,80 +18,70 @@
  */
 package org.fim.command;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Scanner;
-
 import org.fim.model.Context;
 import org.fim.tooling.BuildableContext;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AbstractCommandTest
-{
-	private BuildableContext context;
-	private MyCommand cut = new MyCommand();
+import java.util.Scanner;
 
-	@Before
-	public void setup()
-	{
-		context = new BuildableContext();
-	}
+import static org.assertj.core.api.Assertions.assertThat;
 
-	@Test
-	public void weConfirmAnAction() throws Exception
-	{
-		assertThat(confirmAction("y")).isEqualTo(true);
-		assertThat(context.isAlwaysYes()).isEqualTo(false);
+public class AbstractCommandTest {
+    private BuildableContext context;
+    private MyCommand cut = new MyCommand();
 
-		assertThat(confirmAction("Y")).isEqualTo(true);
-		assertThat(context.isAlwaysYes()).isEqualTo(false);
+    @Before
+    public void setup() {
+        context = new BuildableContext();
+    }
 
-		assertThat(confirmAction("A")).isEqualTo(true);
-		assertThat(context.isAlwaysYes()).isEqualTo(true);
-		context.setAlwaysYes(false);
+    @Test
+    public void weConfirmAnAction() throws Exception {
+        assertThat(confirmAction("y")).isEqualTo(true);
+        assertThat(context.isAlwaysYes()).isEqualTo(false);
 
-		assertThat(confirmAction("n")).isEqualTo(false);
-		assertThat(context.isAlwaysYes()).isEqualTo(false);
+        assertThat(confirmAction("Y")).isEqualTo(true);
+        assertThat(context.isAlwaysYes()).isEqualTo(false);
 
-		assertThat(confirmAction("2")).isEqualTo(false);
-		assertThat(context.isAlwaysYes()).isEqualTo(false);
-	}
+        assertThat(confirmAction("A")).isEqualTo(true);
+        assertThat(context.isAlwaysYes()).isEqualTo(true);
+        context.setAlwaysYes(false);
 
-	private boolean confirmAction(String input)
-	{
-		return cut.callConfirmAction(context, new Scanner(input + "\n"), "action");
-	}
+        assertThat(confirmAction("n")).isEqualTo(false);
+        assertThat(context.isAlwaysYes()).isEqualTo(false);
 
-	private class MyCommand extends AbstractCommand
-	{
-		@Override
-		public String getCmdName()
-		{
-			return null;
-		}
+        assertThat(confirmAction("2")).isEqualTo(false);
+        assertThat(context.isAlwaysYes()).isEqualTo(false);
+    }
 
-		@Override
-		public String getShortCmdName()
-		{
-			return null;
-		}
+    private boolean confirmAction(String input) {
+        return cut.callConfirmAction(context, new Scanner(input + "\n"), "action");
+    }
 
-		@Override
-		public String getDescription()
-		{
-			return null;
-		}
+    private class MyCommand extends AbstractCommand {
+        @Override
+        public String getCmdName() {
+            return null;
+        }
 
-		@Override
-		public Object execute(Context context) throws Exception
-		{
-			return null;
-		}
+        @Override
+        public String getShortCmdName() {
+            return null;
+        }
 
-		boolean callConfirmAction(Context context, Scanner scanner, String action)
-		{
-			return confirmAction(context, scanner, action);
-		}
-	}
+        @Override
+        public String getDescription() {
+            return null;
+        }
+
+        @Override
+        public Object execute(Context context) throws Exception {
+            return null;
+        }
+
+        boolean callConfirmAction(Context context, Scanner scanner, String action) {
+            return confirmAction(context, scanner, action);
+        }
+    }
 }

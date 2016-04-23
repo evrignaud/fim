@@ -18,6 +18,5 @@
  */
 package org.fim.command.exception;
 
-public class RepositoryCreationException extends RuntimeException
-{
+public class RepositoryCreationException extends RuntimeException {
 }
