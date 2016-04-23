@@ -124,11 +124,9 @@ public class Fim {
                 context.setThreadCountSpecified(true);
             }
 
-            if (commandLine.hasOption('o')) {
-                context.setTruncateOutput(Integer.parseInt(commandLine.getOptionValue('o', "200")));
-                if (context.getTruncateOutput() < 0) {
-                    context.setTruncateOutput(0);
-                }
+            context.setTruncateOutput(Integer.parseInt(commandLine.getOptionValue('o', "200")));
+            if (context.getTruncateOutput() < 0) {
+                context.setTruncateOutput(0);
             }
 
             if (commandLine.hasOption('n')) {
