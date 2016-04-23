@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.atteo.evo.inflector.English.plural;
 import static org.fim.internal.hash.HashProgress.PROGRESS_DISPLAY_FILE_COUNT;
@@ -61,6 +62,7 @@ public class StateGenerator {
 
     private Path rootDir;
     private BlockingDeque<Path> filesToHashQueue;
+    private AtomicBoolean scanInProgress;
     private boolean fileHashersStarted;
     private List<FileHasher> fileHashers;
     private long overallTotalBytesHashed;
@@ -92,7 +94,12 @@ public class StateGenerator {
         initializeFileHashers();
 
         FimIgnore initialFimIgnore = fimIgnoreManager.loadInitialFimIgnore();
-        scanFileTree(filesToHashQueue, dirToScan, initialFimIgnore);
+        try {
+            scanInProgress = new AtomicBoolean(true);
+            scanFileTree(filesToHashQueue, dirToScan, initialFimIgnore);
+        } finally {
+            scanInProgress.set(false);
+        }
 
         // In case the FileHashers have not already been started
         startFileHashers();
@@ -125,7 +132,7 @@ public class StateGenerator {
         if (!fileHashersStarted) {
             String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
             for (int index = 0; index < context.getThreadCount(); index++) {
-                FileHasher hasher = new FileHasher(context, hashProgress, filesToHashQueue, normalizedRootDir);
+                FileHasher hasher = new FileHasher(context, scanInProgress, hashProgress, filesToHashQueue, normalizedRootDir);
                 executorService.submit(hasher);
                 fileHashers.add(hasher);
             }

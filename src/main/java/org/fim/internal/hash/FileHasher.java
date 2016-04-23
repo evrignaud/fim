@@ -38,11 +38,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.fim.model.Constants.NO_HASH;
 import static org.fim.model.HashMode.dontHash;
 
 public class FileHasher implements Runnable {
+    private final Context context;
+    private final AtomicBoolean scanInProgress;
     private final HashProgress hashProgress;
     private final BlockingDeque<Path> filesToHashQueue;
     private final String rootDir;
@@ -50,10 +53,10 @@ public class FileHasher implements Runnable {
     private final List<FileState> fileStates;
 
     private final FrontHasher frontHasher;
-    private Context context;
 
-    public FileHasher(Context context, HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException {
+    public FileHasher(Context context, AtomicBoolean scanInProgress, HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException {
         this.context = context;
+        this.scanInProgress = scanInProgress;
         this.hashProgress = hashProgress;
         this.filesToHashQueue = filesToHashQueue;
         this.rootDir = rootDir;
@@ -79,40 +82,53 @@ public class FileHasher implements Runnable {
     @Override
     public void run() {
         try {
-            Path file;
-            while ((file = filesToHashQueue.poll(500, TimeUnit.MILLISECONDS)) != null) {
-                try {
-                    BasicFileAttributes attributes;
-                    List<Attribute> fileAttributes = null;
-
-                    if (SystemUtils.IS_OS_WINDOWS) {
-                        DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
-                        fileAttributes = addAttribute(fileAttributes, FileAttribute.DosFilePermissions, DosFilePermissions.toString(dosFileAttributes));
-                        attributes = dosFileAttributes;
-                    } else {
-                        PosixFileAttributes posixFileAttributes = Files.readAttributes(file, PosixFileAttributes.class);
-                        fileAttributes = addAttribute(fileAttributes, FileAttribute.PosixFilePermissions, PosixFilePermissions.toString(posixFileAttributes.permissions()));
-                        if (SELinux.ENABLED) {
-                            fileAttributes = addAttribute(fileAttributes, FileAttribute.SELinuxLabel, SELinux.getLabel(context, file));
-                        }
-                        attributes = posixFileAttributes;
-                    }
-
-                    hashProgress.updateOutput(attributes.size());
-
-                    FileHash fileHash = hashFile(file, attributes.size());
-                    String normalizedFileName = FileUtil.getNormalizedFileName(file);
-                    String relativeFileName = FileUtil.getRelativeFileName(rootDir, normalizedFileName);
-
-                    fileStates.add(new FileState(relativeFileName, attributes, fileHash, fileAttributes));
-                } catch (Exception ex) {
-                    Console.newLine();
-                    Logger.error("Skipping - Error hashing file '" + file + "'", ex, context.isDisplayStackTrace());
+            while (isQueueStillFilled()) {
+                hashFilesInQueue();
+                if (isQueueStillFilled()) {
+                    Thread.sleep(500);
                 }
             }
         } catch (InterruptedException ex) {
             Logger.error("Exception while hashing", ex, context.isDisplayStackTrace());
         }
+    }
+
+    private void hashFilesInQueue() throws InterruptedException {
+        Path file;
+        while ((file = filesToHashQueue.poll(100, TimeUnit.MILLISECONDS)) != null) {
+            try {
+                BasicFileAttributes attributes;
+                List<Attribute> fileAttributes = null;
+
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
+                    fileAttributes = addAttribute(fileAttributes, FileAttribute.DosFilePermissions, DosFilePermissions.toString(dosFileAttributes));
+                    attributes = dosFileAttributes;
+                } else {
+                    PosixFileAttributes posixFileAttributes = Files.readAttributes(file, PosixFileAttributes.class);
+                    fileAttributes = addAttribute(fileAttributes, FileAttribute.PosixFilePermissions, PosixFilePermissions.toString(posixFileAttributes.permissions()));
+                    if (SELinux.ENABLED) {
+                        fileAttributes = addAttribute(fileAttributes, FileAttribute.SELinuxLabel, SELinux.getLabel(context, file));
+                    }
+                    attributes = posixFileAttributes;
+                }
+
+                hashProgress.updateOutput(attributes.size());
+
+                FileHash fileHash = hashFile(file, attributes.size());
+                String normalizedFileName = FileUtil.getNormalizedFileName(file);
+                String relativeFileName = FileUtil.getRelativeFileName(rootDir, normalizedFileName);
+
+                fileStates.add(new FileState(relativeFileName, attributes, fileHash, fileAttributes));
+            } catch (Exception ex) {
+                Console.newLine();
+                Logger.error("Skipping - Error hashing file '" + file + "'", ex, context.isDisplayStackTrace());
+            }
+        }
+    }
+
+    private boolean isQueueStillFilled() {
+        return scanInProgress.get() || filesToHashQueue.size() > 0;
     }
 
     private List<Attribute> addAttribute(List<Attribute> attributes, FileAttribute attribute, String value) {
