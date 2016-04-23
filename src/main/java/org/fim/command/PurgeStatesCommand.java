@@ -27,6 +27,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.atteo.evo.inflector.English.plural;
+
 public class PurgeStatesCommand extends AbstractCommand {
     @Override
     public String getCmdName() {
@@ -71,7 +73,8 @@ public class PurgeStatesCommand extends AbstractCommand {
         if (statesPurgedCount == 0) {
             Logger.info("No State to purge");
         } else {
-            System.out.printf("You are going to delete the %d previous State files, keeping only the last one%n", statesPurgedCount);
+            System.out.printf("You are going to delete the %d previous State %s, keeping only the last one%n",
+                statesPurgedCount, plural("file", statesPurgedCount));
             if (confirmAction(context, "remove them")) {
                 for (Path stateToDelete : statesToPurge) {
                     Files.delete(stateToDelete);

@@ -34,6 +34,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.atteo.evo.inflector.English.plural;
 import static org.fim.model.HashMode.hashMediumBlock;
 import static org.fim.util.HashModeUtil.hashModeToString;
 
@@ -115,6 +116,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
         State masterState = new StateManager(context).loadLastState();
         Map<FileHash, FileState> masterFilesHash = buildFileHashMap(masterState);
 
+        long duplicatedFilesCount = 0;
         long totalFilesRemoved = 0;
         State localState = new StateGenerator(context).generateState("", context.getCurrentDirectory(), context.getCurrentDirectory());
         for (FileState localFileState : localState.getFileStates()) {
@@ -124,6 +126,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
 
             FileState masterFileState = masterFilesHash.get(localFileState.getFileHash());
             if (masterFileState != null) {
+                duplicatedFilesCount++;
                 System.out.printf("'%s' is a duplicate of '%s/%s'%n", localFileState.getFileName(),
                     context.getMasterFimRepositoryDir(), masterFileState.getFileName());
                 if (confirmAction(context, "remove it")) {
@@ -140,10 +143,16 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
         }
 
         if (totalFilesRemoved == 0) {
-            Logger.info("No duplicated file found");
+            if (duplicatedFilesCount == 0) {
+                System.out.println("No duplicated file found");
+            } else {
+                System.out.printf("Found %d duplicated %s. No files removed%n", duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount));
+            }
         } else {
             Console.newLine();
-            Logger.info(String.format("Removed %d duplicated files", totalFilesRemoved));
+            System.out.printf("%d duplicated %s found. %d duplicated %s removed%n",
+                duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount),
+                totalFilesRemoved, pluralForLong("file", totalFilesRemoved));
         }
         return totalFilesRemoved;
     }
@@ -154,5 +163,9 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
             filesHashMap.put(fileState.getFileHash(), fileState);
         }
         return filesHashMap;
+    }
+
+    private String pluralForLong(String word, long count) {
+        return plural(word, count > 1 ? 2 : 1);
     }
 }

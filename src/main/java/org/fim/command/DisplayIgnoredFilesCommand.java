@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
 
+import static org.atteo.evo.inflector.English.plural;
 import static org.fim.util.FormatUtil.formatDate;
 
 public class DisplayIgnoredFilesCommand extends AbstractCommand {
@@ -60,8 +61,9 @@ public class DisplayIgnoredFilesCommand extends AbstractCommand {
         Path statFile = manager.getStateFile(lastStateNumber);
         if (Files.exists(statFile)) {
             State state = manager.loadState(lastStateNumber);
-            System.out.printf("Files or directories ignored in State #%d: %s (%d files - %s)%n", lastStateNumber, formatDate(state.getTimestamp()),
-                state.getFileCount(), FileUtils.byteCountToDisplaySize(state.getFilesContentLength()));
+            System.out.printf("Files or directories ignored in State #%d: %s (%d %s - %s)%n", lastStateNumber, formatDate(state.getTimestamp()),
+                state.getFileCount(), plural("file", state.getFileCount()),
+                FileUtils.byteCountToDisplaySize(state.getFilesContentLength()));
             if (state.getComment().length() > 0) {
                 System.out.printf("\tComment: %s%n", state.getComment());
             }

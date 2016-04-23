@@ -19,7 +19,6 @@
 package org.fim.command;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.atteo.evo.inflector.English;
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
 import org.fim.model.FileAttribute;
@@ -38,6 +37,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import static org.atteo.evo.inflector.English.plural;
 import static org.fim.util.FormatUtil.formatDate;
 
 public class ResetFileAttributesCommand extends AbstractCommand {
@@ -106,7 +106,7 @@ public class ResetFileAttributesCommand extends AbstractCommand {
                 Logger.info("No file attributes have been reset");
             } else {
                 Console.newLine();
-                Logger.info(String.format("The attributes of %d %s have been reset", fileResetCount, English.plural("file", fileResetCount)));
+                Logger.info(String.format("The attributes of %d %s have been reset", fileResetCount, plural("file", fileResetCount)));
             }
         }
         return fileResetCount;

@@ -24,6 +24,7 @@ import org.fim.util.Console;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.atteo.evo.inflector.English.plural;
 import static org.fim.util.FormatUtil.formatDate;
 
 public class LogResult {
@@ -39,8 +40,9 @@ public class LogResult {
 
     public void displayEntries() {
         for (LogEntry logEntry : logEntries) {
-            System.out.printf("State #%d: %s (%d files - %s)%n", logEntry.getStateNumber(), formatDate(logEntry.getTimestamp()),
-                logEntry.getFileCount(), FileUtils.byteCountToDisplaySize(logEntry.getFilesContentLength()));
+            int fileCount = logEntry.getFileCount();
+            System.out.printf("State #%d: %s (%d %s - %s)%n", logEntry.getStateNumber(), formatDate(logEntry.getTimestamp()),
+                fileCount, plural("file", fileCount), FileUtils.byteCountToDisplaySize(logEntry.getFilesContentLength()));
             if (logEntry.getComment().length() > 0) {
                 System.out.printf("\tComment: %s%n", logEntry.getComment());
             }

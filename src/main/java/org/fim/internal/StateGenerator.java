@@ -20,7 +20,6 @@ package org.fim.internal;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.atteo.evo.inflector.English;
 import org.fim.internal.hash.FileHasher;
 import org.fim.internal.hash.HashProgress;
 import org.fim.model.Context;
@@ -44,6 +43,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.*;
 
+import static org.atteo.evo.inflector.English.plural;
 import static org.fim.internal.hash.HashProgress.PROGRESS_DISPLAY_FILE_COUNT;
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.util.HashModeUtil.hashModeToString;
@@ -76,7 +76,7 @@ public class StateGenerator {
 
         int threadCount = context.getThreadCount();
         Logger.info(String.format("Scanning recursively local files, using '%s' mode and %d %s",
-            hashModeToString(context.getHashMode()), threadCount, English.plural("thread", threadCount)));
+            hashModeToString(context.getHashMode()), threadCount, plural("thread", threadCount)));
         if (hashProgress.isProgressDisplayed()) {
             System.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgress.hashLegend());
         }
@@ -157,12 +157,13 @@ public class StateGenerator {
         long globalThroughput = overallTotalBytesHashed / durationSeconds;
         String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
 
+        int fileCount = state.getFileCount();
         if (context.getHashMode() == dontHash) {
-            Logger.info(String.format("Scanned %d files (%s), during %s%n",
-                state.getFileCount(), totalFileContentLengthStr, durationStr));
+            Logger.info(String.format("Scanned %d %s (%s), during %s%n",
+                fileCount, plural("file", fileCount), totalFileContentLengthStr, durationStr));
         } else {
-            Logger.info(String.format("Scanned %d files (%s), hashed %s (avg %s/s), during %s%n",
-                state.getFileCount(), totalFileContentLengthStr, totalBytesHashedStr, throughputStr, durationStr));
+            Logger.info(String.format("Scanned %d %s (%s), hashed %s (avg %s/s), during %s%n",
+                fileCount, plural("file", fileCount), totalFileContentLengthStr, totalBytesHashedStr, throughputStr, durationStr));
         }
     }
 

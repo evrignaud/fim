@@ -18,13 +18,13 @@
  */
 package org.fim.model;
 
-import org.atteo.evo.inflector.English;
 import org.fim.util.Console;
 
 import java.io.PrintStream;
 import java.util.*;
 import java.util.function.Consumer;
 
+import static org.atteo.evo.inflector.English.plural;
 import static org.fim.util.FormatUtil.*;
 
 public class CompareResult {
@@ -162,7 +162,7 @@ public class CompareResult {
             if (index >= truncateOutput && (differencesSize - index) > quarter) {
                 out.println("  [Too many lines. Truncating the output] ...");
                 int moreFiles = differencesSize - index;
-                out.printf(actionStr + "%d %s more%n", moreFiles, English.plural("file", moreFiles));
+                out.printf(actionStr + "%d %s more%n", moreFiles, plural("file", moreFiles));
                 break;
             }
 

@@ -24,6 +24,8 @@ import org.fim.util.Console;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.atteo.evo.inflector.English.plural;
+
 public class DuplicateResult {
     private final Context context;
     private final List<DuplicateSet> duplicateSets;
@@ -58,7 +60,8 @@ public class DuplicateResult {
                 List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
                 for (FileState fileState : duplicatedFiles) {
                     if (duplicatedFiles.indexOf(fileState) == 0) {
-                        System.out.printf("  %s duplicated %d times%n", fileState.getFileName(), duplicatedFiles.size() - 1);
+                        int duplicateTime = duplicatedFiles.size() - 1;
+                        System.out.printf("  %s duplicated %d %s%n", fileState.getFileName(), duplicateTime, plural("time", duplicateTime));
                     } else {
                         System.out.printf("      %s - %s%n", FileUtils.byteCountToDisplaySize(fileState.getFileLength()), fileState.getFileName());
                     }
@@ -66,9 +69,15 @@ public class DuplicateResult {
                 Console.newLine();
             }
         }
-        System.out.printf("%d duplicated files spread into %d duplicate sets, %s of wasted space%n",
-            duplicatedFilesCount, duplicateSets.size(), FileUtils.byteCountToDisplaySize(wastedSpace));
 
+        if (duplicatedFilesCount > 0) {
+            int duplicateCount = duplicateSets.size();
+            System.out.printf("%d duplicated %s spread into %d duplicate %s, %s of wasted space%n",
+                duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount),
+                duplicateCount, plural("set", duplicateCount), FileUtils.byteCountToDisplaySize(wastedSpace));
+        } else {
+            System.out.println("No duplicated file found");
+        }
         return this;
     }
 
@@ -82,5 +91,9 @@ public class DuplicateResult {
 
     public List<DuplicateSet> getDuplicateSets() {
         return duplicateSets;
+    }
+
+    private String pluralForLong(String word, long count) {
+        return plural(word, count > 1 ? 2 : 1);
     }
 }
