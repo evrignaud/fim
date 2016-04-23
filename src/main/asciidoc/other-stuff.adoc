@@ -64,6 +64,7 @@ ____
 ____
 
 
+:leveloffset: 1
 = About
 
 Created by Etienne Vrignaud
@@ -71,6 +72,7 @@ Created by Etienne Vrignaud
 https://twitter.com/evrignaud[image:icons/twitter.png[Twitter icon] Follow @evrignaud]
 
 
+:leveloffset: 1
 = License
 
 This project is released under the link:LICENSE.html[GPLv3 license], for more details, take a look at the LICENSE file in the source.
