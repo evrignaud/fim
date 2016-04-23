@@ -38,7 +38,6 @@ import org.fim.tooling.BuildableState;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemErrRule;
 
 public class CompareResultTest extends StateAssert
 {

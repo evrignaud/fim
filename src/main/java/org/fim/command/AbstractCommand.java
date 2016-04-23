@@ -96,12 +96,16 @@ public abstract class AbstractCommand implements Command
 
 	protected boolean confirmAction(Context context, String action)
 	{
+		return confirmAction(context, new Scanner(System.in), action);
+	}
+
+	protected boolean confirmAction(Context context, Scanner scanner, String action)
+	{
 		if (context.isAlwaysYes())
 		{
 			return true;
 		}
 
-		Scanner scanner = new Scanner(System.in);
 		System.out.printf("Do you really want to %s (y/n/A)? ", action);
 		String str = scanner.next();
 		if (str.equalsIgnoreCase("y"))

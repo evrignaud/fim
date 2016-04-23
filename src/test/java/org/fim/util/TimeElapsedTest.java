@@ -18,31 +18,43 @@
  */
 package org.fim.util;
 
-public class TimeElapsed
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
+
+public class TimeElapsedTest
 {
-	private long startTime;
-	private long endTime;
+	private boolean startCalled = false;
+	private boolean stopCalled = false;
 
-	public TimeElapsed()
+	@Test
+	public void weCanEstimateTheElapsedTime() throws InterruptedException
 	{
-		start();
+		TimeElapsed cut = new MyTimeElapsed();
+		assertThat(startCalled).isEqualTo(true);
+		startCalled = false;
+
+		Thread.sleep(10);
+
+		assertThat(cut.getDuration()).isGreaterThan(10);
+		assertThat(stopCalled).isEqualTo(true);
+		assertThat(startCalled).isEqualTo(true);
 	}
 
-	public long getDuration()
+	private class MyTimeElapsed extends TimeElapsed
 	{
-		stop();
-		long duration = endTime - startTime;
-		start();
-		return duration;
-	}
+		@Override
+		public void start()
+		{
+			startCalled = true;
+			super.start();
+		}
 
-	public void start()
-	{
-		startTime = System.currentTimeMillis();
-	}
-
-	protected void stop()
-	{
-		endTime = System.currentTimeMillis();
+		@Override
+		protected void stop()
+		{
+			stopCalled = true;
+			super.stop();
+		}
 	}
 }
