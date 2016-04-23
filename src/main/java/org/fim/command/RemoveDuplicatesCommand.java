@@ -118,6 +118,10 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
         long totalFilesRemoved = 0;
         State localState = new StateGenerator(context).generateState("", context.getCurrentDirectory(), context.getCurrentDirectory());
         for (FileState localFileState : localState.getFileStates()) {
+            if (localFileState.getFileLength() == 0) {
+                continue;
+            }
+
             FileState masterFileState = masterFilesHash.get(localFileState.getFileHash());
             if (masterFileState != null) {
                 System.out.printf("'%s' is a duplicate of '%s/%s'%n", localFileState.getFileName(),

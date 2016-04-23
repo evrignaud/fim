@@ -43,6 +43,10 @@ public class DuplicateFinder {
         List<FileState> duplicatedFiles = new ArrayList<>();
         FileHash previousFileHash = new FileHash(Constants.NO_HASH, Constants.NO_HASH, Constants.NO_HASH);
         for (FileState fileState : fileStates) {
+            if (fileState.getFileLength() == 0) {
+                continue;
+            }
+
             if (!previousFileHash.equals(fileState.getFileHash())) {
                 result.addDuplicatedFiles(duplicatedFiles);
                 duplicatedFiles.clear();
