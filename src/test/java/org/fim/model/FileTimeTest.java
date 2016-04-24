@@ -18,10 +18,9 @@
  */
 package org.fim.model;
 
+import org.fim.tooling.ObjectAssert;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileTimeTest {
     private FileTime a1;
@@ -41,35 +40,16 @@ public class FileTimeTest {
 
     @Test
     public void equalsIsWorking() {
-        assertThat(a1).isNotEqualTo(null);
-
-        assertThat(a1).isNotEqualTo("dummy_string");
-
-        assertThat(a1).isEqualTo(a2);
-        assertThat(a2).isEqualTo(a1);
-
-        assertThat(a1).isNotEqualTo(b);
-        assertThat(b).isNotEqualTo(a1);
+        ObjectAssert.equalsIsWorking(a1, a2, b);
     }
 
     @Test
     public void hashcodeIsWorking() {
-        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
-
-        assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
+        ObjectAssert.hashcodeIsWorking(a1, a2, b);
     }
 
     @Test
     public void compareIsWorking() {
-        assertThat(a1.compareTo(a2)).isEqualTo(0);
-        assertThat(a2.compareTo(a1)).isEqualTo(0);
-
-        assertThat(a1.compareTo(b)).isEqualTo(-1);
-        assertThat(b.compareTo(c)).isEqualTo(-1);
-        assertThat(a1.compareTo(c)).isEqualTo(-1);
-
-        assertThat(c.compareTo(b)).isEqualTo(1);
-        assertThat(b.compareTo(a1)).isEqualTo(1);
-        assertThat(c.compareTo(a1)).isEqualTo(1);
+        ObjectAssert.compareIsWorking(a1, a2, b, c);
     }
 }

@@ -18,6 +18,7 @@
  */
 package org.fim.model;
 
+import org.fim.tooling.ObjectAssert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,22 +41,12 @@ public class FileStateTest {
 
     @Test
     public void equalsIsWorking() {
-        assertThat(a1).isNotEqualTo(null);
-
-        assertThat(a1).isNotEqualTo("dummy_string");
-
-        assertThat(a1).isEqualTo(a2);
-        assertThat(a2).isEqualTo(a1);
-
-        assertThat(a1).isNotEqualTo(b);
-        assertThat(b).isNotEqualTo(a1);
+        ObjectAssert.equalsIsWorking(a1, a2, b);
     }
 
     @Test
     public void hashcodeIsWorking() {
-        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
-
-        assertThat(a1.hashCode()).isNotEqualTo(b.hashCode());
+        ObjectAssert.hashcodeIsWorking(a1, a2, b);
     }
 
     @Test
@@ -71,6 +62,6 @@ public class FileStateTest {
         a2 = new FileState("file_1", 1L, new FileTime(11L, 20L), new FileHash("1", "11", "111"), null);
 
         assertThat(a1).isNotEqualTo(a2);
-        assertThat(a1.hashCode()).isNotEqualTo(a2.hashCode());
+        assertThat(a1.longHashCode()).isNotEqualTo(a2.longHashCode());
     }
 }
