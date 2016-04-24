@@ -32,8 +32,8 @@ public class DuplicateFinderTest extends DuplicateAssert {
     @Test
     public void noDuplicatesWhenFilesHaveDifferentContent() {
         DuplicateResult result = cut.findDuplicates(s);
-        assertThat(result.getDuplicatedFilesCount()).isEqualTo(0);
-        assertThat(result.getDuplicateSets().size()).isEqualTo(0);
+        assertFilesDuplicated(result);
+        assertThat(result.getWastedSpace()).isEqualTo(0);
     }
 
     @Test
@@ -52,5 +52,13 @@ public class DuplicateFinderTest extends DuplicateAssert {
         result = cut.findDuplicates(s);
         assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10", "file_11"), duplicatedFiles("file_02", "file_08"));
         assertThat(result.getWastedSpace()).isEqualTo(("file_10" + "file_11" + "file_08").length());
+    }
+
+    @Test
+    public void emptyFilesAreNeverSeenAsDuplicates() {
+        s = s.addEmptyFiles("empty_file_5", "empty_file_6", "empty_file_7", "empty_file_8");
+        DuplicateResult result = cut.findDuplicates(s);
+        assertFilesDuplicated(result);
+        assertThat(result.getWastedSpace()).isEqualTo(0);
     }
 }

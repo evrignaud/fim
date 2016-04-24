@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+import static java.lang.Math.min;
+
 public class BuildableState extends State {
     private static final Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
@@ -34,6 +36,14 @@ public class BuildableState extends State {
     }
 
     public BuildableState addFiles(String... fileNames) {
+        return addFiles(10_000, fileNames);
+    }
+
+    public BuildableState addEmptyFiles(String... fileNames) {
+        return addFiles(0, fileNames);
+    }
+
+    public BuildableState addFiles(int maxFileLength, String... fileNames) {
         BuildableState newState = clone();
         for (String fileName : fileNames) {
             if (findFileState(newState, fileName, false) != null) {
@@ -41,7 +51,9 @@ public class BuildableState extends State {
             }
 
             // By default put the fileName as fileContent that will be the hash
-            FileState fileState = new FileState(fileName, fileName.length(), new FileTime(getNow()), createHash(fileName), null);
+            int fileLength = min(maxFileLength, fileName.length());
+            String content = fileName.substring(0, fileLength);
+            FileState fileState = new FileState(fileName, fileLength, new FileTime(getNow()), createHash(content), null);
             newState.getFileStates().add(fileState);
         }
         sortFileStates(newState);
@@ -109,36 +121,17 @@ public class BuildableState extends State {
         String smallBlockHash = "small_block_" + content;
         String mediumBlockHash = "medium_block_" + content;
         String fullHash = "full_" + content;
-
-        switch (context.getHashMode()) {
-            case dontHash:
-                smallBlockHash = Constants.NO_HASH;
-                mediumBlockHash = Constants.NO_HASH;
-                fullHash = Constants.NO_HASH;
-                break;
-
-            case hashSmallBlock:
-                mediumBlockHash = Constants.NO_HASH;
-                fullHash = Constants.NO_HASH;
-                break;
-
-            case hashMediumBlock:
-                fullHash = Constants.NO_HASH;
-                break;
-
-            case hashAll:
-                // Nothing to do
-                break;
-        }
-
-        return new FileHash(smallBlockHash, mediumBlockHash, fullHash);
+        return createFileHash(smallBlockHash, mediumBlockHash, fullHash);
     }
 
     private FileHash appendHash(FileHash fileHash, String content) {
         String smallBlockHash = fileHash.getSmallBlockHash() + "_" + content;
         String mediumBlockHash = fileHash.getMediumBlockHash() + "_" + content;
         String fullHash = fileHash.getFullHash() + "_" + content;
+        return createFileHash(smallBlockHash, mediumBlockHash, fullHash);
+    }
 
+    private FileHash createFileHash(String smallBlockHash, String mediumBlockHash, String fullHash) {
         switch (context.getHashMode()) {
             case dontHash:
                 smallBlockHash = Constants.NO_HASH;

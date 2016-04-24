@@ -29,23 +29,29 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DuplicateAssert extends StateAssert {
-    protected void assertFilesDuplicated(DuplicateResult result, DuplicatedFiles... duplicatedFiles) {
+    protected void assertFilesDuplicated(DuplicateResult result, DuplicatedFiles... expectedDuplicatedFiles) {
         List<DuplicateSet> duplicateSets = result.getDuplicateSets();
-        assertThat(duplicateSets.size()).isEqualTo(duplicatedFiles.length);
+        assertThat(duplicateSets.size()).isEqualTo(expectedDuplicatedFiles.length);
+
+        int expectedDuplicatedFilesCount = 0;
         for (DuplicateSet duplicateSet : duplicateSets) {
+            List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
+            expectedDuplicatedFilesCount += duplicatedFiles.size() - 1;
+
             int index = duplicateSets.indexOf(duplicateSet);
-            List<String> duplicatesToCheck = duplicatedFiles[index].getDuplicates();
+            List<String> expectedDuplicates = expectedDuplicatedFiles[index].getDuplicates();
 
-            assertThat(duplicateSet.getDuplicatedFiles().size()).isEqualTo(duplicatesToCheck.size());
+            assertThat(duplicatedFiles.size()).isEqualTo(expectedDuplicates.size());
 
-            for (FileState fileState : duplicateSet.getDuplicatedFiles()) {
-                assertThat(duplicatesToCheck.contains(fileState.getFileName()));
+            for (FileState fileState : duplicatedFiles) {
+                assertThat(expectedDuplicates.contains(fileState.getFileName()));
             }
 
-            for (String fileName : duplicatesToCheck) {
+            for (String fileName : expectedDuplicates) {
                 assertThat(containsFileName(duplicateSet, fileName)).isEqualTo(true);
             }
         }
+        assertThat(result.getDuplicatedFilesCount()).isEqualTo(expectedDuplicatedFilesCount);
     }
 
     protected boolean containsFileName(DuplicateSet duplicateSet, String fileName) {
