@@ -47,12 +47,12 @@ public class FileNameDiff {
 
     @Override
     public boolean equals(Object other) {
-        return new EqualsBuilder().reflectionEquals(this, other);
+        return EqualsBuilder.reflectionEquals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().reflectionHashCode(this);
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
