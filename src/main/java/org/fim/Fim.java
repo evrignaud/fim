@@ -32,6 +32,7 @@ import org.fim.util.Logger;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,6 +78,7 @@ public class Fim {
 
     private Options buildOptions() {
         Options options = new Options();
+        options.addOption(createOption("d", "directory", true, "Run Fim into the specified directory", false));
         options.addOption(createOption("e", "errors", false, "Display execution error details", false));
         options.addOption(createOption("m", "master-fim-repository", true, "Fim repository directory that you want to use as remote master.\nOnly for the remove duplicated files command", false));
         options.addOption(createOption("n", "do-not-hash", false, "Do not hash file content. Uses only file names and modification dates", false));
@@ -118,6 +120,10 @@ public class Fim {
             context.setMasterFimRepositoryDir(commandLine.getOptionValue('m'));
             context.setAlwaysYes(commandLine.hasOption('y'));
             context.setDisplayStackTrace(commandLine.hasOption('e'));
+
+            if (commandLine.hasOption('d')) {
+                context.setCurrentDirectory(Paths.get(commandLine.getOptionValue('d')));
+            }
 
             if (commandLine.hasOption('t')) {
                 context.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "1")));

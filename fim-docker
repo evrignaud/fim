@@ -18,6 +18,22 @@
 # along with Fim.  If not, see <http://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------------------------------------------------
 
-docker run -it --rm=true -u $(id -u):$(id -g) -v $PWD:/working_directory --name=fim-$(date +%N) fim:latest fim $*
+CURRENT_DIRECTORY="$PWD"
+REPOSITORY_ROOT="$CURRENT_DIRECTORY"
+while [ "$REPOSITORY_ROOT" != "/" ];
+do
+    REPOSITORY_ROOT="$(realpath -s "$REPOSITORY_ROOT"/..)"
+    if [ -d "$REPOSITORY_ROOT/.fim" ];
+    then
+        break;
+    fi
+done
+
+SUBDIR="$(echo "$CURRENT_DIRECTORY" | sed -e "s|$REPOSITORY_ROOT/||")"
+
+(
+    cd "$REPOSITORY_ROOT"
+    docker run -it --rm=true -u $(id -u):$(id -g) -v $PWD:/working_directory --name=fim-$(date +%N) fim:latest fim $* -d "$SUBDIR"
+)
 
 #-----------------------------------------------------------------------------------------------------------------------
