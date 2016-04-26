@@ -29,11 +29,12 @@ do
     fi
 done
 
-SUBDIR="$(echo "$CURRENT_DIRECTORY" | sed -e "s|$REPOSITORY_ROOT/||")"
+SUBDIR="$(echo "$CURRENT_DIRECTORY" | sed -e "s|$REPOSITORY_ROOT||")"
+SUBDIR="$(echo "$SUBDIR" | sed -e 's|^/*||')"
 
 (
     cd "$REPOSITORY_ROOT"
-    docker run -it --rm=true -u $(id -u):$(id -g) -v $PWD:/working_directory --name=fim-$(date +%N) fim:latest fim $* -d "$SUBDIR"
+    docker run -it --rm=true -u $(id -u):$(id -g) -v $PWD:/fim_repository --name=fim-$(date +%N) fim:latest fim $* -d "$SUBDIR"
 )
 
 #-----------------------------------------------------------------------------------------------------------------------

@@ -14,9 +14,10 @@ RUN cd /usr/bin/fim && \
 
 ENV PATH $PATH:/usr/bin/fim
 
-# mount this folder with the project root folder
-VOLUME /working_directory
+# mount this folder with the Fim repository root folder
+VOLUME /fim_repository
 
-WORKDIR /working_directory
+WORKDIR /fim_repository
 
+# Default command is help
 CMD fim help
