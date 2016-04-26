@@ -212,7 +212,8 @@ public class StateComparator {
 
         List<FileState> samePreviousHash;
         for (FileState fileState : addedOrModified) {
-            if ((context.getHashMode() != dontHash) &&
+            if ((fileState.getFileLength() > 0) &&
+                (context.getHashMode() != dontHash) &&
                 ((samePreviousHash = findFilesWithSameHash(fileState, previousFileStates)).size() > 0)) {
                 FileState originalFileState = samePreviousHash.get(0);
                 long originalFileStateHashCode = originalFileState.longHashCode();

@@ -143,6 +143,14 @@ public class StateComparatorTest extends StateAssert {
         }
     }
 
+    @Test
+    public void emptyFilesAreNeverSeenAsDuplicates() {
+        s1 = s1.addEmptyFiles("empty_file_01");
+        s2 = s1.addEmptyFiles("empty_file_02");
+        CompareResult result = new StateComparator(context, s1, s2).compare();
+        assertGotOnlyModifications(result, added);
+        assertFilesModified(result, added, "empty_file_02");
+    }
 
     @Test
     public void weCanDetectHardwareCorruption() {

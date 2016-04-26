@@ -56,7 +56,7 @@ public class DuplicateFinderTest extends DuplicateAssert {
 
     @Test
     public void emptyFilesAreNeverSeenAsDuplicates() {
-        s = s.addEmptyFiles("empty_file_5", "empty_file_6", "empty_file_7", "empty_file_8");
+        s = s.addEmptyFiles("empty_file_01", "empty_file_02", "empty_file_03", "empty_file_04");
         DuplicateResult result = cut.findDuplicates(s);
         assertFilesDuplicated(result);
         assertThat(result.getWastedSpace()).isEqualTo(0);

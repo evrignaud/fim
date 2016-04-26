@@ -29,10 +29,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static java.nio.file.Files.*;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.Command.FimReposConstraint.DONT_CARE;
@@ -53,10 +53,10 @@ public class RemoveDuplicatesCommandTest {
     @Before
     public void setup() throws IOException {
         FileUtils.deleteDirectory(rootDir.toFile());
-        Files.createDirectories(rootDir);
+        createDirectories(rootDir);
 
         FileUtils.deleteDirectory(rootDirCopy.toFile());
-        Files.createDirectories(rootDirCopy);
+        createDirectories(rootDirCopy);
 
         initCommand = new InitCommand();
         diffCommand = new DiffCommand();
@@ -72,9 +72,11 @@ public class RemoveDuplicatesCommandTest {
         Context context = tool.createContext(hashAll, false);
 
         tool.createASetOfFiles(5);
+        // Create an empty file that wont be seen as duplicate
+        createFile(rootDir.resolve("empty_file_01"));
 
         State state = (State) initCommand.execute(context);
-        assertThat(state.getModificationCounts().getAdded()).isEqualTo(5);
+        assertThat(state.getModificationCounts().getAdded()).isEqualTo(6);
 
         // Setup the context to use a master directory
         context.setCurrentDirectory(rootDirCopy);
@@ -82,14 +84,15 @@ public class RemoveDuplicatesCommandTest {
         long totalFilesRemoved = (long) removeDuplicatesCommand.execute(context);
         assertThat(totalFilesRemoved).isEqualTo(0);
 
-        Files.copy(rootDir.resolve("file01"), rootDirCopy.resolve("file01"));
-        Files.copy(rootDir.resolve("file02"), rootDirCopy.resolve("file02"));
-        Files.copy(rootDir.resolve("file03"), rootDirCopy.resolve("file03"));
-        Files.copy(rootDir.resolve("file04"), rootDirCopy.resolve("file04"));
-        Files.copy(rootDir.resolve("file05"), rootDirCopy.resolve("file05"));
+        copy(rootDir.resolve("file01"), rootDirCopy.resolve("dup_file01"));
+        copy(rootDir.resolve("file02"), rootDirCopy.resolve("dup_file02"));
+        copy(rootDir.resolve("file03"), rootDirCopy.resolve("dup_file03"));
+        copy(rootDir.resolve("file04"), rootDirCopy.resolve("dup_file04"));
+        copy(rootDir.resolve("file05"), rootDirCopy.resolve("dup_file05"));
+        copy(rootDir.resolve("empty_file_01"), rootDirCopy.resolve("dup_empty_file_01"));
 
         // Modify file03
-        Files.write(rootDirCopy.resolve("file03"), "appended content".getBytes(), APPEND);
+        write(rootDirCopy.resolve("dup_file03"), "appended content".getBytes(), APPEND);
 
         totalFilesRemoved = (long) removeDuplicatesCommand.execute(context);
         // Only 4 files are duplicated
@@ -124,7 +127,7 @@ public class RemoveDuplicatesCommandTest {
     @Test(expected = BadFimUsageException.class)
     public void CannotRemoveDuplicatesIntoASubDirOfTheMasterDirectory() throws Exception {
         Path subDir = rootDir.resolve("subDir");
-        Files.createDirectories(subDir);
+        createDirectories(subDir);
         context.setCurrentDirectory(subDir);
         context.setMasterFimRepositoryDir(rootDir.toString());
         removeDuplicatesCommand.execute(context);
