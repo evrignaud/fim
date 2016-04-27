@@ -10,6 +10,19 @@ include::changelog.adoc[]
 
 :leveloffset: 1
 
+== Run Fim using Docker
+
+If you don't have Java and you don't want to install it, you can run Fim using a docker image.<br>
+It will run only on Linux.
+
+After having build Fim (<<how-can-you-use-fim.adoc#_build_fim,see below>>), type the following command:
+[source]
+----
+$ ./build-docker-image
+----
+
+Then you can use the provided `fim-docker` script that takes the same arguments as the `fim` one.
+
 == Build Fim
 
 You can build Fim yourself to try the master version.
