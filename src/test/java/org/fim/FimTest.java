@@ -35,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FimTest {
     private static Path rootDir = Paths.get("target/" + FullScenarioTest.class.getSimpleName());
@@ -96,9 +97,38 @@ public class FimTest {
     }
 
     @Test
+    public void weCanCommitUsingMultipleThreads() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"ci", "-y", "-t", "4"}, context);
+        assertThat(context.getThreadCount()).isEqualTo(4);
+    }
+
+    @Test(expected = BadFimUsageException.class)
+    public void InvalidThreadCountIsDetected() throws Exception {
+        cut.run(new String[]{"ci", "-y", "-t", "dummy"}, context);
+    }
+
+    @Test
     public void weCanCommitUsingFim() throws Exception {
         initRepoAndCreateOneFile();
         cut.run(new String[]{"ci", "-y"}, context);
+    }
+
+    @Test
+    public void weCanCommitFromASubDirectory() throws Exception {
+        initRepoAndCreateOneFile();
+        String subdir = "sub-dir";
+        Path subdirPath = rootDir.resolve(subdir);
+        Files.createDirectories(subdirPath);
+        cut.run(new String[]{"ci", "-y", "-d", subdirPath.toString()}, context);
+        assertThat(context.getCurrentDirectory()).isEqualTo(subdirPath);
+    }
+
+    @Test
+    public void negativeOutputTruncatingIsSetToZero() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"ci", "-y", "-o", "-1"}, context);
+        assertThat(context.getTruncateOutput()).isEqualTo(0);
     }
 
     @Test
