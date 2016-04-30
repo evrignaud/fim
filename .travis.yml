@@ -1,10 +1,20 @@
 language: java
 
-sudo: required
-dist: trusty
+matrix:
+  include:
 
-jdk:
-      - oraclejdk8
+    - os: linux
+      dist: trusty
+      sudo: required
+      jdk: oraclejdk8
+
+    - os: osx
+      osx_image: xcode7.3
+
+before_install:
+  - echo Working on ${TRAVIS_OS_NAME}
+  - javac -version
+  - mvn -version
 
 after_success:
-      - mvn clean cobertura:cobertura org.eluder.coveralls:coveralls-maven-plugin:report -DserviceName=travis-ci -DserviceJobId=$TRAVIS_JOB_ID
+  - mvn clean cobertura:cobertura org.eluder.coveralls:coveralls-maven-plugin:report -DserviceName=travis-ci -DserviceJobId=$TRAVIS_JOB_ID
