@@ -32,8 +32,6 @@ import static org.fim.model.FileAttribute.*;
 import static org.fim.model.HashMode.dontHash;
 
 public class StateComparator {
-    private static boolean logDebugEnabled = Boolean.getBoolean("DEBUG");
-
     private final Context context;
 
     private State lastState;
@@ -328,13 +326,13 @@ public class StateComparator {
     }
 
     private void logDebug(String message) {
-        if (logDebugEnabled) {
+        if (context.isLogDebugEnabled()) {
             System.out.println(message);
         }
     }
 
     private String fileStatesToString(String message, List<FileState> fileStates) {
-        if (!logDebugEnabled) {
+        if (!context.isLogDebugEnabled()) {
             return "";
         }
 

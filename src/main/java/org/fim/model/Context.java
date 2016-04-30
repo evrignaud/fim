@@ -43,6 +43,7 @@ public class Context {
     private boolean alwaysYes;
     private boolean displayStackTrace;
     private int truncateOutput;
+    private boolean logDebugEnabled;
 
     public Context() {
         setInvokedFromSubDirectory(false);
@@ -57,6 +58,7 @@ public class Context {
         setMasterFimRepositoryDir(null);
         setAlwaysYes(false);
         setTruncateOutput(200);
+        setLogDebugEnabled(checkLogDebugEnabled());
     }
 
     public boolean isInvokedFromSubDirectory() {
@@ -179,7 +181,23 @@ public class Context {
         return truncateOutput;
     }
 
+    public void setLogDebugEnabled(boolean logDebugEnabled) {
+        this.logDebugEnabled = logDebugEnabled;
+    }
+
+    public boolean isLogDebugEnabled() {
+        return logDebugEnabled;
+    }
+
     public Context clone() {
         return CLONER.deepClone(this);
+    }
+
+    private boolean checkLogDebugEnabled() {
+        String debug = System.getenv("DEBUG");
+        if (debug == null) {
+            return false;
+        }
+        return Boolean.parseBoolean(debug);
     }
 }
