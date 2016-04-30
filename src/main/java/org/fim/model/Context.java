@@ -56,6 +56,7 @@ public class Context {
         setThreadCountSpecified(false);
         setMasterFimRepositoryDir(null);
         setAlwaysYes(false);
+        setTruncateOutput(200);
     }
 
     public boolean isInvokedFromSubDirectory() {
@@ -170,15 +171,15 @@ public class Context {
         this.threadCountSpecified = threadCountSpecified;
     }
 
-    public Context clone() {
-        return CLONER.deepClone(this);
-    }
-
     public void setTruncateOutput(int truncateOutput) {
         this.truncateOutput = truncateOutput;
     }
 
     public int getTruncateOutput() {
         return truncateOutput;
+    }
+
+    public Context clone() {
+        return CLONER.deepClone(this);
     }
 }
