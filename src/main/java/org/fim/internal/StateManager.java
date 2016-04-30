@@ -43,6 +43,9 @@ public class StateManager {
 
     public State loadLastState() throws IOException {
         int lastStateNumber = getLastStateNumber();
+        if (lastStateNumber <= 0) {
+            throw new IllegalStateException(String.format("Unable to load the last State from directory %s", context.getRepositoryStatesDir()));
+        }
         return loadState(lastStateNumber);
     }
 
