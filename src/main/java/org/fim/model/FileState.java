@@ -148,7 +148,7 @@ public class FileState implements Hashable {
      * A long is used to avoid hashCode collisions when we have a huge number of FileStates.
      */
     public long longHashCode() {
-        return ObjectsUtil.longHash(fileName, fileLength, fileTime, fileHash, fileAttributes);
+        return ObjectsUtil.longHash(fileName, fileLength, fileTime.millisecondsRemovedHashCode(), fileHash, fileAttributes);
     }
 
     @Override

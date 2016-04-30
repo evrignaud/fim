@@ -96,8 +96,8 @@ public class BuildableState extends State {
         BuildableState newState = clone();
         FileState fileState = findFileState(newState, fileName, true);
         long now = getNow();
-        if (now <= fileState.getFileTime().getLastModified()) {
-            now = fileState.getFileTime().getLastModified() + 1;
+        if (now < fileState.getFileTime().getLastModified() + 1_000) {
+            now = fileState.getFileTime().getLastModified() + 1_000;
         }
         fileState.getFileTime().setLastModified(now);
         return newState;

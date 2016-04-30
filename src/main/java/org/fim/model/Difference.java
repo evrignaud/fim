@@ -46,11 +46,11 @@ public class Difference {
     }
 
     public boolean isCreationTimeChanged() {
-        return previousFileState.getFileTime().getCreationTime() != fileState.getFileTime().getCreationTime();
+        return previousFileState.getFileTime().getCreationTime() / 1000 != fileState.getFileTime().getCreationTime() / 1000;
     }
 
     public boolean isLastModifiedChanged() {
-        return previousFileState.getFileTime().getLastModified() != fileState.getFileTime().getLastModified();
+        return previousFileState.getFileTime().getLastModified() / 1000 != fileState.getFileTime().getLastModified() / 1000;
     }
 
     public static class FileNameComparator implements Comparator<Difference> {

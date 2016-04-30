@@ -30,12 +30,12 @@ public class FileTimeTest {
 
     @Before
     public void setup() {
-        a1 = new FileTime(1L, 2L);
-        a2 = new FileTime(1L, 2L);
+        a1 = new FileTime(1_000L, 2_000L);
+        a2 = new FileTime(1_000L, 2_000L);
 
-        b = new FileTime(2L, 3L);
+        b = new FileTime(2_000L, 3_000L);
 
-        c = new FileTime(4L, 5L);
+        c = new FileTime(4_000L, 5_000L);
     }
 
     @Test

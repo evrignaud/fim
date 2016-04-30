@@ -64,12 +64,12 @@ public class CompareResultTest extends StateAssert {
         BuildableState s2 = s1.clone();
 
         fileState1 = s1.getFileStates().get(0);
-        fileState1.getFileTime().setCreationTime(time + 1);
-        fileState1.getFileTime().setLastModified(time + 2);
+        fileState1.getFileTime().setCreationTime(time + 1_000);
+        fileState1.getFileTime().setLastModified(time + 2_000);
 
         fileState2 = s2.getFileStates().get(0);
-        fileState2.getFileTime().setCreationTime(time + 1);
-        fileState2.getFileTime().setLastModified(time + 3);
+        fileState2.getFileTime().setCreationTime(time + 1_000);
+        fileState2.getFileTime().setLastModified(time + 3_000);
 
         difference = new Difference(fileState1, fileState2);
     }
@@ -100,7 +100,7 @@ public class CompareResultTest extends StateAssert {
 
     @Test
     public void formatModifiedAttributesTest() {
-        String modificationStr = "lastModified: 2015/11/14 13:12:10 -> 2015/11/14 13:12:10";
+        String modificationStr = "lastModified: 2015/11/14 13:12:12 -> 2015/11/14 13:12:13";
         assertThat(formatModifiedAttributes(difference, true)).isEqualTo(" \n                          \t" + modificationStr);
 
         assertThat(formatModifiedAttributes(difference, false)).isEqualTo(modificationStr);
