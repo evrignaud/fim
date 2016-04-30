@@ -116,7 +116,7 @@ public class StateManager {
         boolean lastStateFileDesynchronized = false;
 
         SettingsManager settingsManager = new SettingsManager(context);
-        if (settingsManager.isSaved()) {
+        if (settingsManager.isCreated()) {
             number = settingsManager.getLastStateNumber();
             if (Files.exists(getStateFile(number)) && !Files.exists(getStateFile(number + 1))) {
                 return number;

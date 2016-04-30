@@ -23,6 +23,7 @@ import org.fim.command.*;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.DontWantToContinueException;
 import org.fim.command.exception.RepositoryCreationException;
+import org.fim.internal.SettingsManager;
 import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
 import org.fim.model.Context;
@@ -165,9 +166,14 @@ public class Fim {
         if (constraint == FimReposConstraint.MUST_NOT_EXIST) {
             setRepositoryRootDir(context, context.getAbsoluteCurrentDirectory(), false);
 
-            if (Files.exists(context.getRepositoryStatesDir())) {
+            if (Files.exists(context.getRepositoryDotFimDir()) || Files.exists(context.getRepositoryStatesDir())) {
                 Logger.error("Fim repository already exist");
                 throw new BadFimUsageException();
+            }
+
+            if (!Files.isWritable(context.getRepositoryRootDir())) {
+                Logger.error(String.format("Not allowed to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()));
+                throw new RepositoryCreationException();
             }
         } else if (constraint == FimReposConstraint.MUST_EXIST) {
             findRepositoryRootDir(context);
@@ -175,6 +181,16 @@ public class Fim {
             if (!Files.exists(context.getRepositoryStatesDir())) {
                 Logger.error("Fim repository does not exist. Please run 'fim init' before.");
                 throw new BadFimUsageException();
+            }
+
+            if (!Files.isWritable(context.getRepositoryStatesDir())) {
+                Logger.error(String.format("Not allowed to modify States into the '%s' directory", context.getRepositoryStatesDir()));
+                throw new RepositoryCreationException();
+            }
+            SettingsManager settingsManager = new SettingsManager(context);
+            if (!Files.isWritable(settingsManager.getSettingsFile())) {
+                Logger.error(String.format("Not allowed to save settings into the '%s' directory", context.getRepositoryDotFimDir()));
+                throw new RepositoryCreationException();
             }
         }
 

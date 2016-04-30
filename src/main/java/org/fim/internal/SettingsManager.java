@@ -38,12 +38,16 @@ public class SettingsManager {
         settingsFile = context.getRepositoryDotFimDir().resolve(SETTINGS_FILE);
         settings = new Settings();
 
-        if (isSaved()) {
+        if (isCreated()) {
             load();
         }
     }
 
-    public boolean isSaved() {
+    public Path getSettingsFile() {
+        return settingsFile;
+    }
+
+    public boolean isCreated() {
         return Files.exists(settingsFile);
     }
 
