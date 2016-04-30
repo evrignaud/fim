@@ -208,16 +208,18 @@ public class StateComparator {
     }
 
     private void searchForDifferences() {
-        Map<Long, FileState> notFoundInCurrentFileStateHashCodeMap = buildHashCodeMap(notFoundInCurrentFileState);
+        ListMultimap<FileHash, FileState> notFoundInCurrentFileStateList = buildFileHashList(notFoundInCurrentFileState);
+        Map<FileHash, FileState> foundInPreviousState = new HashMap<>();
 
-        List<FileState> samePreviousHash;
+        List<FileState> samePreviousHashes;
         for (FileState fileState : addedOrModified) {
             if ((fileState.getFileLength() > 0) &&
                 (context.getHashMode() != dontHash) &&
-                ((samePreviousHash = findFilesWithSameHash(fileState, previousFileStates)).size() > 0)) {
-                FileState originalFileState = samePreviousHash.get(0);
-                long originalFileStateHashCode = originalFileState.longHashCode();
-                if (notFoundInCurrentFileStateHashCodeMap.containsKey(originalFileStateHashCode)) {
+                ((samePreviousHashes = findFilesWithSameHash(fileState, previousFileStates)).size() > 0)) {
+                FileState originalFileState = samePreviousHashes.get(0);
+                FileHash originalFileHash = originalFileState.getFileHash();
+                if (notFoundInCurrentFileStateList.containsKey(originalFileHash) ||
+                    foundInPreviousState.containsKey(originalFileHash)) {
                     result.getRenamed().add(new Difference(originalFileState, fileState));
                     fileState.setModification(Modification.renamed);
                 } else {
@@ -229,14 +231,18 @@ public class StateComparator {
                         fileState.setModification(Modification.duplicated);
                     }
                 }
-                notFoundInCurrentFileStateHashCodeMap.remove(originalFileStateHashCode);
+                List<FileState> removed = notFoundInCurrentFileStateList.removeAll(originalFileHash);
+                if (removed != null && removed.size() > 0) {
+                    // Used to check other duplicated files that have been renamed
+                    foundInPreviousState.put(originalFileHash, originalFileState);
+                }
             } else {
                 result.getAdded().add(new Difference(null, fileState));
                 fileState.setModification(Modification.added);
             }
         }
         addedOrModified.clear();
-        notFoundInCurrentFileState = new ArrayList<>(notFoundInCurrentFileStateHashCodeMap.values());
+        notFoundInCurrentFileState = new ArrayList<>(notFoundInCurrentFileStateList.values());
     }
 
     private Map<String, FileState> buildFileNamesMap(Collection<FileState> fileStates) {
@@ -263,6 +269,14 @@ public class StateComparator {
             throw new IllegalStateException(String.format("Duplicated entries: Size=%d, MapSize=%d", fileStates.size(), hashCodeMap.size()));
         }
         return hashCodeMap;
+    }
+
+    private ListMultimap<FileHash, FileState> buildFileHashList(Collection<FileState> fileStates) {
+        ListMultimap<FileHash, FileState> fileHashMap = ArrayListMultimap.create();
+        for (FileState fileState : fileStates) {
+            fileHashMap.put(fileState.getFileHash(), fileState);
+        }
+        return fileHashMap;
     }
 
     private void checkAllFilesManagedCorrectly() {

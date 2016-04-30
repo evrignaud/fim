@@ -144,6 +144,35 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Test
+    public void weCanCorrectlyDetectRenamedFiles() {
+        s1 = s1.copy("file_01", "dup_file_01");
+        s2 = s1.rename("file_01", "new_file_01")
+            .rename("dup_file_01", "new_dup_file_01");
+
+        detectAndAssertRenamedFiles();
+    }
+
+    @Test
+    public void weCanCorrectlyDetectRenamedFilesThatHaveDateChanged() {
+        s1 = s1.copy("file_01", "dup_file_01");
+        s2 = s1.rename("file_01", "new_file_01").touch("new_file_01")
+            .rename("dup_file_01", "new_dup_file_01").touch("new_dup_file_01");
+        detectAndAssertRenamedFiles();
+    }
+
+    private void detectAndAssertRenamedFiles() {
+        CompareResult result = new StateComparator(context, s1, s2).compare();
+        if (hashMode == dontHash) {
+            assertGotOnlyModifications(result, added, deleted);
+            assertFilesModified(result, added, "new_file_01", "new_dup_file_01");
+            assertFilesModified(result, deleted, "file_01", "dup_file_01");
+        } else {
+            assertGotOnlyModifications(result, renamed);
+            assertFilesModified(result, renamed, new FileNameDiff("dup_file_01", "new_file_01"), new FileNameDiff("dup_file_01", "new_dup_file_01"));
+        }
+    }
+
+    @Test
     public void emptyFilesAreNeverSeenAsDuplicates() {
         s1 = s1.addEmptyFiles("empty_file_01");
         s2 = s1.addEmptyFiles("empty_file_02");
