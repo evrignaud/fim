@@ -146,7 +146,7 @@ public class FileHasher implements Runnable {
         return newAttributes;
     }
 
-    protected FileHash hashFile(Path file, long fileSize) throws IOException {
+    public FileHash hashFile(Path file, long fileSize) throws IOException {
         HashMode hashMode = hashProgress.getContext().getHashMode();
 
         if (hashMode == dontHash) {

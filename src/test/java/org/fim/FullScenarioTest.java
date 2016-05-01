@@ -104,16 +104,18 @@ public class FullScenarioTest {
         assertThat(Files.exists(dotFim.resolve("states/state_1.json.gz"))).isTrue();
 
         doSomeModifications();
+        ModificationCounts modificationCounts;
 
         CompareResult compareResult = (CompareResult) diffCommand.execute(context);
+        modificationCounts = compareResult.getModificationCounts();
         if (hashMode == dontHash) {
             assertThat(compareResult.modifiedCount()).isEqualTo(11);
-            assertThat(compareResult.getModificationCounts().getRenamed()).isEqualTo(0);
-            assertThat(compareResult.getModificationCounts().getDeleted()).isEqualTo(2);
+            assertThat(modificationCounts.getRenamed()).isEqualTo(0);
+            assertThat(modificationCounts.getDeleted()).isEqualTo(2);
         } else {
             assertThat(compareResult.modifiedCount()).isEqualTo(10);
-            assertThat(compareResult.getModificationCounts().getRenamed()).isEqualTo(1);
-            assertThat(compareResult.getModificationCounts().getDeleted()).isEqualTo(1);
+            assertThat(modificationCounts.getRenamed()).isEqualTo(1);
+            assertThat(modificationCounts.getDeleted()).isEqualTo(1);
         }
 
         assertDuplicatedFilesCountEqualsTo(context, 2);
@@ -124,8 +126,9 @@ public class FullScenarioTest {
 
         compareResult = (CompareResult) commitCommand.execute(context);
         assertThat(compareResult.modifiedCount()).isEqualTo(13);
-        assertThat(compareResult.getModificationCounts().getRenamed()).isEqualTo(0);
-        assertThat(compareResult.getModificationCounts().getDeleted()).isEqualTo(2);
+        modificationCounts = compareResult.getModificationCounts();
+        assertThat(modificationCounts.getRenamed()).isEqualTo(0);
+        assertThat(modificationCounts.getDeleted()).isEqualTo(2);
 
         // Committing once again does nothing
         commit_AndAssertFilesModifiedCountEqualsTo(context, 0);
@@ -147,6 +150,27 @@ public class FullScenarioTest {
 
         // Nothing more to rollback
         assertWeCanRollbackLastCommit(context, 1, 0);
+
+        if (hashMode == hashAll || hashMode == hashMediumBlock) {
+            Context superFastModeContext = context.clone();
+            superFastModeContext.setHashMode(hashSmallBlock);
+            superFastModeContext.setComment("Using hash mode " + hashSmallBlock);
+
+            // Commit using super-fast mode (hashSmallBlock)
+            compareResult = (CompareResult) commitCommand.execute(superFastModeContext);
+            assertThat(compareResult.modifiedCount()).isEqualTo(15);
+            modificationCounts = compareResult.getModificationCounts();
+            assertThat(modificationCounts.getAdded()).isEqualTo(6);
+            assertThat(modificationCounts.getCopied()).isEqualTo(1);
+            assertThat(modificationCounts.getDuplicated()).isEqualTo(3);
+            assertThat(modificationCounts.getDateModified()).isEqualTo(1);
+            assertThat(modificationCounts.getContentModified()).isEqualTo(2);
+            assertThat(modificationCounts.getRenamed()).isEqualTo(1);
+            assertThat(modificationCounts.getDeleted()).isEqualTo(1);
+
+            // Check that using normal hashMode there is no modification detected
+            commit_AndAssertFilesModifiedCountEqualsTo(context, 0);
+        }
     }
 
     private void doSomeModifications() throws IOException {

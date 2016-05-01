@@ -65,7 +65,6 @@ public class StateGenerator {
     private AtomicBoolean scanInProgress;
     private boolean fileHashersStarted;
     private List<FileHasher> fileHashers;
-    private long overallTotalBytesHashed;
 
     public StateGenerator(Context context) {
         this.context = context;
@@ -106,7 +105,7 @@ public class StateGenerator {
 
         waitAllFilesToBeHashed();
 
-        overallTotalBytesHashed = 0;
+        long overallTotalBytesHashed = 0;
         for (FileHasher fileHasher : fileHashers) {
             state.getFileStates().addAll(fileHasher.getFileStates());
             overallTotalBytesHashed += fileHasher.getTotalBytesHashed();
@@ -117,7 +116,8 @@ public class StateGenerator {
         state.setIgnoredFiles(fimIgnoreManager.getIgnoredFiles());
 
         hashProgress.outputStop();
-        displayStatistics(start, state);
+        long duration = System.currentTimeMillis() - start;
+        displayStatistics(context, duration, state.getFileCount(), state.getFilesContentLength(), overallTotalBytesHashed);
 
         return state;
     }
@@ -149,11 +149,9 @@ public class StateGenerator {
         }
     }
 
-    private void displayStatistics(long start, State state) {
-        long duration = System.currentTimeMillis() - start;
-
-        String totalFileContentLengthStr = FileUtils.byteCountToDisplaySize(state.getFilesContentLength());
-        String totalBytesHashedStr = FileUtils.byteCountToDisplaySize(overallTotalBytesHashed);
+    public static void displayStatistics(Context context, long duration, int fileCount, long filesContentLength, long totalBytesHashed) {
+        String totalFileContentLengthStr = FileUtils.byteCountToDisplaySize(filesContentLength);
+        String totalBytesHashedStr = FileUtils.byteCountToDisplaySize(totalBytesHashed);
         String durationStr = DurationFormatUtils.formatDuration(duration, "HH:mm:ss");
 
         long durationSeconds = duration / 1000;
@@ -161,10 +159,9 @@ public class StateGenerator {
             durationSeconds = 1;
         }
 
-        long globalThroughput = overallTotalBytesHashed / durationSeconds;
+        long globalThroughput = totalBytesHashed / durationSeconds;
         String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
 
-        int fileCount = state.getFileCount();
         if (context.getHashMode() == dontHash) {
             Logger.info(String.format("Scanned %d %s (%s), during %s%n",
                 fileCount, plural("file", fileCount), totalFileContentLengthStr, durationStr));

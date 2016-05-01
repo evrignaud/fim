@@ -20,16 +20,29 @@ package org.fim.command;
 
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.DontWantToContinueException;
+import org.fim.internal.SettingsManager;
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
-import org.fim.model.CompareResult;
-import org.fim.model.Context;
-import org.fim.model.State;
+import org.fim.internal.hash.FileHasher;
+import org.fim.internal.hash.HashProgress;
+import org.fim.model.*;
 import org.fim.util.Console;
 import org.fim.util.Logger;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.atteo.evo.inflector.English.plural;
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.Modification.attributesModified;
+import static org.fim.model.Modification.dateModified;
+import static org.fim.util.FileStateUtil.buildFileNamesMap;
+import static org.fim.util.HashModeUtil.hashModeToString;
 
 public class CommitCommand extends AbstractCommand {
     @Override
@@ -49,7 +62,13 @@ public class CommitCommand extends AbstractCommand {
 
     @Override
     public Object execute(Context context) throws Exception {
-        checkHashMode(context, Option.ALL_HASH_MANDATORY);
+        SettingsManager settingsManager = new SettingsManager(context);
+        HashMode globalHashMode = settingsManager.getGlobalHashMode();
+        if (context.getHashMode() == dontHash && globalHashMode != dontHash) {
+            Logger.error("Computing hash is mandatory");
+            throw new BadFimUsageException();
+        }
+        adjustThreadCount(context);
 
         if (context.getComment().length() == 0) {
             System.out.println("No comment provided. You are going to commit your modifications without any comment.");
@@ -59,9 +78,9 @@ public class CommitCommand extends AbstractCommand {
         }
 
         StateManager manager = new StateManager(context);
+        State currentState = new StateGenerator(context).generateState(context.getComment(), context.getRepositoryRootDir(), context.getCurrentDirectory());
         State lastState = manager.loadLastState();
         State lastStateToCompare = lastState;
-        State currentState = new StateGenerator(context).generateState(context.getComment(), context.getRepositoryRootDir(), context.getCurrentDirectory());
 
         if (context.isInvokedFromSubDirectory()) {
             if (!lastState.getModelVersion().equals(currentState.getModelVersion())) {
@@ -78,6 +97,13 @@ public class CommitCommand extends AbstractCommand {
             if (confirmAction(context, "commit")) {
                 currentState.setModificationCounts(result.getModificationCounts());
 
+                if (context.getHashMode() != dontHash && context.getHashMode() != globalHashMode) {
+                    // Reload the last state with the globalHashMode in order to get a complete state.
+                    context.setHashMode(globalHashMode);
+                    lastState = manager.loadLastState();
+                    retrieveMissingHash(context, currentState, lastState);
+                }
+
                 if (context.isInvokedFromSubDirectory()) {
                     currentState = createConsolidatedState(context, lastState, currentState);
                 }
@@ -89,6 +115,58 @@ public class CommitCommand extends AbstractCommand {
         }
 
         return result;
+    }
+
+    private void retrieveMissingHash(Context context, State currentState, State lastState) throws NoSuchAlgorithmException, IOException {
+        Map<String, FileState> lastFileStateMap = buildFileNamesMap(lastState.getFileStates());
+
+        List<FileState> toReHash = new ArrayList<>();
+        for (FileState fileState : currentState.getFileStates()) {
+            Modification modification = fileState.getModification();
+            if (modification == null || modification == attributesModified || modification == dateModified) {
+                // Get in the last State the hash of the unmodified files
+                FileState lastFileState = lastFileStateMap.get(fileState.getFileName());
+                if (lastFileState == null) {
+                    throw new IllegalStateException(String.format("Not able to find file '%s' into the previous state", fileState.getFileName()));
+                }
+                fileState.setFileHash(lastFileState.getFileHash());
+            } else {
+                // Hash changed, we need to compute all the mandatory hash
+                toReHash.add(fileState);
+            }
+        }
+
+        reHashFiles(context, toReHash);
+    }
+
+    private void reHashFiles(Context context, List<FileState> toReHash) throws NoSuchAlgorithmException, IOException {
+        int threadCount = 1;
+        Logger.info(String.format("Retrieving the missing hash for all the modified files, using '%s' mode and %d %s",
+            hashModeToString(context.getHashMode()), threadCount, plural("thread", threadCount)));
+
+        HashProgress hashProgress = new HashProgress(context);
+        hashProgress.outputInit();
+        FileHasher fileHasher = new FileHasher(context, null, hashProgress, null, null);
+        Path rootDir = context.getRepositoryRootDir();
+        long start = System.currentTimeMillis();
+        long fileContentLength = 0;
+
+        try {
+            for (FileState fileState : toReHash) {
+                long fileLength = fileState.getFileLength();
+                fileContentLength += fileLength;
+                hashProgress.updateOutput(fileLength);
+                FileHash fileHash = fileHasher.hashFile(rootDir.resolve(fileState.getFileName()), fileLength);
+                fileState.setFileHash(fileHash);
+            }
+        } finally {
+            hashProgress.outputStop();
+        }
+
+        long totalBytesHashed = fileHasher.getTotalBytesHashed();
+        long duration = System.currentTimeMillis() - start;
+        int fileCount = toReHash.size();
+        StateGenerator.displayStatistics(context, duration, fileCount, fileContentLength, totalBytesHashed);
     }
 
     private State createConsolidatedState(Context context, State lastState, State currentState) throws IOException {

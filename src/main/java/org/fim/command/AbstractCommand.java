@@ -69,6 +69,10 @@ public abstract class AbstractCommand implements Command {
             }
         }
 
+        adjustThreadCount(context);
+    }
+
+    protected void adjustThreadCount(Context context) {
         if ((context.getThreadCount() != 1) && (context.getHashMode() == dontHash)) {
             context.setThreadCount(1);
             if (context.isThreadCountSpecified()) {

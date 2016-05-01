@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.fim.model.FileAttribute.*;
 import static org.fim.model.HashMode.dontHash;
+import static org.fim.util.FileStateUtil.*;
 
 public class StateComparator {
     private final Context context;
@@ -241,40 +242,6 @@ public class StateComparator {
         }
         addedOrModified.clear();
         notFoundInCurrentFileState = new ArrayList<>(notFoundInCurrentFileStateList.values());
-    }
-
-    private Map<String, FileState> buildFileNamesMap(Collection<FileState> fileStates) {
-        Map<String, FileState> fileNamesMap = new HashMap<>();
-        for (FileState fileState : fileStates) {
-            fileNamesMap.put(fileState.getFileName(), fileState);
-        }
-
-        // Check that no entry is duplicated
-        if (fileStates.size() != fileNamesMap.size()) {
-            throw new IllegalStateException(String.format("Duplicated entries: Size=%d, MapSize=%d", fileStates.size(), fileNamesMap.size()));
-        }
-        return fileNamesMap;
-    }
-
-    private Map<Long, FileState> buildHashCodeMap(Collection<FileState> fileStates) {
-        Map<Long, FileState> hashCodeMap = new HashMap<>();
-        for (FileState fileState : fileStates) {
-            hashCodeMap.put(fileState.longHashCode(), fileState);
-        }
-
-        // Check that no entry is duplicated
-        if (fileStates.size() != hashCodeMap.size()) {
-            throw new IllegalStateException(String.format("Duplicated entries: Size=%d, MapSize=%d", fileStates.size(), hashCodeMap.size()));
-        }
-        return hashCodeMap;
-    }
-
-    private ListMultimap<FileHash, FileState> buildFileHashList(Collection<FileState> fileStates) {
-        ListMultimap<FileHash, FileState> fileHashMap = ArrayListMultimap.create();
-        for (FileState fileState : fileStates) {
-            fileHashMap.put(fileState.getFileHash(), fileState);
-        }
-        return fileHashMap;
     }
 
     private void checkAllFilesManagedCorrectly() {
