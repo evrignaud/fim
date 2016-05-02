@@ -50,21 +50,21 @@ import static org.fim.model.HashMode.dontHash;
 import static org.fim.util.HashModeUtil.hashModeToString;
 
 public class StateGenerator {
-    public static final int FILES_QUEUE_CAPACITY = 500;
+    private static final int FILES_QUEUE_CAPACITY = 500;
 
     private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
 
-    private final Context context;
-    private final HashProgress hashProgress;
+    protected final Context context;
+    final HashProgress hashProgress;
     private final FimIgnoreManager fimIgnoreManager;
 
-    private ExecutorService executorService;
+    ExecutorService executorService;
 
-    private Path rootDir;
+    protected Path rootDir;
     private BlockingDeque<Path> filesToHashQueue;
     private AtomicBoolean scanInProgress;
-    private boolean fileHashersStarted;
-    private List<FileHasher> fileHashers;
+    boolean fileHashersStarted;
+    List<FileHasher> fileHashers;
 
     public StateGenerator(Context context) {
         this.context = context;
@@ -117,18 +117,18 @@ public class StateGenerator {
 
         hashProgress.outputStop();
         long duration = System.currentTimeMillis() - start;
-        displayStatistics(context, duration, state.getFileCount(), state.getFilesContentLength(), overallTotalBytesHashed);
+        displayStatistics(duration, state.getFileCount(), state.getFilesContentLength(), overallTotalBytesHashed);
 
         return state;
     }
 
-    private void initializeFileHashers() {
+    protected void initializeFileHashers() {
         fileHashersStarted = false;
         fileHashers = new ArrayList<>();
         executorService = Executors.newFixedThreadPool(context.getThreadCount());
     }
 
-    private void startFileHashers() throws NoSuchAlgorithmException {
+    protected void startFileHashers() throws NoSuchAlgorithmException {
         if (!fileHashersStarted) {
             String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
             for (int index = 0; index < context.getThreadCount(); index++) {
@@ -140,7 +140,7 @@ public class StateGenerator {
         }
     }
 
-    private void waitAllFilesToBeHashed() {
+    protected void waitAllFilesToBeHashed() {
         try {
             executorService.shutdown();
             executorService.awaitTermination(3, TimeUnit.DAYS);
@@ -149,7 +149,7 @@ public class StateGenerator {
         }
     }
 
-    public static void displayStatistics(Context context, long duration, int fileCount, long filesContentLength, long totalBytesHashed) {
+    protected void displayStatistics(long duration, int fileCount, long filesContentLength, long totalBytesHashed) {
         String totalFileContentLengthStr = FileUtils.byteCountToDisplaySize(filesContentLength);
         String totalBytesHashedStr = FileUtils.byteCountToDisplaySize(totalBytesHashed);
         String durationStr = DurationFormatUtils.formatDuration(duration, "HH:mm:ss");

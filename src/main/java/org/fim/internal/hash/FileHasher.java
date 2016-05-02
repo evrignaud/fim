@@ -44,14 +44,13 @@ import static org.fim.model.Constants.NO_HASH;
 import static org.fim.model.HashMode.dontHash;
 
 public class FileHasher implements Runnable {
-    private final Context context;
+    protected final Context context;
     private final AtomicBoolean scanInProgress;
-    private final HashProgress hashProgress;
+    final HashProgress hashProgress;
+
     private final BlockingDeque<Path> filesToHashQueue;
     private final String rootDir;
-
     private final List<FileState> fileStates;
-
     private final FrontHasher frontHasher;
 
     public FileHasher(Context context, AtomicBoolean scanInProgress, HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException {
@@ -146,7 +145,7 @@ public class FileHasher implements Runnable {
         return newAttributes;
     }
 
-    public FileHash hashFile(Path file, long fileSize) throws IOException {
+    protected FileHash hashFile(Path file, long fileSize) throws IOException {
         HashMode hashMode = hashProgress.getContext().getHashMode();
 
         if (hashMode == dontHash) {

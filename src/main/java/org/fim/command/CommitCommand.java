@@ -20,29 +20,21 @@ package org.fim.command;
 
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.DontWantToContinueException;
-import org.fim.internal.SettingsManager;
-import org.fim.internal.StateComparator;
-import org.fim.internal.StateGenerator;
-import org.fim.internal.StateManager;
-import org.fim.internal.hash.FileHasher;
-import org.fim.internal.hash.HashProgress;
+import org.fim.internal.*;
 import org.fim.model.*;
 import org.fim.util.Console;
 import org.fim.util.Logger;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.atteo.evo.inflector.English.plural;
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.Modification.attributesModified;
 import static org.fim.model.Modification.dateModified;
 import static org.fim.util.FileStateUtil.buildFileNamesMap;
-import static org.fim.util.HashModeUtil.hashModeToString;
 
 public class CommitCommand extends AbstractCommand {
     @Override
@@ -136,37 +128,8 @@ public class CommitCommand extends AbstractCommand {
             }
         }
 
-        reHashFiles(context, toReHash);
-    }
-
-    private void reHashFiles(Context context, List<FileState> toReHash) throws NoSuchAlgorithmException, IOException {
-        int threadCount = 1;
-        Logger.info(String.format("Retrieving the missing hash for all the modified files, using '%s' mode and %d %s",
-            hashModeToString(context.getHashMode()), threadCount, plural("thread", threadCount)));
-
-        HashProgress hashProgress = new HashProgress(context);
-        hashProgress.outputInit();
-        FileHasher fileHasher = new FileHasher(context, null, hashProgress, null, null);
-        Path rootDir = context.getRepositoryRootDir();
-        long start = System.currentTimeMillis();
-        long fileContentLength = 0;
-
-        try {
-            for (FileState fileState : toReHash) {
-                long fileLength = fileState.getFileLength();
-                fileContentLength += fileLength;
-                hashProgress.updateOutput(fileLength);
-                FileHash fileHash = fileHasher.hashFile(rootDir.resolve(fileState.getFileName()), fileLength);
-                fileState.setFileHash(fileHash);
-            }
-        } finally {
-            hashProgress.outputStop();
-        }
-
-        long totalBytesHashed = fileHasher.getTotalBytesHashed();
-        long duration = System.currentTimeMillis() - start;
-        int fileCount = toReHash.size();
-        StateGenerator.displayStatistics(context, duration, fileCount, fileContentLength, totalBytesHashed);
+        StateReGenerator stateReGenerator = new StateReGenerator(context);
+        stateReGenerator.reHashFiles(toReHash);
     }
 
     private State createConsolidatedState(Context context, State lastState, State currentState) throws IOException {
