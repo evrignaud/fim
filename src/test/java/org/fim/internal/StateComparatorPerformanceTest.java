@@ -18,13 +18,23 @@
  */
 package org.fim.internal;
 
-import org.fim.model.*;
+import org.fim.model.Attribute;
+import org.fim.model.CompareResult;
+import org.fim.model.Context;
+import org.fim.model.FileHash;
+import org.fim.model.FileState;
+import org.fim.model.FileTime;
+import org.fim.model.State;
 import org.fim.util.TimeElapsed;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -18,7 +18,12 @@
  */
 package org.fim.tooling;
 
-import org.fim.model.*;
+import org.fim.model.Constants;
+import org.fim.model.Context;
+import org.fim.model.FileHash;
+import org.fim.model.FileState;
+import org.fim.model.FileTime;
+import org.fim.model.State;
 
 import java.util.Collections;
 import java.util.Comparator;

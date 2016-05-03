@@ -20,8 +20,17 @@ package org.fim.command;
 
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.DontWantToContinueException;
-import org.fim.internal.*;
-import org.fim.model.*;
+import org.fim.internal.SettingsManager;
+import org.fim.internal.StateComparator;
+import org.fim.internal.StateGenerator;
+import org.fim.internal.StateManager;
+import org.fim.internal.StateReGenerator;
+import org.fim.model.CompareResult;
+import org.fim.model.Context;
+import org.fim.model.FileState;
+import org.fim.model.HashMode;
+import org.fim.model.Modification;
+import org.fim.model.State;
 import org.fim.util.Console;
 import org.fim.util.Logger;
 

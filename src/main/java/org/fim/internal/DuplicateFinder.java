@@ -18,7 +18,12 @@
  */
 package org.fim.internal;
 
-import org.fim.model.*;
+import org.fim.model.Constants;
+import org.fim.model.Context;
+import org.fim.model.DuplicateResult;
+import org.fim.model.FileHash;
+import org.fim.model.FileState;
+import org.fim.model.State;
 
 import java.util.ArrayList;
 import java.util.Collections;

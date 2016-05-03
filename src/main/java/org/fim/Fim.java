@@ -18,8 +18,26 @@
  */
 package org.fim;
 
-import org.apache.commons.cli.*;
-import org.fim.command.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.fim.command.AbstractCommand;
+import org.fim.command.CommitCommand;
+import org.fim.command.DetectCorruptionCommand;
+import org.fim.command.DiffCommand;
+import org.fim.command.DisplayIgnoredFilesCommand;
+import org.fim.command.FindDuplicatesCommand;
+import org.fim.command.HelpCommand;
+import org.fim.command.InitCommand;
+import org.fim.command.LogCommand;
+import org.fim.command.PurgeStatesCommand;
+import org.fim.command.RemoveDuplicatesCommand;
+import org.fim.command.ResetFileAttributesCommand;
+import org.fim.command.RollbackCommand;
+import org.fim.command.VersionCommand;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.DontWantToContinueException;
 import org.fim.command.exception.RepositoryCreationException;
@@ -38,7 +56,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.fim.model.HashMode.*;
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
 
 public class Fim {
     private List<AbstractCommand> commands = buildCommands();

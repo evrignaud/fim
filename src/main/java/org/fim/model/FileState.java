@@ -24,7 +24,11 @@ import com.google.common.hash.Hasher;
 import org.fim.util.ObjectsUtil;
 
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class FileState implements Hashable {
     private String fileName;

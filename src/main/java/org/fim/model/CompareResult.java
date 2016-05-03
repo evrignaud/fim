@@ -21,11 +21,18 @@ package org.fim.model;
 import org.fim.util.Console;
 
 import java.io.PrintStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static org.atteo.evo.inflector.English.plural;
-import static org.fim.util.FormatUtil.*;
+import static org.fim.util.FormatUtil.formatCreationTime;
+import static org.fim.util.FormatUtil.formatDate;
+import static org.fim.util.FormatUtil.formatLastModified;
 
 public class CompareResult {
     public static final String NOTHING = "[nothing]";

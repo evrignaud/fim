@@ -21,16 +21,31 @@ package org.fim.internal;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import org.apache.commons.lang3.SystemUtils;
-import org.fim.model.*;
+import org.fim.model.CompareResult;
+import org.fim.model.Context;
+import org.fim.model.Difference;
+import org.fim.model.FileHash;
+import org.fim.model.FileState;
+import org.fim.model.Modification;
+import org.fim.model.State;
 import org.fim.util.Logger;
 import org.fim.util.SELinux;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.fim.model.FileAttribute.*;
+import static org.fim.model.FileAttribute.DosFilePermissions;
+import static org.fim.model.FileAttribute.PosixFilePermissions;
+import static org.fim.model.FileAttribute.SELinuxLabel;
 import static org.fim.model.HashMode.dontHash;
-import static org.fim.util.FileStateUtil.*;
+import static org.fim.util.FileStateUtil.buildFileHashList;
+import static org.fim.util.FileStateUtil.buildFileNamesMap;
+import static org.fim.util.FileStateUtil.buildHashCodeMap;
 
 public class StateComparator {
     private final Context context;

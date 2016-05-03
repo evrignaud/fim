@@ -32,7 +32,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static java.nio.file.Files.*;
+import static java.nio.file.Files.copy;
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.createFile;
+import static java.nio.file.Files.write;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.Command.FimReposConstraint.DONT_CARE;

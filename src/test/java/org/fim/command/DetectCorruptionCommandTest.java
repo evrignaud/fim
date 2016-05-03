@@ -37,7 +37,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.*;
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
 
 public class DetectCorruptionCommandTest {
     private static Path rootDir = Paths.get("target/" + DetectCorruptionCommandTest.class.getSimpleName());

@@ -19,7 +19,11 @@
 package org.fim.internal;
 
 import org.apache.commons.io.FileUtils;
-import org.fim.model.*;
+import org.fim.model.Constants;
+import org.fim.model.FileHash;
+import org.fim.model.FileState;
+import org.fim.model.HashMode;
+import org.fim.model.State;
 import org.fim.tooling.BuildableContext;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.StateAssert;
@@ -36,7 +40,10 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.*;
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
 
 @RunWith(Parameterized.class)
 public class StateManagerTest extends StateAssert {

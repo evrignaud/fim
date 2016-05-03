@@ -19,9 +19,21 @@
 package org.fim;
 
 import org.apache.commons.io.FileUtils;
-import org.fim.command.*;
+import org.fim.command.CommitCommand;
+import org.fim.command.DiffCommand;
+import org.fim.command.DisplayIgnoredFilesCommand;
+import org.fim.command.FindDuplicatesCommand;
+import org.fim.command.InitCommand;
+import org.fim.command.LogCommand;
+import org.fim.command.RollbackCommand;
 import org.fim.command.exception.BadFimUsageException;
-import org.fim.model.*;
+import org.fim.model.CompareResult;
+import org.fim.model.Context;
+import org.fim.model.DuplicateResult;
+import org.fim.model.HashMode;
+import org.fim.model.LogResult;
+import org.fim.model.ModificationCounts;
+import org.fim.model.State;
 import org.fim.tooling.RepositoryTool;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +49,10 @@ import java.util.Collection;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.*;
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
 
 @RunWith(Parameterized.class)
 public class FullScenarioTest {

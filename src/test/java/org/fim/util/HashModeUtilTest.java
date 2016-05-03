@@ -22,7 +22,10 @@ import org.fim.model.HashMode;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.*;
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
 
 public class HashModeUtilTest {
     @Test

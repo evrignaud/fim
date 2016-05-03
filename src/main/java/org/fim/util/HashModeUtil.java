@@ -20,7 +20,9 @@ package org.fim.util;
 
 import org.fim.model.HashMode;
 
-import static org.fim.model.HashMode.*;
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
 
 public class HashModeUtil {
     public static String hashModeToString(HashMode hashMode) {

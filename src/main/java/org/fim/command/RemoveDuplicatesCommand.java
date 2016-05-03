@@ -23,7 +23,11 @@ import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.DontWantToContinueException;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
-import org.fim.model.*;
+import org.fim.model.Context;
+import org.fim.model.FileHash;
+import org.fim.model.FileState;
+import org.fim.model.HashMode;
+import org.fim.model.State;
 import org.fim.util.Console;
 import org.fim.util.Logger;
 

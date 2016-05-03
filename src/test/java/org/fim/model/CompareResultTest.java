@@ -34,7 +34,10 @@ import java.util.function.Consumer;
 
 import static java.lang.System.lineSeparator;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.CompareResult.*;
+import static org.fim.model.CompareResult.addSeparator;
+import static org.fim.model.CompareResult.displayDifferences;
+import static org.fim.model.CompareResult.formatModifiedAttributes;
+import static org.fim.model.CompareResult.getValue;
 
 public class CompareResultTest extends StateAssert {
     private GregorianCalendar calendar;

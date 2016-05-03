@@ -34,8 +34,18 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.fim.model.HashMode.*;
-import static org.fim.model.Modification.*;
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
+import static org.fim.model.Modification.added;
+import static org.fim.model.Modification.contentModified;
+import static org.fim.model.Modification.copied;
+import static org.fim.model.Modification.corrupted;
+import static org.fim.model.Modification.dateModified;
+import static org.fim.model.Modification.deleted;
+import static org.fim.model.Modification.duplicated;
+import static org.fim.model.Modification.renamed;
 
 @RunWith(Parameterized.class)
 public class StateComparatorTest extends StateAssert {

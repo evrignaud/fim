@@ -19,8 +19,18 @@
 package org.fim.internal.hash;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.fim.model.*;
-import org.fim.util.*;
+import org.fim.model.Attribute;
+import org.fim.model.Context;
+import org.fim.model.FileAttribute;
+import org.fim.model.FileHash;
+import org.fim.model.FileState;
+import org.fim.model.HashMode;
+import org.fim.model.Range;
+import org.fim.util.Console;
+import org.fim.util.DosFilePermissions;
+import org.fim.util.FileUtil;
+import org.fim.util.Logger;
+import org.fim.util.SELinux;
 import sun.misc.Cleaner;
 import sun.nio.ch.DirectBuffer;
 

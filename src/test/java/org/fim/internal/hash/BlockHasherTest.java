@@ -28,7 +28,13 @@ import java.security.NoSuchAlgorithmException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.hashSmallBlock;
-import static org.fim.tooling.TestConstants.*;
+import static org.fim.tooling.TestConstants._12_KB;
+import static org.fim.tooling.TestConstants._16_KB;
+import static org.fim.tooling.TestConstants._1_KB;
+import static org.fim.tooling.TestConstants._20_KB;
+import static org.fim.tooling.TestConstants._4_KB;
+import static org.fim.tooling.TestConstants._5_KB;
+import static org.fim.tooling.TestConstants._8_KB;
 
 public class BlockHasherTest {
     private BlockHasher cut;
