@@ -1,3 +1,9 @@
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "LvLSvMWS9BsaQEe4DfDIAKp+H9HiZTQN+gMNBQPIzeTctagAulon1k2KaCGbqDBq6v2OxY6nEeyKVwvdyjw/dCkeVXUX7dxhQ9XBH/S1d8prGwtdMxqidkmxiVAmPv1q33FVX1zzSvERHGMc7hG1Zkw+N0dFz5Rk/25jCK18SWmkQV0THVWI9cFQ2Jg2O0EMCywWNoa77eYuVz8GscMh8t4N7gCSURPpCORN/T2WveWpw7mgVhY7P2+TZZPVWcQcIMcRa2199wUbGsvnGK2PSnxUtLGoLu97gHYkNgv25YV3/ONRJrIokotf62DaLz7FdpXf2NvYwuvGT4uqjlv0F1USxwdz8C8lX/gRleX5ZLbbVE5hCm/5MQY459tGllxRpyXnHS8Q5CICxK/p8xzk8M0czmJFdG89XaakDmLNzBg43Hqa3YT0bWegxmMGzw6MTqpzW047+SlQ5RzFxi1+/lRMRIJ3nxWajQ5TfZ02u5AgSSmW4xdvkSzmc9DZb90IGsv5qFjF3sckLk84LtT55PbFRoY3NiJXKyk8BhLGkPx5qTR11JH1t+WizMJwK67R0SDaeept2OD5mtYdtZUiJvR96nBbammm1CshrN2PTyUkP5jT6uZr3z2pb2n33R/1SKPcek0sI92lvULtQs7rr35w1gZWuKj6YhLMj06s3aU="
+
 language: java
 
 matrix:
@@ -18,3 +24,13 @@ before_install:
 
 after_success:
   - mvn clean cobertura:cobertura org.eluder.coveralls:coveralls-maven-plugin:report -DserviceName=travis-ci -DserviceJobId=$TRAVIS_JOB_ID
+
+addons:
+  coverity_scan:
+    project:
+      name: "evrignaud/fim"
+      description: "Build submitted via Travis CI"
+    notification_email: evrignaud@gmail.com
+    build_command_prepend: "mvn clean"
+    build_command:   "mvn -DskipTests=true compile"
+    branch_pattern: coverity_scan
