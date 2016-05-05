@@ -7,19 +7,29 @@ And then it do a full hash of the modified files in order to fill up the missing
 
 This means that even if the global hash mode of your repository is hash all, you can commit using either fast mode or super-fast mode.
 
-For example:
+Example on how commit quickly:
 
 [source]
 ------
-$ fim init -y
+$ fim init -y -c "Create the repository slowly in full mode"
+Info  - Scanning recursively local files, using 'full' mode and 1 thread
 ...
+
 // Do some modifications
+
+$ fim ci -s -y -c "Commit my modifications very quickly in using super-fast commit"
+Info  - Scanning recursively local files, using 'super-fast' mode and 1 thread
 ...
-$ fim ci -s -y
+Info  - Retrieving the missing hash for all the modified files, using 'full' mode and 1 thread
 ...
+
 // Do some modifications
+
+$ fim ci -f -y -c "Commit my modifications quickly in using fast commit"
+Info  - Scanning recursively local files, using 'fast' mode and 1 thread
 ...
-$ fim ci -f -y
+Info  - Retrieving the missing hash for all the modified files, using 'full' mode and 1 thread
+...
 ------
 
 == Run Fim commands from a sub-directory
