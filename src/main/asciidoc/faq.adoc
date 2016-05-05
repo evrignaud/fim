@@ -1,5 +1,27 @@
 = FAQ
 
+== Commits are too slow
+
+Fim is able to commit using the super-fast mode (or fast mode). In that case, it checks into the repository for modifications using the selected mode. +
+And then it do a full hash of the modified files in order to fill up the missing hash. This way you save a lot of time.
+
+This means that even if the global hash mode of your repository is hash all, you can commit using either fast mode or super-fast mode.
+
+For example:
+
+[source]
+------
+$ fim init -y
+...
+// Do some modifications
+...
+$ fim ci -s -y
+...
+// Do some modifications
+...
+$ fim ci -f -y
+------
+
 == Run Fim commands from a sub-directory
 
 You can run all the Fim commands from every sub-directory inside a Fim repository.
