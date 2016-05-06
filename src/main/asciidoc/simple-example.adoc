@@ -11,7 +11,7 @@ You can try it yourself by using the https://github.com/evrignaud/fim/blob/maste
 
 === Create a set of files
 
-[source,shell]
+[source, bash]
 ----
 ~$ mkdir simple-example
 
@@ -38,7 +38,7 @@ drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
 
 === Initialize the Fim repository
 
-[source,shell]
+[source, bash]
 ----
 simple-example$ fim init -c "First State"
 2015/10/20 07:37:51 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
@@ -63,7 +63,7 @@ Added:            file10
 
 === A new `.fim` directory is created
 
-[source,shell]
+[source, bash]
 ----
 simple-example$ ls -la
 total 52
@@ -84,7 +84,7 @@ drwxrwxr-x. 3 evrignaud evrignaud 4096 oct.  20 07:37 .fim
 
 === Do some modifications
 
-[source,shell]
+[source, bash]
 ----
 simple-example$ mkdir dir01
 
@@ -119,7 +119,7 @@ simple-example$ echo "New File 12" > file12
 
 Here is the content of the directories after the modifications.
 
-[source,shell]
+[source, bash]
 ----
 simple-example$ ls -la
 total 68
@@ -150,7 +150,7 @@ drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
 
 === Fim detects the modifications
 
-[source,shell]
+[source, bash]
 ----
 simple-example$ fim diff
 2015/10/20 07:37:52 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
@@ -184,7 +184,7 @@ Deleted:          file06
 
 === Search for duplicated files
 
-[source,shell]
+[source, bash]
 ----
 simple-example$ fim fdup
 2015/10/20 07:37:53 - Info  - Searching for duplicated files
@@ -214,14 +214,14 @@ simple-example$ fim fdup
 You can run Fim on a subset of the repository. +
 More details on using Fim from a sub-directory can be found <<faq.adoc#_run_fim_commands_from_a_sub_directory,here>>.
 
-[source,shell]
+[source, bash]
 ----
 simple-example$ cd dir01
 ----
 
 Inside this directory only one file is seen as added.
 
-[source,shell]
+[source, bash]
 ----
 simple-example/dir01$ fim diff
 2015/10/20 07:37:54 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
@@ -239,7 +239,7 @@ Added:            dir01/file01
 
 There are no duplicated file as we are looking only inside `dir01`.
 
-[source,shell]
+[source, bash]
 ----
 simple-example/dir01$ fim fdup
 2015/10/20 07:37:55 - Info  - Searching for duplicated files
@@ -254,7 +254,7 @@ No duplicated file found
 
 Commit only the local modifications done inside this directory.
 
-[source,shell]
+[source, bash]
 ----
 simple-example/dir01$ fim ci -c "Modifications from dir01" -y
 2015/10/20 07:37:56 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
@@ -272,7 +272,7 @@ Added:            dir01/file01
 
 There are no more local modifications.
 
-[source,shell]
+[source, bash]
 ----
 simple-example/dir01$ fim diff
 2015/10/20 07:37:57 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
@@ -288,14 +288,14 @@ Nothing modified
 
 Return into the parent directory.
 
-[source,shell]
+[source, bash]
 ----
 simple-example/dir01$ cd ..
 ----
 
 === Commit the modifications
 
-[source,shell]
+[source, bash]
 ----
 simple-example$ fim ci -c "All modifications" -y
 2015/10/20 07:37:58 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
@@ -329,7 +329,7 @@ Deleted:          file06
 
 === Nothing is modified now
 
-[source,shell]
+[source, bash]
 ----
 simple-example$ fim diff
 2015/10/20 07:37:59 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
@@ -346,7 +346,7 @@ Nothing modified
 
 == The Fim log
 
-[source,shell]
+[source, bash]
 ----
 simple-example$ fim log
 State #1: 2015/10/20 07:37:51 (10 files - 120 bytes)
@@ -366,7 +366,7 @@ State #3: 2015/10/20 07:37:58 (14 files - 176 bytes)
 
 Here is an extract of the State's 3 content. To simplify reading, hashes are shortened and only one file entry is kept.
 
-[source]
+[source, bash]
 ----
 simple-example$ zmore .fim/states/state_3.json.gz
 {
@@ -410,7 +410,7 @@ simple-example$ zmore .fim/states/state_3.json.gz
     },
 
     ...
-    // Other file entries have been removed
+    # Other file entries have been removed
     ...
 
   ]

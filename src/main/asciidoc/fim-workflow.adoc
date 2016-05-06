@@ -4,7 +4,7 @@
 First you need to initialize the Fim repository using the `init` command.
 This will record the first State of your file tree.
 
-[source,shell]
+[source, bash]
 ----
 $ fim init
 ----
@@ -12,21 +12,21 @@ $ fim init
 Then you can compare the differences between the recorded State and the current file tree using the `diff` command.
 You can do a full diff that will compare the hash of all the files. It can be very slow as all the file contents will be read and hashed.
 
-[source,shell]
+[source, bash]
 ----
 $ fim diff
 ----
 
 You can compare quickly using the fast mode. *With this option you can miss some modified files.*
 
-[source,shell]
+[source, bash]
 ----
 $ fim diff -f
 ----
 
 You can compare quicker using the super-fast mode. *With this option you can miss some modified files.*
 
-[source,shell]
+[source, bash]
 ----
 $ fim diff -s
 ----
@@ -34,7 +34,7 @@ $ fim diff -s
 Otherwise, you can request to not hash file content using the `-n` option. It will compare only the file names, file length, modification dates and permissions.
 You will not be able to detect files that have been renamed or duplicated.
 
-[source,shell]
+[source, bash]
 ----
 $ fim diff -n
 ----
@@ -42,7 +42,7 @@ $ fim diff -n
 Each time you want to record the State of the current file tree you can use the `commit` command. +
 It's a time consuming operation that will compute hash of every file contents.
 
-[source,shell]
+[source, bash]
 ----
 $ fim ci -c "My commit comment"
 ----

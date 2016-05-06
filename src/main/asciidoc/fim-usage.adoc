@@ -1,6 +1,5 @@
 = Fim usage
 
-[source,shell]
 --------
 $ fim help
 

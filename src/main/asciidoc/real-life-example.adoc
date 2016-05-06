@@ -7,7 +7,7 @@
 Here is the output of the initialization of a big Fim repository that contains 297 GB of photos and videos. +
 In my case *it takes almost 3 hours* to hash all the file contents.
 
-[source,shell]
+[source, bash]
 ----
 photos-videos$ fim init -y
 No comment provided. You are going to initialize your repository using the default comment.
@@ -31,7 +31,7 @@ No comment provided. You are going to initialize your repository using the defau
 It is possible to check the differences very quickly using the super-fast mode using the `-s` option that will check only 3 small blocks of 4 KB. +
 In my case *it takes 17 minutes :=)*.
 
-[source,shell]
+[source, bash]
 ----
 photos-videos$ fim diff -s
 2015/10/22 23:15:52 - Info  - Scanning recursively local files, using 'super-fast' mode and 2 threads
@@ -57,7 +57,7 @@ To increase accuracy, you can use the fast mode using the `-f` option that will 
 Even if, using this mode increase accuracy, it cannot be completely accurate as we only hash 3 different 1 MB blocks of the files. +
 This time in my case, *it takes 42 minutes* to check the differences.
 
-[source,shell]
+[source, bash]
 ----
 photos-videos$ fim diff -f
 2015/10/22 23:33:22 - Info  - Scanning recursively local files, using 'fast' mode and 2 threads
@@ -87,7 +87,7 @@ There is also the do not hash mode using the `-n` option that will not hash the 
 It helps to detect faster changes but you will be able to detect only file names and file attributes that have changed. +
 This time in my case, *it takes 46 seconds*.
 
-[source,shell]
+[source, bash]
 ----
 photos-videos$ fim diff -n
 2015/10/22 23:14:53 - Info  - Not hashing file content so thread count forced to 1

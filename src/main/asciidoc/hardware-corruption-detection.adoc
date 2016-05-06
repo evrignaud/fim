@@ -15,14 +15,14 @@ For example here is a simulation of hardware corruption based on the repository 
 
 * Change the content of a file
 
-[source,shell]
+[source, bash]
 ----
 simple-example$ echo bar >> file05
 ----
 
 * Reset the file attributes using the `fim rfa` command
 
-[source,shell]
+[source, bash]
 ----
 simple-example$ fim rfa -y
 You are going to reset files attributes based on the last committed State done 2015/10/23 07:16:19
@@ -37,7 +37,7 @@ Set last modified: file05 	2015/10/23 09:18:14 -> 2015/10/23 07:16:12
 
 * Now `file05` is suspected to be corrupted
 
-[source,shell]
+[source, bash]
 ----
 simple-example$ fim dcor
 2015/10/23 09:19:26 - Info  - Scanning recursively local files, using 'full' mode and 2 threads

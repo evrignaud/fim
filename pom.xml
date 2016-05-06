@@ -237,13 +237,14 @@
                         <configuration>
                             <sourceDirectory>src/main/asciidoc</sourceDirectory>
                             <outputDirectory>target/docs</outputDirectory>
-                            <sourceHighlighter>coderay</sourceHighlighter>
+                            <sourceHighlighter>highlight.js</sourceHighlighter>
                             <backend>html5</backend>
                             <doctype>book</doctype>
                             <attributes>
                                 <toc/>
                                 <linkcss>false</linkcss>
                                 <projectVersion>${project.version}</projectVersion>
+                                <highlightjs-theme>xcode</highlightjs-theme>
                             </attributes>
                         </configuration>
                     </execution>

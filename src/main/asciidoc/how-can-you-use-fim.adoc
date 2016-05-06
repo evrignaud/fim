@@ -16,7 +16,7 @@ If you don't have Java and you don't want to install it, you can run Fim using a
 It will run only on Linux.
 
 After having build Fim (<<how-can-you-use-fim.adoc#_build_fim,see below>>), type the following command:
-[source]
+[source, bash]
 ----
 $ ./build-docker-image
 ----
@@ -38,7 +38,7 @@ If you clone Fim's master, a SNAPSHOT is retrieved and there is no guarantee tha
 ** Or clone it using either `https://github.com/evrignaud/fim.git` or `git@github.com:evrignaud/fim.git`
 * Build it by typing the following command (follow <<how-can-you-use-fim.adoc#_step_by_step_procedure,this procedure>> for more details):
 
-[source]
+[source, bash]
 ----
 mvn clean install
 ----
@@ -51,7 +51,7 @@ the two shell script files located in the root directory.
 
 It generates also two distribution files into the `target/dist` directory.
 
-[source]
+[source, bash]
 ----
 $ ls -a1 target/dist/
 fim-1.1.0-SNAPSHOT-distribution.tar.gz
@@ -68,7 +68,7 @@ If you don't have Maven, you can either download it from http://maven.apache.org
 
 ===== For Linux
 
-[source]
+[source, bash]
 ----
 $ sudo apt-get install maven
 ----
@@ -77,14 +77,14 @@ $ sudo apt-get install maven
 
 First install http://brew.sh[Homebrew] if you don't have it.
 
-[source]
+[source, bash]
 ----
 $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ----
 
 Then install Maven.
 
-[source]
+[source, bash]
 ----
 $ brew install maven
 ----
@@ -93,7 +93,7 @@ Then you need to add the `maven/bin` directory into your `PATH`.
 
 ==== Clone Fim
 
-[source]
+[source, bash]
 ----
 $ cd
 $ mkdir projects
@@ -104,14 +104,14 @@ $ cd fim
 
 ==== Build Fim
 
-[source]
+[source, bash]
 ------
 $ mvn clean install
 ------
 
 ==== Now Fim is ready
 
-[source]
+[source, bash]
 ------
 $ ./fim
 ------
