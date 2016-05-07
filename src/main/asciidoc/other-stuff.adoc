@@ -2,7 +2,7 @@
 
 = Fim requirements
 
-*This tool is written in Java*
+This tool is written in Java
 
 Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from http://www.oracle.com/technetwork/java/javase/downloads/index.html[here]. +
 You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.
