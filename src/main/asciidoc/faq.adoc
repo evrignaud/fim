@@ -4,7 +4,7 @@
 
 Fim is able to commit using the super-fast mode (or fast mode). In that case, it checks into the repository for modifications using the selected mode. +
 And then it do a full hash of the modified files in order to fill up the missing hash. +
-*Using Super-fast commit allow to save a lot of time.*
+*Using Super-fast commit allow to save a lot of time.* With this option you can miss some modified files.
 
 This means that even if the global hash mode of your repository is hash all, you can commit using either fast mode or super-fast mode.
 
