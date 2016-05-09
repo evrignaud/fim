@@ -18,7 +18,7 @@ Info  - Scanning recursively local files, using 'full' mode and 2 threads
 
 # Do some modifications
 
-$ fim ci -s -y -c "Commit my modifications very quickly using super-fast commit"
+$ fim ci -s -y -c "Commit modifications very quickly using super-fast commit"
 Info  - Scanning recursively local files, using 'super-fast' mode and 2 threads
 ...
 Info  - Retrieving the missing hash for all the modified files, using 'full' mode and 2 threads
@@ -26,7 +26,7 @@ Info  - Retrieving the missing hash for all the modified files, using 'full' mod
 
 # Do some modifications
 
-$ fim ci -f -y -c "Commit my modifications quickly using fast commit"
+$ fim ci -f -y -c "Commit modifications quickly using fast commit"
 Info  - Scanning recursively local files, using 'fast' mode and 2 threads
 ...
 Info  - Retrieving the missing hash for all the modified files, using 'full' mode and 2 threads
