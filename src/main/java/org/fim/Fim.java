@@ -120,13 +120,15 @@ public class Fim {
     protected void run(String[] args, Context context) throws Exception {
         String[] filteredArgs = filterEmptyArgs(args);
         if (filteredArgs.length < 1) {
-            youMustSpecifyACommandToRun();
+            youMustSpecifyACommandToRun(null);
         }
 
         Command command = null;
         String[] optionArgs = filteredArgs;
         String firstArg = filteredArgs[0];
-        if (!firstArg.startsWith("-")) {
+        if (firstArg.startsWith("-")) {
+            firstArg = null;
+        } else {
             optionArgs = Arrays.copyOfRange(filteredArgs, 1, filteredArgs.length);
             command = findCommand(firstArg);
         }
@@ -180,7 +182,7 @@ public class Fim {
         }
 
         if (command == null) {
-            youMustSpecifyACommandToRun();
+            youMustSpecifyACommandToRun(firstArg);
         }
 
         FimReposConstraint constraint = command.getFimReposConstraint();
@@ -267,9 +269,12 @@ public class Fim {
         return filteredArgs.toArray(new String[0]);
     }
 
-    private void youMustSpecifyACommandToRun() {
-        Logger.error("You must specify the command to run");
-        printUsage();
+    private void youMustSpecifyACommandToRun(String firstArg) {
+        if (firstArg != null) {
+            Logger.error(String.format("'%s' is not a fim command. See 'fim --help'.", firstArg));
+        } else {
+            Logger.error("You must specify the command to run. See 'fim --help'");
+        }
         throw new BadFimUsageException();
     }
 
