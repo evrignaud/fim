@@ -108,6 +108,7 @@ public class FullScenarioTest {
         Context context = tool.createContext(hashMode, hashMode == hashAll);
 
         tool.createASetOfFiles(10);
+        Thread.sleep(2); // In order to detect modified dates
 
         State state = (State) initCommand.execute(context);
 

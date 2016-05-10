@@ -24,13 +24,15 @@
 rm -rf simple-example || exit $?
 mkdir simple-example || exit $?
 
-set +x
+set -x
 (
 	cd simple-example
 	echo
 	echo \# Create a set of files
 	for i in 01 02 03 04 05 06 07 08 09 10 ; do echo "New File $i" > file$i ; done
 	ls -la
+
+	sleep 2 # In order to detect modified dates
 
 	echo
 	echo \# Initialize the Fim repository
@@ -120,6 +122,30 @@ set +x
 
 	echo
 	echo \# Nothing is modified now
+	fim diff || exit $?
+
+	echo
+	echo \# Display the Fim log
+	fim log || exit $?
+
+	echo
+	echo \# Rollback the last commit
+	fim rbk -y || exit $?
+
+	echo
+	echo \# Rollback again
+	fim rbk -y || exit $?
+
+	echo
+	echo \# Nothing more to rollback
+	fim rbk -y || exit $?
+
+	echo
+	echo \# Commit using super-fast mode
+	fim ci -s -c "Commit modifications very quickly using super-fast commit" -y || exit $?
+
+	echo
+	echo \# Again, nothing is modified now
 	fim diff || exit $?
 
 	echo
