@@ -101,6 +101,7 @@ public class CommitCommand extends AbstractCommand {
                 if (context.getHashMode() != dontHash && context.getHashMode() != globalHashMode) {
                     // Reload the last state with the globalHashMode in order to get a complete state.
                     context.setHashMode(globalHashMode);
+                    currentState.setHashMode(globalHashMode);
                     lastState = manager.loadLastState();
                     retrieveMissingHash(context, currentState, lastState);
                 }

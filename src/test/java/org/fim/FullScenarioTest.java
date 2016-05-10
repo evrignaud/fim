@@ -49,6 +49,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.fim.internal.StateManager.STATE_EXTENSION;
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
 import static org.fim.model.HashMode.hashMediumBlock;
@@ -257,6 +258,10 @@ public class FullScenarioTest {
     private void commit_AndAssertFilesModifiedCountEqualsTo(Context context, int expectedModifiedFileCount) throws Exception {
         CompareResult compareResult = (CompareResult) commitCommand.execute(context);
         assertThat(compareResult.modifiedCount()).isEqualTo(expectedModifiedFileCount);
+
+        Path lastStateFile = getStateFile(context, getLastStateNumber(context));
+        State lastState = State.loadFromGZipFile(lastStateFile, false);
+        assertThat(lastState.getHashMode()).isEqualTo(context.getHashMode());
     }
 
     private void assertDuplicatedFilesCountEqualsTo(Context context, int expectedDuplicatedSetCount) throws Exception {
@@ -278,5 +283,19 @@ public class FullScenarioTest {
 
         Set<String> ignoredFiles = (Set<String>) displayIgnoredFilesCommand.execute(context);
         assertThat(ignoredFiles.size()).isEqualTo(expectedIgnoredFilesCount);
+    }
+
+    public Path getStateFile(Context context, int stateNumber) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("state_").append(stateNumber).append(STATE_EXTENSION);
+        return context.getRepositoryStatesDir().resolve(builder.toString());
+    }
+
+    public int getLastStateNumber(Context context) {
+        for (int index = 1; ; index++) {
+            if (!Files.exists(getStateFile(context, index))) {
+                return index - 1;
+            }
+        }
     }
 }
