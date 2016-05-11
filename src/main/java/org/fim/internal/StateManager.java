@@ -65,6 +65,9 @@ public class StateManager {
 
         try {
             State state = State.loadFromGZipFile(stateFile, loadFullState);
+            if (state == null) {
+                throw new CorruptedStateException();
+            }
 
             if (loadFullState) {
                 adjustAccordingToHashMode(state);
