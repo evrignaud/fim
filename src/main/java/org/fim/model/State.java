@@ -85,6 +85,9 @@ public class State implements Hashable {
         try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile.toFile())))) {
             Gson gson = new Gson();
             State state = gson.fromJson(reader, State.class);
+            if (state == null) {
+                throw new CorruptedStateException();
+            }
 
             if (loadFullState) {
                 if (!CURRENT_MODEL_VERSION.equals(state.getModelVersion())) {
