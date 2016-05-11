@@ -111,6 +111,11 @@ public class CommitCommand extends AbstractCommand {
                 }
 
                 manager.createNewState(currentState);
+
+                if (context.isPurgeStates()) {
+                    PurgeStatesCommand purgeStatesCommand = new PurgeStatesCommand();
+                    purgeStatesCommand.execute(context);
+                }
             } else {
                 Logger.info("Nothing committed");
             }

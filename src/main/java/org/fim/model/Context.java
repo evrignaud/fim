@@ -43,6 +43,7 @@ public class Context {
     private boolean alwaysYes;
     private boolean displayStackTrace;
     private int truncateOutput;
+    private boolean purgeStates;
     private boolean logDebugEnabled;
 
     public Context() {
@@ -187,6 +188,14 @@ public class Context {
 
     public boolean isLogDebugEnabled() {
         return logDebugEnabled;
+    }
+
+    public void setPurgeStates(boolean purgeStates) {
+        this.purgeStates = purgeStates;
+    }
+
+    public boolean isPurgeStates() {
+        return purgeStates;
     }
 
     public Context clone() {
