@@ -54,8 +54,13 @@ public class HashProgress {
     }
 
     public void outputInit() {
-        summedFileLength = 0;
-        fileCount = 0;
+        progressLock.lock();
+        try {
+            summedFileLength = 0;
+            fileCount = 0;
+        } finally {
+            progressLock.unlock();
+        }
     }
 
     public void updateOutput(long fileSize) throws IOException {
