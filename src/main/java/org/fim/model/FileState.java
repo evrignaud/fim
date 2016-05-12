@@ -143,6 +143,7 @@ public class FileState implements Hashable {
      *             Those hash collision appears when you manage millions of FileStates.
      */
     @Override
+    @Deprecated
     public int hashCode() {
         return Objects.hash(fileName, fileLength, fileTime, fileHash, fileAttributes);
     }
@@ -184,12 +185,12 @@ public class FileState implements Hashable {
 
         hasher.putChar(HASH_OBJECT_SEPARATOR);
         if (fileAttributes != null) {
-            for (String key : fileAttributes.keySet()) {
+            for (Map.Entry<String, String> entry : fileAttributes.entrySet()) {
                 hasher
-                    .putString(key, Charsets.UTF_8)
+                    .putString(entry.getKey(), Charsets.UTF_8)
                     .putChar(':')
                     .putChar(':')
-                    .putString(fileAttributes.get(key), Charsets.UTF_8);
+                    .putString(entry.getValue(), Charsets.UTF_8);
                 hasher.putChar(HASH_OBJECT_SEPARATOR);
             }
         }

@@ -138,7 +138,7 @@ public class FileHasher implements Runnable {
     }
 
     private boolean isQueueStillFilled() {
-        return scanInProgress.get() || filesToHashQueue.size() > 0;
+        return scanInProgress.get() || !filesToHashQueue.isEmpty();
     }
 
     private List<Attribute> addAttribute(List<Attribute> attributes, FileAttribute attribute, String value) {

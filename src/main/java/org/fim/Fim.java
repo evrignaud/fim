@@ -99,23 +99,23 @@ public class Fim {
     }
 
     private Options buildOptions() {
-        Options options = new Options();
-        options.addOption(createOption("d", "directory", true, "Run Fim into the specified directory", false));
-        options.addOption(createOption("e", "errors", false, "Display execution error details", false));
-        options.addOption(createOption("m", "master-fim-repository", true, "Fim repository directory that you want to use as remote master.\nOnly for the remove duplicated files command", false));
-        options.addOption(createOption("n", "do-not-hash", false, "Do not hash file content. Uses only file names and modification dates", false));
-        options.addOption(createOption("s", "super-fast-mode", false, "Use super-fast mode. Hash only 3 small blocks.\nOne at the beginning, one in the middle and one at the end", false));
-        options.addOption(createOption("f", "fast-mode", false, "Use fast mode. Hash only 3 medium blocks.\nOne at the beginning, one in the middle and one at the end", false));
-        options.addOption(createOption("h", "help", false, "Prints the Fim help", false));
-        options.addOption(createOption("l", "use-last-state", false, "Use the last committed State.\nOnly for the find local duplicated files command", false));
-        options.addOption(createOption("c", "comment", true, "Comment to set during init and commit", false));
-        options.addOption(createOption("o", "output-max-lines", true, "Change the maximum number lines displayed for the same kind of modification. Default value is 200 lines", false));
-        options.addOption(createOption("p", "purge-states", false, "Purge previous States if the commit succeed", false));
-        options.addOption(createOption("q", "quiet", false, "Do not display details", false));
-        options.addOption(createOption("t", "thread-count", true, "Number of thread used to hash file contents in parallel", false));
-        options.addOption(createOption("v", "version", false, "Prints the Fim version", false));
-        options.addOption(createOption("y", "always-yes", false, "Always yes to every questions", false));
-        return options;
+        Options opts = new Options();
+        opts.addOption(createOption("d", "directory", true, "Run Fim into the specified directory", false));
+        opts.addOption(createOption("e", "errors", false, "Display execution error details", false));
+        opts.addOption(createOption("m", "master-fim-repository", true, "Fim repository directory that you want to use as remote master.\nOnly for the remove duplicated files command", false));
+        opts.addOption(createOption("n", "do-not-hash", false, "Do not hash file content. Uses only file names and modification dates", false));
+        opts.addOption(createOption("s", "super-fast-mode", false, "Use super-fast mode. Hash only 3 small blocks.\nOne at the beginning, one in the middle and one at the end", false));
+        opts.addOption(createOption("f", "fast-mode", false, "Use fast mode. Hash only 3 medium blocks.\nOne at the beginning, one in the middle and one at the end", false));
+        opts.addOption(createOption("h", "help", false, "Prints the Fim help", false));
+        opts.addOption(createOption("l", "use-last-state", false, "Use the last committed State.\nOnly for the find local duplicated files command", false));
+        opts.addOption(createOption("c", "comment", true, "Comment to set during init and commit", false));
+        opts.addOption(createOption("o", "output-max-lines", true, "Change the maximum number lines displayed for the same kind of modification. Default value is 200 lines", false));
+        opts.addOption(createOption("p", "purge-states", false, "Purge previous States if the commit succeed", false));
+        opts.addOption(createOption("q", "quiet", false, "Do not display details", false));
+        opts.addOption(createOption("t", "thread-count", true, "Number of thread used to hash file contents in parallel", false));
+        opts.addOption(createOption("v", "version", false, "Prints the Fim version", false));
+        opts.addOption(createOption("y", "always-yes", false, "Always yes to every questions", false));
+        return opts;
     }
 
     protected void run(String[] args, Context context) throws Exception {
@@ -293,7 +293,7 @@ public class Fim {
             } else {
                 cmdName = command.getCmdName();
             }
-            usage.append(String.format("     %-26s %s\n", cmdName, command.getDescription()));
+            usage.append(String.format("     %-26s %s%n", cmdName, command.getDescription()));
         }
 
         usage.append("\n");

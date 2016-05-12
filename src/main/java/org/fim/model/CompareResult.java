@@ -169,7 +169,7 @@ public class CompareResult {
             if (index >= truncateOutput && (differencesSize - index) > quarter) {
                 out.println("  [Too many lines. Truncating the output] ...");
                 int moreFiles = differencesSize - index;
-                out.printf(actionStr + "%d %s more%n", moreFiles, plural("file", moreFiles));
+                out.printf("%s%d %s more%n", actionStr, moreFiles, plural("file", moreFiles));
                 break;
             }
 
