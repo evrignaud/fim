@@ -27,7 +27,6 @@ import org.fim.util.Console;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static org.fim.model.HashMode.dontHash;
 
@@ -43,47 +42,35 @@ public class HashProgress {
         Pair.of('#', Constants._1_GB)
     );
 
-    private final ReentrantLock progressLock;
     private final Context context;
     private long summedFileLength;
     private int fileCount;
 
     public HashProgress(Context context) {
         this.context = context;
-        this.progressLock = new ReentrantLock();
     }
 
-    public void outputInit() {
-        progressLock.lock();
-        try {
-            summedFileLength = 0;
-            fileCount = 0;
-        } finally {
-            progressLock.unlock();
+    public synchronized void outputInit() {
+        summedFileLength = 0;
+        fileCount = 0;
+    }
+
+    public synchronized void updateOutput(long fileSize) throws IOException {
+        fileCount++;
+
+        if (isProgressDisplayed()) {
+            summedFileLength += fileSize;
+
+            if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0) {
+                System.out.print(getProgressChar(summedFileLength));
+                summedFileLength = 0;
+            }
         }
-    }
 
-    public void updateOutput(long fileSize) throws IOException {
-        progressLock.lock();
-        try {
-            fileCount++;
-
+        if (fileCount % (100 * PROGRESS_DISPLAY_FILE_COUNT) == 0) {
             if (isProgressDisplayed()) {
-                summedFileLength += fileSize;
-
-                if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0) {
-                    System.out.print(getProgressChar(summedFileLength));
-                    summedFileLength = 0;
-                }
+                Console.newLine();
             }
-
-            if (fileCount % (100 * PROGRESS_DISPLAY_FILE_COUNT) == 0) {
-                if (isProgressDisplayed()) {
-                    Console.newLine();
-                }
-            }
-        } finally {
-            progressLock.unlock();
         }
     }
 
@@ -119,7 +106,7 @@ public class HashProgress {
         return ' ';
     }
 
-    public void outputStop() {
+    public synchronized void outputStop() {
         if (isProgressDisplayed()) {
             if (fileCount >= PROGRESS_DISPLAY_FILE_COUNT) {
                 Console.newLine();
