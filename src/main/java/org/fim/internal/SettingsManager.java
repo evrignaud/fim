@@ -20,6 +20,7 @@ package org.fim.internal;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.fim.command.exception.RepositoryException;
 import org.fim.model.Context;
 import org.fim.model.HashMode;
 import org.fim.model.Settings;
@@ -62,7 +63,7 @@ public class SettingsManager {
             Gson gson = new Gson();
             settings = gson.fromJson(reader, Settings.class);
         } catch (IOException ex) {
-            throw new RuntimeException("Error reading settings", ex);
+            throw new RepositoryException("Error reading settings", ex);
         }
     }
 
@@ -71,7 +72,7 @@ public class SettingsManager {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(settings, writer);
         } catch (IOException ex) {
-            throw new RuntimeException("Error saving settings", ex);
+            throw new RepositoryException("Error saving settings", ex);
         }
     }
 

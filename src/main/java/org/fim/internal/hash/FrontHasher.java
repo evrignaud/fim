@@ -18,6 +18,7 @@
  */
 package org.fim.internal.hash;
 
+import org.fim.command.exception.FimInternalError;
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
 import org.fim.model.Range;
@@ -96,7 +97,7 @@ public class FrontHasher implements Hasher {
             nextSmallRange = smallBlockHasher.getNextRange(filePosition);
             return nextSmallRange;
         }
-        throw new RuntimeException(String.format("Fim is not working correctly. Unable to getNextRange for filePosition %d", filePosition));
+        throw new FimInternalError(String.format("Fim is not working correctly. Unable to getNextRange for filePosition %d", filePosition));
     }
 
     @Override
@@ -121,7 +122,7 @@ public class FrontHasher implements Hasher {
 
     @Override
     public String getHash() {
-        throw new RuntimeException("Not implemented");
+        throw new FimInternalError("Not implemented");
     }
 
     @Override

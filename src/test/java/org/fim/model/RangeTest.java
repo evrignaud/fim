@@ -18,6 +18,7 @@
  */
 package org.fim.model;
 
+import org.fim.command.exception.FimInternalError;
 import org.fim.tooling.ObjectAssert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class RangeTest {
         c = new Range(4, 5);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = FimInternalError.class)
     public void toMustBeGreaterThanFrom() {
         new Range(4, 3);
     }
@@ -77,7 +78,7 @@ public class RangeTest {
         assertThat(range1.adjustToRange(range2)).isEqualTo(new Range(4, 9));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = FimInternalError.class)
     public void otherRangeCannotStartBefore() {
         Range range1 = new Range(4, 10);
         Range range2 = new Range(3, 15);

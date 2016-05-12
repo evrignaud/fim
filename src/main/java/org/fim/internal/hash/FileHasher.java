@@ -19,6 +19,7 @@
 package org.fim.internal.hash;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.fim.command.exception.FimInternalError;
 import org.fim.model.Attribute;
 import org.fim.model.Context;
 import org.fim.model.FileAttribute;
@@ -183,7 +184,7 @@ public class FileHasher implements Runnable {
         }
 
         if (false == frontHasher.hashComplete()) {
-            throw new RuntimeException(String.format("Fim is not working correctly for file '%s' (size=%d). Some Hasher have not completed: small=%s, medium=%s, full=%s",
+            throw new FimInternalError(String.format("Fim is not working correctly for file '%s' (size=%d). Some Hasher have not completed: small=%s, medium=%s, full=%s",
                 file, fileSize, frontHasher.getSmallBlockHasher().hashComplete(), frontHasher.getMediumBlockHasher().hashComplete(), frontHasher.getFullHasher().hashComplete()));
         }
 

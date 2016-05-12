@@ -40,7 +40,7 @@ import org.fim.command.RollbackCommand;
 import org.fim.command.VersionCommand;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.DontWantToContinueException;
-import org.fim.command.exception.RepositoryCreationException;
+import org.fim.command.exception.RepositoryException;
 import org.fim.internal.SettingsManager;
 import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
@@ -74,7 +74,7 @@ public class Fim {
             System.exit(0);
         } catch (BadFimUsageException ex) {
             System.exit(-1);
-        } catch (RepositoryCreationException ex) {
+        } catch (RepositoryException ex) {
             System.exit(-2);
         }
 
@@ -198,7 +198,7 @@ public class Fim {
 
             if (!Files.isWritable(context.getRepositoryRootDir())) {
                 Logger.error(String.format("Not allowed to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()));
-                throw new RepositoryCreationException();
+                throw new RepositoryException();
             }
         } else if (constraint == FimReposConstraint.MUST_EXIST) {
             findRepositoryRootDir(context);
@@ -210,12 +210,12 @@ public class Fim {
 
             if (!Files.isWritable(context.getRepositoryStatesDir())) {
                 Logger.error(String.format("Not allowed to modify States into the '%s' directory", context.getRepositoryStatesDir()));
-                throw new RepositoryCreationException();
+                throw new RepositoryException();
             }
             SettingsManager settingsManager = new SettingsManager(context);
             if (!Files.isWritable(settingsManager.getSettingsFile())) {
                 Logger.error(String.format("Not allowed to save settings into the '%s' directory", context.getRepositoryDotFimDir()));
-                throw new RepositoryCreationException();
+                throw new RepositoryException();
             }
         }
 

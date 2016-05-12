@@ -20,7 +20,7 @@ package org.fim;
 
 import org.apache.commons.io.FileUtils;
 import org.fim.command.exception.BadFimUsageException;
-import org.fim.command.exception.RepositoryCreationException;
+import org.fim.command.exception.RepositoryException;
 import org.fim.model.Context;
 import org.fim.model.HashMode;
 import org.fim.tooling.RepositoryTool;
@@ -64,11 +64,11 @@ public class FimTest {
         cut.run(new String[]{"init", "-y"}, context);
     }
 
-    @Test(expected = RepositoryCreationException.class)
+    @Test(expected = RepositoryException.class)
     public void fimRepositoryNotWritable() throws Exception {
         if (IS_OS_WINDOWS) {
             // Ignore this test for Windows
-            throw new RepositoryCreationException();
+            throw new RepositoryException();
         }
 
         tool.setReadOnly(rootDir);

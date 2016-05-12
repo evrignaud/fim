@@ -19,6 +19,7 @@
 package org.fim.model;
 
 import com.google.common.base.MoreObjects;
+import org.fim.command.exception.FimInternalError;
 
 import java.util.Objects;
 
@@ -35,7 +36,7 @@ public class Range implements Comparable<Range> {
      */
     public Range(long from, long to) {
         if (from > to) {
-            throw new RuntimeException("'to' must be greater than 'from'");
+            throw new FimInternalError("'to' must be greater than 'from'");
         }
 
         this.from = from;
@@ -76,7 +77,7 @@ public class Range implements Comparable<Range> {
     public Range adjustToRange(Range range) {
         if (range != null) {
             if (range.getFrom() < from) {
-                throw new RuntimeException("The Range must begin inside the current Range");
+                throw new FimInternalError("The Range must begin inside the current Range");
             }
 
             if (range.getFrom() < to && range.getTo() > to) {

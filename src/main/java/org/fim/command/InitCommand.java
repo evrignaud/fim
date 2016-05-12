@@ -19,7 +19,7 @@
 package org.fim.command;
 
 import org.fim.command.exception.DontWantToContinueException;
-import org.fim.command.exception.RepositoryCreationException;
+import org.fim.command.exception.RepositoryException;
 import org.fim.internal.SettingsManager;
 import org.fim.internal.StateComparator;
 import org.fim.internal.StateGenerator;
@@ -86,7 +86,7 @@ public class InitCommand extends AbstractCommand {
             Files.createDirectories(context.getRepositoryStatesDir());
         } catch (IOException ex) {
             Logger.error(String.format("Not able to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()), ex, context.isDisplayStackTrace());
-            throw new RepositoryCreationException();
+            throw new RepositoryException();
         }
 
         if (context.getHashMode() != hashAll) {

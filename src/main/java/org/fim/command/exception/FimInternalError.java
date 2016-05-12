@@ -18,5 +18,8 @@
  */
 package org.fim.command.exception;
 
-public class RepositoryCreationException extends RuntimeException {
+public class FimInternalError extends Error {
+    public FimInternalError(String message) {
+        super(message);
+    }
 }
