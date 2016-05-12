@@ -155,7 +155,7 @@ public class CompareResult {
     }
 
     public static void displayDifferences(PrintStream out, Context context, String actionStr,
-                                          List<Difference> differences, Consumer<Difference> displayDifference) {
+                                          List<Difference> differences, Consumer<Difference> displayOneDifference) {
         int truncateOutput = context.getTruncateOutput();
         if (truncateOutput < 1) {
             return;
@@ -173,7 +173,9 @@ public class CompareResult {
                 break;
             }
 
-            displayDifference.accept(difference);
+            if (displayOneDifference != null) {
+                displayOneDifference.accept(difference);
+            }
         }
     }
 
