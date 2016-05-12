@@ -241,39 +241,39 @@ public class CompareResult {
         if (somethingModified()) {
             String message = "";
             if (!added.isEmpty()) {
-                message += "" + added.size() + " added, ";
+                message += String.format("%d added, ", added.size());
             }
 
             if (!copied.isEmpty()) {
-                message += "" + copied.size() + " copied, ";
+                message += String.format("%d copied, ", copied.size());
             }
 
             if (!duplicated.isEmpty()) {
-                message += "" + duplicated.size() + " duplicated, ";
+                message += String.format("%d duplicated, ", duplicated.size());
             }
 
             if (!dateModified.isEmpty()) {
-                message += "" + dateModified.size() + " date modified, ";
+                message += String.format("%d date modified, ", dateModified.size());
             }
 
             if (!attributesModified.isEmpty()) {
-                message += "" + attributesModified.size() + " attrs. modified, ";
+                message += String.format("%d attrs. modified, ", attributesModified.size());
             }
 
             if (!contentModified.isEmpty()) {
-                message += "" + contentModified.size() + " content modified, ";
+                message += String.format("%d content modified, ", contentModified.size());
             }
 
             if (!renamed.isEmpty()) {
-                message += "" + renamed.size() + " renamed, ";
+                message += String.format("%d renamed, ", renamed.size());
             }
 
             if (!deleted.isEmpty()) {
-                message += "" + deleted.size() + " deleted, ";
+                message += String.format("%d deleted, ", deleted.size());
             }
 
             if (!corrupted.isEmpty()) {
-                message += "" + corrupted.size() + " corrupted, ";
+                message += String.format("%d corrupted, ", corrupted.size());
             }
 
             message = message.replaceAll(", $", "");

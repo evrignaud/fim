@@ -122,21 +122,15 @@ public class State implements Hashable {
 
     public State filterDirectory(Path repositoryRootDir, Path currentDirectory, boolean keepFilesInside) {
         State filteredState = clone();
+        filteredState.getFileStates().clear();
 
         String rootDir = FileUtil.getNormalizedFileName(repositoryRootDir);
         String curDir = FileUtil.getNormalizedFileName(currentDirectory);
         String subDirectory = FileUtil.getRelativeFileName(rootDir, curDir);
 
-        List<FileState> fileStates = filteredState.getFileStates();
-        List<FileState> newFileStates = new ArrayList<>();
-        for (FileState fileState : fileStates) {
-            if (fileState.getFileName().startsWith(subDirectory) == keepFilesInside) {
-                newFileStates.add(fileState);
-            }
-        }
-
-        fileStates.clear();
-        fileStates.addAll(newFileStates);
+        fileStates.stream()
+            .filter(fileState -> fileState.getFileName().startsWith(subDirectory) == keepFilesInside)
+            .forEach(fileState -> filteredState.getFileStates().add(fileState));
 
         return filteredState;
     }
@@ -290,6 +284,7 @@ public class State implements Hashable {
         }
     }
 
+    @Override
     public State clone() {
         return CLONER.deepClone(this);
     }

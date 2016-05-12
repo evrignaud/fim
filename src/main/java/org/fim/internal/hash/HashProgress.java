@@ -33,7 +33,7 @@ import static org.fim.model.HashMode.dontHash;
 public class HashProgress {
     public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
 
-    private static final List<Pair<Character, Integer>> hashProgress = Arrays.asList(
+    private static final List<Pair<Character, Integer>> progressChars = Arrays.asList(
         Pair.of('.', 0),
         Pair.of('o', Constants._20_MB),
         Pair.of('8', Constants._50_MB),
@@ -76,8 +76,8 @@ public class HashProgress {
 
     public String hashLegend() {
         StringBuilder sb = new StringBuilder();
-        for (int progressIndex = hashProgress.size() - 1; progressIndex >= 0; progressIndex--) {
-            Pair<Character, Integer> progressPair = hashProgress.get(progressIndex);
+        for (int progressIndex = progressChars.size() - 1; progressIndex >= 0; progressIndex--) {
+            Pair<Character, Integer> progressPair = progressChars.get(progressIndex);
             char marker = progressPair.getLeft();
             sb.append(marker);
 
@@ -96,8 +96,8 @@ public class HashProgress {
 
     protected char getProgressChar(long fileLength) {
         int progressIndex;
-        for (progressIndex = hashProgress.size() - 1; progressIndex >= 0; progressIndex--) {
-            Pair<Character, Integer> progressPair = hashProgress.get(progressIndex);
+        for (progressIndex = progressChars.size() - 1; progressIndex >= 0; progressIndex--) {
+            Pair<Character, Integer> progressPair = progressChars.get(progressIndex);
             if (fileLength >= progressPair.getRight()) {
                 return progressPair.getLeft();
             }

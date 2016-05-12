@@ -110,6 +110,7 @@ public abstract class BlockHasher extends AbstractHasher {
         return ranges;
     }
 
+    @Override
     public Range getNextRange(long filePosition) {
         for (Range range : ranges) {
             if (range.getFrom() >= filePosition) {

@@ -43,12 +43,14 @@ public class FrontHasher implements Hasher {
         return smallBlockHasher.isActive() && mediumBlockHasher.isActive() && fullHasher.isActive();
     }
 
+    @Override
     public void reset(long fileSize) {
         smallBlockHasher.reset(fileSize);
         mediumBlockHasher.reset(fileSize);
         fullHasher.reset(fileSize);
     }
 
+    @Override
     public Range getNextRange(long filePosition) {
         Range nextSmallRange;
         Range nextMediumRange;
@@ -94,9 +96,10 @@ public class FrontHasher implements Hasher {
             nextSmallRange = smallBlockHasher.getNextRange(filePosition);
             return nextSmallRange;
         }
-        throw new RuntimeException(String.format("Fim is not working correctly. Unable to getNextRange for filePosition " + filePosition));
+        throw new RuntimeException(String.format("Fim is not working correctly. Unable to getNextRange for filePosition %d", filePosition));
     }
 
+    @Override
     public void update(long filePosition, ByteBuffer buffer) {
         update(smallBlockHasher, filePosition, buffer);
         update(mediumBlockHasher, filePosition, buffer);
@@ -129,6 +132,7 @@ public class FrontHasher implements Hasher {
         return bytesHashed;
     }
 
+    @Override
     public long getTotalBytesHashed() {
         long totalBytesHashed =
             max(smallBlockHasher.getTotalBytesHashed(),
@@ -136,6 +140,7 @@ public class FrontHasher implements Hasher {
         return totalBytesHashed;
     }
 
+    @Override
     public boolean hashComplete() {
         return smallBlockHasher.hashComplete() && mediumBlockHasher.hashComplete() && fullHasher.hashComplete();
     }

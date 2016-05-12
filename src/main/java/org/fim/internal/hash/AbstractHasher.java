@@ -90,7 +90,7 @@ public abstract class AbstractHasher implements Hasher {
             long currentPosition = filePosition;
             long limitPosition = filePosition + buffer.limit();
             ByteBuffer block;
-            while ((currentPosition < limitPosition) && (((block = getNextBlockToHash(filePosition, currentPosition, buffer))) != null)) {
+            while ((currentPosition < limitPosition) && ((block = getNextBlockToHash(filePosition, currentPosition, buffer)) != null)) {
                 currentPosition = filePosition + block.limit();
 
                 int remaining = block.remaining();
@@ -106,7 +106,7 @@ public abstract class AbstractHasher implements Hasher {
         StringBuilder hexString = new StringBuilder();
         for (byte b : digestBytes) {
             hexString.append(Character.forDigit((b >> 4) & 0xF, 16));
-            hexString.append(Character.forDigit((b & 0xF), 16));
+            hexString.append(Character.forDigit(b & 0xF, 16));
         }
 
         return hexString.toString();
