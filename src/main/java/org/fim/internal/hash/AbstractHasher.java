@@ -20,6 +20,7 @@ package org.fim.internal.hash;
 
 import org.fim.model.Constants;
 import org.fim.model.HashMode;
+import org.fim.util.Ascii85Util;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
@@ -70,7 +71,7 @@ public abstract class AbstractHasher implements Hasher {
     public String getHash() {
         if (active) {
             byte[] digestBytes = digest.digest();
-            return toHexString(digestBytes);
+            return Ascii85Util.encode(digestBytes);
         } else {
             return Constants.NO_HASH;
         }
@@ -100,15 +101,5 @@ public abstract class AbstractHasher implements Hasher {
                 totalBytesHashed += remaining;
             }
         }
-    }
-
-    protected String toHexString(byte[] digestBytes) {
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : digestBytes) {
-            hexString.append(Character.forDigit((b >> 4) & 0xF, 16));
-            hexString.append(Character.forDigit(b & 0xF, 16));
-        }
-
-        return hexString.toString();
     }
 }

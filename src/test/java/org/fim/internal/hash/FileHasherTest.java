@@ -18,6 +18,7 @@
  */
 package org.fim.internal.hash;
 
+import com.blackducksoftware.tools.commonframework.core.encoding.Ascii85Encoder;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
@@ -36,6 +37,7 @@ import org.junit.runners.Parameterized;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -73,6 +75,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(Parameterized.class)
 public class FileHasherTest extends StateAssert {
+    public static final Charset UTF8 = Charset.forName("UTF-8");
     private static byte contentBytes[];
     private static Path rootDir = Paths.get("target/" + FileHasherTest.class.getSimpleName());
 
@@ -412,7 +415,7 @@ public class FileHasherTest extends StateAssert {
         }
 
         HashCode hash = hasher.hash();
-        return hash.toString();
+        return ascii85Encode(hash.asBytes());
     }
 
     private String generateFullHash(byte[] fullContent) {
@@ -428,6 +431,10 @@ public class FileHasherTest extends StateAssert {
         com.google.common.hash.Hasher hasher = hashFunction.newHasher(_100_MB);
         hasher.putBytes(content);
         HashCode hash = hasher.hash();
-        return hash.toString();
+        return ascii85Encode(hash.asBytes());
+    }
+
+    private static String ascii85Encode(byte[] bytesToBeEncoded) {
+        return new String(Ascii85Encoder.encode(bytesToBeEncoded), UTF8);
     }
 }

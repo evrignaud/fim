@@ -27,6 +27,7 @@ import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.rits.cloning.Cloner;
+import org.fim.util.Ascii85Util;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 
@@ -49,9 +50,10 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import static org.fim.model.HashMode.hashAll;
+import static org.fim.util.Ascii85Util.UTF8;
 
 public class State implements Hashable {
-    public static final String CURRENT_MODEL_VERSION = "4";
+    public static final String CURRENT_MODEL_VERSION = "5";
 
     private static final Cloner CLONER = new Cloner();
     private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
@@ -82,7 +84,7 @@ public class State implements Hashable {
     }
 
     public static State loadFromGZipFile(Path stateFile, boolean loadFullState) throws IOException, CorruptedStateException {
-        try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile.toFile())))) {
+        try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile.toFile())), UTF8)) {
             Gson gson = new Gson();
             State state = gson.fromJson(reader, State.class);
             if (state == null) {
@@ -114,8 +116,11 @@ public class State implements Hashable {
         updateFilesContentLength();
         stateHash = hashState();
 
-        try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile.toFile())))) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile.toFile())), UTF8)) {
+            Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .create();
             gson.toJson(this, writer);
         }
     }
@@ -209,7 +214,7 @@ public class State implements Hashable {
         Hasher hasher = hashFunction.newHasher(Constants._10_MB);
         hashObject(hasher);
         HashCode hash = hasher.hash();
-        return hash.toString();
+        return Ascii85Util.encode(hash.asBytes());
     }
 
     @Override
