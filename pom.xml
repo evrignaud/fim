@@ -146,10 +146,6 @@
                     <artifactId>activation</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.apache.poi</groupId>
-                    <artifactId>poi</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.apache.httpcomponents</groupId>
                     <artifactId>httpclient</artifactId>
                 </exclusion>
@@ -250,6 +246,17 @@
                         <configuration>
                             <minimizeJar>true</minimizeJar>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>org/apache/commons/codec/language/bm/**</exclude>
+                                        <exclude>org/apache/commons/digester/xmlrules/**</exclude>
+                                        <exclude>org/apache/poi/**</exclude>
+                                        <exclude>org/apache/xml/security/**</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
