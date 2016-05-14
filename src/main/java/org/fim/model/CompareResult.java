@@ -119,7 +119,8 @@ public class CompareResult {
 
         final String duplicatedStr = String.format(stateFormat, "Duplicated:");
         displayDifferences(out, context, duplicatedStr, duplicated,
-            diff -> out.printf(duplicatedStr + "%s = %s%s%n", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName(), formatModifiedAttributes(diff, true)));
+            diff -> out.printf(duplicatedStr + "%s = %s%s%n", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName(),
+                formatModifiedAttributesWithoutTimeChange(diff, true)));
 
         final String dateModifiedStr = String.format(stateFormat, "Date modified:");
         displayDifferences(out, context, dateModifiedStr, dateModified,
@@ -135,7 +136,8 @@ public class CompareResult {
 
         final String renamedStr = String.format(stateFormat, "Renamed:");
         displayDifferences(out, context, renamedStr, renamed,
-            diff -> out.printf(renamedStr + "%s -> %s%s%n", diff.getPreviousFileState().getFileName(), diff.getFileState().getFileName(), formatModifiedAttributes(diff, true)));
+            diff -> out.printf(renamedStr + "%s -> %s%s%n", diff.getPreviousFileState().getFileName(), diff.getFileState().getFileName(),
+                formatModifiedAttributesWithoutTimeChange(diff, true)));
 
         final String deletedStr = String.format(stateFormat, "Deleted:");
         displayDifferences(out, context, deletedStr, deleted,
@@ -180,6 +182,14 @@ public class CompareResult {
     }
 
     public static String formatModifiedAttributes(Difference diff, boolean nextLine) {
+        return _formatModifiedAttributes(diff, nextLine, true);
+    }
+
+    public static String formatModifiedAttributesWithoutTimeChange(Difference diff, boolean nextLine) {
+        return _formatModifiedAttributes(diff, nextLine, false);
+    }
+
+    public static String _formatModifiedAttributes(Difference diff, boolean nextLine, boolean displayTimeChange) {
         int modifCount = 0;
         StringBuilder modification = new StringBuilder(nextLine ? " " : ""); // Put a white space to force to add a separator
 
@@ -197,13 +207,13 @@ public class CompareResult {
             }
         }
 
-        if (diff.isCreationTimeChanged()) {
+        if (displayTimeChange && diff.isCreationTimeChanged()) {
             modifCount++;
             addSeparator(diff, modification);
             modification.append("creationTime: ").append(formatCreationTime(diff.getPreviousFileState())).append(" -> ").append(formatCreationTime(diff.getFileState()));
         }
 
-        if (diff.isLastModifiedChanged()) {
+        if (displayTimeChange && diff.isLastModifiedChanged()) {
             modifCount++;
             addSeparator(diff, modification);
             modification.append("lastModified: ").append(formatLastModified(diff.getPreviousFileState())).append(" -> ").append(formatLastModified(diff.getFileState()));
