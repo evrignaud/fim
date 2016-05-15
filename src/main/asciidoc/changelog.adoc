@@ -1,5 +1,9 @@
 = Fim changelog
 
+== Version 1.2.0
+*(Released 2016-05-xx)*
+
+* Add Super-fast commit
 
 == Version 1.1.0
 *(Released 2015-11-01)*
