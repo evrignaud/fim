@@ -185,9 +185,23 @@ public class FullScenarioTest {
             assertThat(modificationCounts.getRenamed()).isEqualTo(1);
             assertThat(modificationCounts.getDeleted()).isEqualTo(1);
 
-            // Check that using normal hashMode there is no modification detected
-            commit_AndAssertFilesModifiedCountEqualsTo(context, 0);
+            assertThatUsingNormalHashModeNoModificationIsDetected(context);
+
+            tool.setFileContent("file13", "New file 13");
+            tool.setFileContent("file14", "New file 14");
+
+            // Commit again using super-fast mode (hashSmallBlock)
+            compareResult = (CompareResult) commitCommand.execute(superFastModeContext);
+            assertThat(compareResult.modifiedCount()).isEqualTo(2);
+            modificationCounts = compareResult.getModificationCounts();
+            assertThat(modificationCounts.getAdded()).isEqualTo(2);
+
+            assertThatUsingNormalHashModeNoModificationIsDetected(context);
         }
+    }
+
+    private void assertThatUsingNormalHashModeNoModificationIsDetected(Context context) throws Exception {
+        commit_AndAssertFilesModifiedCountEqualsTo(context, 0);
     }
 
     private void doSomeModifications() throws IOException {

@@ -46,6 +46,9 @@ import static org.fim.model.Modification.dateModified;
 import static org.fim.util.FileStateUtil.buildFileNamesMap;
 
 public class CommitCommand extends AbstractCommand {
+    SettingsManager settingsManager;
+    StateManager manager;
+
     @Override
     public String getCmdName() {
         return "commit";
@@ -63,7 +66,7 @@ public class CommitCommand extends AbstractCommand {
 
     @Override
     public Object execute(Context context) throws Exception {
-        SettingsManager settingsManager = new SettingsManager(context);
+        settingsManager = new SettingsManager(context);
         HashMode globalHashMode = settingsManager.getGlobalHashMode();
         if (context.getHashMode() == dontHash && globalHashMode != dontHash) {
             Logger.error("Computing hash is mandatory");
@@ -78,7 +81,7 @@ public class CommitCommand extends AbstractCommand {
             }
         }
 
-        StateManager manager = new StateManager(context);
+        manager = new StateManager(context);
         State currentState = new StateGenerator(context).generateState(context.getComment(), context.getRepositoryRootDir(), context.getCurrentDirectory());
         State lastState = manager.loadLastState();
         State lastStateToCompare = lastState;
@@ -96,32 +99,45 @@ public class CommitCommand extends AbstractCommand {
         if (result.somethingModified()) {
             Console.newLine();
             if (confirmAction(context, "commit")) {
-                currentState.setModificationCounts(result.getModificationCounts());
-
-                if (context.getHashMode() != dontHash && context.getHashMode() != globalHashMode) {
-                    // Reload the last state with the globalHashMode in order to get a complete state.
-                    context.setHashMode(globalHashMode);
-                    currentState.setHashMode(globalHashMode);
-                    lastState = manager.loadLastState();
-                    retrieveMissingHash(context, currentState, lastState);
-                }
-
-                if (context.isInvokedFromSubDirectory()) {
-                    currentState = createConsolidatedState(context, lastState, currentState);
-                }
-
-                manager.createNewState(currentState);
-
-                if (context.isPurgeStates()) {
-                    PurgeStatesCommand purgeStatesCommand = new PurgeStatesCommand();
-                    purgeStatesCommand.execute(context);
-                }
+                commitModifications(context, currentState, lastState, result);
             } else {
                 Logger.info("Nothing committed");
             }
         }
 
         return result;
+    }
+
+    private void commitModifications(Context context, State originalCurrentState, State originalLastState, CompareResult result) throws Exception {
+        State currentState = originalCurrentState;
+        State lastState = originalLastState;
+        
+        HashMode initialHashMode = context.getHashMode();
+        try {
+            currentState.setModificationCounts(result.getModificationCounts());
+
+            HashMode globalHashMode = settingsManager.getGlobalHashMode();
+            if (initialHashMode != dontHash && initialHashMode != globalHashMode) {
+                // Reload the last state with the globalHashMode in order to get a complete state.
+                context.setHashMode(globalHashMode);
+                currentState.setHashMode(globalHashMode);
+                lastState = manager.loadLastState();
+                retrieveMissingHash(context, currentState, lastState);
+            }
+
+            if (context.isInvokedFromSubDirectory()) {
+                currentState = createConsolidatedState(context, lastState, currentState);
+            }
+
+            manager.createNewState(currentState);
+
+            if (context.isPurgeStates()) {
+                PurgeStatesCommand purgeStatesCommand = new PurgeStatesCommand();
+                purgeStatesCommand.execute(context);
+            }
+        } finally {
+            context.setHashMode(initialHashMode);
+        }
     }
 
     private void retrieveMissingHash(Context context, State currentState, State lastState) throws NoSuchAlgorithmException, IOException {
