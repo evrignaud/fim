@@ -185,8 +185,12 @@ public class FullScenarioTest {
             assertThat(modificationCounts.getRenamed()).isEqualTo(1);
             assertThat(modificationCounts.getDeleted()).isEqualTo(1);
 
+            // Check that the last commit command did not modify the hashMode
+            assertThat(superFastModeContext.getHashMode()).isEqualTo(hashSmallBlock);
+
             assertThatUsingNormalHashModeNoModificationIsDetected(context);
 
+            // Add two files
             tool.setFileContent("file13", "New file 13");
             tool.setFileContent("file14", "New file 14");
 
