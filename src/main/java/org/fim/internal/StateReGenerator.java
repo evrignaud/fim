@@ -24,7 +24,6 @@ import org.fim.model.Context;
 import org.fim.model.FileState;
 import org.fim.util.Logger;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
@@ -40,14 +39,14 @@ public class StateReGenerator extends StateGenerator {
         super(context);
     }
 
-    public void reHashFiles(List<FileState> toReHash) throws NoSuchAlgorithmException, IOException {
+    public void reHashFiles(List<FileState> toReHash) throws NoSuchAlgorithmException {
         int threadCount = context.getThreadCount();
         Logger.info(String.format("Retrieving the missing hash for all the modified files, using '%s' mode and %d %s",
             hashModeToString(context.getHashMode()), threadCount, plural("thread", threadCount)));
 
         rootDir = context.getRepositoryRootDir();
 
-        toRehashQueue = new LinkedBlockingDeque(toReHash);
+        toRehashQueue = new LinkedBlockingDeque<>(toReHash);
 
         long start = System.currentTimeMillis();
         hashProgress.outputInit();

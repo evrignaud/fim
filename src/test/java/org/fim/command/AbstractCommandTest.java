@@ -37,7 +37,7 @@ public class AbstractCommandTest {
     }
 
     @Test
-    public void weConfirmAnAction() throws Exception {
+    public void weConfirmAnAction() {
         assertThat(confirmAction("y")).isEqualTo(true);
         assertThat(context.isAlwaysYes()).isEqualTo(false);
 

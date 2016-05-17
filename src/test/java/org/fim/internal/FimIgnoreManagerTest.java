@@ -31,7 +31,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.security.NoSuchAlgorithmException;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,7 +43,7 @@ public class FimIgnoreManagerTest extends StateAssert {
     private BasicFileAttributes fileAttributes;
 
     @BeforeClass
-    public static void setupOnce() throws NoSuchAlgorithmException, IOException {
+    public static void setupOnce() throws IOException {
         FileUtils.deleteDirectory(rootDir.toFile());
         Files.createDirectories(rootDir);
     }

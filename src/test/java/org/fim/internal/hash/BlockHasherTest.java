@@ -23,7 +23,6 @@ import org.fim.model.Range;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +39,7 @@ public class BlockHasherTest {
     private BlockHasher cut;
 
     @Before
-    public void setup() throws NoSuchAlgorithmException, IOException {
+    public void setup() throws NoSuchAlgorithmException {
         cut = new BlockHasher(hashSmallBlock) {
             @Override
             protected int getBlockSize() {

@@ -30,7 +30,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
-import java.security.NoSuchAlgorithmException;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
@@ -42,13 +41,13 @@ public class DosFilePermissionsTest {
     private Context context;
 
     @BeforeClass
-    public static void setupOnce() throws NoSuchAlgorithmException, IOException {
+    public static void setupOnce() throws IOException {
         FileUtils.deleteDirectory(rootDir.toFile());
         Files.createDirectories(rootDir);
     }
 
     @Before
-    public void setup() throws NoSuchAlgorithmException, IOException {
+    public void setup() {
         context = mock(Context.class);
     }
 

@@ -304,9 +304,7 @@ public class FullScenarioTest {
     }
 
     public Path getStateFile(Context context, int stateNumber) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("state_").append(stateNumber).append(STATE_EXTENSION);
-        return context.getRepositoryStatesDir().resolve(builder.toString());
+        return context.getRepositoryStatesDir().resolve("state_" + stateNumber + STATE_EXTENSION);
     }
 
     public int getLastStateNumber(Context context) {

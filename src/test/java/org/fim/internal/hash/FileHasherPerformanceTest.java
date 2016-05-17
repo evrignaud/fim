@@ -66,14 +66,14 @@ public class FileHasherPerformanceTest extends StateAssert {
     private FileHasher cut;
 
     @BeforeClass
-    public static void setupOnce() throws NoSuchAlgorithmException, IOException {
+    public static void setupOnce() throws IOException {
         if (!Files.exists(rootDir)) {
             Files.createDirectories(rootDir);
         }
     }
 
     @Before
-    public void setup() throws NoSuchAlgorithmException, IOException {
+    public void setup() throws NoSuchAlgorithmException {
         hashProgress = mock(HashProgress.class);
         context = defaultContext();
         context.setHashMode(hashSmallBlock);

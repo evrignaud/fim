@@ -30,7 +30,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -69,7 +68,7 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Before
-    public void setup() throws IOException {
+    public void setup() {
         context = defaultContext();
         context.setHashMode(hashMode);
         s1 = new BuildableState(context).addFiles("file_01", "file_02", "file_03", "file_04");

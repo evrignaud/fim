@@ -115,7 +115,7 @@ public class StateTest extends StateAssert {
         assertThat(toFileNames(filteredState.getFileStates())).isEqualTo(Arrays.asList("dir_2/file_1", "dir_2/file_2", "file_1", "file_2"));
     }
 
-    private void fixTimeStamps(BuildableState s) throws ParseException {
+    private void fixTimeStamps(BuildableState s) {
         // Fix the timeStamps in order that state hash can be verified
 
         // SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");

@@ -108,13 +108,13 @@ public class FileHasherTest extends StateAssert {
     }
 
     @BeforeClass
-    public static void setupOnce() throws NoSuchAlgorithmException, IOException {
+    public static void setupOnce() throws IOException {
         FileUtils.deleteDirectory(rootDir.toFile());
         Files.createDirectories(rootDir);
     }
 
     @Before
-    public void setup() throws NoSuchAlgorithmException, IOException {
+    public void setup() throws NoSuchAlgorithmException {
         hashProgress = mock(HashProgress.class);
         context = defaultContext();
         context.setHashMode(hashMode);
@@ -405,7 +405,7 @@ public class FileHasherTest extends StateAssert {
         return new FileHash(smallBlockHash, mediumBlockHash, fullHash);
     }
 
-    private String generateBlockHash(byte[] fullContent, Range[] ranges) throws IOException {
+    private String generateBlockHash(byte[] fullContent, Range[] ranges) {
         HashFunction hashFunction = Hashing.sha512();
         com.google.common.hash.Hasher hasher = hashFunction.newHasher(_100_MB);
 

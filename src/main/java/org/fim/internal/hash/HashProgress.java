@@ -24,7 +24,6 @@ import org.fim.model.Constants;
 import org.fim.model.Context;
 import org.fim.util.Console;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,7 +54,7 @@ public class HashProgress {
         fileCount = 0;
     }
 
-    public synchronized void updateOutput(long fileSize) throws IOException {
+    public synchronized void updateOutput(long fileSize) {
         fileCount++;
 
         if (isProgressDisplayed()) {

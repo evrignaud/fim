@@ -110,9 +110,7 @@ public class StateManager {
      * @return the State file formatted like this: &lt;statesDir&gt;/state_&lt;stateNumber&gt;.json.gz
      */
     public Path getStateFile(int stateNumber) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("state_").append(stateNumber).append(STATE_EXTENSION);
-        return context.getRepositoryStatesDir().resolve(builder.toString());
+        return context.getRepositoryStatesDir().resolve("state_" + stateNumber + STATE_EXTENSION);
     }
 
     public int getLastStateNumber() {

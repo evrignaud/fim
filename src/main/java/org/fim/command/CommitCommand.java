@@ -34,7 +34,6 @@ import org.fim.model.State;
 import org.fim.util.Console;
 import org.fim.util.Logger;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +110,7 @@ public class CommitCommand extends AbstractCommand {
     private void commitModifications(Context context, State originalCurrentState, State originalLastState, CompareResult result) throws Exception {
         State currentState = originalCurrentState;
         State lastState = originalLastState;
-        
+
         HashMode initialHashMode = context.getHashMode();
         try {
             currentState.setModificationCounts(result.getModificationCounts());
@@ -140,7 +139,7 @@ public class CommitCommand extends AbstractCommand {
         }
     }
 
-    private void retrieveMissingHash(Context context, State currentState, State lastState) throws NoSuchAlgorithmException, IOException {
+    private void retrieveMissingHash(Context context, State currentState, State lastState) throws NoSuchAlgorithmException {
         Map<String, FileState> lastFileStateMap = buildFileNamesMap(lastState.getFileStates());
 
         List<FileState> toReHash = new ArrayList<>();
@@ -163,7 +162,7 @@ public class CommitCommand extends AbstractCommand {
         stateReGenerator.reHashFiles(toReHash);
     }
 
-    private State createConsolidatedState(Context context, State lastState, State currentState) throws IOException {
+    private State createConsolidatedState(Context context, State lastState, State currentState) {
         State filteredState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), false);
 
         State consolidatedState = currentState.clone();

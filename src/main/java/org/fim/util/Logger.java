@@ -32,15 +32,15 @@ public class Logger {
     }
 
     public static void info(String message) {
-        writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Info  - ").append(message).toString());
+        writeLogMessage(getCurrentDate() + " - Info  - " + message);
     }
 
     public static void warning(String message) {
-        writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Warn  - ").append(message).toString());
+        writeLogMessage(getCurrentDate() + " - Warn  - " + message);
     }
 
     public static void alert(String message) {
-        writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Alert - ").append(message).toString());
+        writeLogMessage(getCurrentDate() + " - Alert - " + message);
     }
 
     public static void error(String message, Exception ex, boolean displayStackTrace) {
@@ -54,7 +54,7 @@ public class Logger {
     }
 
     public static void error(String message) {
-        writeLogMessage(new StringBuilder().append(getCurrentDate()).append(" - Error - ").append(message).toString());
+        writeLogMessage(getCurrentDate() + " - Error - " + message);
     }
 
     private static String exceptionStackTraceToString(Exception ex) {

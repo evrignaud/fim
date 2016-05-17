@@ -182,14 +182,14 @@ public class CompareResult {
     }
 
     public static String formatModifiedAttributes(Difference diff, boolean nextLine) {
-        return _formatModifiedAttributes(diff, nextLine, true);
+        return internalFormatModifiedAttributes(diff, nextLine, true);
     }
 
     public static String formatModifiedAttributesWithoutTimeChange(Difference diff, boolean nextLine) {
-        return _formatModifiedAttributes(diff, nextLine, false);
+        return internalFormatModifiedAttributes(diff, nextLine, false);
     }
 
-    public static String _formatModifiedAttributes(Difference diff, boolean nextLine, boolean displayTimeChange) {
+    private static String internalFormatModifiedAttributes(Difference diff, boolean nextLine, boolean displayTimeChange) {
         int modifCount = 0;
         StringBuilder modification = new StringBuilder(nextLine ? " " : ""); // Put a white space to force to add a separator
 

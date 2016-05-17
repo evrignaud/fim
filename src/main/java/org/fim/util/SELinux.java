@@ -23,6 +23,7 @@ import org.fim.model.Context;
 
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SELinux {
@@ -37,7 +38,7 @@ public class SELinux {
         }
 
         try {
-            List<String> lines = CommandUtil.executeCommandAndGetLines(Arrays.asList("sestatus"));
+            List<String> lines = CommandUtil.executeCommandAndGetLines(Collections.singletonList("sestatus"));
             for (String line : lines) {
                 if (line.contains("SELinux status")) {
                     if (line.contains("enabled")) {
