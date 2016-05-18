@@ -83,29 +83,7 @@ public class ResetFileAttributesCommand extends AbstractCommand {
             for (FileState fileState : lastState.getFileStates()) {
                 Path file = context.getRepositoryRootDir().resolve(fileState.getFileName());
                 if (Files.exists(file)) {
-                    boolean attributesModified = false;
-
-                    BasicFileAttributes attributes;
-
-                    if (SystemUtils.IS_OS_WINDOWS) {
-                        DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
-                        attributes = dosFileAttributes;
-
-                        attributesModified = resetDosPermissions(context, file, fileState, dosFileAttributes) || attributesModified;
-                    } else {
-                        PosixFileAttributes posixFileAttributes = Files.readAttributes(file, PosixFileAttributes.class);
-                        attributes = posixFileAttributes;
-
-                        attributesModified = resetPosixPermissions(file, fileState, posixFileAttributes) || attributesModified;
-                    }
-
-                    attributesModified = resetCreationTime(file, fileState, attributes) || attributesModified;
-                    attributesModified = resetLastModified(file, fileState, attributes) || attributesModified;
-                    attributesModified = resetSELinux(context, file, fileState) || attributesModified;
-
-                    if (attributesModified) {
-                        fileResetCount++;
-                    }
+                    fileResetCount += resetFileAttributes(context, fileState, file);
                 }
             }
 
@@ -117,6 +95,30 @@ public class ResetFileAttributesCommand extends AbstractCommand {
             }
         }
         return fileResetCount;
+    }
+
+    private int resetFileAttributes(Context context, FileState fileState, Path file) throws IOException {
+        boolean attributesModified = false;
+
+        BasicFileAttributes attributes;
+
+        if (SystemUtils.IS_OS_WINDOWS) {
+            DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);
+            attributes = dosFileAttributes;
+
+            attributesModified = resetDosPermissions(context, file, fileState, dosFileAttributes) || attributesModified;
+        } else {
+            PosixFileAttributes posixFileAttributes = Files.readAttributes(file, PosixFileAttributes.class);
+            attributes = posixFileAttributes;
+
+            attributesModified = resetPosixPermissions(file, fileState, posixFileAttributes) || attributesModified;
+        }
+
+        attributesModified = resetCreationTime(file, fileState, attributes) || attributesModified;
+        attributesModified = resetLastModified(file, fileState, attributes) || attributesModified;
+        attributesModified = resetSELinux(context, file, fileState) || attributesModified;
+
+        return attributesModified ? 1 : 0;
     }
 
     private boolean resetDosPermissions(Context context, Path file, FileState fileState, DosFileAttributes dosFileAttributes) {
