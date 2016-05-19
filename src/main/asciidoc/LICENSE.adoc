@@ -11,6 +11,28 @@
 
 <link rel="stylesheet" href="css/style.css">
 
+<script src="http://code.jquery.com/jquery-2.2.3.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var offset = 250;
+        var duration = 700;
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > offset) {
+                $('.back-to-top').fadeIn(duration);
+            } else {
+                $('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        $('.back-to-top').click(function (event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+
 <script>
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -22,7 +44,7 @@
 </script>
 
 <p>
-    <a href="#"><img
+    <a href="#" class="back-to-top"><img
 		style="position: fixed; bottom: 0; right: 0; border: 0; z-index: 1000; margin: 20px 20px 20px;"
 		src="images/icons/back_to_top.png" alt="Back to top">
 	</a>
