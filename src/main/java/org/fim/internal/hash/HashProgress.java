@@ -19,6 +19,7 @@
 package org.fim.internal.hash;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.fim.model.Constants;
 import org.fim.model.Context;
@@ -44,9 +45,11 @@ public class HashProgress {
     private final Context context;
     private long summedFileLength;
     private int fileCount;
+    private int hashProgressWidth;
 
     public HashProgress(Context context) {
         this.context = context;
+        this.hashProgressWidth = getHashProgressWidth();
     }
 
     public synchronized void outputInit() {
@@ -66,7 +69,7 @@ public class HashProgress {
             }
         }
 
-        if (fileCount % (100 * PROGRESS_DISPLAY_FILE_COUNT) == 0) {
+        if (fileCount % (hashProgressWidth * PROGRESS_DISPLAY_FILE_COUNT) == 0) {
             if (isProgressDisplayed()) {
                 Console.newLine();
             }
@@ -119,5 +122,22 @@ public class HashProgress {
 
     public Context getContext() {
         return context;
+    }
+
+    private int getHashProgressWidth() {
+        int width = 100;
+
+        if (!SystemUtils.IS_OS_WINDOWS) {
+            try {
+                String result = System.getenv("TERMINAL_COLUMNS");
+                int terminalColumns = Integer.parseInt(result);
+                if (terminalColumns > 0) {
+                    width = (int) (terminalColumns * 0.9);
+                }
+            } catch (Exception e) {
+                // Never mind use the default value
+            }
+        }
+        return width;
     }
 }
