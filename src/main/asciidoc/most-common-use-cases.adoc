@@ -14,7 +14,7 @@ More details on using Fim from a sub-directory can be found in <<faq.adoc#_run_f
 The `fim diff` command let me know when I want (even super quickly) if something changed in my pictures folder.
 
 == Duplicates removal
-I can easily identify and delete the photos I have duplicated on my drive or other computer with the command `fim rdup`. +
+I can easily identify and delete the photos I have duplicated on my drive or another computer with the command `fim rdup`. +
 For this, I just need to copy the `.fim` directory on the other computer. +
 More details in <<faq.adoc#_dealing_with_duplicates,Dealing with duplicates>>.
 
