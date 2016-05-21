@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #-----------------------------------------------------------------------------------------------------------------------
 # This file is part of Fim - File Integrity Manager
 #
@@ -30,3 +30,5 @@ baseDir=`dirname "$(${readLinkCommand} -f "$0")"`
 JAVA_OPTIONS="-Xmx4g -XX:MaxMetaspaceSize=4g"
 
 java ${JAVA_OPTIONS} -jar "${baseDir}/bin/fim-${project.version}.jar" "${1}" "${2}" "${3}" "${4}" "${5}" "${6}"
+
+#-----------------------------------------------------------------------------------------------------------------------

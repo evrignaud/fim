@@ -23,3 +23,6 @@ set "baseDir=%~dp0%"
 set JAVA_OPTIONS=-Xmx4g -XX:MaxMetaspaceSize=4g
 
 java %JAVA_OPTIONS% -jar "%baseDir%bin\fim-${project.version}.jar" "%1" "%2" "%3" "%4" "%5" "%6"
+
+@rem -------------------------------------------------------------------------------------------------------------------
+

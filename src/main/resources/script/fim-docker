@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #-----------------------------------------------------------------------------------------------------------------------
 # This file is part of Fim - File Integrity Manager
 #
@@ -18,6 +18,28 @@
 # along with Fim.  If not, see <http://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------------------------------------------------
 
-docker run -it --rm=true -u $(id -u):$(id -g) -v $PWD:/working_directory --name=fim-$(date +%N) fim:latest fim $*
+CURRENT_DIRECTORY="$PWD"
+REPOSITORY_ROOT="$CURRENT_DIRECTORY"
+DOCKER_IMAGE=evrignaud/fim:latest
+
+# If the current directory does not contain a .fim directory and we are not running the 'init' command
+if [ ! -d "$REPOSITORY_ROOT/.fim" -a "$1" != "init" ];
+then
+    while [ "$REPOSITORY_ROOT" != "/" ];
+    do
+        REPOSITORY_ROOT="$(realpath -s "$REPOSITORY_ROOT"/..)"
+        if [ -d "$REPOSITORY_ROOT/.fim" ];
+        then
+            break;
+        fi
+    done
+
+    SUBDIR="$(echo "$CURRENT_DIRECTORY" | sed -e "s|$REPOSITORY_ROOT||")"
+    SUBDIR="$(echo "$SUBDIR" | sed -e 's|^/*||')"
+
+    docker run -it --rm=true -u $(id -u):$(id -g) -v "$REPOSITORY_ROOT:/fim_repository"   --name=fim-$(date +%N) ${DOCKER_IMAGE} fim "${1}" -d "$SUBDIR" "${2}" "${3}" "${4}" "${5}" "${6}"
+else
+    docker run -it --rm=true -u $(id -u):$(id -g) -v "$CURRENT_DIRECTORY:/fim_repository" --name=fim-$(date +%N) ${DOCKER_IMAGE} fim "${1}" "${2}" "${3}" "${4}" "${5}" "${6}"
+fi
 
 #-----------------------------------------------------------------------------------------------------------------------
