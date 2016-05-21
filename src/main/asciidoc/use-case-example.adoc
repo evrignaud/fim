@@ -1,6 +1,8 @@
-= Use case example
+= Most Common use cases
 
-Fim can be used for different kind of use cases. +
+Fim can be used for different kind of use cases.
+
+== Binary Workspace management
 Personally I use Fim to manage my photos and videos.
 When I have new photos, I put them at the right place in my pictures folder and then I do `fim&nbsp;ci` from the sub-directory
 containing the new photos to record a new State, as I could do with Git.
@@ -11,5 +13,12 @@ More details on using Fim from a sub-directory can be found <<faq.adoc#_run_fim_
 
 The `fim diff` command let me know when I want (even super quickly) if something changed in my pictures folder.
 
-I can easily identify and delete the photos I have duplicated on my drive or other computer with the command `fim rdup`.
-For this, I just need to copy the `.fim` directory on the other computer.
+== Duplicates removal
+I can easily identify and delete the photos I have duplicated on my drive or other computer with the command `fim rdup`. +
+For this, I just need to copy the `.fim` directory on the other computer. +
+More details <<faq.adoc#_dealing_with_duplicates,here>>.
+
+== Backup integrity
+For offline long term backups Fim can be used to perform and store a hash of all the files in order to insure the backup integrity. +
+More details in <<why-do-you-need-fim.adoc#_why_do_you_need_fim,Why do you need Fim>>
+and <<hardware-corruption-detection.adoc#_hardware_corruption_detection,Hardware corruption detection>>.
