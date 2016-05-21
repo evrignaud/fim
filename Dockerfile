@@ -1,7 +1,7 @@
 #
 # Fim docker image
 #
-FROM java:8-jdk
+FROM java:8-jre-alpine
 
 MAINTAINER Etienne Vrignaud "evrignaud@gmail.com"
 
