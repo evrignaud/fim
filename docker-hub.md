@@ -36,5 +36,6 @@ A complete documentation of Fim is available [here](http://evrignaud.github.io/f
 
 ### Run it:
 If you don't have the Fim docker image locally it will pull the image first.
+This script takes the same arguments as the `fim` one.
 
     $ ./fim-docker -h

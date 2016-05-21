@@ -12,8 +12,44 @@ include::changelog.adoc[]
 
 == Run Fim using Docker
 
-If you don't have Java and you don't want to install it, you can run Fim using a docker image.<br>
-It will run only on Linux.
+If you don't have Java and you don't want to install it (or you don't have the required version of Java), you can run Fim using a Docker image. +
+All the environment required to run Fim is inside the Docker image. Just pull the image and run Fim.
+
+[IMPORTANT]
+====
+The Docker image runs only on Linux
+====
+
+=== Using the latest published Docker image
+
+Fim releases are published as Docker images on https://hub.docker.com/r/evrignaud/fim/[Docker Hub]. +
+You can use them like this.
+
+* Retrieve the `fim-docker` script:
+
+[source, bash]
+----
+$ curl https://raw.githubusercontent.com/evrignaud/fim/master/fim-docker -o fim-docker
+$ chmod a+rx fim-docker
+----
+
+* Run it: +
+This script takes the same arguments as the `fim` one. +
+If you don't have the Fim Docker image locally it will pull the image first.
+
+[source, bash]
+----
+$ ./fim-docker -h
+----
+
+If you want to be sure the have the latest version of the Fim Docker image you can pull it manually:
+
+[source, bash]
+----
+$ docker pull evrignaud/fim
+----
+
+=== Creating your own Docker Image
 
 After having build Fim (<<how-can-you-use-fim.adoc#_build_fim,see below>>), type the following command:
 [source, bash]
@@ -21,7 +57,7 @@ After having build Fim (<<how-can-you-use-fim.adoc#_build_fim,see below>>), type
 $ ./build-docker-image
 ----
 
-Then you can use the provided `fim-docker` script that takes the same arguments as the `fim` one.
+Then you can use the provided `fim-docker` script.
 
 == Build Fim
 
