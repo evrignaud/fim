@@ -102,7 +102,7 @@ On a daily workflow, you can know the files that have been added, modified, remo
 When you are working with files and you are also very busy, it's difficult to remind what are the files you were working on previously.
 A VCS can help you for this.
 Unfortunately when you are working with photos or videos, or other kind of big binary files you cannot manage them with a tool like Git. +
-Fim is here for that.
+Fim is meant to solve that.
 
 Each time you have a stable set of files you can commit them to store their properties into a State and be able to compare it with your set of files later.
 
@@ -124,7 +124,7 @@ include::how-does-it-work.adoc[]
 
 include::fim-workflow.adoc[]
 
-include::use-case-example.adoc[]
+include::most-common-use-cases.adoc[]
 
 include::fim-usage.adoc[]
 

@@ -2,7 +2,7 @@
 
 == Download a Fim release
 
-You can download a prebuilt release of Fim from https://github.com/evrignaud/fim/releases/latest[image:icons/download.png[Download] here]
+You can download a prebuilt release of Fim from the https://github.com/evrignaud/fim/releases/latest[image:icons/download.png[Download] Latest release]
 
 :leveloffset: 2
 
@@ -25,7 +25,7 @@ The Docker image runs only on Linux
 Fim releases are published as Docker images on https://hub.docker.com/r/evrignaud/fim/[Docker Hub]. +
 You can use them like this.
 
-* Retrieve the `fim-docker` script:
+==== Retrieve the `fim-docker` script:
 
 [source, bash]
 ----
@@ -33,7 +33,8 @@ $ curl https://raw.githubusercontent.com/evrignaud/fim/master/fim-docker -o fim-
 $ chmod a+rx fim-docker
 ----
 
-* Run it: +
+==== Run it:
+
 This script takes the same arguments as the `fim` one. +
 If you don't have the Fim Docker image locally it will pull the image first.
 
@@ -71,7 +72,7 @@ If you clone Fim's master, a SNAPSHOT is retrieved and there is no guarantee tha
 
 * Get the code
 ** Download the https://github.com/evrignaud/fim/zipball/master[.zip] or the https://github.com/evrignaud/fim/tarball/master[.tar.gz]
-** Or clone it using either `https://github.com/evrignaud/fim.git` or `git@github.com:evrignaud/fim.git`
+** Or clone it using `https://github.com/evrignaud/fim.git`
 * Build it by typing the following command (follow <<how-can-you-use-fim.adoc#_step_by_step_procedure,this procedure>> for more details):
 
 [source, bash]

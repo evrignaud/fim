@@ -209,7 +209,7 @@ simple-example$ fim fdup
 === From the `dir01` sub-directory
 
 You can run Fim on a subset of the repository. +
-More details on using Fim from a sub-directory can be found <<faq.adoc#_run_fim_commands_from_a_sub_directory,here>>.
+More details on using Fim from a sub-directory can be found in <<faq.adoc#_run_fim_commands_from_a_sub_directory,Run Fim commands from a sub-directory>>.
 
 [source, bash]
 ----

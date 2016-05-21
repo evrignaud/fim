@@ -12,7 +12,7 @@ When you do a lot of stuff at the same time, things take time and Fim is here to
 Fim allow you to quickly get the status of all kind of files. It can be photos, videos or a complete disk tree. You can manage them with a spirit that looks like Git.
 
 On a daily workflow, you can know the files that have been added, modified, removed, moved, renamed and duplicated. When you are working with files and you are also very busy, it’s difficult to remind what are the files you were working on previously. A VCS can help you for this. Unfortunately when you are working with photos or videos, or other kind of big binary files you cannot manage them with a tool like Git.
-Fim is here for that.
+Fim is meant to solve that.
 
 Each time you have a stable set of files you can commit them to store their properties into a State and be able to compare it with your set of files later.
 

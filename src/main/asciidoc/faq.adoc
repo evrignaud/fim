@@ -54,6 +54,8 @@ Duplicated files are addressed by Fim in two different ways.
 === Duplicates inside a Fim repository
 
 Fim allow you to detect duplicates using the `fdup` command. It displays the list of duplicated files. +
+See it in action in <<simple-example.adoc#_search_for_duplicated_files,Search for duplicated files>>.
+
 If you want to remove them, Fim won't do it. It does not provide a smart way to remove those duplicates.
 
 === Duplicates that are outside
