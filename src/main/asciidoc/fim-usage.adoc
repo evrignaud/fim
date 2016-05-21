@@ -3,8 +3,8 @@
 --------
 $ fim --help
 
-usage: fim <command> [-c <arg>] [-d <arg>] [-e] [-f] [-h] [-l] [-m <arg>] [-n] [-o <arg>] [-p] [-q] [-s] [-t <arg>] [-v]
-       [-y]
+usage: fim <command> [-c <arg>] [-d <arg>] [-e] [-f] [-h] [-l] [-m <arg>] [-n] [-o <arg>] [-p] [-q] [-s]
+                     [-t <arg>] [-v] [-y]
 
 File Integrity Checker
 
