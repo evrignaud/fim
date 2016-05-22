@@ -16,7 +16,7 @@ The `fim diff` command let me know when I want (even super quickly) if something
 == Duplicates removal
 I can easily identify and delete the photos I have duplicated on my drive or another computer with the command `fim rdup`. +
 For this, I just need to copy the `.fim` directory on the other computer. +
-More details in <<faq.adoc#_dealing_with_duplicates,Dealing with duplicates>>.
+More details in <<dealing-with-duplicates.adoc#_dealing_with_duplicates,Dealing with duplicates>>.
 
 == Backup integrity
 For offline long term backups Fim can be used to perform and store a hash of all the files in order to insure the backup integrity. +
