@@ -415,8 +415,8 @@ Deleted:          file06
 2016/05/09 21:58:41 - Info  - Scanned 8 files (104 bytes), hashed 104 bytes (avg 104 bytes/s), during 00:00:00
 ----
 
-In this case, files are too short, commit in super fast-mode is not more efficient. +
-But with big files it makes a big difference.
+In this case, files are too short, commit in super-fast mode is not more efficient. +
+But with huge files it makes a big difference.
 
 == Again, nothing is modified now
 
