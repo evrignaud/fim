@@ -31,11 +31,13 @@ A complete documentation of Fim is available [here](http://evrignaud.github.io/f
 
 ### Retrieve the `fim-docker` script:
 
-    $ curl https://raw.githubusercontent.com/evrignaud/fim/master/fim-docker -o fim-docker
-    $ chmod a+rx fim-docker
+    $ curl goo.gl/XwERDY -L -o fim-docker && chmod a+rx fim-docker
 
 ### Run it:
 If you don't have the Fim docker image locally it will pull the image first.
 This script takes the same arguments as the `fim` one.
 
     $ ./fim-docker -h
+
+
+![Analytics](https://ga-beacon.appspot.com/UA-78135040-1/evrignaud/fim?pixel)
