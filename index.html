@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.2">
+<meta name="generator" content="Asciidoctor 1.5.3">
 <title>Fim - File Integrity Manager</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
-/* Remove the comments around the @import statement below when using this as a custom stylesheet */
-/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400";*/
+/* Remove comment around @import statement below when using as a custom stylesheet */
+/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";*/
 article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}
 audio,canvas,video{display:inline-block}
 audio:not([controls]){display:none;height:0}
@@ -57,7 +57,6 @@ a:hover{cursor:pointer}
 img,object,embed{max-width:100%;height:auto}
 object,embed{height:100%}
 img{-ms-interpolation-mode:bicubic}
-#map_canvas img,#map_canvas embed,#map_canvas object,.map_canvas img,.map_canvas embed,.map_canvas object{max-width:none!important}
 .left{float:left!important}
 .right{float:right!important}
 .text-left{text-align:left!important}
@@ -65,10 +64,12 @@ img{-ms-interpolation-mode:bicubic}
 .text-center{text-align:center!important}
 .text-justify{text-align:justify!important}
 .hide{display:none}
-.antialiased,body{-webkit-font-smoothing:antialiased}
-img{display:inline-block;vertical-align:middle}
+body{-webkit-font-smoothing:antialiased}
+img,object,svg{display:inline-block;vertical-align:middle}
 textarea{height:auto;min-height:50px}
 select{width:100%}
+.center{margin-left:auto;margin-right:auto}
+.spread{width:100%}
 p.lead,.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{font-size:1.21875em;line-height:1.6}
 .subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
 div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0;direction:ltr}
@@ -111,12 +112,14 @@ blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
 h1{font-size:2.75em}
 h2{font-size:2.3125em}
 h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
-h4{font-size:1.4375em}}table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
+h4{font-size:1.4375em}}
+table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
 table thead,table tfoot{background:#f7f8f7;font-weight:bold}
 table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
 table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
 table tr.even,table tr.alt,table tr:nth-of-type(even){background:#f8f8f7}
 table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
+body{tab-size:4}
 h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
 h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
 .clearfix:before,.clearfix:after,.float-group:before,.float-group:after{content:" ";display:table}
@@ -124,7 +127,7 @@ h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title str
 *:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed}
 pre,pre>code{line-height:1.45;color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;text-rendering:optimizeSpeed}
 .keyseq{color:rgba(51,51,51,.8)}
-kbd{display:inline-block;color:rgba(0,0,0,.8);font-size:.75em;line-height:1.4;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:-.15em .15em 0 .15em;padding:.2em .6em .2em .5em;vertical-align:middle;white-space:nowrap}
+kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
 .keyseq kbd:first-child{margin-left:0}
 .keyseq kbd:last-child{margin-right:0}
 .menuseq,.menu{color:rgba(0,0,0,.8)}
@@ -155,29 +158,33 @@ p a>code:hover{color:rgba(0,0,0,.9)}
 #toc ul.sectlevel0>li>a{font-style:italic}
 #toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
 #toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
+#toc li{line-height:1.3334;margin-top:.3334em}
 #toc a{text-decoration:none}
 #toc a:active{text-decoration:underline}
 #toctitle{color:#7a2518;font-size:1.2em}
 @media only screen and (min-width:768px){#toctitle{font-size:1.375em}
 body.toc2{padding-left:15em;padding-right:0}
 #toc.toc2{margin-top:0!important;background-color:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #efefed;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
-#toc.toc2 #toctitle{margin-top:0;font-size:1.2em}
+#toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
 #toc.toc2>ul{font-size:.9em;margin-bottom:0}
 #toc.toc2 ul ul{margin-left:0;padding-left:1em}
 #toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
 body.toc2.toc-right{padding-left:0;padding-right:15em}
-body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #efefed;left:auto;right:0}}@media only screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
+body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #efefed;left:auto;right:0}}
+@media only screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
 #toc.toc2{width:20em}
 #toc.toc2 #toctitle{font-size:1.375em}
 #toc.toc2>ul{font-size:.95em}
 #toc.toc2 ul ul{padding-left:1.25em}
-body.toc2.toc-right{padding-left:0;padding-right:20em}}#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+body.toc2.toc-right{padding-left:0;padding-right:20em}}
+#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
 #content #toc>:first-child{margin-top:0}
 #content #toc>:last-child{margin-bottom:0}
 #footer{max-width:100%;background-color:rgba(0,0,0,.8);padding:1.25em}
 #footer-text{color:rgba(255,255,255,.8);line-height:1.44}
 .sect1{padding-bottom:.625em}
-@media only screen and (min-width:768px){.sect1{padding-bottom:1.25em}}.sect1+.sect1{border-top:1px solid #efefed}
+@media only screen and (min-width:768px){.sect1{padding-bottom:1.25em}}
+.sect1+.sect1{border-top:1px solid #efefed}
 #content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
 #content h1>a.anchor:before,h2>a.anchor:before,h3>a.anchor:before,#toctitle>a.anchor:before,.sidebarblock>.content>.title>a.anchor:before,h4>a.anchor:before,h5>a.anchor:before,h6>a.anchor:before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
 #content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
@@ -206,7 +213,9 @@ table.tableblock #preamble>.sectionbody>.paragraph:first-of-type p{font-size:inh
 .sidebarblock .literalblock pre,.sidebarblock .listingblock pre:not(.highlight),.sidebarblock .listingblock pre[class="highlight"],.sidebarblock .listingblock pre[class^="highlight "],.sidebarblock .listingblock pre.CodeRay,.sidebarblock .listingblock pre.prettyprint{background:#f2f1f1}
 .literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;padding:1em;font-size:.8125em}
 .literalblock pre.nowrap,.literalblock pre[class].nowrap,.listingblock pre.nowrap,.listingblock pre[class].nowrap{overflow-x:auto;white-space:pre;word-wrap:normal}
-@media only screen and (min-width:768px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:.90625em}}@media only screen and (min-width:1280px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:1em}}.literalblock.output pre{color:#f7f7f8;background-color:rgba(0,0,0,.9)}
+@media only screen and (min-width:768px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:.90625em}}
+@media only screen and (min-width:1280px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:1em}}
+.literalblock.output pre{color:#f7f7f8;background-color:rgba(0,0,0,.9)}
 .listingblock pre.highlightjs{padding:0}
 .listingblock pre.highlightjs>code{padding:1em;-webkit-border-radius:4px;border-radius:4px}
 .listingblock pre.prettyprint{border-width:0}
@@ -216,7 +225,7 @@ table.tableblock #preamble>.sectionbody>.paragraph:first-of-type p{font-size:inh
 .listingblock.terminal pre .command:before{content:attr(data-prompt);padding-right:.5em;color:#999}
 .listingblock.terminal pre .command:not([data-prompt]):before{content:"$"}
 table.pyhltable{border-collapse:separate;border:0;margin-bottom:0;background:none}
-table.pyhltable td{vertical-align:top;padding-top:0;padding-bottom:0}
+table.pyhltable td{vertical-align:top;padding-top:0;padding-bottom:0;line-height:1.45}
 table.pyhltable td.code{padding-left:.75em;padding-right:0}
 pre.pygments .lineno,table.pyhltable td:not(.code){color:#999;padding-left:0;padding-right:.5em;border-right:1px solid #ddddd8}
 pre.pygments .lineno{display:inline-block;margin-right:.25em}
@@ -237,13 +246,12 @@ table.pyhltable .linenodiv{background:none!important;padding-right:0!important}
 .verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
 .quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
 .quoteblock .attribution br,.verseblock .attribution br{display:none}
-.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.05em;color:rgba(0,0,0,.6)}
+.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.025em;color:rgba(0,0,0,.6)}
 .quoteblock.abstract{margin:0 0 1.25em 0;display:block}
 .quoteblock.abstract blockquote,.quoteblock.abstract blockquote p{text-align:left;word-spacing:0}
 .quoteblock.abstract blockquote:before,.quoteblock.abstract blockquote p:first-of-type:before{display:none}
 table.tableblock{max-width:100%;border-collapse:separate}
 table.tableblock td>.paragraph:last-child p>p:last-child,table.tableblock th>p:last-child,table.tableblock td>p:last-child{margin-bottom:0}
-table.spread{width:100%}
 table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
 table.grid-all th.tableblock,table.grid-all td.tableblock{border-width:0 1px 1px 0}
 table.grid-all tfoot>tr>th.tableblock,table.grid-all tfoot>tr>td.tableblock{border-width:1px 1px 0 0}
@@ -289,8 +297,8 @@ ol.upperroman{list-style-type:upper-roman}
 ol.lowergreek{list-style-type:lower-greek}
 .hdlist>table,.colist>table{border:0;background:none}
 .hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
-td.hdlist1{padding-right:.75em;font-weight:bold}
-td.hdlist1,td.hdlist2{vertical-align:top}
+td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
+td.hdlist1{font-weight:bold;padding-bottom:1.25em}
 .literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
 .colist>table tr>td:first-of-type{padding:0 .75em;line-height:1}
 .colist>table tr>td:last-of-type{padding:.25em 0}
@@ -303,13 +311,14 @@ td.hdlist1,td.hdlist2{vertical-align:top}
 .image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
 .image.left{margin-right:.625em}
 .image.right{margin-left:.625em}
-a.image{text-decoration:none}
-span.footnote,span.footnoteref{vertical-align:super;font-size:.875em}
-span.footnote a,span.footnoteref a{text-decoration:none}
-span.footnote a:active,span.footnoteref a:active{text-decoration:underline}
+a.image{text-decoration:none;display:inline-block}
+a.image object{pointer-events:none}
+sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
+sup.footnote a,sup.footnoteref a{text-decoration:none}
+sup.footnote a:active,sup.footnoteref a:active{text-decoration:underline}
 #footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
 #footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em 0;border-width:1px 0 0 0}
-#footnotes .footnote{padding:0 .375em;line-height:1.3;font-size:.875em;margin-left:1.2em;text-indent:-1.2em;margin-bottom:.2em}
+#footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;text-indent:-1.05em;margin-bottom:.2em}
 #footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none}
 #footnotes .footnote:last-of-type{margin-bottom:0}
 #content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
@@ -367,11 +376,10 @@ span.icon>.fa{cursor:default}
 pre .conum[data-value]{position:relative;top:-.125em}
 b.conum *{color:inherit!important}
 .conum:not([data-value]):empty{display:none}
-h1,h2{letter-spacing:-.01em}
-dt,th.tableblock,td.content{text-rendering:optimizeLegibility}
-p,td.content{letter-spacing:-.01em}
-p strong,td.content strong{letter-spacing:-.005em}
-p,blockquote,dt,td.content{font-size:1.0625rem}
+dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
+h1,h2,p,td.content,span.alt{letter-spacing:-.01em}
+p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
+p,blockquote,dt,td.content,span.alt{font-size:1.0625rem}
 p{margin-bottom:1.25rem}
 .sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
 .exampleblock>.content{background-color:#fffef7;border-color:#e0e0dc;-webkit-box-shadow:0 1px 4px #e0e0dc;box-shadow:0 1px 4px #e0e0dc}
@@ -382,9 +390,9 @@ a{color:inherit!important;text-decoration:underline!important}
 a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
 a[href^="http:"]:not(.bare):after,a[href^="https:"]:not(.bare):after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
 abbr[title]:after{content:" (" attr(title) ")"}
-pre,blockquote,tr,img{page-break-inside:avoid}
+pre,blockquote,tr,img,object,svg{page-break-inside:avoid}
 thead{display:table-header-group}
-img{max-width:100%!important}
+svg{max-width:100%}
 p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
 h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
 #toc,.sidebarblock,.exampleblock>.content{background:none!important}
@@ -408,97 +416,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .hide-for-print{display:none!important}
 .show-for-print{display:inherit!important}}
 </style>
-<style>
-/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
-/*pre.CodeRay {background-color:#f7f7f8;}*/
-.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
-.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
-.CodeRay .line-numbers strong{font-weight: normal}
-table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
-table.CodeRay td{vertical-align: top}
-table.CodeRay td.line-numbers{text-align:right}
-table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
-table.CodeRay td.code{padding:0 0 0 .5em}
-table.CodeRay td.code>pre{padding:0}
-.CodeRay .debug{color:#fff !important;background:#000080 !important}
-.CodeRay .annotation{color:#007}
-.CodeRay .attribute-name{color:#000080}
-.CodeRay .attribute-value{color:#700}
-.CodeRay .binary{color:#509}
-.CodeRay .comment{color:#998;font-style:italic}
-.CodeRay .char{color:#04d}
-.CodeRay .char .content{color:#04d}
-.CodeRay .char .delimiter{color:#039}
-.CodeRay .class{color:#458;font-weight:bold}
-.CodeRay .complex{color:#a08}
-.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
-.CodeRay .color{color:#099}
-.CodeRay .class-variable{color:#369}
-.CodeRay .decorator{color:#b0b}
-.CodeRay .definition{color:#099}
-.CodeRay .delimiter{color:#000}
-.CodeRay .doc{color:#970}
-.CodeRay .doctype{color:#34b}
-.CodeRay .doc-string{color:#d42}
-.CodeRay .escape{color:#666}
-.CodeRay .entity{color:#800}
-.CodeRay .error{color:#808}
-.CodeRay .exception{color:inherit}
-.CodeRay .filename{color:#099}
-.CodeRay .function{color:#900;font-weight:bold}
-.CodeRay .global-variable{color:#008080}
-.CodeRay .hex{color:#058}
-.CodeRay .integer,.CodeRay .float{color:#099}
-.CodeRay .include{color:#555}
-.CodeRay .inline{color:#00}
-.CodeRay .inline .inline{background:#ccc}
-.CodeRay .inline .inline .inline{background:#bbb}
-.CodeRay .inline .inline-delimiter{color:#d14}
-.CodeRay .inline-delimiter{color:#d14}
-.CodeRay .important{color:#555;font-weight:bold}
-.CodeRay .interpreted{color:#b2b}
-.CodeRay .instance-variable{color:#008080}
-.CodeRay .label{color:#970}
-.CodeRay .local-variable{color:#963}
-.CodeRay .octal{color:#40e}
-.CodeRay .predefined{color:#369}
-.CodeRay .preprocessor{color:#579}
-.CodeRay .pseudo-class{color:#555}
-.CodeRay .directive{font-weight:bold}
-.CodeRay .type{font-weight:bold}
-.CodeRay .predefined-type{color:inherit}
-.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
-.CodeRay .key{color:#808}
-.CodeRay .key .delimiter{color:#606}
-.CodeRay .key .char{color:#80f}
-.CodeRay .value{color:#088}
-.CodeRay .regexp .delimiter{color:#808}
-.CodeRay .regexp .content{color:#808}
-.CodeRay .regexp .modifier{color:#808}
-.CodeRay .regexp .char{color:#d14}
-.CodeRay .regexp .function{color:#404;font-weight:bold}
-.CodeRay .string{color:#d20}
-.CodeRay .string .string .string{background:#ffd0d0}
-.CodeRay .string .content{color:#d14}
-.CodeRay .string .char{color:#d14}
-.CodeRay .string .delimiter{color:#d14}
-.CodeRay .shell{color:#d14}
-.CodeRay .shell .delimiter{color:#d14}
-.CodeRay .symbol{color:#990073}
-.CodeRay .symbol .content{color:#a60}
-.CodeRay .symbol .delimiter{color:#630}
-.CodeRay .tag{color:#008080}
-.CodeRay .tag-special{color:#d70}
-.CodeRay .variable{color:#036}
-.CodeRay .insert{background:#afa}
-.CodeRay .delete{background:#faa}
-.CodeRay .change{color:#aaf;background:#007}
-.CodeRay .head{color:#f8f;background:#505}
-.CodeRay .insert .insert{color:#080}
-.CodeRay .delete .delete{color:#800}
-.CodeRay .change .change{color:#66f}
-.CodeRay .head .head{color:#f4f}
-</style>
 <link rel="icon" type="image/x-icon" href="images/favicon/favicon.ico" /></head>
 <body class="book toc2 toc-left">
 <div id="header">
@@ -510,20 +427,31 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_why_do_you_need_fim">1. Why do you need Fim</a></li>
 <li><a href="#_how_does_it_work">2. How does it work</a></li>
 <li><a href="#_fim_workflow">3. Fim workflow</a></li>
-<li><a href="#_use_case_example">4. Use case example</a></li>
+<li><a href="#_most_common_use_cases">4. Most Common use cases</a>
+<ul class="sectlevel2">
+<li><a href="#_binary_workspace_management">4.1. Binary Workspace management</a></li>
+<li><a href="#_duplicates_removal">4.2. Duplicates removal</a></li>
+<li><a href="#_backup_integrity">4.3. Backup integrity</a></li>
+</ul>
+</li>
 <li><a href="#_fim_usage">5. Fim usage</a></li>
 <li><a href="#_how_can_you_use_fim">6. How can you use Fim</a>
 <ul class="sectlevel2">
 <li><a href="#_download_a_fim_release">6.1. Download a Fim release</a></li>
 <li><a href="#_fim_changelog">6.2. Fim changelog</a></li>
-<li><a href="#_build_fim">6.3. Build Fim</a></li>
+<li><a href="#_run_fim_using_docker">6.3. Run Fim using Docker</a></li>
+<li><a href="#_build_fim">6.4. Build Fim</a></li>
 </ul>
 </li>
 <li><a href="#_simple_example">7. Simple example</a>
 <ul class="sectlevel2">
 <li><a href="#_step_by_step">7.1. Step by step</a></li>
 <li><a href="#_the_fim_log">7.2. The Fim log</a></li>
-<li><a href="#_state_file_content">7.3. State file content</a></li>
+<li><a href="#_rollback_all_the_commit">7.3. Rollback all the commit</a></li>
+<li><a href="#_commit_using_super_fast_mode">7.4. Commit using super-fast mode</a></li>
+<li><a href="#_again_nothing_is_modified_now">7.5. Again, nothing is modified now</a></li>
+<li><a href="#_display_the_fim_log">7.6. Display the Fim log</a></li>
+<li><a href="#_state_file_content">7.7. State file content</a></li>
 </ul>
 </li>
 <li><a href="#_real_life_example">8. Real life example</a>
@@ -535,28 +463,34 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_checking_without_hashing">8.5. Checking without hashing</a></li>
 </ul>
 </li>
-<li><a href="#_file_permissions_management">9. File permissions management</a></li>
-<li><a href="#_hardware_corruption_detection">10. Hardware corruption detection</a>
+<li><a href="#_super_fast_commit">9. Super-fast commit</a></li>
+<li><a href="#_dealing_with_duplicates">10. Dealing with duplicates</a>
 <ul class="sectlevel2">
-<li><a href="#_false_positive">10.1. False positive</a></li>
+<li><a href="#_duplicates_inside_a_fim_repository">10.1. Duplicates inside a Fim repository</a></li>
+<li><a href="#_duplicates_that_are_outside">10.2. Duplicates that are outside</a></li>
 </ul>
 </li>
-<li><a href="#_faq">11. FAQ</a>
+<li><a href="#_file_permissions_management">11. File permissions management</a></li>
+<li><a href="#_hardware_corruption_detection">12. Hardware corruption detection</a>
 <ul class="sectlevel2">
-<li><a href="#_run_fim_commands_from_a_sub_directory">11.1. Run Fim commands from a sub-directory</a></li>
-<li><a href="#_dealing_with_duplicates">11.2. Dealing with duplicates</a></li>
-<li><a href="#_changing_default_hash_mode">11.3. Changing default hash mode</a></li>
-<li><a href="#_ignoring_files_or_directories">11.4. Ignoring files or directories</a></li>
-<li><a href="#_hash_files_in_multi_thread">11.5. Hash files in multi-thread</a></li>
-<li><a href="#_state_integrity">11.6. State integrity</a></li>
-<li><a href="#_cross_platform_compatibility">11.7. Cross platform compatibility</a></li>
+<li><a href="#_false_positive">12.1. False positive</a></li>
 </ul>
 </li>
-<li><a href="#_fim_requirements">12. Fim requirements</a></li>
-<li><a href="#_supported_os">13. Supported OS</a></li>
-<li><a href="#_they_talked_about_it">14. They talked about it</a></li>
-<li><a href="#_about">15. About</a></li>
-<li><a href="#_license">16. License</a></li>
+<li><a href="#_faq">13. FAQ</a>
+<ul class="sectlevel2">
+<li><a href="#_run_fim_commands_from_a_sub_directory">13.1. Run Fim commands from a sub-directory</a></li>
+<li><a href="#_changing_default_hash_mode">13.2. Changing default hash mode</a></li>
+<li><a href="#_ignoring_files_or_directories">13.3. Ignoring files or directories</a></li>
+<li><a href="#_hash_files_in_multi_thread">13.4. Hash files in multi-thread</a></li>
+<li><a href="#_state_integrity">13.5. State integrity</a></li>
+<li><a href="#_cross_platform_compatibility">13.6. Cross platform compatibility</a></li>
+</ul>
+</li>
+<li><a href="#_fim_requirements">14. Fim requirements</a></li>
+<li><a href="#_supported_os">15. Supported OS</a></li>
+<li><a href="#_they_talked_about_it">16. They talked about it</a></li>
+<li><a href="#_about">17. About</a></li>
+<li><a href="#_license">18. License</a></li>
 </ul>
 </li>
 </ul>
@@ -587,6 +521,34 @@ table.CodeRay td.code>pre{padding:0}
 
 <link rel="stylesheet" href="css/style.css">
 
+<style type="text/css">
+    .listingblock pre.highlightjs > code {
+        background: rgb(247, 247, 248);
+    }
+</style>
+
+<script src="http://code.jquery.com/jquery-2.2.3.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var offset = 250;
+        var duration = 700;
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > offset) {
+                $('.back-to-top').fadeIn(duration);
+            } else {
+                $('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        $('.back-to-top').click(function (event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+
 <script>
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -602,7 +564,7 @@ table.CodeRay td.code>pre{padding:0}
 		style="position: fixed; top: 0; right: 0; border: 0; z-index: 1000; margin: 0;"
 		src="images/fork_me_on_github-top-right.png" alt="Fork me on GitHub"/>
 	</a>
-    <a href="#"><img
+    <a href="#" class="back-to-top"><img
 		style="position: fixed; bottom: 0; right: 0; border: 0; z-index: 1000; margin: 20px 20px 20px;"
 		src="images/icons/back_to_top.png" title="Back to top" alt="Back to top"/>
 	</a>
@@ -613,7 +575,7 @@ table.CodeRay td.code>pre{padding:0}
 <div class="openblock partintro">
 <div class="content">
 <div class="paragraph">
-<p>Version 1.1.0</p>
+<p>Version 1.2.0</p>
 </div>
 <hr>
 <div class="paragraph">
@@ -634,7 +596,7 @@ It can be photos, videos or a complete disk tree. You can manage them with a spi
 When you are working with files and you are also very busy, it&#8217;s difficult to remind what are the files you were working on previously.
 A VCS can help you for this.
 Unfortunately when you are working with photos or videos, or other kind of big binary files you cannot manage them with a tool like Git.<br>
-Fim is here for that.</p>
+Fim is meant to solve that.</p>
 </div>
 <div class="paragraph">
 <p>Each time you have a stable set of files you can commit them to store their properties into a State and be able to compare it with your set of files later.</p>
@@ -667,11 +629,11 @@ With <code>btrfs</code> all those files would have appeared as OK.</p>
 <p>Fim allows you also to check the integrity of files with filesystems that do not maintain file checksums.<br>
 For example you will be able to detect hardware corruption on a DVD. You simply have to burn the complete Fim repository on the DVD, all the files and the <code>.fim</code> content.<br>
 You can verify the integrity of this DVD by going on the top of the DVD and type <code>fim diff</code> or <code>fim dcor</code>.
-More details <a href="#_hardware_corruption_detection">here</a>.</p>
+More details in <a href="#_hardware_corruption_detection">Hardware corruption detection</a>.</p>
 </div>
 <div class="paragraph">
 <p>The Fim States could also be corrupted. To do so the State content is hashed and each time Fim loads a State, it checks his integrity by recalculating the State hash.
-More details <a href="#_state_integrity">here</a>.</p>
+More details in <a href="#_state_integrity">State integrity</a>.</p>
 </div>
 </div>
 </div>
@@ -712,7 +674,7 @@ When the file size is less than twice the block size we hash the first block.</p
 The hash algorithm that is used is SHA-512.</p>
 </div>
 <div class="paragraph">
-<p>More details regarding file permissions can be found <a href="#_file_permissions_management">here</a>.</p>
+<p>More details regarding file permissions can be found in <a href="#_file_permissions_management">File permissions management</a>.</p>
 </div>
 <div class="paragraph">
 <p>The index is called a <code>State</code> and acts like the Central Directory does for a Zip file.
@@ -745,7 +707,7 @@ This will record the first State of your file tree.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">$ fim init</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim init</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -754,7 +716,7 @@ You can do a full diff that will compare the hash of all the files. It can be ve
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">$ fim diff</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim diff</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -762,7 +724,7 @@ You can do a full diff that will compare the hash of all the files. It can be ve
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">$ fim diff -f</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim diff -f</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -770,7 +732,7 @@ You can do a full diff that will compare the hash of all the files. It can be ve
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">$ fim diff -s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim diff -s</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -779,7 +741,7 @@ You will not be able to detect files that have been renamed or duplicated.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">$ fim diff -n</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim diff -n</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -788,31 +750,56 @@ It&#8217;s a time consuming operation that will compute hash of every file conte
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">$ fim ci -c &quot;My commit comment&quot;</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim ci -c "My commit comment"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order to commit faster you can use the Super-fast commit. More details in <a href="super_fast_commit.html#_super_fast_commit">Super-fast commit</a>. (with this option you can miss some modified files)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim ci -s -c "My commit comment"</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_use_case_example">4. Use case example</h2>
+<h2 id="_most_common_use_cases">4. Most Common use cases</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Fim can be used for different kind of use cases.<br>
-Personally I use Fim to manage my photos and videos.
+<p>Fim can be used for different kind of use cases.</p>
+</div>
+<div class="sect2">
+<h3 id="_binary_workspace_management">4.1. Binary Workspace management</h3>
+<div class="paragraph">
+<p>Personally I use Fim to manage my photos and videos.
 When I have new photos, I put them at the right place in my pictures folder and then I do <code>fim&nbsp;ci</code> from the sub-directory
 containing the new photos to record a new State, as I could do with Git.
 As I do this from a sub-directory the commit is fast because Fim hashes only the files that I added and creates a new State
 by merging those new hashes with the previous State.</p>
 </div>
 <div class="paragraph">
-<p>More details on using Fim from a sub-directory can be found <a href="#_run_fim_commands_from_a_sub_directory">here</a>.</p>
+<p>More details on using Fim from a sub-directory can be found in <a href="#_run_fim_commands_from_a_sub_directory">Run Fim commands from a sub-directory</a>.</p>
 </div>
 <div class="paragraph">
 <p>The <code>fim diff</code> command let me know when I want (even super quickly) if something changed in my pictures folder.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_duplicates_removal">4.2. Duplicates removal</h3>
 <div class="paragraph">
-<p>I can easily identify and delete the photos I have duplicated on my drive or other computer with the command <code>fim rdup</code>.
-For this, I just need to copy the <code>.fim</code> directory on the other computer.</p>
+<p>I can easily identify and delete the photos I have duplicated on my drive or another computer with the command <code>fim rdup</code>.<br>
+For this, I just need to copy the <code>.fim</code> directory on the other computer.<br>
+More details in <a href="#_dealing_with_duplicates">Dealing with duplicates</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_backup_integrity">4.3. Backup integrity</h3>
+<div class="paragraph">
+<p>For offline long term backups Fim can be used to perform and store a hash of all the files in order to insure the backup integrity.<br>
+More details in <a href="#_why_do_you_need_fim">Why do you need Fim</a>
+and <a href="#_hardware_corruption_detection">Hardware corruption detection</a>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -821,9 +808,10 @@ For this, I just need to copy the <code>.fim</code> directory on the other compu
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">$ fim help
+<pre>$ fim --help
 
-usage: fim &lt;command&gt; [-c &lt;arg&gt;] [-e] [-f] [-h] [-l] [-m &lt;arg&gt;] [-n] [-q] [-s] [-t &lt;arg&gt;] [-v] [-y]
+usage: fim &lt;command&gt; [-c &lt;arg&gt;] [-d &lt;arg&gt;] [-e] [-f] [-h] [-l] [-m &lt;arg&gt;] [-n] [-o &lt;arg&gt;] [-p] [-q] [-s]
+                     [-t &lt;arg&gt;] [-v] [-y]
 
 File Integrity Checker
 
@@ -846,6 +834,7 @@ Available commands:
 
 Available options:
      -c,--comment &lt;arg&gt;                 Comment to set during init and commit
+     -d,--directory &lt;arg&gt;               Run Fim into the specified directory
      -e,--errors                        Display execution error details
      -f,--fast-mode                     Use fast mode. Hash only 3 medium blocks.
                                         One at the beginning, one in the middle and one at the end
@@ -855,12 +844,15 @@ Available options:
      -m,--master-fim-repository &lt;arg&gt;   Fim repository directory that you want to use as remote master.
                                         Only for the remove duplicated files command
      -n,--do-not-hash                   Do not hash file content. Uses only file names and modification dates
+     -o,--output-max-lines &lt;arg&gt;        Change the maximum number lines displayed for the same kind of modification.
+                                        Default value is 200 lines
+     -p,--purge-states                  Purge previous States if the commit succeed
      -q,--quiet                         Do not display details
      -s,--super-fast-mode               Use super-fast mode. Hash only 3 small blocks.
                                         One at the beginning, one in the middle and one at the end
      -t,--thread-count &lt;arg&gt;            Number of thread used to hash file contents in parallel
      -v,--version                       Prints the Fim version
-     -y,--always-yes                    Always yes to every questions</code></pre>
+     -y,--always-yes                    Always yes to every questions</pre>
 </div>
 </div>
 </div>
@@ -871,13 +863,98 @@ Available options:
 <div class="sect2">
 <h3 id="_download_a_fim_release">6.1. Download a Fim release</h3>
 <div class="paragraph">
-<p>You can download a prebuilt release of Fim from <a href="https://github.com/evrignaud/fim/releases/latest"><span class="image"><img src="images/icons/download.png" alt="Download"></span> here</a></p>
+<p>You can download a prebuilt release of Fim from the <a href="https://github.com/evrignaud/fim/releases/latest"><span class="image"><img src="images/icons/download.png" alt="Download"></span> Latest release</a></p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_fim_changelog">6.2. Fim changelog</h3>
 <div class="sect3">
-<h4 id="_version_1_1_0">6.2.1. Version 1.1.0</h4>
+<h4 id="_version_1_2_0">6.2.1. Version 1.2.0</h4>
+<div class="paragraph">
+<p><strong>(Released 2016-05-23)</strong></p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/evrignaud/fim/tree/1.2.0"><span class="image"><img src="images/icons/octocat.png" alt="GitHub"></span> Sources</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/compare/1.1.0%2E%2E%2E1.2.0"><span class="image"><img src="images/icons/list.png" alt="List"></span> Full Changelog</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/releases/tag/1.2.0"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
+</div>
+<div class="sect4">
+<h5 id="_global_improvement_of_the_performance">Global improvement of the performance</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Decrease the State size</strong> in memory and on the disc by using Ascii85 instead of Hexa to store hash. Each hash string length is now 80 instead of 128.</p>
+</li>
+<li>
+<p>Add <strong>Super-fast commit</strong> support see more in <a href="super_fast_commit.html#_super_fast_commit">Super-fast commit</a></p>
+</li>
+<li>
+<p>Allow to <strong>manage a very big amount a files</strong> (1 098 138 files is working for me)</p>
+</li>
+<li>
+<p><strong>Optimisation of the State comparison</strong> to be able to compare quickly two States that contains 1 000 000 files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_general">General</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Fim is now distributed as <strong>Docker image</strong> on Docker Hub see more in <a href="#_run_fim_using_docker">Run Fim using Docker</a></p>
+</li>
+<li>
+<p>Add the <strong><code>--directory</code></strong> option to be able to specify where to run Fim commands</p>
+</li>
+<li>
+<p>Every commit on Fim is now tested on <strong>Mac OS X</strong> thanks to the Travis Mac builder</p>
+</li>
+<li>
+<p>Run static code analysis on <strong>Sonar</strong> and <strong>Coverity</strong></p>
+</li>
+<li>
+<p>Add the <strong><code>--purge-states</code></strong> option that purge previous States if the commit succeed</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_bug_fix">Bug fix</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Check access rights for the <code>.fim</code> directory before executing every command</p>
+</li>
+<li>
+<p>Ignore the milliseconds for date modification comparison because some JDK don&#8217;t retrieve them and set them to 0</p>
+</li>
+<li>
+<p>By default truncate output to 200 lines of the same kind. <code>--output-max-lines</code> option added to modify this</p>
+</li>
+<li>
+<p>Empty files are not seen as duplicates</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_migrating_from_1_1_0_to_1_2_0">Migrating from 1.1.0 to 1.2.0</h5>
+<div class="paragraph">
+<p>State format is modified and not compatible. You need the rehash the complete repository.<br>
+To migrate type:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim ci -y -c "Migrate to Fim 1.2.0"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_version_1_1_0">6.2.2. Version 1.1.0</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-11-01)</strong></p>
 </div>
@@ -895,29 +972,29 @@ Available options:
 </li>
 <li>
 <p>Complete rewrite of the Hash algorithm in order to hash one block at the beginning, one in the middle and one at the end.
-Details <a href="#_how_does_it_work">here</a></p>
+Details in <a href="#_how_does_it_work">How does it work</a></p>
 </li>
 <li>
 <p>Fix <a href="https://github.com/evrignaud/fim/issues/2">issue #2</a> - Add the 'fim dcor' command that find changes most likely caused by a hardware corruption or a filesystem bug.
 Change in content, but not in creation time and last modified time.
-Details <a href="#_hardware_corruption_detection">here</a></p>
+Details in <a href="#_hardware_corruption_detection">Hardware corruption detection</a></p>
 </li>
 <li>
 <p>Fix <a href="https://github.com/evrignaud/fim/issues/3">issue #3</a> - If available, store the SELinux label of each file.
-Details <a href="#_file_permissions_management">here</a></p>
+Details in <a href="#_file_permissions_management">File permissions management</a></p>
 </li>
 <li>
 <p>Fix <a href="https://github.com/evrignaud/fim/issues/4">issue #4</a> - Fix <code>fim</code> shell script for Mac OS X</p>
 </li>
 <li>
 <p>Add the ability to ignore files or directory using a <code>.fimignore</code> file.
-Details <a href="#_ignoring_files_or_directories">here</a></p>
+Details in <a href="#_ignoring_files_or_directories">Ignoring files or directories</a></p>
 </li>
 <li>
-<p>Add automatic build and testing of Fim using Travis CI for <a href="https://travis-ci.org/evrignaud/fim">Linux</a> and Appveyor CI for <a href="https://ci.appveyor.com/project/evrignaud/fim">Windows</a></p>
+<p>Add automatic build and testing of Fim using Travis CI for <a href="https://goo.gl/QfQTE8">Linux</a> and Appveyor CI for <a href="https://goo.gl/foWAWQ">Windows</a></p>
 </li>
 <li>
-<p>Add Unit test coverage using <a href="https://coveralls.io/github/evrignaud/fim?branch=master">Coveralls</a></p>
+<p>Add Unit test coverage using <a href="https://goo.gl/hJGXqj">Coveralls</a></p>
 </li>
 <li>
 <p>Moved the documentation to AsciiDoc using the <a href="http://asciidoctor.org/docs/asciidoctor-maven-plugin/">asciidoctor-maven-plugin</a></p>
@@ -926,7 +1003,7 @@ Details <a href="#_ignoring_files_or_directories">here</a></p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_2">6.2.2. Version 1.0.2</h4>
+<h4 id="_version_1_0_2">6.2.3. Version 1.0.2</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-09-04)</strong></p>
 </div>
@@ -950,7 +1027,7 @@ Hash the second 4 KB / 1 MB block to ensure that the headers don&#8217;t increas
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_1">6.2.3. Version 1.0.1</h4>
+<h4 id="_version_1_0_1">6.2.4. Version 1.0.1</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-08-26)</strong></p>
 </div>
@@ -979,7 +1056,7 @@ Hash the second 4 KB / 1 MB block to ensure that the headers don&#8217;t increas
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_0">6.2.4. Version 1.0.0</h4>
+<h4 id="_version_1_0_0">6.2.5. Version 1.0.0</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-07-29)</strong></p>
 </div>
@@ -1006,7 +1083,77 @@ Hash the second 4 KB / 1 MB block to ensure that the headers don&#8217;t increas
 </div>
 </div>
 <div class="sect2">
-<h3 id="_build_fim">6.3. Build Fim</h3>
+<h3 id="_run_fim_using_docker">6.3. Run Fim using Docker</h3>
+<div class="paragraph">
+<p>If you don&#8217;t have Java and you don&#8217;t want to install it (or you don&#8217;t have the required version of Java), you can run Fim using a Docker image.<br>
+All the environment required to run Fim is inside the Docker image. Just pull the image and run Fim.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<img src="images/icons/important.png" alt="Important">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The Docker image runs only on Linux</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_using_the_latest_published_docker_image">6.3.1. Using the latest published Docker image</h4>
+<div class="paragraph">
+<p>Fim releases are published as Docker images on <a href="https://hub.docker.com/r/evrignaud/fim/">Docker Hub</a>.<br>
+You can use them like this.</p>
+</div>
+<div class="sect4">
+<h5 id="_retrieve_the_code_fim_docker_code_script">Retrieve the <code>fim-docker</code> script:</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ curl goo.gl/XwERDY -L -o fim-docker &amp;&amp; chmod a+rx fim-docker</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_run_it">Run it:</h5>
+<div class="paragraph">
+<p>This script takes the same arguments as the <code>fim</code> one.<br>
+If you don&#8217;t have the Fim Docker image locally it will pull the image first.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ ./fim-docker -h</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want to be sure the have the latest version of the Fim Docker image you can pull it manually:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ docker pull evrignaud/fim</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_creating_your_own_docker_image">6.3.2. Creating your own Docker Image</h4>
+<div class="paragraph">
+<p>After having build Fim (<a href="#_build_fim">see below</a>), type the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ ./build-docker-image</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then you can use the provided <code>fim-docker</code> script.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_build_fim">6.4. Build Fim</h3>
 <div class="paragraph">
 <p>You can build Fim yourself to try the master version.</p>
 </div>
@@ -1035,7 +1182,7 @@ If you clone Fim&#8217;s master, a SNAPSHOT is retrieved and there is no guarant
 <p>Download the <a href="https://github.com/evrignaud/fim/zipball/master">.zip</a> or the <a href="https://github.com/evrignaud/fim/tarball/master">.tar.gz</a></p>
 </li>
 <li>
-<p>Or clone it using either <code><a href="https://github.com/evrignaud/fim.git" class="bare">https://github.com/evrignaud/fim.git</a></code> or <code>git@github.com:evrignaud/fim.git</code></p>
+<p>Or clone it using <code><a href="https://github.com/evrignaud/fim.git" class="bare">https://github.com/evrignaud/fim.git</a></code></p>
 </li>
 </ul>
 </div>
@@ -1047,7 +1194,7 @@ If you clone Fim&#8217;s master, a SNAPSHOT is retrieved and there is no guarant
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>mvn clean install</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">mvn clean install</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1073,13 +1220,13 @@ the two shell script files located in the root directory.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>$ ls -a1 target/dist/
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ ls -a1 target/dist/
 fim-1.1.0-SNAPSHOT-distribution.tar.gz
 fim-1.1.0-SNAPSHOT-distribution.zip</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_step_by_step_procedure">6.3.1. Step by step procedure</h4>
+<h4 id="_step_by_step_procedure">6.4.1. Step by step procedure</h4>
 <div class="paragraph">
 <p>Here are some tips on how you can build Fim easily.</p>
 </div>
@@ -1092,7 +1239,7 @@ fim-1.1.0-SNAPSHOT-distribution.zip</code></pre>
 <h6 id="_for_linux">For Linux</h6>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>$ sudo apt-get install maven</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ sudo apt-get install maven</code></pre>
 </div>
 </div>
 </div>
@@ -1103,7 +1250,7 @@ fim-1.1.0-SNAPSHOT-distribution.zip</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1111,7 +1258,7 @@ fim-1.1.0-SNAPSHOT-distribution.zip</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>$ brew install maven</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ brew install maven</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1123,7 +1270,7 @@ fim-1.1.0-SNAPSHOT-distribution.zip</code></pre>
 <h5 id="_clone_fim">Clone Fim</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>$ cd
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ cd
 $ mkdir projects
 $ cd projects
 $ git clone https://github.com/evrignaud/fim.git
@@ -1135,7 +1282,7 @@ $ cd fim</code></pre>
 <h5 id="_build_fim_2">Build Fim</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>$ mvn clean install</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ mvn clean install</code></pre>
 </div>
 </div>
 </div>
@@ -1143,7 +1290,7 @@ $ cd fim</code></pre>
 <h5 id="_now_fim_is_ready">Now Fim is ready</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>$ ./fim</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ ./fim</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1170,27 +1317,27 @@ For the purpose of this example we use small files.</p>
 <h4 id="_create_a_set_of_files">7.1.1. Create a set of files</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">~$ mkdir simple-example
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">~$ mkdir simple-example
 
 ~$ cd simple-example/
 
 # Creates 10 files
-simple-example$ for i in 01 02 03 04 05 06 07 08 09 10 ; do echo &quot;New File $i&quot; &gt; file$i ; done
+simple-example$ for i in 01 02 03 04 05 06 07 08 09 10 ; do echo "New File $i" &gt; file${i} ; done
 
 simple-example$ ls -la
 total 48
-drwxrwxr-x. 2 evrignaud evrignaud 4096 oct.  20 07:37 .
-drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file01
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file02
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file04
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file05
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file06
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file07
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file08
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file09
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file10</code></pre>
+drwxrwxr-x 2 evrignaud evrignaud 4096 mai    9 21:58 .
+drwx------ 3 evrignaud evrignaud 4096 mai    9 21:58 ..
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file01
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file02
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file03
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file04
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file05
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file06
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file07
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file08
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file09
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file10</code></pre>
 </div>
 </div>
 </div>
@@ -1198,12 +1345,11 @@ drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
 <h4 id="_initialize_the_fim_repository">7.1.2. Initialize the Fim repository</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim init -c &quot;First State&quot;
-2015/10/20 07:37:51 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim init -c 'First State'
+2016/05/09 21:58:36 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
-2015/10/20 07:37:51 - Info  - SELinux is enabled on this system
 .
-2015/10/20 07:37:52 - Info  - Scanned 10 files (120 bytes), hashed 120 bytes (avg 120 bytes/s), during 00:00:00
+2016/05/09 21:58:36 - Info  - Scanned 10 files (120 bytes), hashed 120 bytes (avg 120 bytes/s), during 00:00:00
 
 Added:            file01
 Added:            file02
@@ -1224,21 +1370,21 @@ Added:            file10
 <h4 id="_a_new_code_fim_code_directory_is_created">7.1.3. A new <code>.fim</code> directory is created</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ ls -la
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ ls -la
 total 52
-drwxrwxr-x. 3 evrignaud evrignaud 4096 oct.  20 07:37 .
-drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file01
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file02
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file04
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file05
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file06
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file07
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file08
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file09
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file10
-drwxrwxr-x. 3 evrignaud evrignaud 4096 oct.  20 07:37 .fim</code></pre>
+drwxrwxr-x 3 evrignaud evrignaud 4096 mai    9 21:58 .
+drwx------ 3 evrignaud evrignaud 4096 mai    9 21:58 ..
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file01
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file02
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file03
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file04
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file05
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file06
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file07
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file08
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file09
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file10
+drwxrwxr-x 3 evrignaud evrignaud 4096 mai    9 21:58 .fim</code></pre>
 </div>
 </div>
 </div>
@@ -1246,7 +1392,7 @@ drwxrwxr-x. 3 evrignaud evrignaud 4096 oct.  20 07:37 .fim</code></pre>
 <h4 id="_do_some_modifications">7.1.4. Do some modifications</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ mkdir dir01
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ mkdir dir01
 
 # Move file01 to dir01
 simple-example$ mv file01 dir01
@@ -1274,7 +1420,7 @@ simple-example$ rm file06
 simple-example$ cp file07 file07.dup1
 
 # Create the new file12
-simple-example$ echo &quot;New File 12&quot; &gt; file12</code></pre>
+simple-example$ echo "New File 12" &gt; file12</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1282,31 +1428,31 @@ simple-example$ echo &quot;New File 12&quot; &gt; file12</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ ls -la
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ ls -la
 total 68
-drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 .
-drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
-drwxrwxr-x. 2 evrignaud evrignaud 4096 oct.  20 07:37 dir01
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file02
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03.dup1
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file03.dup2
--rw-rw-r--. 1 evrignaud evrignaud   16 oct.  20 07:37 file04
--rw-rw-r--. 1 evrignaud evrignaud   16 oct.  20 07:37 file05
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file07
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file07.dup1
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file08
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file09
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file10
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file11
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file12
-drwxrwxr-x. 3 evrignaud evrignaud 4096 oct.  20 07:37 .fim
+drwxrwxr-x 4 evrignaud evrignaud 4096 mai    9 21:58 .
+drwx------ 3 evrignaud evrignaud 4096 mai    9 21:58 ..
+drwxrwxr-x 2 evrignaud evrignaud 4096 mai    9 21:58 dir01
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file02
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file03
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file03.dup1
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file03.dup2
+-rw-rw-r-- 1 evrignaud evrignaud   16 mai    9 21:58 file04
+-rw-rw-r-- 1 evrignaud evrignaud   16 mai    9 21:58 file05
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file07
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file07.dup1
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file08
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file09
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file10
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file11
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file12
+drwxrwxr-x 3 evrignaud evrignaud 4096 mai    9 21:58 .fim
 
 simple-example$ ls -la dir01/
 total 12
-drwxrwxr-x. 2 evrignaud evrignaud 4096 oct.  20 07:37 .
-drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
--rw-rw-r--. 1 evrignaud evrignaud   12 oct.  20 07:37 file01</code></pre>
+drwxrwxr-x 2 evrignaud evrignaud 4096 mai    9 21:58 .
+drwxrwxr-x 4 evrignaud evrignaud 4096 mai    9 21:58 ..
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai    9 21:58 file01</code></pre>
 </div>
 </div>
 </div>
@@ -1314,29 +1460,28 @@ drwxrwxr-x. 4 evrignaud evrignaud 4096 oct.  20 07:37 ..
 <h4 id="_fim_detects_the_modifications">7.1.5. Fim detects the modifications</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim diff
-2015/10/20 07:37:52 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim diff
+2016/05/09 21:58:36 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
-2015/10/20 07:37:52 - Info  - SELinux is enabled on this system
 .
-2015/10/20 07:37:53 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
+2016/05/09 21:58:36 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/10/20 07:37:51
+Comparing with the last committed state from 2016/05/09 21:58:36
 Comment: First State
 
 Added:            file12
-Copied:           file11         (was file05)
+Copied:           file11 	(was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02         creationTime: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
-                                 lastModified: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+Date modified:    file02 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
 
-Content modified: file04         creationTime: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
-                                 lastModified: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+Content modified: file04 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
 
-Content modified: file05         creationTime: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
-                                 lastModified: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+Content modified: file05 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
 
 Renamed:          file01 -&gt; dir01/file01
 Deleted:          file06
@@ -1349,18 +1494,17 @@ Deleted:          file06
 <h4 id="_search_for_duplicated_files">7.1.6. Search for duplicated files</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim fdup
-2015/10/20 07:37:53 - Info  - Searching for duplicated files
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim fdup
+2016/05/09 21:58:37 - Info  - Searching for duplicated files
 
-2015/10/20 07:37:53 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+2016/05/09 21:58:37 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
-2015/10/20 07:37:53 - Info  - SELinux is enabled on this system
 .
-2015/10/20 07:37:54 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
+2016/05/09 21:58:37 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 - Duplicate set #1
-  file07 duplicated 1 times
+  file07 duplicated 1 time
       12 bytes - file07.dup1
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1377,11 +1521,11 @@ Deleted:          file06
 <h4 id="_from_the_code_dir01_code_sub_directory">7.1.7. From the <code>dir01</code> sub-directory</h4>
 <div class="paragraph">
 <p>You can run Fim on a subset of the repository.<br>
-More details on using Fim from a sub-directory can be found <a href="#_run_fim_commands_from_a_sub_directory">here</a>.</p>
+More details on using Fim from a sub-directory can be found in <a href="#_run_fim_commands_from_a_sub_directory">Run Fim commands from a sub-directory</a>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ cd dir01</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ cd dir01</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1389,13 +1533,12 @@ More details on using Fim from a sub-directory can be found <a href="#_run_fim_c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example/dir01$ fim diff
-2015/10/20 07:37:54 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example/dir01$ fim diff
+2016/05/09 21:58:37 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
-2015/10/20 07:37:54 - Info  - SELinux is enabled on this system
-2015/10/20 07:37:55 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
+2016/05/09 21:58:37 - Info  - Scanned 1 file (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/10/20 07:37:51
+Comparing with the last committed state from 2016/05/09 21:58:36
 Comment: First State
 
 Added:            dir01/file01
@@ -1404,19 +1547,18 @@ Added:            dir01/file01
 </div>
 </div>
 <div class="paragraph">
-<p>There are no duplicated files as we are looking only inside <code>dir01</code>.</p>
+<p>There are no duplicated file as we are looking only inside <code>dir01</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example/dir01$ fim fdup
-2015/10/20 07:37:55 - Info  - Searching for duplicated files
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example/dir01$ fim fdup
+2016/05/09 21:58:37 - Info  - Searching for duplicated files
 
-2015/10/20 07:37:55 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+2016/05/09 21:58:37 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
-2015/10/20 07:37:55 - Info  - SELinux is enabled on this system
-2015/10/20 07:37:56 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
+2016/05/09 21:58:38 - Info  - Scanned 1 file (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-0 duplicated files spread into 0 duplicate sets, 0 bytes of wasted space</code></pre>
+No duplicated file found</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1424,13 +1566,12 @@ Added:            dir01/file01
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example/dir01$ fim ci -c &quot;Modifications from dir01&quot; -y
-2015/10/20 07:37:56 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example/dir01$ fim ci -c 'Modifications from dir01' -y
+2016/05/09 21:58:38 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
-2015/10/20 07:37:56 - Info  - SELinux is enabled on this system
-2015/10/20 07:37:57 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
+2016/05/09 21:58:38 - Info  - Scanned 1 file (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/10/20 07:37:51
+Comparing with the last committed state from 2016/05/09 21:58:36
 Comment: First State
 
 Added:            dir01/file01
@@ -1443,13 +1584,12 @@ Added:            dir01/file01
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example/dir01$ fim diff
-2015/10/20 07:37:57 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example/dir01$ fim diff
+2016/05/09 21:58:38 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
-2015/10/20 07:37:57 - Info  - SELinux is enabled on this system
-2015/10/20 07:37:58 - Info  - Scanned 1 files (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
+2016/05/09 21:58:38 - Info  - Scanned 1 file (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/10/20 07:37:56
+Comparing with the last committed state from 2016/05/09 21:58:38
 Comment: Modifications from dir01
 
 Nothing modified</code></pre>
@@ -1460,7 +1600,7 @@ Nothing modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example/dir01$ cd ..</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example/dir01$ cd ..</code></pre>
 </div>
 </div>
 </div>
@@ -1468,29 +1608,28 @@ Nothing modified</code></pre>
 <h4 id="_commit_the_modifications">7.1.8. Commit the modifications</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim ci -c &quot;All modifications&quot; -y
-2015/10/20 07:37:58 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim ci -c 'All modifications' -y
+2016/05/09 21:58:39 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
-2015/10/20 07:37:58 - Info  - SELinux is enabled on this system
 .
-2015/10/20 07:37:59 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
+2016/05/09 21:58:39 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/10/20 07:37:56
+Comparing with the last committed state from 2016/05/09 21:58:38
 Comment: Modifications from dir01
 
 Added:            file12
-Copied:           file11         (was file05)
+Copied:           file11 	(was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02         creationTime: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
-                                 lastModified: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+Date modified:    file02 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
 
-Content modified: file04         creationTime: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
-                                 lastModified: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+Content modified: file04 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
 
-Content modified: file05         creationTime: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
-                                 lastModified: 2015/10/20 07:37:51 -&gt; 2015/10/20 07:37:52
+Content modified: file05 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
 
 Deleted:          file01
 Deleted:          file06
@@ -1503,14 +1642,13 @@ Deleted:          file06
 <h4 id="_nothing_is_modified_now">7.1.9. Nothing is modified now</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim diff
-2015/10/20 07:37:59 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim diff
+2016/05/09 21:58:39 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
-2015/10/20 07:37:59 - Info  - SELinux is enabled on this system
 .
-2015/10/20 07:38:00 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
+2016/05/09 21:58:39 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
-Comparing with the last committed state from 2015/10/20 07:37:58
+Comparing with the last committed state from 2016/05/09 21:58:39
 Comment: All modifications
 
 Nothing modified</code></pre>
@@ -1522,34 +1660,137 @@ Nothing modified</code></pre>
 <h3 id="_the_fim_log">7.2. The Fim log</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim log
-State #1: 2015/10/20 07:37:51 (10 files - 120 bytes)
-        Comment: First State
-        10 added
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim log
+State #1: 2016/05/09 21:58:36 (10 files - 120 bytes)
+	Comment: First State
+	10 added
 
-State #2: 2015/10/20 07:37:56 (11 files - 132 bytes)
-        Comment: Modifications from dir01
-        11 added
+State #2: 2016/05/09 21:58:38 (11 files - 132 bytes)
+	Comment: Modifications from dir01
+	11 added
 
-State #3: 2015/10/20 07:37:58 (14 files - 176 bytes)
-        Comment: All modifications
-        1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 2 deleted</code></pre>
+State #3: 2016/05/09 21:58:39 (14 files - 176 bytes)
+	Comment: All modifications
+	1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 2 deleted</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_state_file_content">7.3. State file content</h3>
+<h3 id="_rollback_all_the_commit">7.3. Rollback all the commit</h3>
 <div class="paragraph">
-<p>Here is an extract of the State&#8217;s 3 content. To simplify reading, hashes are shortened and only one file entry is kept.</p>
+<p>Rollback the last commit.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>simple-example$ zmore .fim/states/state_3.json.gz
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim rbk -y
+You are going to rollback the last commit. State 3 will be removed</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Rollback again.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim rbk -y
+You are going to rollback the last commit. State 2 will be removed</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Nothing more to rollback.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim rbk -y
+2016/05/09 21:58:40 - Info  - No commit to rollback</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_commit_using_super_fast_mode">7.4. Commit using super-fast mode</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim ci -s -c 'Commit modifications very quickly using super-fast commit' -y
+2016/05/09 21:58:40 - Info  - Scanning recursively local files, using 'super-fast' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+.
+2016/05/09 21:58:41 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
+
+Comparing with the last committed state from 2016/05/09 21:58:36
+Comment: First State
+
+Added:            file12
+Copied:           file11 	(was file05)
+Duplicated:       file03.dup1 = file03
+Duplicated:       file03.dup2 = file03
+Duplicated:       file07.dup1 = file07
+Date modified:    file02 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+
+Content modified: file04 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+
+Content modified: file05 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+
+Renamed:          file01 -&gt; dir01/file01
+Deleted:          file06
+
+1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 1 renamed, 1 deleted
+
+2016/05/09 21:58:41 - Info  - Retrieving the missing hash for all the modified files, using 'full' mode and 2 threads
+2016/05/09 21:58:41 - Info  - Scanned 8 files (104 bytes), hashed 104 bytes (avg 104 bytes/s), during 00:00:00</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case, files are too short, commit in super-fast mode is not more efficient.<br>
+But with huge files it makes a big difference.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_again_nothing_is_modified_now">7.5. Again, nothing is modified now</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim diff
+2016/05/09 21:58:41 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+.
+2016/05/09 21:58:41 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
+
+Comparing with the last committed state from 2016/05/09 21:58:40
+Comment: Commit modifications very quickly using super-fast commit
+
+Nothing modified</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_display_the_fim_log">7.6. Display the Fim log</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim log
+State #1: 2016/05/09 21:58:36 (10 files - 120 bytes)
+	Comment: First State
+	10 added
+
+State #2: 2016/05/09 21:58:40 (14 files - 176 bytes)
+	Comment: Commit modifications very quickly using super-fast commit
+	1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 1 renamed, 1 deleted</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_state_file_content">7.7. State file content</h3>
+<div class="paragraph">
+<p>Here is an extract of the State&#8217;s 2 content. To simplify reading, hashes are shortened and only one file entry is kept.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ zmore .fim/states/state_2.json.gz
 {
-  "stateHash": "95707f3180...ba2f3dca9e",
+  "stateHash": "a58921...23d61d",
   "modelVersion": "4",
-  "timestamp": 1445321428623,
-  "comment": "All modifications",
+  "timestamp": 1462827520971,
+  "comment": "Commit modifications very quickly using super-fast commit",
   "fileCount": 14,
   "filesContentLength": 176,
   "hashMode": "hashAll",
@@ -1560,8 +1801,8 @@ State #3: 2015/10/20 07:37:58 (14 files - 176 bytes)
     "dateModified": 1,
     "contentModified": 2,
     "attributesModified": 0,
-    "renamed": 0,
-    "deleted": 2
+    "renamed": 1,
+    "deleted": 1
   },
   "ignoredFiles": [
     ".fim/"
@@ -1571,22 +1812,22 @@ State #3: 2015/10/20 07:37:58 (14 files - 176 bytes)
       "fileName": "dir01/file01",
       "fileLength": 12,
       "fileTime": {
-        "creationTime": 1445321421552,
-        "lastModified": 1445321421552
+        "creationTime": 1462823913000,
+        "lastModified": 1462823913000
       },
+      "modification": "renamed",
       "fileHash": {
-        "smallBlockHash": "fa5d74eb88...1a44aaa2df",
-        "mediumBlockHash": "fa5d74eb88...1a44aaa2df",
-        "fullHash": "fa5d74eb88...1a44aaa2df",
+        "smallBlockHash": "fa5d74...aaa2df",
+        "mediumBlockHash": "fa5d74...aaa2df",
+        "fullHash": "fa5d74...aaa2df"
       },
       "fileAttributes": {
-        "SELinuxLabel": "system_u:object_r:file_t:s0",
         "PosixFilePermissions": "rw-rw-r--"
       }
     },
 
     ...
-    // Other file entries have been removed
+    # Other file entries have been removed
     ...
 
   ]
@@ -1610,7 +1851,7 @@ In my case <strong>it takes almost 3 hours</strong> to hash all the file content
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">photos-videos$ fim init -y
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">photos-videos$ fim init -y
 No comment provided. You are going to initialize your repository using the default comment.
 2015/10/22 19:23:05 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
@@ -1636,7 +1877,7 @@ In my case <strong>it takes 17 minutes :=)</strong>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">photos-videos$ fim diff -s
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">photos-videos$ fim diff -s
 2015/10/22 23:15:52 - Info  - Scanning recursively local files, using 'super-fast' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 2015/10/22 23:15:52 - Info  - SELinux is enabled on this system
@@ -1664,7 +1905,7 @@ This time in my case, <strong>it takes 42 minutes</strong> to check the differen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">photos-videos$ fim diff -f
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">photos-videos$ fim diff -f
 2015/10/22 23:33:22 - Info  - Scanning recursively local files, using 'fast' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 2015/10/22 23:33:23 - Info  - SELinux is enabled on this system
@@ -1698,7 +1939,7 @@ This time in my case, <strong>it takes 46 seconds</strong>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">photos-videos$ fim diff -n
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">photos-videos$ fim diff -n
 2015/10/22 23:14:53 - Info  - Not hashing file content so thread count forced to 1
 2015/10/22 23:14:53 - Info  - Scanning recursively local files, using 'do not hash' mode and 1 thread
 2015/10/22 23:14:54 - Info  - SELinux is enabled on this system
@@ -1714,7 +1955,381 @@ Nothing modified</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_file_permissions_management">9. File permissions management</h2>
+<h2 id="_super_fast_commit">9. Super-fast commit</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Fim is able to commit using the super-fast mode (or fast mode). In that case, it checks into the repository for modifications using the selected mode.<br>
+And then it do a full hash of the modified files in order to fill up the missing hash.<br>
+<strong>Using Super-fast commit allow to save a lot of time.</strong> With this option you can miss some modified files.</p>
+</div>
+<div class="paragraph">
+<p>This means that even if the global hash mode of your repository is hash all, you can commit using either fast mode or super-fast mode.</p>
+</div>
+<div class="paragraph">
+<p>Super-fast commit example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim init -y -c "Create the repository slowly in full mode"
+Info  - Scanning recursively local files, using 'full' mode and 2 threads
+...
+
+# Do some modifications
+
+$ fim ci -s -y -c "Commit modifications very quickly using super-fast commit"
+Info  - Scanning recursively local files, using 'super-fast' mode and 2 threads
+...
+Info  - Retrieving the missing hash for all the modified files, using 'full' mode and 2 threads
+...
+
+# Do some modifications
+
+$ fim ci -f -y -c "Commit modifications quickly using fast commit"
+Info  - Scanning recursively local files, using 'fast' mode and 2 threads
+...
+Info  - Retrieving the missing hash for all the modified files, using 'full' mode and 2 threads
+...</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_dealing_with_duplicates">10. Dealing with duplicates</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Duplicated files are addressed by Fim in two different ways.</p>
+</div>
+<div class="sect2">
+<h3 id="_duplicates_inside_a_fim_repository">10.1. Duplicates inside a Fim repository</h3>
+<div class="paragraph">
+<p>Fim allow you to detect duplicates using the <code>fdup</code> command. It displays the list of duplicated files.<br>
+See it in action in <a href="#_search_for_duplicated_files">Search for duplicated files</a>.</p>
+</div>
+<div class="paragraph">
+<p>If you want to remove them, Fim won&#8217;t do it. It does not provide a smart way to remove duplicates inside the same repository.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<img src="images/icons/note.png" alt="Note">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you wan&#8217;t to force to remove duplicates you can copy the <code>.fim</code> directory outside the repository and use the <code>rdup</code> command.<br>
+See below for details.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_duplicates_that_are_outside">10.2. Duplicates that are outside</h3>
+<div class="paragraph">
+<p>You can use Fim to remove duplicated files that are located outside a Fim repository using the <code>rdup</code> command.
+It can be useful if you want to cleanup old backups that are no more synchronized and you want to be sure to not lose any files that could have been modified or added.</p>
+</div>
+<div class="sect3">
+<h4 id="_simple_duplicates_removing">10.2.1. Simple duplicates removing</h4>
+<div class="paragraph">
+<p>Here is a step by step example of duplicates removing.
+For the purpose of this example we use small files.</p>
+</div>
+<div class="paragraph">
+<p>You can try it yourself by using the <a href="https://github.com/evrignaud/fim/blob/master/samples/remove-duplicates-example.sh"><code>samples/remove-duplicates-example.sh</code></a> script.</p>
+</div>
+<div class="sect4">
+<h5 id="_create_a_source_directory_with_some_files_in_it">Create a source directory with some files in it</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">~$ mkdir rdup-example
+~$ cd rdup-example
+~/rdup-example$ mkdir source
+~/rdup-example$ cd source/
+~/rdup-example/source$ for i in 01 02 03 04 05 06 07 08 09 10 ; do echo "New File $i" &gt; file${i} ; done
+~/rdup-example/source$ ls -la
+total 48
+drwxrwxr-x 2 evrignaud evrignaud 4096 mai   21 08:39 .
+drwxrwxr-x 3 evrignaud evrignaud 4096 mai   21 08:39 ..
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file01
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file02
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file03
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file04
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file05
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file06
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file07
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file08
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file09
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file10</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_initialize_the_fim_repository_2">Initialize the Fim repository</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">~/rdup-example/source$ fim init -y
+No comment provided. You are going to initialize your repository using the default comment.
+2016/05/21 08:39:12 - Info  - Scanning recursively local files, using 'full' mode and 4 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+.
+2016/05/21 08:39:12 - Info  - Scanned 10 files (120 bytes), hashed 120 bytes (avg 120 bytes/s), during 00:00:00
+
+Added:            file01
+Added:            file02
+Added:            file03
+Added:            file04
+Added:            file05
+Added:            file06
+Added:            file07
+Added:            file08
+Added:            file09
+Added:            file10
+
+10 added</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_create_a_backup_of_this_directory">Create a backup of this directory</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">~/rdup-example/source$ cd ..
+~/rdup-example$ cp -a source backup</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_modify_two_files_into_the_source_directory_and_move_two_others">Modify two files into the source directory and move two others</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">~/rdup-example$ cd source/
+
+~/rdup-example/source$ echo modif1 &gt;&gt; file02
+~/rdup-example/source$ echo modif2 &gt;&gt; file04
+
+~/rdup-example/source$ mkdir subdir
+~/rdup-example/source$ mv file01 subdir
+~/rdup-example/source$ mv file03 subdir
+
+~/rdup-example/source$ ls -la
+total 48
+drwxrwxr-x 4 evrignaud evrignaud 4096 mai   21 08:39 .
+drwxrwxr-x 4 evrignaud evrignaud 4096 mai   21 08:39 ..
+-rw-rw-r-- 1 evrignaud evrignaud   19 mai   21 08:39 file02
+-rw-rw-r-- 1 evrignaud evrignaud   19 mai   21 08:39 file04
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file05
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file06
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file07
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file08
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file09
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file10
+drwxrwxr-x 3 evrignaud evrignaud 4096 mai   21 08:39 .fim
+drwxrwxr-x 2 evrignaud evrignaud 4096 mai   21 08:39 subdir
+
+~/rdup-example/source$ ls -la subdir
+total 16
+drwxrwxr-x 2 evrignaud evrignaud 4096 mai   21 08:39 .
+drwxrwxr-x 4 evrignaud evrignaud 4096 mai   21 08:39 ..
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file01
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file03</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_commit_all_the_modifications">Commit all the modifications</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">~/rdup-example/source$ fim ci -s -c "Modifications"
+2016/05/21 08:39:13 - Info  - Scanning recursively local files, using 'super-fast' mode and 4 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+.
+2016/05/21 08:39:13 - Info  - Scanned 10 files (134 bytes), hashed 134 bytes (avg 134 bytes/s), during 00:00:00
+
+Comparing with the last committed state from 2016/05/21 08:39:12
+Comment: Initial State
+
+Content modified: file02
+Content modified: file04
+Renamed:          file01 -&gt; subdir/file01
+Renamed:          file03 -&gt; subdir/file03
+
+2 content modified, 2 renamed
+
+Do you really want to commit (y/n/A)? y
+2016/05/21 08:39:14 - Info  - Retrieving the missing hash for all the modified files, using 'full' mode and 4 threads
+2016/05/21 08:39:14 - Info  - Scanned 4 files (62 bytes), hashed 62 bytes (avg 62 bytes/s), during 00:00:00</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_remove_the_duplicates">Remove the duplicates</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">~/rdup-example/source$ cd ../backup/
+~/rdup-example/backup$ fim rdup -m ../source
+2016/05/21 08:39:14 - Info  - Searching for duplicated files using the ../source directory as master
+
+2016/05/21 08:39:14 - Info  - Scanning recursively local files, using 'full' mode and 4 threads
+(Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
+.
+2016/05/21 08:39:15 - Info  - Scanned 10 files (120 bytes), hashed 120 bytes (avg 120 bytes/s), during 00:00:00
+
+'file01' is a duplicate of '../source/subdir/file01'
+Do you really want to remove it (y/n/A)? y
+  'file01' removed
+'file03' is a duplicate of '../source/subdir/file03'
+Do you really want to remove it (y/n/A)? y
+  'file03' removed
+'file05' is a duplicate of '../source/file05'
+Do you really want to remove it (y/n/A)? A
+  'file05' removed
+'file06' is a duplicate of '../source/file06'
+  'file06' removed
+'file07' is a duplicate of '../source/file07'
+  'file07' removed
+'file08' is a duplicate of '../source/file08'
+  'file08' removed
+'file09' is a duplicate of '../source/file09'
+  'file09' removed
+'file10' is a duplicate of '../source/file10'
+  'file10' removed
+
+8 duplicated files found. 8 duplicated files removed</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<img src="images/icons/important.png" alt="Important">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When you are prompted with a question asking for (y/n/A) which means Yes, No, or All Yes.<br>
+All Yes will reply Yes to all the remaining questions. You can see it in action above.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_only_the_two_modified_files_remains">Only the two modified files remains</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">~/rdup-example/backup$ ls -la
+total 20
+drwxrwxr-x 3 evrignaud evrignaud 4096 mai   21 08:39 .
+drwxrwxr-x 4 evrignaud evrignaud 4096 mai   21 08:39 ..
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file02
+-rw-rw-r-- 1 evrignaud evrignaud   12 mai   21 08:39 file04
+drwxrwxr-x 3 evrignaud evrignaud 4096 mai   21 08:39 .fim</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_complex_duplicates_removing">10.2.2. Complex duplicates removing</h4>
+<div class="paragraph">
+<p>Let say that you have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a directory with a big file tree that we will call the source location.</p>
+</li>
+<li>
+<p>other locations that contain some files that were copied long ago from this source location. We will call one those locations the backup location.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Now you want to cleanup the backup location from the files that are identical with the ones in the source location.
+To find duplicates into the backup location we will use the hash located into the source <code>.fim</code> directory.
+We will call master location the name of the directory where is this <code>.fim</code>.<br>
+<strong>Most of the time the master location is the source location.</strong><br>
+If the source location is not reachable from the backup location, you just need to put a copy of the source <code>.fim</code> directory near the backup location.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<img src="images/icons/note.png" alt="Note">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The backup location can contain also his own <code>.fim</code> directory. It will be ignored.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_step_by_step_2">Step by step</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Go into the source location and ensure that all the hash are up to date:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ cd &lt;source location&gt;
+$ fim ci -y -c "Content added"</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If the backup location cannot reach the source location (so master location is not the source location),
+copy the <code>.fim</code> directory that is in the source location into a place near the backup location.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ cd &lt;somewhere near the backup location&gt;
+$ mkdir &lt;master location&gt;
+$ scp -rp &lt;remote host&gt;@&lt;source location&gt;/.fim &lt;master location&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<img src="images/icons/important.png" alt="Important">
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The source <code>.fim</code> directory can&#8217;t be nested into the root folder of the backup location.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Run the remove duplicates command. For this, go in the backup location.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ cd &lt;backup location&gt;
+$ fim rdup -m &lt;master location&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_file_permissions_management">11. File permissions management</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Checking the integrity of data files can be good, but we need also to ensure that file permissions are not compromised.</p>
@@ -1755,7 +2370,7 @@ If some permission has changed and you want to restore them use the <code>rfa</c
 </div>
 </div>
 <div class="sect1">
-<h2 id="_hardware_corruption_detection">10. Hardware corruption detection</h2>
+<h2 id="_hardware_corruption_detection">12. Hardware corruption detection</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Fim is able to detect changes likely caused by a hardware corruption or a filesystem bug.<br>
@@ -1767,7 +2382,7 @@ To run hardware corruption detection use the <code>dcor</code> command.</p>
 The difference for the <code>dcor</code> command is that only corrupted files are displayed. Files that you way have added or modified are not listed in the result.</p>
 </div>
 <div class="sect2">
-<h3 id="_false_positive">10.1. False positive</h3>
+<h3 id="_false_positive">12.1. False positive</h3>
 <div class="paragraph">
 <p>The <code>dcor</code> command can produce false positive.</p>
 </div>
@@ -1783,7 +2398,7 @@ The difference for the <code>dcor</code> command is that only corrupted files ar
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ echo bar &gt;&gt; file05</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ echo bar &gt;&gt; file05</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1795,13 +2410,13 @@ The difference for the <code>dcor</code> command is that only corrupted files ar
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim rfa -y
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim rfa -y
 You are going to reset files attributes based on the last committed State done 2015/10/23 07:16:19
 Comment: All modifications
 
 2015/10/23 09:18:21 - Info  - SELinux is enabled on this system
-Set creation Time: file05         2015/10/23 09:18:14 -&gt; 2015/10/23 07:16:12
-Set last modified: file05         2015/10/23 09:18:14 -&gt; 2015/10/23 07:16:12
+Set creation Time: file05 	2015/10/23 09:18:14 -&gt; 2015/10/23 07:16:12
+Set last modified: file05 	2015/10/23 09:18:14 -&gt; 2015/10/23 07:16:12
 
 2015/10/23 09:18:21 - Info  - The attributes of 1 file have been reset</code></pre>
 </div>
@@ -1815,7 +2430,7 @@ Set last modified: file05         2015/10/23 09:18:14 -&gt; 2015/10/23 07:16:12
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">simple-example$ fim dcor
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim dcor
 2015/10/23 09:19:26 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 2015/10/23 09:19:27 - Info  - SELinux is enabled on this system
@@ -1834,10 +2449,10 @@ Corrupted?:       file05
 </div>
 </div>
 <div class="sect1">
-<h2 id="_faq">11. FAQ</h2>
+<h2 id="_faq">13. FAQ</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_run_fim_commands_from_a_sub_directory">11.1. Run Fim commands from a sub-directory</h3>
+<h3 id="_run_fim_commands_from_a_sub_directory">13.1. Run Fim commands from a sub-directory</h3>
 <div class="paragraph">
 <p>You can run all the Fim commands from every sub-directory inside a Fim repository.
 You can see it in action into the <a href="#_from_the_code_dir01_code_sub_directory">Simple example</a>.</p>
@@ -1866,27 +2481,7 @@ You can see it in action into the <a href="#_from_the_code_dir01_code_sub_direct
 </div>
 </div>
 <div class="sect2">
-<h3 id="_dealing_with_duplicates">11.2. Dealing with duplicates</h3>
-<div class="paragraph">
-<p>Duplicated files are addressed by Fim in two different ways.</p>
-</div>
-<div class="sect3">
-<h4 id="_duplicates_inside_a_fim_repository">11.2.1. Duplicates inside a Fim repository</h4>
-<div class="paragraph">
-<p>Fim allow you to detect duplicates using the <code>fdup</code> command. It displays the list of duplicated files.<br>
-If you want to remove them, Fim won&#8217;t do it. It does not provide a smart way to remove those duplicates.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_duplicates_that_are_outside">11.2.2. Duplicates that are outside</h4>
-<div class="paragraph">
-<p>You can use Fim to remove duplicated files that are located outside a Fim repository using the <code>rdup</code> command.
-It can be useful if you want to cleanup old backups that are no more synchronized and you want to be sure to not lose any files that could have been modified or added.</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_changing_default_hash_mode">11.3. Changing default hash mode</h3>
+<h3 id="_changing_default_hash_mode">13.2. Changing default hash mode</h3>
 <div class="paragraph">
 <p>If you never want to hash the complete content of your files you can set a global hash mode that will indicate the maximum hash mode you want to use for this repository.
 You can specify this to the init command:</p>
@@ -1905,13 +2500,13 @@ You can specify this to the init command:</p>
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_example">11.3.1. Example</h4>
+<h4 id="_example">13.2.1. Example</h4>
 <div class="paragraph">
 <p>Initialize the Fim repository specifying the global hash mode.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">$ fim init -f</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim init -f</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1923,7 +2518,7 @@ All the Fim commands that you use after will use by default the fast hash mode (
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">$ fim diff    # will run using -f
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim diff    # will run using -f
 
 $ fim diff -s
 
@@ -1933,7 +2528,7 @@ $ fim diff -n</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ignoring_files_or_directories">11.4. Ignoring files or directories</h3>
+<h3 id="_ignoring_files_or_directories">13.3. Ignoring files or directories</h3>
 <div class="paragraph">
 <p>You can specify files or directories that you want to be ignored by Fim.
 For this, you can add a <code>.fimignore</code> file in one of the directories contained into the Fim repository.<br>
@@ -1947,7 +2542,7 @@ For example, <code>**/foo</code> matches a file or a directory named <code>foo</
 </div>
 </div>
 <div class="sect2">
-<h3 id="_hash_files_in_multi_thread">11.5. Hash files in multi-thread</h3>
+<h3 id="_hash_files_in_multi_thread">13.4. Hash files in multi-thread</h3>
 <div class="paragraph">
 <p>Fim hashes files using several threads.
 This allows taking advantage of the computer resources and maximizes the overall performances of file hashing.<br>
@@ -1957,7 +2552,7 @@ The best value depends on the kind of hard disk you have. The more throughputs y
 </div>
 </div>
 <div class="sect2">
-<h3 id="_state_integrity">11.6. State integrity</h3>
+<h3 id="_state_integrity">13.5. State integrity</h3>
 <div class="paragraph">
 <p>Every State file contains a hash of the State content.<br>
 If something is modified in the State file, the hash of the State content will change and the State will be reported as corrupted.<br>
@@ -1965,7 +2560,7 @@ Fim won&#8217;t use a corrupted State.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_cross_platform_compatibility">11.7. Cross platform compatibility</h3>
+<h3 id="_cross_platform_compatibility">13.6. Cross platform compatibility</h3>
 <div class="paragraph">
 <p>The same Fim repository can be used by either on Linux, Mac OS X and Windows.<br>
 State content is normalized and the same State content can be loaded on the different supported OS.</p>
@@ -1974,19 +2569,19 @@ State content is normalized and the same State content can be loaded on the diff
 </div>
 </div>
 <div class="sect1">
-<h2 id="_fim_requirements">12. Fim requirements</h2>
+<h2 id="_fim_requirements">14. Fim requirements</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>This tool is written in Java</strong></p>
+<p>This tool is written in Java</p>
 </div>
 <div class="paragraph">
-<p>Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">here</a>.<br>
+<p>Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from the <a href="http://goo.gl/p8iYjm">Java SE Downloads</a>.<br>
 You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_supported_os">13. Supported OS</h2>
+<h2 id="_supported_os">15. Supported OS</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Fim can be used on Linux, Mac OS X and Windows</p>
@@ -1994,36 +2589,36 @@ You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.</
 </div>
 </div>
 <div class="sect1">
-<h2 id="_they_talked_about_it">14. They talked about it</h2>
+<h2 id="_they_talked_about_it">16. They talked about it</h2>
 <div class="sectionbody">
 <div class="quoteblock">
-<div class="title"><strong>&bull; <span class="image"><img src="images/icons/korben.info.png" alt="Korben.info"></span> &nbsp;&nbsp; <a href="http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html">Vérifier l’intégrité de très nombreux fichiers</a></strong></div>
+<div class="title"><strong>&bull; <span class="image"><img src="images/icons/korben.info.png" alt="Korben.info"></span> &nbsp;&nbsp; <a href="http://goo.gl/1gwX1g">Vérifier l’intégrité de très nombreux fichiers</a></strong></div>
 <blockquote>
 <div class="paragraph">
 <p><strong>Fim (File Integrity Manager)</strong> est un outil vraiment excellent qui permet de gérer l&#8217;intégrité de nombreux fichiers.
-<a href="http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html">+ Lire la suite</a></p>
+<a href="http://goo.gl/1gwX1g">+ Lire la suite</a></p>
 </div>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
 <p><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp;
-<a href="http://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html">Check integrity of many files</a><br>
+<a href="http://goo.gl/jBE2XY">Check integrity of many files</a><br>
 <strong>Fim (File Integrity Manager)</strong> is a really great tool for managing the integrity of many files.
-<a href="http://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html">+ Read more</a></p>
+<a href="http://goo.gl/jBE2XY">+ Read more</a></p>
 </div>
 </blockquote>
 </div>
 </blockquote>
 </div>
 <div class="quoteblock">
-<div class="title"><strong>&bull; <span class="image"><img src="images/icons/01net.com.png" alt="01net.com"></span> &nbsp;&nbsp; <a href="http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html">Fim (File Integrity Manager)</a></strong></div>
+<div class="title"><strong>&bull; <span class="image"><img src="images/icons/01net.com.png" alt="01net.com"></span> &nbsp;&nbsp; <a href="http://goo.gl/OYKGxe">Fim (File Integrity Manager)</a></strong></div>
 <blockquote>
 <div class="paragraph">
 <p><strong>Fim (File Integrity Manager)</strong> est un outil open source qui vous permet de vérifier l&#8217;intégrité de tous vos fichiers après les avoir manipulés en lots.
 &nbsp;&nbsp;
-<a href="http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html">+ Lire la suite pour <span class="image"><img src="images/icons/linux.png" alt="Linux"></span></a>
+<a href="http://goo.gl/OYKGxe">+ Lire la suite pour <span class="image"><img src="images/icons/linux.png" alt="Linux"></span></a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html">+ Lire la suite pour <span class="image"><img src="images/icons/windows.png" alt="Windows"></span></a></p>
+<a href="http://goo.gl/Bn2CMH">+ Lire la suite pour <span class="image"><img src="images/icons/windows.png" alt="Windows"></span></a></p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -2031,9 +2626,9 @@ You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.</
 <p><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; <strong>Fim (File Integrity Manager)</strong>
 is an open source tool which allows you to check the integrity of all your files after have handled them bulk.
 &nbsp;&nbsp;
-<a href="http://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Flinux%2FUtilitaires%2Ffiches%2F132315.html">+ Read more for <span class="image"><img src="images/icons/linux.png" alt="Linux"></span></a>
+<a href="http://goo.gl/nhzJxH">+ Read more for <span class="image"><img src="images/icons/linux.png" alt="Linux"></span></a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="http://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Fwindows%2FUtilitaire%2Fmanipulation_de_fichier%2Ffiches%2F132314.html">+ Read more for <span class="image"><img src="images/icons/windows.png" alt="Windows"></span></a></p>
+<a href="http://goo.gl/JwfoPA">+ Read more for <span class="image"><img src="images/icons/windows.png" alt="Windows"></span></a></p>
 </div>
 </blockquote>
 </div>
@@ -2043,29 +2638,29 @@ is an open source tool which allows you to check the integrity of all your files
 <div class="title"><strong>&bull; <span class="image"><img src="images/icons/linuxfr.org.png" alt="linuxfr.org"></span> &nbsp;&nbsp; LinuxFr.org</strong></div>
 <blockquote>
 <div class="paragraph">
-<p>&mdash; <a href="https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers">Sortie de Fim 1.0.2, qui vérifie l&#8217;intégrité de vos fichiers</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Flinuxfr.org%2Fnews%2Fsortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Fim release 1.0.2, that verifies the integrity of your file</a></p>
+<p>&mdash; <a href="https://goo.gl/yjMH4U">Sortie de Fim 1.0.2, qui vérifie l&#8217;intégrité de vos fichiers</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://goo.gl/HToiWd"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Fim release 1.0.2, that verifies the integrity of your file</a></p>
 </div>
 <div class="paragraph">
-<p>&mdash; <a href="https://linuxfr.org/news/fim-1-1-0">Fim 1.1.0</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Flinuxfr.org%2Fnews%2Ffim-1-1-0"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Fim 1.1.0</a></p>
+<p>&mdash; <a href="https://goo.gl/LAuKqp">Fim 1.1.0</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://goo.gl/KaO0Hm"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Fim 1.1.0</a></p>
 </div>
 </blockquote>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_about">15. About</h2>
+<h2 id="_about">17. About</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Created by Etienne Vrignaud
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="https://twitter.com/evrignaud"><span class="image"><img src="images/icons/twitter.png" alt="Twitter icon"></span> Follow @evrignaud</a></p>
+<a href="https://goo.gl/5jFdRK"><span class="image"><img src="images/icons/twitter.png" alt="Twitter icon"></span> Follow @evrignaud</a></p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_license">16. License</h2>
+<h2 id="_license">18. License</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This project is released under the <a href="LICENSE.html">GPLv3 license</a>, for more details, take a look at the LICENSE file in the source.</p>
@@ -2078,8 +2673,11 @@ is an open source tool which allows you to check the integrity of all your files
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-11-05 13:30:35 +01:00
+Last updated 2016-05-23 21:43:22 CEST
 </div>
 </div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/xcode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 </body>
 </html>
