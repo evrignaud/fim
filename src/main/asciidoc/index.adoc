@@ -134,6 +134,8 @@ include::simple-example.adoc[]
 
 include::real-life-example.adoc[]
 
+include::super-fast-commit.adoc[]
+
 include::dealing-with-duplicates.adoc[]
 
 include::file-permissions-management.adoc[]

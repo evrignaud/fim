@@ -4,7 +4,7 @@
 
 This tool is written in Java
 
-Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from the http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java SE Downloads]. +
+Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from the http://goo.gl/p8iYjm[Java SE Downloads]. +
 You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.
 
 :leveloffset: 1
@@ -16,39 +16,39 @@ Fim can be used on Linux, Mac OS X and Windows
 :leveloffset: 1
 = They talked about it
 
-.*&bull; image:icons/korben.info.png[Korben.info] &nbsp;&nbsp; http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html[Vérifier l’intégrité de très nombreux fichiers]*
+.*&bull; image:icons/korben.info.png[Korben.info] &nbsp;&nbsp; http://goo.gl/1gwX1g[Vérifier l’intégrité de très nombreux fichiers]*
 
 ____
 
 *Fim (File Integrity Manager)* est un outil vraiment excellent qui permet de gérer l'intégrité de nombreux fichiers.
-http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html[+ Lire la suite]
+http://goo.gl/1gwX1g[+ Lire la suite]
 ________
 
 image:icons/english.png[English version] &nbsp;
-http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html[Check integrity of many files] +
+http://goo.gl/jBE2XY[Check integrity of many files] +
 *Fim (File Integrity Manager)* is a really great tool for managing the integrity of many files.
-http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html[+ Read more]
+http://goo.gl/jBE2XY[+ Read more]
 ________
 ____
 
 
-.*&bull; image:icons/01net.com.png[01net.com] &nbsp;&nbsp; http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html[Fim (File Integrity Manager)]*
+.*&bull; image:icons/01net.com.png[01net.com] &nbsp;&nbsp; http://goo.gl/OYKGxe[Fim (File Integrity Manager)]*
 
 ____
 
 *Fim (File Integrity Manager)* est un outil open source qui vous permet de vérifier l'intégrité de tous vos fichiers après les avoir manipulés en lots.
 &nbsp;&nbsp;
-http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html[+ Lire la suite pour image:icons/linux.png[Linux]]
+http://goo.gl/OYKGxe[+ Lire la suite pour image:icons/linux.png[Linux]]
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html[+ Lire la suite pour image:icons/windows.png[Windows]]
+http://goo.gl/Bn2CMH[+ Lire la suite pour image:icons/windows.png[Windows]]
 ________
 
 image:icons/english.png[English version] &nbsp; *Fim (File Integrity Manager)*
 is an open source tool which allows you to check the integrity of all your files after have handled them bulk.
 &nbsp;&nbsp;
-http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Flinux%2FUtilitaires%2Ffiches%2F132315.html[+ Read more for image:icons/linux.png[Linux]]
+http://goo.gl/nhzJxH[+ Read more for image:icons/linux.png[Linux]]
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Fwindows%2FUtilitaire%2Fmanipulation_de_fichier%2Ffiches%2F132314.html[+ Read more for image:icons/windows.png[Windows]]
+http://goo.gl/JwfoPA[+ Read more for image:icons/windows.png[Windows]]
 ________
 ____
 
@@ -56,11 +56,11 @@ ____
 .*&bull; image:icons/linuxfr.org.png[linuxfr.org] &nbsp;&nbsp; LinuxFr.org*
 
 ____
-&mdash; https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers[Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers] +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Fsortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers[image:icons/english.png[English version] &nbsp; Fim release 1.0.2, that verifies the integrity of your file]
+&mdash; https://goo.gl/yjMH4U[Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers] +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://goo.gl/HToiWd[image:icons/english.png[English version] &nbsp; Fim release 1.0.2, that verifies the integrity of your file]
 
-&mdash; https://linuxfr.org/news/fim-1-1-0[Fim 1.1.0] +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Ffim-1-1-0[image:icons/english.png[English version] &nbsp; Fim 1.1.0]
+&mdash; https://goo.gl/LAuKqp[Fim 1.1.0] +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://goo.gl/KaO0Hm[image:icons/english.png[English version] &nbsp; Fim 1.1.0]
 ____
 
 
@@ -69,7 +69,7 @@ ____
 
 Created by Etienne Vrignaud
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-https://twitter.com/evrignaud[image:icons/twitter.png[Twitter icon] Follow @evrignaud]
+https://goo.gl/5jFdRK[image:icons/twitter.png[Twitter icon] Follow @evrignaud]
 
 
 :leveloffset: 1
@@ -78,3 +78,27 @@ https://twitter.com/evrignaud[image:icons/twitter.png[Twitter icon] Follow @evri
 This project is released under the link:LICENSE.html[GPLv3 license], for more details, take a look at the LICENSE file in the source.
 
 Basically, that allows you to use all or part of the project for you own business.
+
+
+////
+Short Url               Url
+--------------------------------------------------------------------------------------------
+https://goo.gl/XwERDY   https://raw.githubusercontent.com/evrignaud/fim/master/fim-docker
+https://goo.gl/5jFdRK   https://twitter.com/evrignaud
+http://goo.gl/KaO0Hm    http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Ffim-1-1-0
+https://goo.gl/LAuKqp   https://linuxfr.org/news/fim-1-1-0
+http://goo.gl/HToiWd    http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Fsortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers
+https://goo.gl/yjMH4U   https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers
+http://goo.gl/JwfoPA    http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Fwindows%2FUtilitaire%2Fmanipulation_de_fichier%2Ffiches%2F132314.html
+http://goo.gl/nhzJxH    http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Flinux%2FUtilitaires%2Ffiches%2F132315.html
+http://goo.gl/Bn2CMH    http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html
+http://goo.gl/OYKGxe    http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html
+http://goo.gl/jBE2XY    http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html
+http://goo.gl/1gwX1g    http://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html
+https://goo.gl/hJGXqj   https://coveralls.io/github/evrignaud/fim?branch=master
+https://goo.gl/foWAWQ   https://ci.appveyor.com/project/evrignaud/fim
+https://goo.gl/QfQTE8   https://travis-ci.org/evrignaud/fim
+http://goo.gl/p8iYjm    http://www.oracle.com/technetwork/java/javase/downloads/index.html
+https://goo.gl/lbM77o   https://scan.coverity.com/projects/evrignaud-fim
+////
+

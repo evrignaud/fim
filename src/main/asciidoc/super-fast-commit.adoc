@@ -1,0 +1,33 @@
+= Super-fast commit
+
+Fim is able to commit using the super-fast mode (or fast mode). In that case, it checks into the repository for modifications using the selected mode. +
+And then it do a full hash of the modified files in order to fill up the missing hash. +
+*Using Super-fast commit allow to save a lot of time.* With this option you can miss some modified files.
+
+This means that even if the global hash mode of your repository is hash all, you can commit using either fast mode or super-fast mode.
+
+Super-fast commit example:
+
+[source, bash]
+------
+$ fim init -y -c "Create the repository slowly in full mode"
+Info  - Scanning recursively local files, using 'full' mode and 2 threads
+...
+
+# Do some modifications
+
+$ fim ci -s -y -c "Commit modifications very quickly using super-fast commit"
+Info  - Scanning recursively local files, using 'super-fast' mode and 2 threads
+...
+Info  - Retrieving the missing hash for all the modified files, using 'full' mode and 2 threads
+...
+
+# Do some modifications
+
+$ fim ci -f -y -c "Commit modifications quickly using fast commit"
+Info  - Scanning recursively local files, using 'fast' mode and 2 threads
+...
+Info  - Retrieving the missing hash for all the modified files, using 'full' mode and 2 threads
+...
+------
+
