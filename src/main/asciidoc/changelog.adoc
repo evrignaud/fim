@@ -1,7 +1,7 @@
 = Fim changelog
 
 == Version 1.2.0
-*(Released 2016-05-xx)*
+*(Released 2016-05-23)*
 
 https://github.com/evrignaud/fim/tree/1.2.0[image:icons/octocat.png[GitHub] Sources]
 &nbsp;&nbsp; - &nbsp;&nbsp;
