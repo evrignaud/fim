@@ -2,7 +2,9 @@
 
 # Supported tags and respective Dockerfile links
 
-* `latest`, `1.2.0` ([Dockerfile](https://github.com/evrignaud/fim/blob/master/Dockerfile)) **(coming soon)**
+* `latest`, `1.2.0` ([Dockerfile](https://github.com/evrignaud/fim/blob/master/Dockerfile))
+
+[![](https://imagelayers.io/badge/evrignaud/fim:latest.svg)](https://imagelayers.io/?images=evrignaud/fim:latest)
 
 # What is Fim?
 
