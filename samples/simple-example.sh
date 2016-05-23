@@ -18,7 +18,7 @@
 # along with Fim.  If not, see <http://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------------------------------------------------
 
-# You can see a run of this script here:
+# You can see this script in action here:
 #	http://evrignaud.github.io/fim/#_simple_example
 
 rm -rf simple-example || exit $?
@@ -152,3 +152,5 @@ set -x
 	echo \# Display the Fim log
 	fim log || exit $?
 )
+
+#-----------------------------------------------------------------------------------------------------------------------

@@ -18,7 +18,7 @@ You can try it yourself by using the https://github.com/evrignaud/fim/blob/maste
 ~$ cd simple-example/
 
 # Creates 10 files
-simple-example$ for i in 01 02 03 04 05 06 07 08 09 10 ; do echo "New File $i" > file$i ; done
+simple-example$ for i in 01 02 03 04 05 06 07 08 09 10 ; do echo "New File $i" > file${i} ; done
 
 simple-example$ ls -la
 total 48
