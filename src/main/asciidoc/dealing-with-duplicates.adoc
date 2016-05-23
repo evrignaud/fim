@@ -182,6 +182,12 @@ Do you really want to remove it (y/n/A)? A
 8 duplicated files found. 8 duplicated files removed
 ------
 
+[IMPORTANT]
+=====
+When you are prompted with a question asking for (y/n/A) which means Yes, No, or All Yes. +
+All Yes will reply Yes to all the remaining questions. You can see it in action above.
+=====
+
 ==== Only the two modified files remains
 
 [source, bash]
@@ -228,7 +234,7 @@ copy the `.fim` directory that is in the source location into a place near the b
 
 [source, bash]
 ----
-$ cd <somewhere>
+$ cd <somewhere near the backup location>
 $ mkdir <master location>
 $ scp -rp <remote host>@<source location>/.fim <master location>
 ----
