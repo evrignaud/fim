@@ -41,6 +41,9 @@
     $(document).ready(function () {
         var offset = 250;
         var duration = 700;
+
+        $('.back-to-top').fadeOut(0);
+
         $(window).scroll(function () {
             if ($(this).scrollTop() > offset) {
                 $('.back-to-top').fadeIn(duration);
