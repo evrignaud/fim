@@ -456,7 +456,7 @@ Here is an extract of the State's 2 content. To simplify reading, hashes are sho
 ----
 simple-example$ zmore .fim/states/state_2.json.gz
 {
-  "stateHash": "a58921...23d61d",
+  "stateHash": "WKE\\VP<9...`$SnPo",
   "modelVersion": "4",
   "timestamp": 1462827520971,
   "comment": "Commit modifications very quickly using super-fast commit",
@@ -486,9 +486,9 @@ simple-example$ zmore .fim/states/state_2.json.gz
       },
       "modification": "renamed",
       "fileHash": {
-        "smallBlockHash": "fa5d74...aaa2df",
-        "mediumBlockHash": "fa5d74...aaa2df",
-        "fullHash": "fa5d74...aaa2df"
+        "smallBlockHash": "qH\\4/L...@7&m!=",
+        "mediumBlockHash": "qH\\4/L...@7&m!=",
+        "fullHash": "qH\\4/L...@7&m!="
       },
       "fileAttributes": {
         "PosixFilePermissions": "rw-rw-r--"
