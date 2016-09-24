@@ -31,7 +31,7 @@ if hash tput 2>/dev/null; then
     export TERMINAL_COLUMNS=$(tput cols)
 fi
 
-JAVA_OPTIONS="-Xmx4g -XX:MaxMetaspaceSize=4g"
+JAVA_OPTIONS="-Xmx2g -XX:MaxMetaspaceSize=128m"
 
 JAR_FILE=`ls -1 "${baseDir}/target"/fim-*.jar | grep -v sources`
 
