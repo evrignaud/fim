@@ -37,6 +37,7 @@ import org.fim.command.PurgeStatesCommand;
 import org.fim.command.RemoveDuplicatesCommand;
 import org.fim.command.ResetFileAttributesCommand;
 import org.fim.command.RollbackCommand;
+import org.fim.command.StatusCommand;
 import org.fim.command.VersionCommand;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.DontWantToContinueException;
@@ -86,6 +87,7 @@ public class Fim {
             new InitCommand(),
             new CommitCommand(),
             new DiffCommand(),
+            new StatusCommand(),
             new ResetFileAttributesCommand(),
             new DetectCorruptionCommand(),
             new FindDuplicatesCommand(),

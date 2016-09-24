@@ -3,16 +3,17 @@
 --------
 $ fim --help
 
-usage: fim <command> [-c <arg>] [-d <arg>] [-e] [-f] [-h] [-l] [-m <arg>] [-n] [-o <arg>] [-p] [-q] [-s]
-                     [-t <arg>] [-v] [-y]
+usage: fim <command> [-c <arg>] [-d <arg>] [-e] [-f] [-h] [-l] [-m <arg>] [-n] [-o <arg>] [-p] [-q] [-s] [-t <arg>] [-v]
+       [-y]
 
 File Integrity Checker
 
 Available commands:
      init                       Initialize a Fim repository and create the first State
      ci / commit                Commit the current directory State
-     diff                       Compare the current directory State with the previous one.
+     diff                       Display the difference between the current directory State with the previous one.
                                 You can get a quick result by using the -f or -s or -n options
+     st / status                An alias on the diff command
      rfa / reset-file-attrs     Reset the files attributes like they were stored in the last committed State
      dcor / detect-corruption   Find changes most likely caused by a hardware corruption or a filesystem bug.
                                 Change in content, but not in creation time and last modified time
