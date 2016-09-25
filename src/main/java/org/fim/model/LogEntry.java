@@ -18,6 +18,13 @@
  */
 package org.fim.model;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.PrintStream;
+
+import static org.atteo.evo.inflector.English.plural;
+import static org.fim.util.FormatUtil.formatDate;
+
 public class LogEntry {
     private int stateNumber;
     private String comment;
@@ -72,5 +79,13 @@ public class LogEntry {
 
     public void setModificationCounts(ModificationCounts modificationCounts) {
         this.modificationCounts = modificationCounts;
+    }
+
+    public void displayEntryHeader(PrintStream out) {
+        out.printf("- State #%d: %s (%d %s - %s)%n", getStateNumber(), formatDate(getTimestamp()),
+            getFileCount(), plural("file", getFileCount()), FileUtils.byteCountToDisplaySize(getFilesContentLength()));
+        if (getComment().length() > 0) {
+            out.printf("\tComment: %s%n", getComment());
+        }
     }
 }

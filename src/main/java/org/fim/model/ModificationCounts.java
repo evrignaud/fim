@@ -18,6 +18,8 @@
  */
 package org.fim.model;
 
+import java.io.PrintStream;
+
 public class ModificationCounts {
     private int added;
     private int copied;
@@ -101,5 +103,39 @@ public class ModificationCounts {
         attributesModified += modificationCounts.getAttributesModified();
         renamed += modificationCounts.getRenamed();
         deleted += modificationCounts.getDeleted();
+    }
+
+    public void displayCounts(PrintStream out) {
+        String message = "";
+        if (getAdded() > 0) {
+            message += "" + getAdded() + " added, ";
+        }
+
+        if (getCopied() > 0) {
+            message += "" + getCopied() + " copied, ";
+        }
+
+        if (getDuplicated() > 0) {
+            message += "" + getDuplicated() + " duplicated, ";
+        }
+
+        if (getDateModified() > 0) {
+            message += "" + getDateModified() + " date modified, ";
+        }
+
+        if (getContentModified() > 0) {
+            message += "" + getContentModified() + " content modified, ";
+        }
+
+        if (getRenamed() > 0) {
+            message += "" + getRenamed() + " renamed, ";
+        }
+
+        if (getDeleted() > 0) {
+            message += "" + getDeleted() + " deleted, ";
+        }
+
+        message = message.replaceAll(", $", "");
+        out.printf("\t%s%n", message);
     }
 }

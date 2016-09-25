@@ -23,6 +23,7 @@ import org.fim.model.Context;
 import org.fim.model.LogEntry;
 import org.fim.model.LogResult;
 import org.fim.model.State;
+import org.fim.util.Console;
 import org.fim.util.Logger;
 
 import java.nio.file.Files;
@@ -67,10 +68,14 @@ public class LogCommand extends AbstractCommand {
                 logEntry.setFilesContentLength(state.getFilesContentLength());
                 logEntry.setModificationCounts(state.getModificationCounts());
                 logResult.add(logEntry);
+
+                logEntry.displayEntryHeader(System.out);
+
+                logEntry.getModificationCounts().displayCounts(System.out);
+                Console.newLine();
             }
         }
 
-        logResult.displayEntries();
         return logResult;
     }
 }

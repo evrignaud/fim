@@ -18,14 +18,8 @@
  */
 package org.fim.model;
 
-import org.apache.commons.io.FileUtils;
-import org.fim.util.Console;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.atteo.evo.inflector.English.plural;
-import static org.fim.util.FormatUtil.formatDate;
 
 public class LogResult {
     private List<LogEntry> logEntries = new ArrayList<>();
@@ -36,56 +30,5 @@ public class LogResult {
 
     public List<LogEntry> getLogEntries() {
         return logEntries;
-    }
-
-    public void displayEntries() {
-        for (LogEntry logEntry : logEntries) {
-            int fileCount = logEntry.getFileCount();
-            System.out.printf("State #%d: %s (%d %s - %s)%n", logEntry.getStateNumber(), formatDate(logEntry.getTimestamp()),
-                fileCount, plural("file", fileCount), FileUtils.byteCountToDisplaySize(logEntry.getFilesContentLength()));
-            if (logEntry.getComment().length() > 0) {
-                System.out.printf("\tComment: %s%n", logEntry.getComment());
-            }
-            displayCounts(logEntry.getModificationCounts());
-            Console.newLine();
-        }
-    }
-
-    private void displayCounts(ModificationCounts modificationCounts) {
-        if (modificationCounts == null) {
-            return;
-        }
-
-        String message = "";
-        if (modificationCounts.getAdded() > 0) {
-            message += "" + modificationCounts.getAdded() + " added, ";
-        }
-
-        if (modificationCounts.getCopied() > 0) {
-            message += "" + modificationCounts.getCopied() + " copied, ";
-        }
-
-        if (modificationCounts.getDuplicated() > 0) {
-            message += "" + modificationCounts.getDuplicated() + " duplicated, ";
-        }
-
-        if (modificationCounts.getDateModified() > 0) {
-            message += "" + modificationCounts.getDateModified() + " date modified, ";
-        }
-
-        if (modificationCounts.getContentModified() > 0) {
-            message += "" + modificationCounts.getContentModified() + " content modified, ";
-        }
-
-        if (modificationCounts.getRenamed() > 0) {
-            message += "" + modificationCounts.getRenamed() + " renamed, ";
-        }
-
-        if (modificationCounts.getDeleted() > 0) {
-            message += "" + modificationCounts.getDeleted() + " deleted, ";
-        }
-
-        message = message.replaceAll(", $", "");
-        System.out.printf("\t%s%n", message);
     }
 }
