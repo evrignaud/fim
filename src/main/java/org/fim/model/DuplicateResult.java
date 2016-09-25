@@ -30,13 +30,13 @@ public class DuplicateResult {
     private final Context context;
     private final List<DuplicateSet> duplicateSets;
     private long duplicatedFilesCount;
-    private long wastedSpace;
+    private long totalWastedSpace;
 
     public DuplicateResult(Context context) {
         this.context = context;
         this.duplicateSets = new ArrayList<>();
         this.duplicatedFilesCount = 0;
-        this.wastedSpace = 0;
+        this.totalWastedSpace = 0;
     }
 
     public void addDuplicatedFiles(List<FileState> duplicatedFiles) {
@@ -45,7 +45,7 @@ public class DuplicateResult {
 
             duplicatedFiles.stream()
                 .filter(fileState -> duplicatedFiles.indexOf(fileState) > 0)
-                .forEach(fileState -> wastedSpace += fileState.getFileLength());
+                .forEach(fileState -> totalWastedSpace += fileState.getFileLength());
 
             DuplicateSet duplicateSet = new DuplicateSet(duplicatedFiles);
             duplicateSets.add(duplicateSet);
@@ -56,7 +56,8 @@ public class DuplicateResult {
         if (context.isVerbose()) {
             for (DuplicateSet duplicateSet : duplicateSets) {
                 System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
-                System.out.println("- Duplicate set #" + (duplicateSets.indexOf(duplicateSet) + 1));
+                long wastedSpace = getWastedSpace(duplicateSet);
+                System.out.printf("- Duplicate set #%d, %s of wasted space%n", duplicateSets.indexOf(duplicateSet) + 1, FileUtils.byteCountToDisplaySize(wastedSpace));
                 List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
                 for (FileState fileState : duplicatedFiles) {
                     if (duplicatedFiles.indexOf(fileState) == 0) {
@@ -72,9 +73,9 @@ public class DuplicateResult {
 
         if (duplicatedFilesCount > 0) {
             int duplicateCount = duplicateSets.size();
-            System.out.printf("%d duplicated %s spread into %d duplicate %s, %s of wasted space%n",
+            System.out.printf("%d duplicated %s spread into %d duplicate %s, %s of total wasted space%n",
                 duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount),
-                duplicateCount, plural("set", duplicateCount), FileUtils.byteCountToDisplaySize(wastedSpace));
+                duplicateCount, plural("set", duplicateCount), FileUtils.byteCountToDisplaySize(totalWastedSpace));
         } else {
             System.out.println("No duplicated file found");
         }
@@ -85,7 +86,18 @@ public class DuplicateResult {
         return duplicatedFilesCount;
     }
 
-    public long getWastedSpace() {
+    public long getTotalWastedSpace() {
+        return totalWastedSpace;
+    }
+
+    public long getWastedSpace(DuplicateSet duplicateSet) {
+        long wastedSpace = 0;
+        List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
+        for (FileState fileState : duplicatedFiles) {
+            if (duplicatedFiles.indexOf(fileState) > 0) {
+                wastedSpace += fileState.getFileLength();
+            }
+        }
         return wastedSpace;
     }
 

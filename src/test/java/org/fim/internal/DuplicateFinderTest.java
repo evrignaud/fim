@@ -27,31 +27,43 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DuplicateFinderTest extends DuplicateAssert {
     private DuplicateFinder cut = new DuplicateFinder(defaultContext());
-    private BuildableState s = new BuildableState(defaultContext()).addFiles("file_01", "file_02", "file_03", "file_04");
+    private BuildableState s = new BuildableState(defaultContext()).addFiles("file_01", "file_02_", "file_03", "file_04");
 
     @Test
     public void noDuplicatesWhenFilesHaveDifferentContent() {
         DuplicateResult result = cut.findDuplicates(s);
         assertFilesDuplicated(result);
-        assertThat(result.getWastedSpace()).isEqualTo(0);
+        assertThat(result.getTotalWastedSpace()).isEqualTo(0);
     }
 
     @Test
     public void duplicatesWhenFilesHaveSameContent() {
         s = s.copy("file_01", "file_10");
         DuplicateResult result = cut.findDuplicates(s);
+        int totalWastedSpace = "file_10".length();
+        assertThat(result.getDuplicateSets().size()).isEqualTo(1);
+        assertThat(result.getWastedSpace(result.getDuplicateSets().get(0))).isEqualTo(totalWastedSpace);
         assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10"));
-        assertThat(result.getWastedSpace()).isEqualTo(("file_10").length());
+        assertThat(result.getTotalWastedSpace()).isEqualTo(totalWastedSpace);
 
         s = s.copy("file_01", "file_11");
         result = cut.findDuplicates(s);
+        totalWastedSpace = ("file_10" + "file_11").length();
+        assertThat(result.getDuplicateSets().size()).isEqualTo(1);
+        assertThat(result.getWastedSpace(result.getDuplicateSets().get(0))).isEqualTo(totalWastedSpace);
         assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10", "file_11"));
-        assertThat(result.getWastedSpace()).isEqualTo(("file_10" + "file_11").length());
+        assertThat(result.getTotalWastedSpace()).isEqualTo(totalWastedSpace);
 
-        s = s.copy("file_02", "file_08");
+        s = s.copy("file_02_", "file_08_");
         result = cut.findDuplicates(s);
-        assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10", "file_11"), duplicatedFiles("file_02", "file_08"));
-        assertThat(result.getWastedSpace()).isEqualTo(("file_10" + "file_11" + "file_08").length());
+        int wastedSpace1 = ("file_10" + "file_11").length();
+        int wastedSpace2 = "file_08_".length();
+        totalWastedSpace = wastedSpace1 + wastedSpace2;
+        assertThat(result.getDuplicateSets().size()).isEqualTo(2);
+        assertThat(result.getWastedSpace(result.getDuplicateSets().get(0))).isEqualTo(wastedSpace1);
+        assertThat(result.getWastedSpace(result.getDuplicateSets().get(1))).isEqualTo(wastedSpace2);
+        assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10", "file_11"), duplicatedFiles("file_02_", "file_08_"));
+        assertThat(result.getTotalWastedSpace()).isEqualTo(totalWastedSpace);
     }
 
     @Test
@@ -59,6 +71,6 @@ public class DuplicateFinderTest extends DuplicateAssert {
         s = s.addEmptyFiles("empty_file_01", "empty_file_02", "empty_file_03", "empty_file_04");
         DuplicateResult result = cut.findDuplicates(s);
         assertFilesDuplicated(result);
-        assertThat(result.getWastedSpace()).isEqualTo(0);
+        assertThat(result.getTotalWastedSpace()).isEqualTo(0);
     }
 }
