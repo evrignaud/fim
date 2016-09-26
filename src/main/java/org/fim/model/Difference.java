@@ -32,6 +32,10 @@ public class Difference {
         }
     }
 
+    public Difference(FileState fileState) {
+        this.setFileState(fileState);
+    }
+
     public FileState getPreviousFileState() {
         return fileState.getPreviousFileState();
     }

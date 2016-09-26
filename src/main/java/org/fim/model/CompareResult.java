@@ -115,11 +115,11 @@ public class CompareResult {
 
         final String copiedStr = String.format(stateFormat, "Copied:");
         displayDifferences(out, context, copiedStr, copied,
-            diff -> out.printf(copiedStr + "%s \t(was %s)%n", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName()));
+            diff -> out.printf(copiedStr + "%s \t(was %s)%n", diff.getFileState().getFileName(), getPreviousFileName(diff)));
 
         final String duplicatedStr = String.format(stateFormat, "Duplicated:");
         displayDifferences(out, context, duplicatedStr, duplicated,
-            diff -> out.printf(duplicatedStr + "%s = %s%s%n", diff.getFileState().getFileName(), diff.getPreviousFileState().getFileName(),
+            diff -> out.printf(duplicatedStr + "%s = %s%s%n", diff.getFileState().getFileName(), getPreviousFileName(diff),
                 formatModifiedAttributesWithoutTimeChange(diff, true)));
 
         final String dateModifiedStr = String.format(stateFormat, "Date modified:");
@@ -136,7 +136,7 @@ public class CompareResult {
 
         final String renamedStr = String.format(stateFormat, "Renamed:");
         displayDifferences(out, context, renamedStr, renamed,
-            diff -> out.printf(renamedStr + "%s -> %s%s%n", diff.getPreviousFileState().getFileName(), diff.getFileState().getFileName(),
+            diff -> out.printf(renamedStr + "%s -> %s%s%n", getPreviousFileName(diff), diff.getFileState().getFileName(),
                 formatModifiedAttributesWithoutTimeChange(diff, true)));
 
         final String deletedStr = String.format(stateFormat, "Deleted:");
@@ -154,6 +154,13 @@ public class CompareResult {
         displayCounts();
 
         return this;
+    }
+
+    private static String getPreviousFileName(Difference diff) {
+        if (diff.getPreviousFileState() == null) { // This case happens when displaying log for States produced using Fim before 1.2.1
+            return "?";
+        }
+        return diff.getPreviousFileState().getFileName();
     }
 
     public static void displayDifferences(PrintStream out, Context context, String actionStr,
@@ -190,6 +197,10 @@ public class CompareResult {
     }
 
     private static String internalFormatModifiedAttributes(Difference diff, boolean nextLine, boolean displayTimeChange) {
+        if (diff.getPreviousFileState() == null) { // This case happens when displaying log for States produced using Fim before 1.2.1
+            return nextLine ? " ?" : "?";
+        }
+
         int modifCount = 0;
         StringBuilder modification = new StringBuilder(nextLine ? " " : ""); // Put a white space to force to add a separator
 
