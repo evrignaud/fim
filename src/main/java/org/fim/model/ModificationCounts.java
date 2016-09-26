@@ -105,7 +105,16 @@ public class ModificationCounts {
         deleted += modificationCounts.getDeleted();
     }
 
-    public void displayCounts(PrintStream out) {
+    public boolean somethingModified() {
+        return modifiedCount() > 0;
+    }
+
+    public int modifiedCount() {
+        return added + copied + duplicated + dateModified + contentModified +
+            attributesModified + renamed + deleted;
+    }
+
+    public void displayCounts(PrintStream out, boolean beginningOfLine) {
         String message = "";
         if (getAdded() > 0) {
             message += "" + getAdded() + " added, ";
@@ -136,6 +145,10 @@ public class ModificationCounts {
         }
 
         message = message.replaceAll(", $", "");
-        out.printf("\t%s%n", message);
+
+        if (!beginningOfLine) {
+            out.printf("\t");
+        }
+        out.printf("%s%n", message);
     }
 }
