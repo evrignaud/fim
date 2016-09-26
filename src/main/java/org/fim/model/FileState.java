@@ -21,6 +21,7 @@ package org.fim.model;
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.Hasher;
+import com.rits.cloning.Cloner;
 import org.fim.util.ObjectsUtil;
 
 import java.nio.file.attribute.BasicFileAttributes;
@@ -31,14 +32,18 @@ import java.util.Map;
 import java.util.Objects;
 
 public class FileState implements Hashable {
+    private static final Cloner CLONER = new Cloner();
+
     private String fileName;
     private long fileLength;
     private FileTime fileTime;
     private Modification modification;
     private FileHash fileHash;
     private Map<String, String> fileAttributes;
+    private FileState previousFileState;
 
     private transient FileHash newFileHash; // Used by StateComparator to detect accurately duplicates
+    private transient FileHash originalFileHash;
 
     public FileState(String fileName, long fileLength, FileTime fileTime, FileHash fileHash, List<Attribute> attributeList) {
         if (fileName == null) {
@@ -107,6 +112,14 @@ public class FileState implements Hashable {
         this.fileAttributes = fileAttributes;
     }
 
+    public FileState getPreviousFileState() {
+        return previousFileState;
+    }
+
+    public void setPreviousFileState(FileState previousFileState) {
+        this.previousFileState = previousFileState;
+    }
+
     public FileHash getNewFileHash() {
         return newFileHash;
     }
@@ -117,6 +130,16 @@ public class FileState implements Hashable {
 
     public void resetNewHash() {
         newFileHash = fileHash;
+    }
+
+    public void storeOriginalHash() {
+        originalFileHash = fileHash;
+    }
+
+    public void restoreOriginalHash() {
+        if (originalFileHash != null) {
+            fileHash = originalFileHash;
+        }
     }
 
     @Override
@@ -194,6 +217,11 @@ public class FileState implements Hashable {
                 hasher.putChar(HASH_OBJECT_SEPARATOR);
             }
         }
+    }
+
+    @Override
+    public FileState clone() {
+        return CLONER.deepClone(this);
     }
 
     private Map<String, String> toMap(List<Attribute> attrs) {

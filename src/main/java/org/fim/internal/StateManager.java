@@ -18,9 +18,9 @@
  */
 package org.fim.internal;
 
-import org.fim.model.Constants;
 import org.fim.model.Context;
 import org.fim.model.CorruptedStateException;
+import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.State;
 import org.fim.util.Logger;
@@ -28,6 +28,8 @@ import org.fim.util.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import static org.fim.model.Constants.NO_HASH;
 
 public class StateManager {
     public static final String STATE_EXTENSION = ".json.gz";
@@ -78,25 +80,28 @@ public class StateManager {
 
     private void adjustAccordingToHashMode(State state) {
         // Replace by 'no_hash' accurately to be able to compare the FileState entry
+        // Keep the original hash before changing by 'no_hash' in order to fill correctly the previousFileState
         switch (context.getHashMode()) {
             case dontHash:
                 for (FileState fileState : state.getFileStates()) {
-                    fileState.getFileHash().setSmallBlockHash(Constants.NO_HASH);
-                    fileState.getFileHash().setMediumBlockHash(Constants.NO_HASH);
-                    fileState.getFileHash().setFullHash(Constants.NO_HASH);
+                    fileState.storeOriginalHash();
+                    fileState.setFileHash(new FileHash(NO_HASH, NO_HASH, NO_HASH));
                 }
                 break;
 
             case hashSmallBlock:
                 for (FileState fileState : state.getFileStates()) {
-                    fileState.getFileHash().setMediumBlockHash(Constants.NO_HASH);
-                    fileState.getFileHash().setFullHash(Constants.NO_HASH);
+                    fileState.storeOriginalHash();
+                    FileHash fileHash = fileState.getFileHash();
+                    fileState.setFileHash(new FileHash(fileHash.getSmallBlockHash(), NO_HASH, NO_HASH));
                 }
                 break;
 
             case hashMediumBlock:
                 for (FileState fileState : state.getFileStates()) {
-                    fileState.getFileHash().setFullHash(Constants.NO_HASH);
+                    fileState.storeOriginalHash();
+                    FileHash fileHash = fileState.getFileHash();
+                    fileState.setFileHash(new FileHash(fileHash.getSmallBlockHash(), fileHash.getMediumBlockHash(), NO_HASH));
                 }
                 break;
 

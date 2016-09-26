@@ -34,6 +34,7 @@ import org.fim.util.SELinux;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -43,6 +44,7 @@ import static org.fim.model.FileAttribute.DosFilePermissions;
 import static org.fim.model.FileAttribute.PosixFilePermissions;
 import static org.fim.model.FileAttribute.SELinuxLabel;
 import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.Modification.deleted;
 import static org.fim.util.FileStateUtil.buildFileHashList;
 import static org.fim.util.FileStateUtil.buildFileNamesMap;
 import static org.fim.util.FileStateUtil.buildHashCodeMap;
@@ -99,6 +101,15 @@ public class StateComparator {
 
         if (!SELinux.ENABLED) {
             filterOut(lastState, SELinuxLabel.name());
+        }
+
+        // Remove previousFileState and deleted entries
+        for (Iterator<FileState> iter = lastState.getFileStates().iterator(); iter.hasNext(); ) {
+            FileState fileState = iter.next();
+            fileState.setPreviousFileState(null);
+            if (fileState.getModification() == deleted) {
+                iter.remove();
+            }
         }
     }
 

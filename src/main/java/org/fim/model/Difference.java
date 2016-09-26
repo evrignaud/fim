@@ -21,20 +21,23 @@ package org.fim.model;
 import java.util.Comparator;
 
 public class Difference {
-    private FileState previousFileState;
     private FileState fileState;
 
     public Difference(FileState previousFileState, FileState fileState) {
-        this.setPreviousFileState(previousFileState);
         this.setFileState(fileState);
+        if (previousFileState != null) {
+            FileState clonedFileState = previousFileState.clone();
+            clonedFileState.restoreOriginalHash(); // To get all the hash and not 'no_hash' depending on the hash mode
+            this.setPreviousFileState(clonedFileState);
+        }
     }
 
     public FileState getPreviousFileState() {
-        return previousFileState;
+        return fileState.getPreviousFileState();
     }
 
     public void setPreviousFileState(FileState previousFileState) {
-        this.previousFileState = previousFileState;
+        fileState.setPreviousFileState(previousFileState);
     }
 
     public FileState getFileState() {
@@ -46,11 +49,11 @@ public class Difference {
     }
 
     public boolean isCreationTimeChanged() {
-        return previousFileState.getFileTime().getCreationTime() / 1000 != fileState.getFileTime().getCreationTime() / 1000;
+        return getPreviousFileState().getFileTime().getCreationTime() / 1000 != fileState.getFileTime().getCreationTime() / 1000;
     }
 
     public boolean isLastModifiedChanged() {
-        return previousFileState.getFileTime().getLastModified() / 1000 != fileState.getFileTime().getLastModified() / 1000;
+        return getPreviousFileState().getFileTime().getLastModified() / 1000 != fileState.getFileTime().getLastModified() / 1000;
     }
 
     public static class FileNameComparator implements Comparator<Difference> {
