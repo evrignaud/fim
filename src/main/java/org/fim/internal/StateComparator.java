@@ -282,9 +282,13 @@ public class StateComparator {
     }
 
     private void searchForDeleted() {
+        // Add as 'deleted' all the remaining entries that are not ignored
         notFoundInCurrentFileState.stream()
             .filter(fileState -> !isFileIgnored(fileState))
-            .forEach(fileState -> result.getDeleted().add(new Difference(null, fileState)));
+            .forEach(fileState -> {
+                fileState.setModification(deleted);
+                result.getDeleted().add(new Difference(null, fileState));
+            });
     }
 
     private boolean isFileIgnored(FileState fileState) {

@@ -29,9 +29,11 @@ import org.fim.command.RollbackCommand;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
+import org.fim.model.CorruptedStateException;
 import org.fim.model.DuplicateResult;
 import org.fim.model.HashMode;
 import org.fim.model.LogResult;
+import org.fim.model.Modification;
 import org.fim.model.ModificationCounts;
 import org.fim.model.State;
 import org.fim.tooling.RepositoryTool;
@@ -54,6 +56,14 @@ import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
 import static org.fim.model.HashMode.hashMediumBlock;
 import static org.fim.model.HashMode.hashSmallBlock;
+import static org.fim.model.Modification.added;
+import static org.fim.model.Modification.attributesModified;
+import static org.fim.model.Modification.contentModified;
+import static org.fim.model.Modification.copied;
+import static org.fim.model.Modification.dateModified;
+import static org.fim.model.Modification.deleted;
+import static org.fim.model.Modification.duplicated;
+import static org.fim.model.Modification.renamed;
 
 @RunWith(Parameterized.class)
 public class FullScenarioTest {
@@ -146,6 +156,7 @@ public class FullScenarioTest {
         modificationCounts = compareResult.getModificationCounts();
         assertThat(modificationCounts.getRenamed()).isEqualTo(0);
         assertThat(modificationCounts.getDeleted()).isEqualTo(2);
+        assertLastStateContainSameModifications(context, modificationCounts);
 
         // Committing once again does nothing
         commit_AndAssertFilesModifiedCountEqualsTo(context, 0);
@@ -184,6 +195,7 @@ public class FullScenarioTest {
             assertThat(modificationCounts.getContentModified()).isEqualTo(2);
             assertThat(modificationCounts.getRenamed()).isEqualTo(1);
             assertThat(modificationCounts.getDeleted()).isEqualTo(1);
+            assertLastStateContainSameModifications(context, modificationCounts);
 
             // Check that the last commit command did not modify the hashMode
             assertThat(superFastModeContext.getHashMode()).isEqualTo(hashSmallBlock);
@@ -199,6 +211,7 @@ public class FullScenarioTest {
             assertThat(compareResult.modifiedCount()).isEqualTo(2);
             modificationCounts = compareResult.getModificationCounts();
             assertThat(modificationCounts.getAdded()).isEqualTo(2);
+            assertLastStateContainSameModifications(context, modificationCounts);
 
             assertThatUsingNormalHashModeNoModificationIsDetected(context);
         }
@@ -277,9 +290,50 @@ public class FullScenarioTest {
         CompareResult compareResult = (CompareResult) commitCommand.execute(context);
         assertThat(compareResult.modifiedCount()).isEqualTo(expectedModifiedFileCount);
 
+        assertLastStateHashModeEqualsTo(context, context.getHashMode());
+    }
+
+    private void assertLastStateHashModeEqualsTo(Context context, HashMode expectedHashMode) throws IOException, CorruptedStateException {
+        State lastState = loadLastState(context);
+        assertThat(lastState.getHashMode()).isEqualTo(expectedHashMode);
+    }
+
+    private void assertLastStateContainSameModifications(Context context, ModificationCounts modificationCounts) throws IOException, CorruptedStateException {
+        State lastState = loadLastState(context);
+
+        int count = countModification(lastState, added);
+        assertThat(modificationCounts.getAdded()).isEqualTo(count);
+
+        count = countModification(lastState, copied);
+        assertThat(modificationCounts.getCopied()).isEqualTo(count);
+
+        count = countModification(lastState, duplicated);
+        assertThat(modificationCounts.getDuplicated()).isEqualTo(count);
+
+        count = countModification(lastState, dateModified);
+        assertThat(modificationCounts.getDateModified()).isEqualTo(count);
+
+        count = countModification(lastState, contentModified);
+        assertThat(modificationCounts.getContentModified()).isEqualTo(count);
+
+        count = countModification(lastState, attributesModified);
+        assertThat(modificationCounts.getAttributesModified()).isEqualTo(count);
+
+        count = countModification(lastState, renamed);
+        assertThat(modificationCounts.getRenamed()).isEqualTo(count);
+
+        count = countModification(lastState, deleted);
+        assertThat(modificationCounts.getDeleted()).isEqualTo(count);
+    }
+
+    private State loadLastState(Context context) throws IOException, CorruptedStateException {
         Path lastStateFile = getStateFile(context, getLastStateNumber(context));
-        State lastState = State.loadFromGZipFile(lastStateFile, false);
-        assertThat(lastState.getHashMode()).isEqualTo(context.getHashMode());
+        return State.loadFromGZipFile(lastStateFile, false);
+    }
+
+    private int countModification(State lastState, Modification modification) {
+        long count = lastState.getFileStates().stream().filter(fileState -> fileState.getModification() == modification).count();
+        return (int) count;
     }
 
     private void assertDuplicatedFilesCountEqualsTo(Context context, int expectedDuplicatedSetCount) throws Exception {

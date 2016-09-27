@@ -52,6 +52,7 @@ public class StateComparatorTest extends StateAssert {
     private BuildableContext context;
     private BuildableState s1;
     private BuildableState s2;
+    private CompareResult result;
 
     public StateComparatorTest(final HashMode hashMode) {
         this.hashMode = hashMode;
@@ -75,20 +76,29 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Test
-    public void weCanDoCompareOnSimpleOperations() {
+    public void weCanManageSameContent() {
         // Set the same file content
         s2 = s1.setContent("file_01", "file_01");
-        CompareResult result = new StateComparator(context, s1, s2).compare();
+        result = new StateComparator(context, s1, s2).compare();
         assertNothingModified(result);
+    }
 
+    @Test
+    public void weCanManageFileAdded() {
         s2 = s1.addFiles("file_05");
         result = new StateComparator(context, s1, s2).compare();
         assertOnlyFilesAdded(result, "file_05");
+    }
 
+    @Test
+    public void weCanManageDateModified() {
         s2 = s1.touch("file_01");
         result = new StateComparator(context, s1, s2).compare();
         assertOnlyDatesModified(result, "file_01");
+    }
 
+    @Test
+    public void weCanManageContentModified() {
         s2 = s1.appendContent("file_01", "append_01");
         result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
@@ -96,7 +106,10 @@ public class StateComparatorTest extends StateAssert {
         } else {
             assertOnlyContentModified(result, "file_01");
         }
+    }
 
+    @Test
+    public void weCanManageFileRename() {
         s2 = s1.rename("file_01", "file_06");
         result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
@@ -106,7 +119,10 @@ public class StateComparatorTest extends StateAssert {
         } else {
             assertOnlyFileRenamed(result, new FileNameDiff("file_01", "file_06"));
         }
+    }
 
+    @Test
+    public void weCanManageFileCopy() {
         s2 = s1.copy("file_01", "file_06");
         result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
@@ -114,7 +130,10 @@ public class StateComparatorTest extends StateAssert {
         } else {
             assertOnlyFileDuplicated(result, new FileNameDiff("file_01", "file_06"));
         }
+    }
 
+    @Test
+    public void weCanManageFileDelete() {
         s2 = s1.delete("file_01");
         result = new StateComparator(context, s1, s2).compare();
         assertOnlyFileDeleted(result, "file_01");
@@ -125,7 +144,7 @@ public class StateComparatorTest extends StateAssert {
         s2 = s1.copy("file_01", "file_00")
             .copy("file_01", "file_06")
             .touch("file_01");
-        CompareResult result = new StateComparator(context, s1, s2).compare();
+        result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
             assertGotOnlyModifications(result, added, dateModified);
             assertFilesModified(result, added, "file_00", "file_06");
@@ -141,7 +160,7 @@ public class StateComparatorTest extends StateAssert {
         s2 = s1.copy("file_01", "file_00")
             .copy("file_01", "file_06")
             .appendContent("file_01", "append_01");
-        CompareResult result = new StateComparator(context, s1, s2).compare();
+        result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
             assertGotOnlyModifications(result, added);
             assertFilesModified(result, added, "file_00", "file_06");
@@ -170,7 +189,7 @@ public class StateComparatorTest extends StateAssert {
     }
 
     private void detectAndAssertRenamedFiles() {
-        CompareResult result = new StateComparator(context, s1, s2).compare();
+        result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
             assertGotOnlyModifications(result, added, deleted);
             assertFilesModified(result, added, "new_file_01", "new_dup_file_01");
@@ -185,7 +204,7 @@ public class StateComparatorTest extends StateAssert {
     public void emptyFilesAreNeverSeenAsDuplicates() {
         s1 = s1.addEmptyFiles("empty_file_01");
         s2 = s1.addEmptyFiles("empty_file_02");
-        CompareResult result = new StateComparator(context, s1, s2).compare();
+        result = new StateComparator(context, s1, s2).compare();
         assertGotOnlyModifications(result, added);
         assertFilesModified(result, added, "empty_file_02");
     }
@@ -197,7 +216,7 @@ public class StateComparatorTest extends StateAssert {
         }
 
         s2 = s1.clone();
-        CompareResult result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
+        result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
         assertNothingModified(result);
 
         s2 = s2.setContent("file_01", "XXXX");
