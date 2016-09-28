@@ -45,24 +45,12 @@ public class FileHash implements Comparable<FileHash>, Hashable {
         return smallBlockHash;
     }
 
-    public void setSmallBlockHash(String smallBlockHash) {
-        this.smallBlockHash = smallBlockHash;
-    }
-
     public String getMediumBlockHash() {
         return mediumBlockHash;
     }
 
-    public void setMediumBlockHash(String mediumBlockHash) {
-        this.mediumBlockHash = mediumBlockHash;
-    }
-
     public String getFullHash() {
         return fullHash;
-    }
-
-    public void setFullHash(String fullHash) {
-        this.fullHash = fullHash;
     }
 
     @Override
