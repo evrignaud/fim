@@ -340,17 +340,60 @@ Nothing modified
 [source, bash]
 ----
 simple-example$ fim log
-State #1: 2016/05/09 21:58:36 (10 files - 120 bytes)
+- State #1: 2016/05/09 21:58:36 (10 files - 120 bytes)
 	Comment: First State
-	10 added
 
-State #2: 2016/05/09 21:58:38 (11 files - 132 bytes)
+Added:            file01
+Added:            file02
+Added:            file03
+Added:            file04
+Added:            file05
+Added:            file06
+Added:            file07
+Added:            file08
+Added:            file09
+Added:            file10
+
+10 added
+
+- State #2: 2016/05/09 21:58:38 (11 files - 132 bytes)
 	Comment: Modifications from dir01
-	11 added
 
-State #3: 2016/05/09 21:58:39 (14 files - 176 bytes)
+Added:            dir01/file01
+Added:            file01
+Added:            file02
+Added:            file03
+Added:            file04
+Added:            file05
+Added:            file06
+Added:            file07
+Added:            file08
+Added:            file09
+Added:            file10
+
+11 added
+
+- State #3: 2016/05/09 21:58:39 (14 files - 176 bytes)
 	Comment: All modifications
-	1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 2 deleted
+
+Added:            file12
+Copied:           file11 	(was file05)
+Duplicated:       file03.dup1 = file03
+Duplicated:       file03.dup2 = file03
+Duplicated:       file07.dup1 = file07
+Date modified:    file02 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+
+Content modified: file04 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+
+Content modified: file05 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+
+Deleted:          file01
+Deleted:          file06
+
+1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 2 deleted
 ----
 
 == Rollback all the commit
@@ -439,13 +482,43 @@ Nothing modified
 [source, bash]
 ----
 simple-example$ fim log
-State #1: 2016/05/09 21:58:36 (10 files - 120 bytes)
+- State #1: 2016/05/09 21:58:36 (10 files - 120 bytes)
 	Comment: First State
-	10 added
 
-State #2: 2016/05/09 21:58:40 (14 files - 176 bytes)
+Added:            file01
+Added:            file02
+Added:            file03
+Added:            file04
+Added:            file05
+Added:            file06
+Added:            file07
+Added:            file08
+Added:            file09
+Added:            file10
+
+10 added
+
+- State #2: 2016/05/09 21:58:40 (14 files - 176 bytes)
 	Comment: Commit modifications very quickly using super-fast commit
-	1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 1 renamed, 1 deleted
+
+Added:            file12
+Copied:           file11 	(was file05)
+Duplicated:       file03.dup1 = file03
+Duplicated:       file03.dup2 = file03
+Duplicated:       file07.dup1 = file07
+Date modified:    file02 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+
+Content modified: file04 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+
+Content modified: file05 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+
+Renamed:          file01 -> dir01/file01
+Deleted:          file06
+
+1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 1 renamed, 1 deleted
 ----
 
 == State file content
