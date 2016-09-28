@@ -31,6 +31,7 @@ import org.fim.model.Difference;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.model.Modification;
+import org.fim.model.ModificationCounts;
 import org.fim.model.State;
 import org.fim.util.Console;
 import org.fim.util.Logger;
@@ -41,9 +42,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.fim.internal.StateComparator.resetFileStates;
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.Modification.attributesModified;
 import static org.fim.model.Modification.dateModified;
+import static org.fim.model.Modification.deleted;
 import static org.fim.util.FileStateUtil.buildFileNamesMap;
 
 public class CommitCommand extends AbstractCommand {
@@ -162,7 +165,7 @@ public class CommitCommand extends AbstractCommand {
                     throw new IllegalStateException(String.format("Not able to find file '%s' into the previous state", fileState.getFileName()));
                 }
                 fileState.setFileHash(lastFileState.getFileHash());
-            } else {
+            } else if (modification != deleted) {
                 // Hash changed, we need to compute all the mandatory hash
                 toReHash.add(fileState);
             }
@@ -175,9 +178,11 @@ public class CommitCommand extends AbstractCommand {
     private State createConsolidatedState(Context context, State lastState, State currentState) {
         State filteredState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), false);
 
+        resetFileStates(filteredState.getFileStates());
+
         State consolidatedState = currentState.clone();
         consolidatedState.getFileStates().addAll(filteredState.getFileStates());
-        consolidatedState.getModificationCounts().add(filteredState.getModificationCounts());
+        consolidatedState.setModificationCounts(new ModificationCounts(consolidatedState.getFileStates()));
         consolidatedState.getIgnoredFiles().addAll(lastState.getIgnoredFiles());
 
         return consolidatedState;

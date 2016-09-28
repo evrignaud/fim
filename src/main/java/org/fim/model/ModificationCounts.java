@@ -18,6 +18,8 @@
  */
 package org.fim.model;
 
+import java.util.List;
+
 public class ModificationCounts {
     private int added;
     private int copied;
@@ -27,6 +29,53 @@ public class ModificationCounts {
     private int attributesModified;
     private int renamed;
     private int deleted;
+
+    public ModificationCounts() {
+        // Use the default values
+    }
+
+    public ModificationCounts(List<FileState> fileStates) {
+        fileStates.stream()
+            .filter(fileState -> fileState.getModification() != null)
+            .forEach(fileState -> {
+                switch (fileState.getModification()) {
+                    case added:
+                        added++;
+                        break;
+
+                    case copied:
+                        copied++;
+                        break;
+
+                    case duplicated:
+                        duplicated++;
+                        break;
+
+                    case dateModified:
+                        dateModified++;
+                        break;
+
+                    case contentModified:
+                        contentModified++;
+                        break;
+
+                    case attributesModified:
+                        attributesModified++;
+                        break;
+
+                    case renamed:
+                        renamed++;
+                        break;
+
+                    case deleted:
+                        deleted++;
+                        break;
+
+                    default:
+                        break;
+                }
+            });
+    }
 
     public int getAdded() {
         return added;
@@ -90,16 +139,5 @@ public class ModificationCounts {
 
     public void setDeleted(int deleted) {
         this.deleted = deleted;
-    }
-
-    public void add(ModificationCounts modificationCounts) {
-        added += modificationCounts.getAdded();
-        copied += modificationCounts.getCopied();
-        duplicated += modificationCounts.getDuplicated();
-        dateModified += modificationCounts.getDateModified();
-        contentModified += modificationCounts.getContentModified();
-        attributesModified += modificationCounts.getAttributesModified();
-        renamed += modificationCounts.getRenamed();
-        deleted += modificationCounts.getDeleted();
     }
 }

@@ -180,8 +180,7 @@ public class FullScenarioTest {
         assertWeCanRollbackLastCommit(context, 1, 0);
 
         if (hashMode == hashAll || hashMode == hashMediumBlock) {
-            Context superFastModeContext = context.clone();
-            superFastModeContext.setHashMode(hashSmallBlock);
+            Context superFastModeContext = tool.createContext(hashSmallBlock, hashMode == hashAll);
             superFastModeContext.setComment("Using hash mode " + hashSmallBlock);
 
             // Commit using super-fast mode (hashSmallBlock)
@@ -202,6 +201,18 @@ public class FullScenarioTest {
 
             assertThatUsingNormalHashModeNoModificationIsDetected(context);
 
+            // Commit a new file from the dir01 sub directory
+            tool.createFile(dir01.resolve("file15"));
+
+            Context fromSubDirectoryContext = tool.createInvokedFromSubDirContext(hashSmallBlock, "dir01", hashMode == hashAll);
+            superFastModeContext.setComment("From from sub directory dir01");
+
+            compareResult = (CompareResult) commitCommand.execute(fromSubDirectoryContext);
+            assertThat(compareResult.modifiedCount()).isEqualTo(1);
+            modificationCounts = compareResult.getModificationCounts();
+            assertThat(modificationCounts.getAdded()).isEqualTo(1);
+            assertLastStateContainSameModifications(context, modificationCounts);
+
             // Add two files
             tool.setFileContent("file13", "New file 13");
             tool.setFileContent("file14", "New file 14");
@@ -214,6 +225,13 @@ public class FullScenarioTest {
             assertLastStateContainSameModifications(context, modificationCounts);
 
             assertThatUsingNormalHashModeNoModificationIsDetected(context);
+
+            logResult = (LogResult) logCommand.execute(context);
+            assertThat(logResult.getLogEntries().size()).isEqualTo(4);
+            modificationCounts = logResult.getLogEntries().get(2).getModificationCounts();
+            assertThat(modificationCounts.getAdded()).isEqualTo(1);
+            assertThat(modificationCounts.getDeleted()).isEqualTo(0);
+            assertThat(modificationCounts.getCopied()).isEqualTo(0);
         }
     }
 

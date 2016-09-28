@@ -65,6 +65,13 @@ public class RepositoryTool {
         return context;
     }
 
+    public Context createInvokedFromSubDirContext(HashMode hashMode, String subDirectory, boolean verbose) {
+        Context context = createContext(hashMode, verbose);
+        context.setCurrentDirectory(context.getCurrentDirectory().resolve(subDirectory));
+        context.setInvokedFromSubDirectory(true);
+        return context;
+    }
+
     public void createASetOfFiles(int count) throws IOException {
         for (int index = 1; index <= count; index++) {
             createOneFile();

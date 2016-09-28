@@ -71,6 +71,21 @@ public class StateComparator {
         init();
     }
 
+    /**
+     * Remove modification, previousFileState and deleted entries
+     */
+    public static void resetFileStates(List<FileState> fileStates) {
+        for (Iterator<FileState> iter = fileStates.iterator(); iter.hasNext(); ) {
+            FileState fileState = iter.next();
+            if (fileState.getModification() == deleted) {
+                iter.remove();
+            } else {
+                fileState.setModification(null);
+                fileState.setPreviousFileState(null);
+            }
+        }
+    }
+
     private void init() {
         if (lastState != null && !lastState.getModelVersion().equals(currentState.getModelVersion())) {
             Logger.warning("Not able to compare with a State that have a different model version.");
@@ -104,14 +119,7 @@ public class StateComparator {
             filterOut(lastState, SELinuxLabel.name());
         }
 
-        // Remove previousFileState and deleted entries
-        for (Iterator<FileState> iter = lastState.getFileStates().iterator(); iter.hasNext(); ) {
-            FileState fileState = iter.next();
-            fileState.setPreviousFileState(null);
-            if (fileState.getModification() == deleted) {
-                iter.remove();
-            }
-        }
+        resetFileStates(lastState.getFileStates());
 
         if (context.isDatesIgnored()) {
             FileTime noTime = new FileTime(0, 0);
@@ -294,6 +302,7 @@ public class StateComparator {
             .filter(fileState -> !isFileIgnored(fileState))
             .forEach(fileState -> {
                 fileState.setModification(deleted);
+                fileState.restoreOriginalHash();
                 result.getDeleted().add(new Difference(null, fileState));
             });
     }
