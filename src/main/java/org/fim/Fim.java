@@ -109,6 +109,7 @@ public class Fim {
         opts.addOption(createOption("s", "super-fast-mode", false, "Use super-fast mode. Hash only 3 small blocks.\nOne at the beginning, one in the middle and one at the end", false));
         opts.addOption(createOption("f", "fast-mode", false, "Use fast mode. Hash only 3 medium blocks.\nOne at the beginning, one in the middle and one at the end", false));
         opts.addOption(createOption("h", "help", false, "Prints the Fim help", false));
+        opts.addOption(createOption("i", "ignore-date", false, "Ignore dates in file comparison", false));
         opts.addOption(createOption("l", "use-last-state", false, "Use the last committed State.\nOnly for the find local duplicated files command", false));
         opts.addOption(createOption("c", "comment", true, "Comment to set during init and commit", false));
         opts.addOption(createOption("o", "output-max-lines", true, "Change the maximum number lines displayed for the same kind of modification. Default value is 200 lines", false));
@@ -141,6 +142,7 @@ public class Fim {
         try {
             CommandLine commandLine = cmdLineGnuParser.parse(options, optionArgs);
 
+            context.setDatesIgnored(commandLine.hasOption('i'));
             context.setVerbose(!commandLine.hasOption('q'));
             context.setComment(commandLine.getOptionValue('c', context.getComment()));
             context.setUseLastState(commandLine.hasOption('l'));

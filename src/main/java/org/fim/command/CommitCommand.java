@@ -73,6 +73,10 @@ public class CommitCommand extends AbstractCommand {
             Logger.error("Computing hash is mandatory");
             throw new BadFimUsageException();
         }
+        if (context.isDatesIgnored()) {
+            Logger.error("Not allowed to ignore dates while committing");
+            throw new BadFimUsageException();
+        }
         adjustThreadCount(context);
 
         if (context.getComment().length() == 0) {

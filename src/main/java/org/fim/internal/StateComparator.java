@@ -26,6 +26,7 @@ import org.fim.model.Context;
 import org.fim.model.Difference;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
+import org.fim.model.FileTime;
 import org.fim.model.Modification;
 import org.fim.model.State;
 import org.fim.util.Logger;
@@ -110,6 +111,12 @@ public class StateComparator {
             if (fileState.getModification() == deleted) {
                 iter.remove();
             }
+        }
+
+        if (context.isDatesIgnored()) {
+            FileTime noTime = new FileTime(0, 0);
+            currentState.getFileStates().forEach(fileState -> fileState.setFileTime(noTime));
+            lastState.getFileStates().forEach(fileState -> fileState.setFileTime(noTime));
         }
     }
 
