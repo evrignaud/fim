@@ -89,6 +89,7 @@ public class StateGenerator {
         State state = new State();
         state.setComment(comment);
         state.setHashMode(context.getHashMode());
+        state.getCommitDetails().setHashModeUsedToGetTheStatus(context.getHashMode());
 
         long start = System.currentTimeMillis();
         hashProgress.outputInit();

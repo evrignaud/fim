@@ -19,6 +19,7 @@
 package org.fim.command;
 
 import org.fim.internal.StateManager;
+import org.fim.model.CommitDetails;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.Difference;
@@ -35,6 +36,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.fim.model.HashMode.hashAll;
 import static org.fim.model.Modification.added;
 import static org.fim.model.Modification.attributesModified;
 import static org.fim.model.Modification.contentModified;
@@ -82,6 +84,7 @@ public class LogCommand extends AbstractCommand {
                 logEntry.setFileCount(state.getFileCount());
                 logEntry.setFilesContentLength(state.getFilesContentLength());
                 logEntry.setModificationCounts(state.getModificationCounts());
+                logEntry.setCommitDetails(getCommitDetails(state));
                 logResult.add(logEntry);
 
                 CompareResult compareResult = buildCompareResult(context, state);
@@ -90,6 +93,14 @@ public class LogCommand extends AbstractCommand {
         }
 
         return logResult;
+    }
+
+    private CommitDetails getCommitDetails(State state) {
+        if (state.getCommitDetails() != null) {
+            return state.getCommitDetails();
+        }
+        // For backward compatibility
+        return new CommitDetails(hashAll, null);
     }
 
     private void displayEntry(CompareResult compareResult, LogEntry logEntry, PrintStream out) {

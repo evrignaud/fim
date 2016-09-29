@@ -66,6 +66,7 @@ public class State implements Hashable {
     private int fileCount;
     private long filesContentLength;
     private HashMode hashMode;
+    private CommitDetails commitDetails;
 
     private ModificationCounts modificationCounts; // Not taken in account in equals(), hashCode(), hashObject()
     private Set<String> ignoredFiles;
@@ -81,6 +82,7 @@ public class State implements Hashable {
         modificationCounts = new ModificationCounts();
         ignoredFiles = new HashSet<>();
         fileStates = new ArrayList<>();
+        commitDetails = new CommitDetails(hashMode, null);
     }
 
     public static State loadFromGZipFile(Path stateFile, boolean loadFullState) throws IOException, CorruptedStateException {
@@ -207,6 +209,14 @@ public class State implements Hashable {
 
     public void setModificationCounts(ModificationCounts modificationCounts) {
         this.modificationCounts = modificationCounts;
+    }
+
+    public CommitDetails getCommitDetails() {
+        return commitDetails;
+    }
+
+    public void setCommitDetails(CommitDetails commitDetails) {
+        this.commitDetails = commitDetails;
     }
 
     public String hashState() {

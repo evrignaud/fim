@@ -31,6 +31,7 @@ public class LogEntry {
     private long timestamp;
     private int fileCount;
     private ModificationCounts modificationCounts;
+    private CommitDetails commitDetails;
     private long filesContentLength;
 
     public int getStateNumber() {
@@ -81,9 +82,19 @@ public class LogEntry {
         this.modificationCounts = modificationCounts;
     }
 
+    public CommitDetails getCommitDetails() {
+        return commitDetails;
+    }
+
+    public void setCommitDetails(CommitDetails commitDetails) {
+        this.commitDetails = commitDetails;
+    }
+
     public void displayEntryHeader(PrintStream out) {
-        out.printf("- State #%d: %s (%d %s - %s)%n", getStateNumber(), formatDate(getTimestamp()),
-            getFileCount(), plural("file", getFileCount()), FileUtils.byteCountToDisplaySize(getFilesContentLength()));
+        out.printf("- State #%d: %s (%d %s - %s - generated%s using hash mode %s)%n", getStateNumber(), formatDate(getTimestamp()),
+            getFileCount(), plural("file", getFileCount()), FileUtils.byteCountToDisplaySize(getFilesContentLength()),
+            commitDetails.getFromSubDirectory() != null ? " from " + commitDetails.getFromSubDirectory() : "",
+            commitDetails.getHashModeUsedToGetTheStatus());
         if (getComment().length() > 0) {
             out.printf("\tComment: %s%n", getComment());
         }

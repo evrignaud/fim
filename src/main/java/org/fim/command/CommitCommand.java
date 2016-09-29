@@ -133,12 +133,14 @@ public class CommitCommand extends AbstractCommand {
                 // Reload the last state with the globalHashMode in order to get a complete state.
                 context.setHashMode(globalHashMode);
                 currentState.setHashMode(globalHashMode);
+                currentState.getCommitDetails().setHashModeUsedToGetTheStatus(initialHashMode);
                 lastState = manager.loadLastState();
                 retrieveMissingHash(context, currentState, lastState);
             }
 
             if (context.isInvokedFromSubDirectory()) {
                 currentState = createConsolidatedState(context, lastState, currentState);
+                setFromSubDirectory(context, currentState);
             }
 
             manager.createNewState(currentState);
@@ -150,6 +152,13 @@ public class CommitCommand extends AbstractCommand {
         } finally {
             context.setHashMode(initialHashMode);
         }
+    }
+
+    private void setFromSubDirectory(Context context, State currentState) {
+        String currentDir = context.getAbsoluteCurrentDirectory().toString();
+        String rootDir = context.getRepositoryRootDir().toString() + "/";
+        String fromSubDirectory = currentDir.replace(rootDir, "");
+        currentState.getCommitDetails().setFromSubDirectory(fromSubDirectory);
     }
 
     private void retrieveMissingHash(Context context, State currentState, State lastState) throws NoSuchAlgorithmException {
