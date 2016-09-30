@@ -122,7 +122,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
 
         long duplicatedFilesCount = 0;
         long totalFilesRemoved = 0;
-        State localState = new StateGenerator(context).generateState("", context.getCurrentDirectory(), context.getCurrentDirectory());
+        State localState = new StateGenerator(context).generateState(System.out, "", context.getCurrentDirectory(), context.getCurrentDirectory());
         for (FileState localFileState : localState.getFileStates()) {
             if (localFileState.getFileLength() == 0) {
                 continue;

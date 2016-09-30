@@ -46,7 +46,7 @@ public class FileReHasher extends FileHasher {
             while ((fileState = toRehashQueue.poll(100, TimeUnit.MILLISECONDS)) != null) {
                 try {
                     long fileLength = fileState.getFileLength();
-                    hashProgress.updateOutput(fileLength);
+                    hashProgress.updateOutput(System.out, fileLength);
 
                     FileHash fileHash = hashFile(rootPath.resolve(fileState.getFileName()), fileLength);
                     fileState.setFileHash(fileHash);

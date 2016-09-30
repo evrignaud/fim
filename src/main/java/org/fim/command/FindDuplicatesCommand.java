@@ -56,7 +56,7 @@ public class FindDuplicatesCommand extends AbstractCommand {
         if (context.isUseLastState()) {
             state = new StateManager(context).loadLastState();
         } else {
-            state = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), context.getCurrentDirectory());
+            state = new StateGenerator(context).generateState(System.out, "", context.getRepositoryRootDir(), context.getCurrentDirectory());
         }
 
         DuplicateResult result = new DuplicateFinder(context).findDuplicates(state);

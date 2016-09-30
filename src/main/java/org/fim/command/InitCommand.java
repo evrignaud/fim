@@ -69,7 +69,7 @@ public class InitCommand extends AbstractCommand {
         if (comment.length() == 0) {
             comment = "Initial State";
         }
-        State currentState = new StateGenerator(context).generateState(comment, context.getCurrentDirectory(), context.getCurrentDirectory());
+        State currentState = new StateGenerator(context).generateState(System.out, comment, context.getCurrentDirectory(), context.getCurrentDirectory());
 
         CompareResult result = new StateComparator(context, null, currentState).compare().displayChanges(System.out);
         currentState.setModificationCounts(result.getModificationCounts());

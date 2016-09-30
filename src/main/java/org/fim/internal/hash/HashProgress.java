@@ -25,6 +25,7 @@ import org.fim.model.Constants;
 import org.fim.model.Context;
 import org.fim.util.Console;
 
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,14 +58,14 @@ public class HashProgress {
         fileCount = 0;
     }
 
-    public synchronized void updateOutput(long fileSize) {
+    synchronized void updateOutput(PrintStream out, long fileSize) {
         fileCount++;
 
         if (isProgressDisplayed()) {
             summedFileLength += fileSize;
 
             if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0) {
-                System.out.print(getProgressChar(summedFileLength));
+                out.print(getProgressChar(summedFileLength));
                 summedFileLength = 0;
             }
         }
@@ -96,7 +97,7 @@ public class HashProgress {
         return legend;
     }
 
-    protected char getProgressChar(long fileLength) {
+    char getProgressChar(long fileLength) {
         int progressIndex;
         for (progressIndex = progressChars.size() - 1; progressIndex >= 0; progressIndex--) {
             Pair<Character, Integer> progressPair = progressChars.get(progressIndex);

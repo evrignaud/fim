@@ -55,7 +55,7 @@ public class DetectCorruptionCommand extends AbstractCommand {
 
         checkHashMode(context, Option.ALLOW_COMPATIBLE);
 
-        State currentState = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), context.getCurrentDirectory());
+        State currentState = new StateGenerator(context).generateState(System.out, "", context.getRepositoryRootDir(), context.getCurrentDirectory());
         State lastState = new StateManager(context).loadLastState();
 
         if (context.isInvokedFromSubDirectory()) {

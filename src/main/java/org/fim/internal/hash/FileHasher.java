@@ -36,6 +36,7 @@ import sun.misc.Cleaner;
 import sun.nio.ch.DirectBuffer;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
@@ -85,7 +86,7 @@ public class FileHasher implements Runnable {
         return frontHasher.getTotalBytesHashed();
     }
 
-    protected FrontHasher getFrontHasher() {
+    FrontHasher getFrontHasher() {
         return frontHasher;
     }
 
@@ -93,7 +94,7 @@ public class FileHasher implements Runnable {
     public void run() {
         try {
             while (isQueueStillFilled()) {
-                hashFilesInQueue();
+                hashFilesInQueue(System.out);
                 if (isQueueStillFilled()) {
                     Thread.sleep(500);
                 }
@@ -103,7 +104,7 @@ public class FileHasher implements Runnable {
         }
     }
 
-    private void hashFilesInQueue() throws InterruptedException {
+    private void hashFilesInQueue(PrintStream out) throws InterruptedException {
         Path file;
         while ((file = filesToHashQueue.poll(100, TimeUnit.MILLISECONDS)) != null) {
             try {
@@ -123,7 +124,7 @@ public class FileHasher implements Runnable {
                     attributes = posixFileAttributes;
                 }
 
-                hashProgress.updateOutput(attributes.size());
+                hashProgress.updateOutput(out, attributes.size());
 
                 FileHash fileHash = hashFile(file, attributes.size());
                 String normalizedFileName = FileUtil.getNormalizedFileName(file);

@@ -103,7 +103,7 @@ public class CompareResult {
         }
 
         if (!context.isVerbose()) {
-            displayCounts();
+            displayCounts(out);
             return this;
         }
 
@@ -151,7 +151,7 @@ public class CompareResult {
             Console.newLine();
         }
 
-        displayCounts();
+        displayCounts(out);
 
         return this;
     }
@@ -163,8 +163,8 @@ public class CompareResult {
         return diff.getPreviousFileState().getFileName();
     }
 
-    public static void displayDifferences(PrintStream out, Context context, String actionStr,
-                                          List<Difference> differences, Consumer<Difference> displayOneDifference) {
+    static void displayDifferences(PrintStream out, Context context, String actionStr,
+                                   List<Difference> differences, Consumer<Difference> displayOneDifference) {
         int truncateOutput = context.getTruncateOutput();
         if (truncateOutput < 1) {
             return;
@@ -188,11 +188,11 @@ public class CompareResult {
         }
     }
 
-    public static String formatModifiedAttributes(Difference diff, boolean nextLine) {
+    static String formatModifiedAttributes(Difference diff, boolean nextLine) {
         return internalFormatModifiedAttributes(diff, nextLine, true);
     }
 
-    public static String formatModifiedAttributesWithoutTimeChange(Difference diff, boolean nextLine) {
+    private static String formatModifiedAttributesWithoutTimeChange(Difference diff, boolean nextLine) {
         return internalFormatModifiedAttributes(diff, nextLine, false);
     }
 
@@ -237,7 +237,7 @@ public class CompareResult {
         return modification.toString();
     }
 
-    public static void addSeparator(Difference diff, StringBuilder modification) {
+    static void addSeparator(Difference diff, StringBuilder modification) {
         if (modification.length() == 0) {
             return;
         }
@@ -250,7 +250,7 @@ public class CompareResult {
         modification.append('\t');
     }
 
-    public static String getValue(Map<String, String> attributes, String key) {
+    static String getValue(Map<String, String> attributes, String key) {
         String value = attributes != null ? attributes.get(key) : null;
         if (value == null || value.length() == 0) {
             value = NOTHING;
@@ -258,7 +258,7 @@ public class CompareResult {
         return value;
     }
 
-    public CompareResult displayCounts() {
+    private CompareResult displayCounts(PrintStream out) {
         if (somethingModified()) {
             String message = "";
             if (!added.isEmpty()) {
@@ -298,12 +298,12 @@ public class CompareResult {
             }
 
             message = message.replaceAll(", $", "");
-            System.out.println(message);
+            out.println(message);
         } else {
             if (isSearchForHardwareCorruption()) {
-                System.out.println("Nothing corrupted");
+                out.println("Nothing corrupted");
             } else {
-                System.out.println("Nothing modified");
+                out.println("Nothing modified");
             }
         }
 
