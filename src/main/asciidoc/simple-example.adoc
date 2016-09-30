@@ -165,15 +165,9 @@ Copied:           file11 	(was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
-Content modified: file04 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
-Content modified: file05 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
+Date modified:    file02 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+Content modified: file04 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+Content modified: file05 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
 Renamed:          file01 -> dir01/file01
 Deleted:          file06
 
@@ -304,15 +298,9 @@ Copied:           file11 	(was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
-Content modified: file04 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
-Content modified: file05 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
+Date modified:    file02 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+Content modified: file04 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+Content modified: file05 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
 Deleted:          file01
 Deleted:          file06
 
@@ -381,15 +369,9 @@ Copied:           file11 	(was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
-Content modified: file04 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
-Content modified: file05 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
+Date modified:    file02 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+Content modified: file04 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+Content modified: file05 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
 Deleted:          file01
 Deleted:          file06
 
@@ -440,15 +422,9 @@ Copied:           file11 	(was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
-Content modified: file04 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
-Content modified: file05 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
+Date modified:    file02 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+Content modified: file04 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+Content modified: file05 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
 Renamed:          file01 -> dir01/file01
 Deleted:          file06
 
@@ -506,15 +482,9 @@ Copied:           file11 	(was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
-Content modified: file04 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
-Content modified: file05 	creationTime: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
-
+Date modified:    file02 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+Content modified: file04 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
+Content modified: file05 	last modified: 2016/05/09 21:58:33 -> 2016/05/09 21:58:36
 Renamed:          file01 -> dir01/file01
 Deleted:          file06
 

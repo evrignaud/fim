@@ -218,16 +218,8 @@ public class CompareResult {
             }
         }
 
-        if (displayTimeChange && diff.isCreationTimeChanged()) {
-            modifCount++;
-            addSeparator(diff, modification);
-            modification.append("creationTime: ").append(formatCreationTime(diff.getPreviousFileState())).append(" -> ").append(formatCreationTime(diff.getFileState()));
-        }
-
-        if (displayTimeChange && diff.isLastModifiedChanged()) {
-            modifCount++;
-            addSeparator(diff, modification);
-            modification.append("lastModified: ").append(formatLastModified(diff.getPreviousFileState())).append(" -> ").append(formatLastModified(diff.getFileState()));
+        if (displayTimeChange) {
+            modifCount = +formatTimeChange(diff, modification);
         }
 
         if (modifCount > 1) {
@@ -235,6 +227,35 @@ public class CompareResult {
         }
 
         return modification.toString();
+    }
+
+    private static int formatTimeChange(Difference diff, StringBuilder modification) {
+        int modifCount = 0;
+        boolean creationTimeChanged = diff.isCreationTimeChanged();
+        boolean lastModifiedChanged = diff.isLastModifiedChanged();
+
+        FileTime fileTime = diff.getFileState().getFileTime();
+        FileTime previousFileTime = diff.getPreviousFileState().getFileTime();
+
+        if (creationTimeChanged && lastModifiedChanged &&
+            fileTime.getCreationTime() == fileTime.getLastModified() && previousFileTime.getCreationTime() == previousFileTime.getLastModified()) {
+            modifCount++;
+            addSeparator(diff, modification);
+            modification.append("last modified: ").append(formatLastModified(diff.getPreviousFileState())).append(" -> ").append(formatLastModified(diff.getFileState()));
+        } else {
+            if (creationTimeChanged) {
+                modifCount++;
+                addSeparator(diff, modification);
+                modification.append("creation time: ").append(formatCreationTime(diff.getPreviousFileState())).append(" -> ").append(formatCreationTime(diff.getFileState()));
+            }
+
+            if (lastModifiedChanged) {
+                modifCount++;
+                addSeparator(diff, modification);
+                modification.append("last modified: ").append(formatLastModified(diff.getPreviousFileState())).append(" -> ").append(formatLastModified(diff.getFileState()));
+            }
+        }
+        return modifCount;
     }
 
     static void addSeparator(Difference diff, StringBuilder modification) {

@@ -103,7 +103,7 @@ public class CompareResultTest extends StateAssert {
 
     @Test
     public void formatModifiedAttributesTest() {
-        String modificationStr = "lastModified: 2015/11/14 13:12:12 -> 2015/11/14 13:12:13";
+        String modificationStr = "last modified: 2015/11/14 13:12:12 -> 2015/11/14 13:12:13";
         assertThat(formatModifiedAttributes(difference, true)).isEqualTo(" \n                          \t" + modificationStr);
 
         assertThat(formatModifiedAttributes(difference, false)).isEqualTo(modificationStr);
