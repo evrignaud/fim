@@ -12,7 +12,7 @@ To do so it stores for each file:
 * The https://en.wikipedia.org/wiki/Mandatory_access_control[MAC] information: +
 Currently the *SELinux label* is stored, if supported by the OS.
 
-You can check file permissions using the `diff` command. A quick result can be produced using the do not hash mode (`-n` option),
+You can check file permissions using the `status` command. A quick result can be produced using the do not hash mode (`-n` option),
 but in this case Fim will not be able to detect file permissions change for files that have been renamed. +
 If some permission has changed and you want to restore them use the `rfa` command.
 

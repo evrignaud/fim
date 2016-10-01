@@ -86,8 +86,8 @@ public class Fim {
         return Arrays.asList(
             new InitCommand(),
             new CommitCommand(),
-            new DiffCommand(),
             new StatusCommand(),
+            new DiffCommand(),
             new ResetFileAttributesCommand(),
             new DetectCorruptionCommand(),
             new FindDuplicatesCommand(),

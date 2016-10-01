@@ -46,7 +46,7 @@ public class DetectCorruptionCommandTest {
     private static Path rootDir = Paths.get("target/" + DetectCorruptionCommandTest.class.getSimpleName());
 
     private InitCommand initCommand;
-    private DiffCommand diffCommand;
+    private StatusCommand statusCommand;
     private DetectCorruptionCommand detectCorruptionCommand;
 
     private RepositoryTool tool;
@@ -57,7 +57,7 @@ public class DetectCorruptionCommandTest {
         Files.createDirectories(rootDir);
 
         initCommand = new InitCommand();
-        diffCommand = new DiffCommand();
+        statusCommand = new StatusCommand();
         detectCorruptionCommand = new DetectCorruptionCommand();
 
         tool = new RepositoryTool(rootDir);
@@ -95,7 +95,7 @@ public class DetectCorruptionCommandTest {
 
         doSomeModifications();
 
-        compareResult = (CompareResult) diffCommand.execute(context);
+        compareResult = (CompareResult) statusCommand.execute(context);
         assertThat(compareResult.modifiedCount()).isEqualTo(3);
 
         compareResult = (CompareResult) detectCorruptionCommand.execute(context);

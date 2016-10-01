@@ -81,7 +81,7 @@ public class FimTest {
 
     @Test(expected = BadFimUsageException.class)
     public void fimDoesNotExist() throws Exception {
-        cut.run(new String[]{"diff"}, context);
+        cut.run(new String[]{"status"}, context);
     }
 
     @Test
@@ -134,17 +134,23 @@ public class FimTest {
     @Test
     public void doNotHashOption() throws Exception {
         initRepoAndCreateOneFile();
-        cut.run(new String[]{"diff", "-n"}, context);
+        cut.run(new String[]{"status", "-n"}, context);
     }
 
     @Test
     public void fastModeOption() throws Exception {
         initRepoAndCreateOneFile();
-        cut.run(new String[]{"diff", "-f"}, context);
+        cut.run(new String[]{"status", "-f"}, context);
     }
 
     @Test
     public void superFastModeOption() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"status", "-s"}, context);
+    }
+
+    @Test
+    public void diffAliasWork() throws Exception {
         initRepoAndCreateOneFile();
         cut.run(new String[]{"diff", "-s"}, context);
     }

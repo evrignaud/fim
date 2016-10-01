@@ -18,7 +18,14 @@
  */
 package org.fim.command;
 
-public class StatusCommand extends DiffCommand {
+import org.fim.internal.StateComparator;
+import org.fim.internal.StateGenerator;
+import org.fim.internal.StateManager;
+import org.fim.model.CompareResult;
+import org.fim.model.Context;
+import org.fim.model.State;
+
+public class StatusCommand extends AbstractCommand {
     @Override
     public String getCmdName() {
         return "status";
@@ -31,6 +38,23 @@ public class StatusCommand extends DiffCommand {
 
     @Override
     public String getDescription() {
-        return "An alias on the 'diff' command";
+        return "Display the difference between the current directory State with the previous one.\n" +
+            "                                You can get a quick result by using the -f or -s or -n options";
+    }
+
+    @Override
+    public Object execute(Context context) throws Exception {
+        checkHashMode(context, Option.ALLOW_COMPATIBLE);
+
+        State currentState = new StateGenerator(context).generateState(System.out, "", context.getRepositoryRootDir(), context.getCurrentDirectory());
+        State lastState = new StateManager(context).loadLastState();
+
+        if (context.isInvokedFromSubDirectory()) {
+            lastState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
+        }
+
+        CompareResult result = new StateComparator(context, lastState, currentState).compare();
+        result.displayChanges(System.out);
+        return result;
     }
 }

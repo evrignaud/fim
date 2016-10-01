@@ -88,7 +88,7 @@ set -x
 
 	echo
 	echo \# Fim detects the modifications
-	fim diff || exit $?
+	fim st || exit $?
 
 	echo
 	echo \# Search for duplicated files
@@ -100,7 +100,7 @@ set -x
 
 	echo
 	echo \# Inside this directory only one file is added
-	fim diff || exit $?
+	fim st || exit $?
 
 	echo
 	echo \# No duplicated files as we are looking only inside the dir01
@@ -112,7 +112,7 @@ set -x
 
 	echo
 	echo \# No more local modifications
-	fim diff || exit $?
+	fim st || exit $?
 
 	cd ..
 
@@ -122,7 +122,7 @@ set -x
 
 	echo
 	echo \# Nothing is modified now
-	fim diff || exit $?
+	fim st || exit $?
 
 	echo
 	echo \# Display the Fim log
@@ -146,7 +146,7 @@ set -x
 
 	echo
 	echo \# Again, nothing is modified now
-	fim diff || exit $?
+	fim st || exit $?
 
 	echo
 	echo \# Display the Fim log

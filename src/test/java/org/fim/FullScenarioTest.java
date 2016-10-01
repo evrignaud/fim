@@ -20,7 +20,7 @@ package org.fim;
 
 import org.apache.commons.io.FileUtils;
 import org.fim.command.CommitCommand;
-import org.fim.command.DiffCommand;
+import org.fim.command.StatusCommand;
 import org.fim.command.DisplayIgnoredFilesCommand;
 import org.fim.command.FindDuplicatesCommand;
 import org.fim.command.InitCommand;
@@ -73,7 +73,7 @@ public class FullScenarioTest {
     private Path dir01;
 
     private InitCommand initCommand;
-    private DiffCommand diffCommand;
+    private StatusCommand statusCommand;
     private CommitCommand commitCommand;
     private FindDuplicatesCommand findDuplicatesCommand;
     private LogCommand logCommand;
@@ -104,7 +104,7 @@ public class FullScenarioTest {
         dir01 = rootDir.resolve("dir01");
 
         initCommand = new InitCommand();
-        diffCommand = new DiffCommand();
+        statusCommand = new StatusCommand();
         commitCommand = new CommitCommand();
         findDuplicatesCommand = new FindDuplicatesCommand();
         logCommand = new LogCommand();
@@ -133,7 +133,7 @@ public class FullScenarioTest {
         doSomeModifications();
         ModificationCounts modificationCounts;
 
-        CompareResult compareResult = (CompareResult) diffCommand.execute(context);
+        CompareResult compareResult = (CompareResult) statusCommand.execute(context);
         modificationCounts = compareResult.getModificationCounts();
         if (hashMode == dontHash) {
             assertThat(compareResult.modifiedCount()).isEqualTo(11);
@@ -300,7 +300,7 @@ public class FullScenarioTest {
     }
 
     private void assertFilesModifiedCountEqualsTo(Context context, int expectedModifiedFileCount) throws Exception {
-        CompareResult compareResult = (CompareResult) diffCommand.execute(context);
+        CompareResult compareResult = (CompareResult) statusCommand.execute(context);
         assertThat(compareResult.modifiedCount()).isEqualTo(expectedModifiedFileCount);
     }
 

@@ -11,7 +11,7 @@ by merging those new hashes with the previous State.
 
 More details on using Fim from a sub-directory can be found in <<faq.adoc#_run_fim_commands_from_a_sub_directory,Run Fim commands from a sub-directory>>.
 
-The `fim diff` command let me know when I want (even super quickly) if something changed in my pictures folder.
+The `fim status` command let me know when I want (even super quickly) if something changed in my pictures folder.
 
 == Duplicates removal
 I can easily identify and delete the photos I have duplicated on my drive or another computer with the command `fim rdup`. +

@@ -39,7 +39,7 @@ public class ResetFileAttrsCommandTest {
     private static Path rootDir = Paths.get("target/" + ResetFileAttrsCommandTest.class.getSimpleName());
 
     private InitCommand initCommand;
-    private DiffCommand diffCommand;
+    private StatusCommand statusCommand;
     private ResetFileAttributesCommand resetFileAttributesCommand;
 
     private RepositoryTool tool;
@@ -50,7 +50,7 @@ public class ResetFileAttrsCommandTest {
         Files.createDirectories(rootDir);
 
         initCommand = new InitCommand();
-        diffCommand = new DiffCommand();
+        statusCommand = new StatusCommand();
         resetFileAttributesCommand = new ResetFileAttributesCommand();
 
         tool = new RepositoryTool(rootDir);
@@ -70,7 +70,7 @@ public class ResetFileAttrsCommandTest {
 
         doSomeModifications();
 
-        CompareResult compareResult = (CompareResult) diffCommand.execute(context);
+        CompareResult compareResult = (CompareResult) statusCommand.execute(context);
         assertThat(compareResult.modifiedCount()).isEqualTo(3);
         assertThat(compareResult.getDateModified().size()).isEqualTo(IS_OS_WINDOWS ? 3 : 2);
         assertThat(compareResult.getAttributesModified().size()).isEqualTo(IS_OS_WINDOWS ? 0 : 1);
@@ -78,7 +78,7 @@ public class ResetFileAttrsCommandTest {
         fileResetCount = (int) resetFileAttributesCommand.execute(context);
         assertThat(fileResetCount).isEqualTo(3);
 
-        compareResult = (CompareResult) diffCommand.execute(context);
+        compareResult = (CompareResult) statusCommand.execute(context);
         assertThat(compareResult.modifiedCount()).isEqualTo(0);
     }
 
