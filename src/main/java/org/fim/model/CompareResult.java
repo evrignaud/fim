@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static org.atteo.evo.inflector.English.plural;
 import static org.fim.util.FormatUtil.formatCreationTime;
@@ -54,19 +55,36 @@ public class CompareResult {
     private boolean searchForHardwareCorruption;
 
     public CompareResult(Context context, State lastState) {
+        this(context, lastState, null);
+    }
+
+    public CompareResult(Context context, State lastState, State currentState) {
         this.context = context;
         this.lastState = lastState;
         this.searchForHardwareCorruption = false;
 
-        added = new ArrayList<>();
-        copied = new ArrayList<>();
-        duplicated = new ArrayList<>();
-        dateModified = new ArrayList<>();
-        contentModified = new ArrayList<>();
-        attributesModified = new ArrayList<>();
-        renamed = new ArrayList<>();
-        deleted = new ArrayList<>();
-        corrupted = new ArrayList<>();
+        added = buildModifications(currentState, Modification.added);
+        copied = buildModifications(currentState, Modification.copied);
+        duplicated = buildModifications(currentState, Modification.duplicated);
+        dateModified = buildModifications(currentState, Modification.dateModified);
+        contentModified = buildModifications(currentState, Modification.contentModified);
+        attributesModified = buildModifications(currentState, Modification.attributesModified);
+        renamed = buildModifications(currentState, Modification.renamed);
+        deleted = buildModifications(currentState, Modification.deleted);
+        corrupted = buildModifications(currentState, Modification.corrupted);
+    }
+
+    private List<Difference> buildModifications(State state, Modification modification) {
+        List<Difference> differences;
+        if (state != null) {
+            differences = state.getFileStates().stream()
+                .filter(fileState -> fileState.getModification() == modification)
+                .map(Difference::new)
+                .collect(Collectors.toList());
+        } else {
+            differences = new ArrayList<>();
+        }
+        return differences;
     }
 
     public boolean isSearchForHardwareCorruption() {

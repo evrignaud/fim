@@ -23,6 +23,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.PrintStream;
 
 import static org.atteo.evo.inflector.English.plural;
+import static org.fim.model.HashMode.hashAll;
 import static org.fim.util.FormatUtil.formatDate;
 
 public class LogEntry {
@@ -32,7 +33,19 @@ public class LogEntry {
     private int fileCount;
     private ModificationCounts modificationCounts;
     private CommitDetails commitDetails;
+    private CompareResult compareResult;
     private long filesContentLength;
+
+    public LogEntry(Context context, State state, int stateNumber) {
+        setStateNumber(stateNumber);
+        setComment(state.getComment());
+        setTimestamp(state.getTimestamp());
+        setFileCount(state.getFileCount());
+        setFilesContentLength(state.getFilesContentLength());
+        setModificationCounts(state.getModificationCounts());
+        setCommitDetails(getStateCommitDetails(state));
+        setCompareResult(new CompareResult(context, null, state));
+    }
 
     public int getStateNumber() {
         return stateNumber;
@@ -90,6 +103,14 @@ public class LogEntry {
         this.commitDetails = commitDetails;
     }
 
+    public CompareResult getCompareResult() {
+        return compareResult;
+    }
+
+    public void setCompareResult(CompareResult compareResult) {
+        this.compareResult = compareResult;
+    }
+
     public void displayEntryHeader(PrintStream out) {
         out.printf("- State #%d: %s (%d %s - %s - generated%s using hash mode %s)%n", getStateNumber(), formatDate(getTimestamp()),
             getFileCount(), plural("file", getFileCount()), FileUtils.byteCountToDisplaySize(getFilesContentLength()),
@@ -98,5 +119,13 @@ public class LogEntry {
         if (getComment().length() > 0) {
             out.printf("\tComment: %s%n", getComment());
         }
+    }
+
+    private CommitDetails getStateCommitDetails(State state) {
+        if (state.getCommitDetails() != null) {
+            return state.getCommitDetails();
+        }
+        // For backward compatibility
+        return new CommitDetails(hashAll, null);
     }
 }

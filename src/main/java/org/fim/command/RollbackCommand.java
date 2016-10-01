@@ -20,8 +20,13 @@ package org.fim.command;
 
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
+import org.fim.model.LogEntry;
+import org.fim.model.State;
+import org.fim.util.Console;
 import org.fim.util.Logger;
 
+import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -58,7 +63,10 @@ public class RollbackCommand extends AbstractCommand {
 
         Path stateFile = stateManager.getStateFile(lastStateNumber);
         if (Files.exists(stateFile)) {
-            System.out.printf("You are going to rollback the last commit. State %d will be removed%n", lastStateNumber);
+            System.out.printf("You are going to rollback the last commit. State #%d will be removed%n", lastStateNumber);
+
+            displayStateSummary(context, stateManager, lastStateNumber, System.out);
+
             if (confirmAction(context, "remove it")) {
                 Files.delete(stateFile);
 
@@ -66,5 +74,16 @@ public class RollbackCommand extends AbstractCommand {
             }
         }
         return null;
+    }
+
+    private void displayStateSummary(Context context, StateManager stateManager, int stateNumber, PrintStream out) throws IOException {
+        State state = stateManager.loadState(stateNumber, false);
+        LogEntry logEntry = new LogEntry(context, state, stateNumber);
+
+        Console.newLine();
+        logEntry.displayEntryHeader(out);
+        Console.newLine();
+        logEntry.getCompareResult().displayChanges(out);
+        Console.newLine();
     }
 }

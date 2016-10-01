@@ -82,6 +82,8 @@
 </p>
 ++++
 
+// text checked using http://www.onlinecorrection.com
+
 = Fim - File Integrity Manager
 Version {projectVersion}
 
