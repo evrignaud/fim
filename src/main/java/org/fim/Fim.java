@@ -23,6 +23,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 import org.fim.command.AbstractCommand;
 import org.fim.command.CommitCommand;
@@ -46,6 +47,7 @@ import org.fim.internal.SettingsManager;
 import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
 import org.fim.model.Context;
+import org.fim.model.Ignored;
 import org.fim.util.Console;
 import org.fim.util.Logger;
 
@@ -56,6 +58,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
@@ -102,22 +105,34 @@ public class Fim {
 
     private Options buildOptions() {
         Options opts = new Options();
-        opts.addOption(createOption("d", "directory", true, "Run Fim into the specified directory", false));
-        opts.addOption(createOption("e", "errors", false, "Display execution error details", false));
-        opts.addOption(createOption("m", "master-fim-repository", true, "Fim repository directory that you want to use as remote master.\nOnly for the remove duplicated files command", false));
-        opts.addOption(createOption("n", "do-not-hash", false, "Do not hash file content. Uses only file names and modification dates", false));
-        opts.addOption(createOption("s", "super-fast-mode", false, "Use super-fast mode. Hash only 3 small blocks.\nOne at the beginning, one in the middle and one at the end", false));
-        opts.addOption(createOption("f", "fast-mode", false, "Use fast mode. Hash only 3 medium blocks.\nOne at the beginning, one in the middle and one at the end", false));
-        opts.addOption(createOption("h", "help", false, "Prints the Fim help", false));
-        opts.addOption(createOption("i", "ignore-date", false, "Ignore dates in file comparison", false));
-        opts.addOption(createOption("l", "use-last-state", false, "Use the last committed State.\nOnly for the find local duplicated files command", false));
-        opts.addOption(createOption("c", "comment", true, "Comment to set during init and commit", false));
-        opts.addOption(createOption("o", "output-max-lines", true, "Change the maximum number lines displayed for the same kind of modification. Default value is 200 lines", false));
-        opts.addOption(createOption("p", "purge-states", false, "Purge previous States if the commit succeed", false));
-        opts.addOption(createOption("q", "quiet", false, "Do not display details", false));
-        opts.addOption(createOption("t", "thread-count", true, "Number of thread used to hash file contents in parallel", false));
-        opts.addOption(createOption("v", "version", false, "Prints the Fim version", false));
-        opts.addOption(createOption("y", "always-yes", false, "Always yes to every questions", false));
+        opts.addOption(buildOption("d", "directory", "Run Fim into the specified directory").hasArg().build());
+        opts.addOption(buildOption("e", "errors", "Display execution error details").build());
+        opts.addOption(buildOption("m", "master-fim-repository", "Fim repository directory that you want to use as remote master.\n" +
+            "Only for the remove duplicated files command").hasArg().build());
+        opts.addOption(buildOption("n", "do-not-hash", "Do not hash file content. Uses only file names and modification dates").build());
+        opts.addOption(buildOption("s", "super-fast-mode", "Use super-fast mode. Hash only 3 small blocks.\n" +
+            "One at the beginning, one in the middle and one at the end").build());
+        opts.addOption(buildOption("f", "fast-mode", "Use fast mode. Hash only 3 medium blocks.\n" +
+            "One at the beginning, one in the middle and one at the end").build());
+        opts.addOption(buildOption("h", "help", "Prints the Fim help").build());
+        opts.addOption(buildOption("i", "ignore", "Ignore some difference during State comparison. You can ignore:\n" +
+            "- attrs: File attributes\n" +
+            "- dates: Modification dates\n" +
+            "- moved: Moved files\n" +
+            "- renamed: Renamed files\n" +
+            "- all: All of the above\n" +
+            "You can specify multiple kind of difference to ignore separated by comma.\n" +
+            "For example: -i attrs,dates,moved,renamed").hasArg().valueSeparator(',').build());
+        opts.addOption(buildOption("l", "use-last-state", "Use the last committed State.\n" +
+            "Only for the find local duplicated files command").build());
+        opts.addOption(buildOption("c", "comment", "Comment to set during init and commit").hasArg().build());
+        opts.addOption(buildOption("o", "output-max-lines", "Change the maximum number lines displayed for the same kind of modification.\n" +
+            "Default value is 200 lines").hasArg().build());
+        opts.addOption(buildOption("p", "purge-states", "Purge previous States if the commit succeed").build());
+        opts.addOption(buildOption("q", "quiet", "Do not display details").build());
+        opts.addOption(buildOption("t", "thread-count", "Number of thread used to hash file contents in parallel").hasArg().build());
+        opts.addOption(buildOption("v", "version", "Prints the Fim version").build());
+        opts.addOption(buildOption("y", "always-yes", "Always yes to every questions").build());
         return opts;
     }
 
@@ -142,7 +157,9 @@ public class Fim {
         try {
             CommandLine commandLine = cmdLineGnuParser.parse(options, optionArgs);
 
-            context.setDatesIgnored(commandLine.hasOption('i'));
+            if (commandLine.hasOption('i')) {
+                parseIgnored(commandLine, context);
+            }
             context.setVerbose(!commandLine.hasOption('q'));
             context.setComment(commandLine.getOptionValue('c', context.getComment()));
             context.setUseLastState(commandLine.hasOption('l'));
@@ -226,6 +243,38 @@ public class Fim {
         command.execute(context.clone());
     }
 
+    private void parseIgnored(CommandLine commandLine, Context context) {
+        Ignored ignored = context.getIgnored();
+        String values = commandLine.getOptionValue('i');
+        try (Scanner scanner = new Scanner(values)) {
+            scanner.useDelimiter(",");
+            while (scanner.hasNext()) {
+                String value = scanner.next();
+                if (value.length() == 0) {
+                    continue;
+                }
+
+                if ("attrs".equals(value)) {
+                    ignored.setAttributesIgnored(true);
+                } else if ("dates".equals(value)) {
+                    ignored.setDatesIgnored(true);
+                } else if ("moved".equals(value)) {
+                    ignored.setMovedIgnored(true);
+                } else if ("renamed".equals(value)) {
+                    ignored.setRenamedIgnored(true);
+                } else if ("all".equals(value)) {
+                    ignored.setAttributesIgnored(true);
+                    ignored.setDatesIgnored(true);
+                    ignored.setMovedIgnored(true);
+                    ignored.setRenamedIgnored(true);
+                } else {
+                    Logger.error(String.format("'%s' unknown as difference kind to ignore.", value));
+                    throw new BadFimUsageException();
+                }
+            }
+        }
+    }
+
     private void findRepositoryRootDir(Context context) {
         boolean invokedFromSubDirectory = false;
         Path directory = context.getAbsoluteCurrentDirectory();
@@ -259,10 +308,11 @@ public class Fim {
         return null;
     }
 
-    private Option createOption(String opt, String longOpt, boolean hasArg, String description, boolean required) {
-        Option option = new Option(opt, longOpt, hasArg, description);
-        option.setRequired(required);
-        return option;
+    private Builder buildOption(String opt, String longOpt, String description) {
+        Builder builder = Option.builder(opt);
+        builder.longOpt(longOpt);
+        builder.desc(description);
+        return builder;
     }
 
     private String[] filterEmptyArgs(String[] args) {

@@ -48,7 +48,10 @@ public class Logger {
         if (displayStackTrace) {
             builder.append(exceptionStackTraceToString(ex));
         } else {
-            builder.append(ex.getClass().getSimpleName()).append(": ").append(ex.getMessage());
+            builder.append(ex.getClass().getSimpleName());
+            if (ex.getMessage() != null) {
+                builder.append(": ").append(ex.getMessage());
+            }
         }
         error(builder.toString());
     }

@@ -342,11 +342,36 @@ public class CompareResult {
             if (isSearchForHardwareCorruption()) {
                 out.println("Nothing corrupted");
             } else {
-                out.println("Nothing modified");
+                out.println("Nothing modified" + addExpectIgnored());
             }
         }
 
         return this;
+    }
+
+    private String addExpectIgnored() {
+        Ignored ignored = context.getIgnored();
+        if (!ignored.somethingIgnored()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(". Except ignored ");
+        if (ignored.isAttributesIgnored()) {
+            sb.append("file attributes, ");
+        }
+        if (ignored.isDatesIgnored()) {
+            sb.append("modification dates, ");
+        }
+        if (ignored.isMovedIgnored()) {
+            sb.append("moved files, ");
+        }
+        if (ignored.isRenamedIgnored()) {
+            sb.append("renamed files, ");
+        }
+        String result = sb.toString();
+        result = result.substring(0, result.length() - 2);
+        return result;
     }
 
     public boolean somethingModified() {

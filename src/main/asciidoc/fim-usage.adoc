@@ -3,8 +3,8 @@
 --------
 $ fim --help
 
-usage: fim <command> [-c <arg>] [-d <arg>] [-e] [-f] [-h] [-i] [-l] [-m <arg>] [-n] [-o <arg>] [-p] [-q] [-s] [-t <arg>]
-       [-v] [-y]
+usage: fim <command> [-c <arg>] [-d <arg>] [-e] [-f] [-h] [-i <arg>] [-l] [-m <arg>] [-n] [-o <arg>] [-p] [-q] [-s] [-t
+       <arg>] [-v] [-y]
 
 File Integrity Checker
 
@@ -33,7 +33,14 @@ Available options:
      -f,--fast-mode                     Use fast mode. Hash only 3 medium blocks.
                                         One at the beginning, one in the middle and one at the end
      -h,--help                          Prints the Fim help
-     -i,--ignore-date                   Ignore dates in file comparison
+     -i,--ignore <arg>                  Ignore some difference during State comparison. You can ignore:
+                                        - attrs: File attributes
+                                        - dates: Modification dates
+                                        - moved: Moved files
+                                        - renamed: Renamed files
+                                        - all: All of the above
+                                        You can specify multiple kind of difference to ignore separated by comma.
+                                        For example: -i attrs,dates,moved,renamed
      -l,--use-last-state                Use the last committed State.
                                         Only for the find local duplicated files command
      -m,--master-fim-repository <arg>   Fim repository directory that you want to use as remote master.

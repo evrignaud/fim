@@ -100,7 +100,7 @@ public class StateComparatorTest extends StateAssert {
     @Test
     public void noChangeDetectedWhenDatesIgnoredIsSet() {
         s2 = s1.touch("file_01");
-        context.setDatesIgnored(true);
+        context.getIgnored().setDatesIgnored(true);
         result = new StateComparator(context, s1, s2).compare();
         assertNothingModified(result);
     }

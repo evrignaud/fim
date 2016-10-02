@@ -121,7 +121,7 @@ public class StateComparator {
 
         resetFileStates(lastState.getFileStates());
 
-        if (context.isDatesIgnored()) {
+        if (context.getIgnored().isDatesIgnored()) {
             FileTime noTime = new FileTime(0, 0);
             currentState.getFileStates().forEach(fileState -> fileState.setFileTime(noTime));
             lastState.getFileStates().forEach(fileState -> fileState.setFileTime(noTime));

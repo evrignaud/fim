@@ -45,7 +45,7 @@ public class Context {
     private int truncateOutput;
     private boolean purgeStates;
     private boolean logDebugEnabled;
-    private boolean datesIgnored;
+    private Ignored ignored;
 
     public Context() {
         setInvokedFromSubDirectory(false);
@@ -61,6 +61,7 @@ public class Context {
         setAlwaysYes(false);
         setTruncateOutput(200);
         setLogDebugEnabled(checkLogDebugEnabled());
+        setIgnored(new Ignored());
     }
 
     public boolean isInvokedFromSubDirectory() {
@@ -199,12 +200,12 @@ public class Context {
         return purgeStates;
     }
 
-    public void setDatesIgnored(boolean datesIgnored) {
-        this.datesIgnored = datesIgnored;
+    public Ignored getIgnored() {
+        return ignored;
     }
 
-    public boolean isDatesIgnored() {
-        return datesIgnored;
+    public void setIgnored(Ignored ignored) {
+        this.ignored = ignored;
     }
 
     @Override
