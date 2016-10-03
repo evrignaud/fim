@@ -337,7 +337,7 @@ public class CompareResult {
             }
 
             message = message.replaceAll(", $", "");
-            out.println(message);
+            out.println(message + addExpectIgnored());
         } else {
             if (isSearchForHardwareCorruption()) {
                 out.println("Nothing corrupted");
@@ -356,21 +356,19 @@ public class CompareResult {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append(". Except ignored ");
+        sb.append(" (Not taking in account ");
         if (ignored.isAttributesIgnored()) {
             sb.append("file attributes, ");
         }
         if (ignored.isDatesIgnored()) {
             sb.append("modification dates, ");
         }
-        if (ignored.isMovedIgnored()) {
-            sb.append("moved files, ");
-        }
         if (ignored.isRenamedIgnored()) {
             sb.append("renamed files, ");
         }
         String result = sb.toString();
         result = result.substring(0, result.length() - 2);
+        result += ")";
         return result;
     }
 

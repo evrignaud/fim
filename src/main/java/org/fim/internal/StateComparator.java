@@ -121,6 +121,11 @@ public class StateComparator {
 
         resetFileStates(lastState.getFileStates());
 
+        if (context.getIgnored().isAttributesIgnored()) {
+            currentState.getFileStates().forEach(fileState -> fileState.getFileAttributes().clear());
+            lastState.getFileStates().forEach(fileState -> fileState.getFileAttributes().clear());
+        }
+
         if (context.getIgnored().isDatesIgnored()) {
             FileTime noTime = new FileTime(0, 0);
             currentState.getFileStates().forEach(fileState -> fileState.setFileTime(noTime));
@@ -260,8 +265,12 @@ public class StateComparator {
                 FileHash originalFileHash = originalFileState.getFileHash();
                 if (notFoundInCurrentFileStateList.containsKey(originalFileHash) ||
                     foundInPreviousState.containsKey(originalFileHash)) {
-                    result.getRenamed().add(new Difference(originalFileState, fileState));
-                    fileState.setModification(Modification.renamed);
+                    if (context.getIgnored().isRenamedIgnored()) {
+                        notModifiedCount++;
+                    } else {
+                        result.getRenamed().add(new Difference(originalFileState, fileState));
+                        fileState.setModification(Modification.renamed);
+                    }
                 } else {
                     if (contentChanged(originalFileState)) {
                         result.getCopied().add(new Difference(originalFileState, fileState));

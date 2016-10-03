@@ -36,11 +36,10 @@ Available options:
      -i,--ignore <arg>                  Ignore some difference during State comparison. You can ignore:
                                         - attrs: File attributes
                                         - dates: Modification dates
-                                        - moved: Moved files
                                         - renamed: Renamed files
                                         - all: All of the above
                                         You can specify multiple kind of difference to ignore separated by comma.
-                                        For example: -i attrs,dates,moved,renamed
+                                        For example: -i attrs,dates,renamed
      -l,--use-last-state                Use the last committed State.
                                         Only for the find local duplicated files command
      -m,--master-fim-repository <arg>   Fim repository directory that you want to use as remote master.

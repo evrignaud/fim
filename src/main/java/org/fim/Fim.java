@@ -118,11 +118,10 @@ public class Fim {
         opts.addOption(buildOption("i", "ignore", "Ignore some difference during State comparison. You can ignore:\n" +
             "- attrs: File attributes\n" +
             "- dates: Modification dates\n" +
-            "- moved: Moved files\n" +
             "- renamed: Renamed files\n" +
             "- all: All of the above\n" +
             "You can specify multiple kind of difference to ignore separated by comma.\n" +
-            "For example: -i attrs,dates,moved,renamed").hasArg().valueSeparator(',').build());
+            "For example: -i attrs,dates,renamed").hasArg().valueSeparator(',').build());
         opts.addOption(buildOption("l", "use-last-state", "Use the last committed State.\n" +
             "Only for the find local duplicated files command").build());
         opts.addOption(buildOption("c", "comment", "Comment to set during init and commit").hasArg().build());
@@ -258,14 +257,11 @@ public class Fim {
                     ignored.setAttributesIgnored(true);
                 } else if ("dates".equals(value)) {
                     ignored.setDatesIgnored(true);
-                } else if ("moved".equals(value)) {
-                    ignored.setMovedIgnored(true);
                 } else if ("renamed".equals(value)) {
                     ignored.setRenamedIgnored(true);
                 } else if ("all".equals(value)) {
                     ignored.setAttributesIgnored(true);
                     ignored.setDatesIgnored(true);
-                    ignored.setMovedIgnored(true);
                     ignored.setRenamedIgnored(true);
                 } else {
                     Logger.error(String.format("'%s' unknown as difference kind to ignore.", value));

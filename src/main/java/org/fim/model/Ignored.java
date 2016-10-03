@@ -21,7 +21,6 @@ package org.fim.model;
 public class Ignored {
     private boolean attributesIgnored;
     private boolean datesIgnored;
-    private boolean movedIgnored;
     private boolean renamedIgnored;
 
     public boolean isAttributesIgnored() {
@@ -40,14 +39,6 @@ public class Ignored {
         this.datesIgnored = datesIgnored;
     }
 
-    public boolean isMovedIgnored() {
-        return movedIgnored;
-    }
-
-    public void setMovedIgnored(boolean movedIgnored) {
-        this.movedIgnored = movedIgnored;
-    }
-
     public boolean isRenamedIgnored() {
         return renamedIgnored;
     }
@@ -57,6 +48,6 @@ public class Ignored {
     }
 
     public boolean somethingIgnored() {
-        return attributesIgnored || datesIgnored || movedIgnored || renamedIgnored;
+        return attributesIgnored || datesIgnored || renamedIgnored;
     }
 }
