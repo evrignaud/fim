@@ -19,7 +19,7 @@ Available commands:
                                 Change in content, but not in creation time and last modified time
      fdup / find-duplicates     Find local duplicated files in the Fim repository
      rdup / remove-duplicates   Remove duplicated files from local directory based on a remote master Fim repository
-     log                        Display the history of the States and a summary of the changes that were made
+     log                        Display the history of the States with the same output as the 'status' command
      dign / display-ignored     Display the files or directories that are ignored into the last State
      rbk / rollback             Rollback the last commit. It will remove the last State
      pst / purge-states         Purge previous States

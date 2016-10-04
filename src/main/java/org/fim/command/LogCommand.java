@@ -42,7 +42,7 @@ public class LogCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Display the history of the States and a summary of the changes that were made";
+        return "Display the history of the States with the same output as the 'status' command";
     }
 
     @Override
