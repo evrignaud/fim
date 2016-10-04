@@ -163,10 +163,18 @@ public class Fim {
             context.setVerbose(!commandLine.hasOption('q'));
             context.setComment(commandLine.getOptionValue('c', context.getComment()));
             context.setUseLastState(commandLine.hasOption('l'));
-            context.setMasterFimRepositoryDir(commandLine.getOptionValue('m'));
             context.setPurgeStates(commandLine.hasOption('p'));
             context.setAlwaysYes(commandLine.hasOption('y'));
             context.setDisplayStackTrace(commandLine.hasOption('e'));
+
+            if (commandLine.hasOption('m')) {
+                String masterFimRepositoryDir = commandLine.getOptionValue('m');
+                if (!Files.exists(Paths.get(masterFimRepositoryDir))) {
+                    Logger.error(String.format("Master Fim repository directory '%s' does not exist", masterFimRepositoryDir));
+                    throw new BadFimUsageException();
+                }
+                context.setMasterFimRepositoryDir(masterFimRepositoryDir);
+            }
 
             if (commandLine.hasOption('d')) {
                 context.setCurrentDirectory(Paths.get(commandLine.getOptionValue('d')));
@@ -200,7 +208,6 @@ public class Fim {
 
         } catch (Exception ex) {
             Logger.error("Exception parsing command line", ex, context.isDisplayStackTrace());
-            printUsage(System.out);
             throw new BadFimUsageException();
         }
 

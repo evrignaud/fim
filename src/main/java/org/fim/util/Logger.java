@@ -44,11 +44,11 @@ public class Logger {
     }
 
     public static void error(String message, Exception ex, boolean displayStackTrace) {
-        StringBuilder builder = new StringBuilder().append(message).append("\n");
+        StringBuilder builder = new StringBuilder().append(message);
         if (displayStackTrace) {
-            builder.append(exceptionStackTraceToString(ex));
+            builder.append("\n").append(exceptionStackTraceToString(ex));
         } else {
-            builder.append(ex.getClass().getSimpleName());
+            builder.append(": ").append(ex.getClass().getSimpleName());
             if (ex.getMessage() != null) {
                 builder.append(": ").append(ex.getMessage());
             }

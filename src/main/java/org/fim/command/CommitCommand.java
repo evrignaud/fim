@@ -71,15 +71,18 @@ public class CommitCommand extends AbstractCommand {
     @Override
     public Object execute(Context context) throws Exception {
         settingsManager = new SettingsManager(context);
+
         HashMode globalHashMode = settingsManager.getGlobalHashMode();
         if (context.getHashMode() == dontHash && globalHashMode != dontHash) {
             Logger.error("Computing hash is mandatory");
             throw new BadFimUsageException();
         }
+
         if (context.getIgnored().somethingIgnored()) {
             Logger.error("Not allowed to ignore any aspect while committing");
             throw new BadFimUsageException();
         }
+
         adjustThreadCount(context);
 
         if (context.getComment().length() == 0) {

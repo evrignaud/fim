@@ -73,7 +73,6 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
     public Object execute(Context context) throws Exception {
         if (context.getMasterFimRepositoryDir() == null) {
             Logger.error("The master Fim directory must be provided");
-            fim.printUsage(System.out);
             throw new BadFimUsageException();
         }
 
@@ -89,10 +88,6 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
         }
 
         Path masterFimRepository = Paths.get(context.getMasterFimRepositoryDir());
-        if (!Files.exists(masterFimRepository)) {
-            Logger.error(String.format("Directory %s does not exist", context.getMasterFimRepositoryDir()));
-            throw new BadFimUsageException();
-        }
 
         Path normalizedMasterFimRepository = masterFimRepository.toAbsolutePath().normalize();
         Path normalizedCurrentDir = context.getCurrentDirectory().toAbsolutePath().normalize();
