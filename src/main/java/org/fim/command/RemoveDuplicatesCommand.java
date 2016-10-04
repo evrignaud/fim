@@ -73,7 +73,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
     public Object execute(Context context) throws Exception {
         if (context.getMasterFimRepositoryDir() == null) {
             Logger.error("The master Fim directory must be provided");
-            fim.printUsage();
+            fim.printUsage(System.out);
             throw new BadFimUsageException();
         }
 

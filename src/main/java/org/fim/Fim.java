@@ -51,6 +51,7 @@ import org.fim.model.Ignored;
 import org.fim.util.Console;
 import org.fim.util.Logger;
 
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -199,7 +200,7 @@ public class Fim {
 
         } catch (Exception ex) {
             Logger.error("Exception parsing command line", ex, context.isDisplayStackTrace());
-            printUsage();
+            printUsage(System.out);
             throw new BadFimUsageException();
         }
 
@@ -330,7 +331,7 @@ public class Fim {
         throw new BadFimUsageException();
     }
 
-    public void printUsage() {
+    public void printUsage(PrintStream out) {
         StringBuilder usage = new StringBuilder();
         usage.append("\n");
         usage.append("File Integrity Checker\n");
@@ -349,7 +350,7 @@ public class Fim {
         usage.append("\n");
         usage.append("Available options:\n");
 
-        PrintWriter writer = new PrintWriter(System.out);
+        PrintWriter writer = new PrintWriter(out);
         HelpFormatter helpFormatter = new HelpFormatter();
 
         Console.newLine();
