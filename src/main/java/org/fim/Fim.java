@@ -121,7 +121,7 @@ public class Fim {
             "- dates: Modification dates\n" +
             "- renamed: Renamed files\n" +
             "- all: All of the above\n" +
-            "You can specify multiple kind of difference to ignore separated by comma.\n" +
+            "You can specify multiple kind of difference to ignore separated by a comma.\n" +
             "For example: -i attrs,dates,renamed").hasArg().valueSeparator(',').build());
         opts.addOption(buildOption("l", "use-last-state", "Use the last committed State.\n" +
             "Only for the find local duplicated files command").build());

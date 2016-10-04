@@ -38,7 +38,7 @@ Available options:
                                         - dates: Modification dates
                                         - renamed: Renamed files
                                         - all: All of the above
-                                        You can specify multiple kind of difference to ignore separated by comma.
+                                        You can specify multiple kind of difference to ignore separated by a comma.
                                         For example: -i attrs,dates,renamed
      -l,--use-last-state                Use the last committed State.
                                         Only for the find local duplicated files command

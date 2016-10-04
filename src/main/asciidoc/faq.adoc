@@ -14,6 +14,24 @@ Doing this allow you to:
 
 All the other commands will run as if you were on the top of the Fim repository.
 
+== Ignore some difference during State comparison
+
+You may want to get the status of a repository ignoring some kind of differences.
+You can ignore:
+
+- `attrs`: File attributes
+- `dates`: Modification dates
+- `renamed`: Renamed files
+- `all`: All of the above
+
+You can specify multiple kind of difference to ignore separated by a comma.
+
+For example:
+[source, bash]
+----
+$ fim st -i attrs,dates,renamed
+----
+
 == Changing default hash mode
 
 If you never want to hash the complete content of your files you can set a global hash mode that will indicate the maximum hash mode you want to use for this repository.
