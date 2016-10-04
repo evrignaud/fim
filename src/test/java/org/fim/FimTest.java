@@ -150,9 +150,39 @@ public class FimTest {
     }
 
     @Test
-    public void diffAliasWork() throws Exception {
+    public void diffAliasIsAllowed() throws Exception {
         initRepoAndCreateOneFile();
         cut.run(new String[]{"diff", "-s"}, context);
+    }
+
+    @Test
+    public void attributesIgnoredIsAllowed() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"status", "-s", "-i", "attrs"}, context);
+    }
+
+    @Test
+    public void datesIgnoredIsAllowed() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"status", "-s", "-i", "dates"}, context);
+    }
+
+    @Test
+    public void renamedIgnoredIsAllowed() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"status", "-s", "-i", "renamed"}, context);
+    }
+
+    @Test
+    public void allIgnoredIsAllowed() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"status", "-s", "-i", "all"}, context);
+    }
+
+    @Test(expected = BadFimUsageException.class)
+    public void badIgnoredIsNotAllowed() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"status", "-s", "-i", "bad"}, context);
     }
 
     @Test

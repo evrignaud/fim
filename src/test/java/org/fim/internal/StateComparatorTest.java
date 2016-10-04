@@ -99,8 +99,8 @@ public class StateComparatorTest extends StateAssert {
 
     @Test
     public void noChangeDetectedWhenDatesIgnoredIsSet() {
-        s2 = s1.touch("file_01");
         context.getIgnored().setDatesIgnored(true);
+        s2 = s1.touch("file_01");
         result = new StateComparator(context, s1, s2).compare();
         assertNothingModified(result);
     }
@@ -126,6 +126,16 @@ public class StateComparatorTest extends StateAssert {
             assertFilesModified(result, added, "file_06");
         } else {
             assertOnlyFileRenamed(result, new FileNameDiff("file_01", "file_06"));
+        }
+    }
+
+    @Test
+    public void noChangeDetectedWhenRenamedIgnoredIsSet() {
+        context.getIgnored().setRenamedIgnored(true);
+        s2 = s1.rename("file_01", "file_06");
+        result = new StateComparator(context, s1, s2).compare();
+        if (hashMode != dontHash) {
+            assertNothingModified(result);
         }
     }
 
