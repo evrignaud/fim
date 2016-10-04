@@ -61,6 +61,9 @@ ____
 
 &mdash; https://goo.gl/LAuKqp[Fim 1.1.0] +
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://goo.gl/KaO0Hm[image:icons/english.png[English version] &nbsp; Fim 1.1.0]
+
+&mdash; https://goo.gl/UrZK7J[Focus sur les performances avec Fim 1.2.0] +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; https://goo.gl/cZsQLN[image:icons/english.png[English version] &nbsp; Focus on performance with Fim 1.2.0]
 ____
 
 
@@ -100,5 +103,7 @@ https://goo.gl/foWAWQ   https://ci.appveyor.com/project/evrignaud/fim
 https://goo.gl/QfQTE8   https://travis-ci.org/evrignaud/fim
 http://goo.gl/p8iYjm    http://www.oracle.com/technetwork/java/javase/downloads/index.html
 https://goo.gl/lbM77o   https://scan.coverity.com/projects/evrignaud-fim
+https://goo.gl/UrZK7J   https://linuxfr.org/news/focus-sur-les-performances-avec-fim-1-2-0
+https://goo.gl/cZsQLN   https://translate.google.com/translate?hl=en&sl=fr&tl=en&u=https%3A%2F%2Flinuxfr.org%2Fnews%2Ffocus-sur-les-performances-avec-fim-1-2-0&sandbox=1
 ////
 

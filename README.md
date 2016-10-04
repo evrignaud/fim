@@ -1,5 +1,11 @@
 <h1 align="center"><img src="http://evrignaud.github.io/fim/images/icons/fim-96.png" alt="Fim"/> &nbsp; File Integrity Manager</h1>
 
+# Docker image
+
+[![Latest version](https://images.microbadger.com/badges/version/evrignaud/fim.svg)](https://microbadger.com/images/evrignaud/fim) &nbsp; [![Download size](https://images.microbadger.com/badges/image/evrignaud/fim.svg)](https://microbadger.com/images/evrignaud/fim)
+
+# Build
+
 #### Linux & Mac OS X: [![Build Status](https://travis-ci.org/evrignaud/fim.svg)](https://goo.gl/QfQTE8) &nbsp; Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/txadqci1hrr3lkko?svg=true)](https://goo.gl/foWAWQ) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Coverage Status](https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github)](https://goo.gl/hJGXqj) &nbsp;&nbsp; [![Coverity Scan Build Status](https://scan.coverity.com/projects/8749/badge.svg)](https://goo.gl/lbM77o)
 
 Fim manages the integrity of a complete file tree
@@ -65,6 +71,9 @@ Fim can be used on Linux, Mac OS X and Windows
 
 > &mdash; [Fim 1.1.0](https://goo.gl/LAuKqp)
 >> [![English version](http://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Fim 1.1.0](http://goo.gl/KaO0Hm)
+
+> &mdash; [Focus sur les performances avec Fim 1.2.0](https://goo.gl/UrZK7J)
+>> [![English version](http://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Focus on performance with Fim 1.2.0](https://goo.gl/cZsQLN)
 
 
 ## About
