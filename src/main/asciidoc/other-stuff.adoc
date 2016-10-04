@@ -56,14 +56,14 @@ ____
 .*&bull; image:icons/linuxfr.org.png[linuxfr.org] &nbsp;&nbsp; LinuxFr.org*
 
 ____
-&mdash; https://goo.gl/yjMH4U[Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers] +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://goo.gl/HToiWd[image:icons/english.png[English version] &nbsp; Fim release 1.0.2, that verifies the integrity of your file]
+&mdash; https://goo.gl/UrZK7J[Focus sur les performances avec Fim 1.2.0] +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; https://goo.gl/cZsQLN[image:icons/english.png[English version] &nbsp; Focus on performance with Fim 1.2.0]
 
 &mdash; https://goo.gl/LAuKqp[Fim 1.1.0] +
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://goo.gl/KaO0Hm[image:icons/english.png[English version] &nbsp; Fim 1.1.0]
 
-&mdash; https://goo.gl/UrZK7J[Focus sur les performances avec Fim 1.2.0] +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; https://goo.gl/cZsQLN[image:icons/english.png[English version] &nbsp; Focus on performance with Fim 1.2.0]
+&mdash; https://goo.gl/yjMH4U[Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers] +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://goo.gl/HToiWd[image:icons/english.png[English version] &nbsp; Fim release 1.0.2, that verifies the integrity of your file]
 ____
 
 

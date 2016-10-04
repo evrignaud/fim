@@ -66,14 +66,14 @@ Fim can be used on Linux, Mac OS X and Windows
 
 ### &bull; ![linuxfr.org](http://evrignaud.github.io/fim/images/icons/linuxfr.org.png) &nbsp;&nbsp; LinuxFr.org
 
-> &mdash; [Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers](https://goo.gl/yjMH4U)
->> [![English version](http://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Fim release 1.0.2, that verifies the integrity of your files](http://goo.gl/HToiWd)
+> &mdash; [Focus sur les performances avec Fim 1.2.0](https://goo.gl/UrZK7J)
+>> [![English version](http://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Focus on performance with Fim 1.2.0](https://goo.gl/cZsQLN)
 
 > &mdash; [Fim 1.1.0](https://goo.gl/LAuKqp)
 >> [![English version](http://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Fim 1.1.0](http://goo.gl/KaO0Hm)
 
-> &mdash; [Focus sur les performances avec Fim 1.2.0](https://goo.gl/UrZK7J)
->> [![English version](http://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Focus on performance with Fim 1.2.0](https://goo.gl/cZsQLN)
+> &mdash; [Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers](https://goo.gl/yjMH4U)
+>> [![English version](http://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Fim release 1.0.2, that verifies the integrity of your files](http://goo.gl/HToiWd)
 
 
 ## About
