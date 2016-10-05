@@ -157,8 +157,9 @@ public class Fim {
         try {
             CommandLine commandLine = cmdLineGnuParser.parse(options, optionArgs);
 
-            if (commandLine.hasOption('i')) {
-                parseIgnored(commandLine, context);
+            String ignoredKinds = commandLine.getOptionValue('i');
+            if (ignoredKinds != null) {
+                parseIgnored(context, ignoredKinds);
             }
             context.setVerbose(!commandLine.hasOption('q'));
             context.setComment(commandLine.getOptionValue('c', context.getComment()));
@@ -250,29 +251,28 @@ public class Fim {
         command.execute(context.clone());
     }
 
-    private void parseIgnored(CommandLine commandLine, Context context) {
+    private void parseIgnored(Context context, String ignoredKinds) {
         Ignored ignored = context.getIgnored();
-        String values = commandLine.getOptionValue('i');
-        try (Scanner scanner = new Scanner(values)) {
+        try (Scanner scanner = new Scanner(ignoredKinds)) {
             scanner.useDelimiter(",");
             while (scanner.hasNext()) {
-                String value = scanner.next();
-                if (value.length() == 0) {
+                String token = scanner.next();
+                if (token.length() == 0) {
                     continue;
                 }
 
-                if ("attrs".equals(value)) {
+                if ("attrs".equals(token)) {
                     ignored.setAttributesIgnored(true);
-                } else if ("dates".equals(value)) {
+                } else if ("dates".equals(token)) {
                     ignored.setDatesIgnored(true);
-                } else if ("renamed".equals(value)) {
+                } else if ("renamed".equals(token)) {
                     ignored.setRenamedIgnored(true);
-                } else if ("all".equals(value)) {
+                } else if ("all".equals(token)) {
                     ignored.setAttributesIgnored(true);
                     ignored.setDatesIgnored(true);
                     ignored.setRenamedIgnored(true);
                 } else {
-                    Logger.error(String.format("'%s' unknown as difference kind to ignore.", value));
+                    Logger.error(String.format("'%s' unknown as difference kind to ignore.", token));
                     throw new BadFimUsageException();
                 }
             }
