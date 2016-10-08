@@ -14,6 +14,9 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <docs.en.source.directory>src/main/asciidoc/docs/en</docs.en.source.directory>
+        <docs.en.output.directory>${project.build.directory}/docs/en</docs.en.output.directory>
+
         <slides.fr.source.directory>src/main/asciidoc/slides/fr</slides.fr.source.directory>
         <slides.fr.output.directory>${project.build.directory}/slides/fr</slides.fr.output.directory>
 
@@ -384,8 +387,8 @@
                             <goal>process-asciidoc</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>src/main/asciidoc</sourceDirectory>
-                            <outputDirectory>target/docs</outputDirectory>
+                            <sourceDirectory>${docs.en.source.directory}</sourceDirectory>
+                            <outputDirectory>${docs.en.output.directory}</outputDirectory>
                             <sourceHighlighter>highlight.js</sourceHighlighter>
                             <backend>html5</backend>
                             <doctype>book</doctype>
@@ -439,7 +442,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <replace file="${project.basedir}/target/docs/index.html">
+                                <replace file="${docs.en.output.directory}/index.html">
                                     <replacefilter>
                                         <replacetoken><![CDATA[</head>]]></replacetoken>
                                         <replacevalue>
