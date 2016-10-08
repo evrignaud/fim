@@ -66,7 +66,7 @@ ifndef::imagesdir[:imagesdir: images]
 
 * Vérifier l'intégrité de fichiers qui peuvent être gros et binaires donc non comparables (.doc, .jpg, .png, .mp3, .mp4, ...)
 * Connaitre rapidement la liste fichiers qui auraient été déplacés, renommés, effacés ou corrompus. Cela peut arriver accidentellement
-* Conserver un journal des modifications pour ces fichiers et afficher par la suite une log détaillées de ces modifications
+* Conserver un journal des modifications pour ces fichiers et afficher par la suite une log détaillée de ces modifications
 * Rechercher les fichiers dupliqués pour pouvoir les effacer ensuite
 
 {empty} +
@@ -77,7 +77,7 @@ _Plus de détails dans les cas d'utilisation à suivre..._
 --
 * Cette présentation n'apporte pas toutes les solutions
 
-* Elle permet de réflechir et se poser des questions
+* Elle permet de réfléchir et se poser des questions
 --
 
 == Pourquoi j'ai écrit Fim
@@ -88,7 +88,7 @@ _Plus de détails dans les cas d'utilisation à suivre..._
 * Mais avec Git le workspace local occupe au minimum le double de place car il y a tout le contenu du repository dans le .git
 * Et avec Git on ne peut pas supprimer définitivement un fichier. +
 Il sera toujours présent dans l'historique de Git
-* De plus tout les contenus des fichiers modifiés sont conservés ce qui prend un énorme place à la longue
+* De plus tous les contenus des fichiers modifiés sont conservés ce qui prend un énorme place à la longue
 * Certains outils ne fonctionnent que sur des systèmes de fichier propriétaires (exemple: https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc[btrfs-scrub])
 
 Le but était d'avoir un outil qui puisse afficher rapidement le statut du workspace local
@@ -107,7 +107,7 @@ Chaque index contient pour chaque fichier :
 
 L'index s'appelle le `State` et les hash sont fait avec du SHA-512.
 
-Fim ne conserve pas les donnée des fichiers
+Fim ne conserve pas les données des fichiers
 c'est pour cela qu'on peut le mettre dans la catégorie des *UVCS* (UnVersioned Control System)
 
 
@@ -283,12 +283,12 @@ http://evrignaud.github.io/fim/#_run_fim_commands_from_a_sub_directory[Détails]
 
 {empty} +
 
-Vous pouvez ajouter un fichier `.fimignore` a tout les niveau du repository,
+Vous pouvez ajouter un fichier `.fimignore` a tous les niveaux du repository,
 mais aussi globalement dans le home de l'utilisateur
 
 Chaque ligne du fichier contient un nom de fichier ou de répertoire à ignorer
 
-* Utiliser une astérisque pour ignorer plusieurs +
+* Utiliser un astérisque pour ignorer plusieurs +
 (+++<u>exemple :</u>+++ `*.mp3`)
 
 * Indiquer `\**/` en début de ligne et le reste sera ignoré dans tous les sous répertoires. +
@@ -376,7 +376,7 @@ Fim est capable d'afficher les doublons contenus dans un workspace à l'aide de 
 fim fdup
 ----
 
-Il n'est pas capable de les éffacer
+Il n'est pas capable de les effacer
 
 {empty} +
 {empty} +
@@ -408,7 +408,7 @@ http://evrignaud.github.io/fim/#_duplicates_that_are_outside[Détails]
 {empty} +
 
 Fim permet de vérifier l'intégrité des fichiers stockés sur tout type de système de fichiers.
-Notamment les backup offline. Pour cela il faut :
+Notamment les backups offlines. Pour cela il faut :
 
 * Ajouter dans le backup le référentiel Fim (`.fim`) qui correspond
 
@@ -426,7 +426,7 @@ fim st
 
 image::hardware-corruption.png[]
 
-Fim diagnostique une corruption matérielle si le contenu du fichier à changé alors que les dates de création / modification n'ont pas été modifiées
+Fim diagnostique une corruption matérielle si le contenu du fichier a changé alors que les dates de création / modification n'ont pas été modifiées
 
 Détecter les corruptions matérielles sur un disque externe :
 
@@ -435,7 +435,7 @@ Détecter les corruptions matérielles sur un disque externe :
 fim dcor
 ----
 
-image:important.png[] *Fim peut produire des faux positifs* si le contenu à changé et que les dates ont été réinitialisées
+image:important.png[] *Fim peut produire des faux positifs* si le contenu a changé et que les dates ont été réinitialisées
 
 {empty} +
 
@@ -547,7 +547,7 @@ Fim refuse d'utiliser un State modifié
 
 * Hasheurs travaillant en parallèle
 
-* Calcul de la taille et le l'emplacement du prochain block
+* Calcul de la taille et de l'emplacement du prochain block
 
 * Map du block en mémoire en utilisant les NIO
 
@@ -642,7 +642,7 @@ sûr que les données n’ont pas été endommagées{nbsp}...
 
 == L'OpenSource
 
-Fim à été mis en OpenSource pour qu'il profite à tous. +
+Fim a été mis en OpenSource pour qu'il profite à tous. +
 Cela permet aussi de bénéficier des idées de chacun. +
 Voici les idées et merge request qui ont été soumises :
 
