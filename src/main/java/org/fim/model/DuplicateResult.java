@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Scanner;
 
 import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static org.atteo.evo.inflector.English.plural;
@@ -105,7 +106,7 @@ public class DuplicateResult {
             byteCountToDisplaySize(fileLength), byteCountToDisplaySize(wastedSpace));
 
         if (context.isRemoveDuplicates()) {
-            selectFilesToRemove(context, duplicatedFiles);
+            selectFilesToRemove(out, duplicatedFiles);
         }
 
         String action;
@@ -121,13 +122,66 @@ public class DuplicateResult {
         Console.newLine();
     }
 
-    private void selectFilesToRemove(Context context, List<FileState> duplicatedFiles) {
-        for (FileState fileState : duplicatedFiles) {
-            if (context.isAlwaysYes()) {
+    private void selectFilesToRemove(PrintStream out, List<FileState> duplicatedFiles) {
+        if (context.isAlwaysYes()) {
+            for (FileState fileState : duplicatedFiles) {
                 if (duplicatedFiles.indexOf(fileState) > 0) {
                     fileState.setToRemove(true);
                 }
             }
+        } else {
+            for (FileState fileState : duplicatedFiles) {
+                int index = duplicatedFiles.indexOf(fileState) + 1;
+                out.printf("  [%s] %s%n", index, fileState.getFileName());
+                fileState.setToRemove(true);
+            }
+
+            while (true) {
+                if (manageAnswers(out, duplicatedFiles)) {
+                    break;
+                }
+            }
+        }
+    }
+
+    private boolean manageAnswers(PrintStream out, List<FileState> duplicatedFiles) {
+        boolean gotCorrectAnswer = false;
+        int count = duplicatedFiles.size();
+
+        out.printf("  Preserve files [1 - %d, all or a]: ", count);
+        String line = readInputLine();
+
+        try (Scanner scanner = new Scanner(line)) {
+            while (scanner.hasNext()) {
+                String answer = scanner.next();
+                if ("a".equals(answer) || "all".equals(answer)) {
+                    for (FileState fileState : duplicatedFiles) {
+                        fileState.setToRemove(false);
+                    }
+                    gotCorrectAnswer = true;
+                    break;
+                }
+                int index = safeParseInt(answer);
+
+                if (index >= 1 && index <= count) {
+                    duplicatedFiles.get(index - 1).setToRemove(false);
+                    gotCorrectAnswer = true;
+                }
+            }
+        }
+        return gotCorrectAnswer;
+    }
+
+    private String readInputLine() {
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine();
+    }
+
+    private int safeParseInt(String answer) {
+        try {
+            return Integer.parseInt(answer);
+        } catch (NumberFormatException ex) {
+            return -1;
         }
     }
 
