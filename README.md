@@ -1,14 +1,15 @@
 <h1 align="center"><img src="http://evrignaud.github.io/fim/images/icons/fim-96.png" alt="Fim"/> &nbsp; File Integrity Manager</h1>
 
+Fim manages the integrity of a complete file tree
+
 # Docker image
 
-[![Latest version](https://images.microbadger.com/badges/version/evrignaud/fim.svg)](https://microbadger.com/images/evrignaud/fim) &nbsp; [![Download size](https://images.microbadger.com/badges/image/evrignaud/fim.svg)](https://microbadger.com/images/evrignaud/fim)
+#### [Docker Hub](https://hub.docker.com/r/evrignaud/fim/) &nbsp; [![Latest version](https://images.microbadger.com/badges/version/evrignaud/fim.svg)](https://microbadger.com/images/evrignaud/fim) &nbsp; [![Download size](https://images.microbadger.com/badges/image/evrignaud/fim.svg)](https://microbadger.com/images/evrignaud/fim)
 
 # Build
 
 #### Linux & Mac OS X: [![Build Status](https://travis-ci.org/evrignaud/fim.svg)](https://goo.gl/QfQTE8) &nbsp; Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/txadqci1hrr3lkko?svg=true)](https://goo.gl/foWAWQ) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Coverage Status](https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github)](https://goo.gl/hJGXqj) &nbsp;&nbsp; [![Coverity Scan Build Status](https://scan.coverity.com/projects/8749/badge.svg)](https://goo.gl/lbM77o)
-
-Fim manages the integrity of a complete file tree
+[![Latest tag](https://img.shields.io/github/tag/evrignaud/fim.svg)](https://github.com/evrignaud/fim/releases/latest) [![License](https://img.shields.io/github/license/evrignaud/fim.svg)](http://evrignaud.github.io/fim/LICENSE.html)
 
 ## Fim documentation
 
