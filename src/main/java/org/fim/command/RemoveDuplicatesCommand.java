@@ -23,7 +23,9 @@ import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.DontWantToContinueException;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
+import org.fim.model.Command;
 import org.fim.model.Context;
+import org.fim.model.DuplicateResult;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
@@ -31,7 +33,6 @@ import org.fim.model.State;
 import org.fim.util.Console;
 import org.fim.util.Logger;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,6 +41,7 @@ import java.util.Map;
 
 import static org.atteo.evo.inflector.English.plural;
 import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.util.FileUtil.removeFile;
 import static org.fim.util.HashModeUtil.hashModeToString;
 
 public class RemoveDuplicatesCommand extends AbstractCommand {
@@ -72,8 +74,10 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
     @Override
     public Object execute(Context context) throws Exception {
         if (context.getMasterFimRepositoryDir() == null) {
-            Logger.error("The master Fim directory must be provided");
-            throw new BadFimUsageException();
+            context.setRemoveDuplicates(true);
+            Command command = new FindDuplicatesCommand();
+            DuplicateResult result = (DuplicateResult) command.execute(context);
+            return result.getFilesRemoved();
         }
 
         checkHashMode(context, Option.ALLOW_COMPATIBLE);
@@ -129,13 +133,9 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
                 System.out.printf("'%s' is a duplicate of '%s/%s'%n", localFileState.getFileName(),
                     context.getMasterFimRepositoryDir(), masterFileState.getFileName());
                 if (confirmAction(context, "remove it")) {
-                    Path localFile = normalizedCurrentDir.resolve(localFileState.getFileName());
-                    try {
-                        Files.delete(localFile);
+                    if (removeFile(context, normalizedCurrentDir, localFileState)) {
                         System.out.printf("  '%s' removed%n", localFileState.getFileName());
                         totalFilesRemoved++;
-                    } catch (IOException ex) {
-                        Logger.error("Error deleting file", ex, context.isDisplayStackTrace());
                     }
                 }
             }

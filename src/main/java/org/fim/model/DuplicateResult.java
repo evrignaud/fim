@@ -28,6 +28,7 @@ import java.util.List;
 
 import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static org.atteo.evo.inflector.English.plural;
+import static org.fim.util.FileUtil.removeFile;
 
 public class DuplicateResult {
     private static final Comparator<DuplicateSet> wastedSpaceDescendingComparator = new WastedSpaceDescendingComparator();
@@ -36,12 +37,16 @@ public class DuplicateResult {
     private final List<DuplicateSet> duplicateSets;
     private long duplicatedFilesCount;
     private long totalWastedSpace;
+    private long filesRemoved;
+    private long spaceFreed;
 
     public DuplicateResult(Context context) {
         this.context = context;
         this.duplicateSets = new ArrayList<>();
         this.duplicatedFilesCount = 0;
         this.totalWastedSpace = 0;
+        this.filesRemoved = 0;
+        this.spaceFreed = 0;
     }
 
     public void addDuplicatedFiles(List<FileState> duplicatedFiles) {
@@ -61,8 +66,8 @@ public class DuplicateResult {
         Collections.sort(duplicateSets, wastedSpaceDescendingComparator);
     }
 
-    public DuplicateResult displayDuplicates(PrintStream out) {
-        if (context.isVerbose()) {
+    public DuplicateResult displayAndRemoveDuplicates(PrintStream out) {
+        if (context.isVerbose() || context.isRemoveDuplicates()) {
             for (DuplicateSet duplicateSet : duplicateSets) {
                 int index = duplicateSets.indexOf(duplicateSet) + 1;
                 List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
@@ -72,22 +77,56 @@ public class DuplicateResult {
                 out.printf("- Duplicate set #%d: duplicated %d %s, %s each, %s of wasted space%n",
                     index, duplicateTime, plural("time", duplicateTime),
                     byteCountToDisplaySize(fileLength), byteCountToDisplaySize(wastedSpace));
+
+                if (context.isRemoveDuplicates()) {
+                    selectFilesToRemove(context, duplicatedFiles);
+                }
+
+                String action;
                 for (FileState fileState : duplicatedFiles) {
-                    out.printf("      %s%n", fileState.getFileName());
+                    action = "   ";
+                    if (fileState.isToRemove()) {
+                        if (removeFile(context, context.getRepositoryRootDir(), fileState)) {
+                            action = "[-]";
+                            filesRemoved++;
+                            spaceFreed += fileState.getFileLength();
+                        }
+                    }
+                    out.printf("  %s %s%n", action, fileState.getFileName());
                 }
                 Console.newLine();
             }
         }
 
-        if (duplicatedFilesCount > 0) {
-            int duplicateCount = duplicateSets.size();
-            out.printf("%d duplicated %s spread into %d duplicate %s, %s of total wasted space%n",
-                duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount),
-                duplicateCount, plural("set", duplicateCount), byteCountToDisplaySize(totalWastedSpace));
+        if (filesRemoved == 0) {
+            if (duplicatedFilesCount > 0) {
+                out.printf("%d duplicated %s, %s of total wasted space%n",
+                    duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount), byteCountToDisplaySize(totalWastedSpace));
+            } else {
+                out.println("No duplicated file found");
+            }
         } else {
-            out.println("No duplicated file found");
+            out.printf("Removed %d files and freed %s%n", filesRemoved, byteCountToDisplaySize(spaceFreed));
+            long remainingDuplicates = duplicatedFilesCount - filesRemoved;
+            long remainingWastedSpace = totalWastedSpace - spaceFreed;
+            if (remainingDuplicates > 0) {
+                out.printf("Still have %d duplicated %s, %s of total wasted space%n",
+                    remainingDuplicates, pluralForLong("file", remainingDuplicates), byteCountToDisplaySize(remainingWastedSpace));
+            } else {
+                out.println("No duplicated file remains");
+            }
         }
         return this;
+    }
+
+    private void selectFilesToRemove(Context context, List<FileState> duplicatedFiles) {
+        for (FileState fileState : duplicatedFiles) {
+            if (context.isAlwaysYes()) {
+                if (duplicatedFiles.indexOf(fileState) > 0) {
+                    fileState.setToRemove(true);
+                }
+            }
+        }
     }
 
     public long getDuplicatedFilesCount() {
@@ -96,6 +135,14 @@ public class DuplicateResult {
 
     public long getTotalWastedSpace() {
         return totalWastedSpace;
+    }
+
+    public long getFilesRemoved() {
+        return filesRemoved;
+    }
+
+    public long getSpaceFreed() {
+        return spaceFreed;
     }
 
     public List<DuplicateSet> getDuplicateSets() {

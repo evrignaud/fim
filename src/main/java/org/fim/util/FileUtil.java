@@ -18,7 +18,12 @@
  */
 package org.fim.util;
 
+import org.fim.model.Context;
+import org.fim.model.FileState;
+
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class FileUtil {
@@ -40,5 +45,16 @@ public class FileUtil {
             relativeFileName = relativeFileName.substring(1);
         }
         return relativeFileName;
+    }
+
+    public static boolean removeFile(Context context, Path rootDir, FileState fileState) {
+        try {
+            Path file = rootDir.resolve(fileState.getFileName());
+            Files.delete(file);
+            return true;
+        } catch (IOException ex) {
+            Logger.error("Error deleting file", ex, context.isDisplayStackTrace());
+        }
+        return false;
     }
 }

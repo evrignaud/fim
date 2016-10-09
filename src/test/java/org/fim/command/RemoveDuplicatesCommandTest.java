@@ -103,11 +103,6 @@ public class RemoveDuplicatesCommandTest {
     }
 
     @Test(expected = BadFimUsageException.class)
-    public void masterDirectoryMustBeProvided() throws Exception {
-        removeDuplicatesCommand.execute(context);
-    }
-
-    @Test(expected = BadFimUsageException.class)
     public void masterDirectoryMustExist() throws Exception {
         context.setMasterFimRepositoryDir("dummy");
         removeDuplicatesCommand.execute(context);

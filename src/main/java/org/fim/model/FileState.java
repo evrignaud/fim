@@ -44,6 +44,7 @@ public class FileState implements Hashable {
 
     private transient FileHash newFileHash; // Used by StateComparator to detect accurately duplicates
     private transient FileHash originalFileHash;
+    private transient boolean toRemove;
 
     public FileState(String fileName, long fileLength, FileTime fileTime, FileHash fileHash, List<Attribute> attributeList) {
         if (fileName == null) {
@@ -140,6 +141,14 @@ public class FileState implements Hashable {
         if (originalFileHash != null) {
             fileHash = originalFileHash;
         }
+    }
+
+    public boolean isToRemove() {
+        return toRemove;
+    }
+
+    public void setToRemove(boolean toRemove) {
+        this.toRemove = toRemove;
     }
 
     @Override

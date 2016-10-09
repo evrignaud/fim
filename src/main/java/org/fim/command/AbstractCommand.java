@@ -81,11 +81,11 @@ public abstract class AbstractCommand implements Command {
         }
     }
 
-    protected boolean confirmAction(Context context, String action) {
+    protected static boolean confirmAction(Context context, String action) {
         return confirmAction(context, new Scanner(System.in), action);
     }
 
-    protected boolean confirmAction(Context context, Scanner scanner, String action) {
+    protected static boolean confirmAction(Context context, Scanner scanner, String action) {
         if (context.isAlwaysYes()) {
             return true;
         }

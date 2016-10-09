@@ -46,6 +46,7 @@ public class Context {
     private boolean purgeStates;
     private boolean logDebugEnabled;
     private Ignored ignored;
+    private boolean removeDuplicates;
 
     public Context() {
         setInvokedFromSubDirectory(false);
@@ -206,6 +207,14 @@ public class Context {
 
     public void setIgnored(Ignored ignored) {
         this.ignored = ignored;
+    }
+
+    public boolean isRemoveDuplicates() {
+        return removeDuplicates;
+    }
+
+    public void setRemoveDuplicates(boolean removeDuplicates) {
+        this.removeDuplicates = removeDuplicates;
     }
 
     @Override
