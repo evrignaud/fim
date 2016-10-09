@@ -18,10 +18,9 @@
  */
 package org.fim.model;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.PrintStream;
 
+import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static org.atteo.evo.inflector.English.plural;
 import static org.fim.model.HashMode.hashAll;
 import static org.fim.util.FormatUtil.formatDate;
@@ -113,7 +112,7 @@ public class LogEntry {
 
     public void displayEntryHeader(PrintStream out) {
         out.printf("- State #%d: %s (%d %s - %s - generated%s using hash mode %s)%n", getStateNumber(), formatDate(getTimestamp()),
-            getFileCount(), plural("file", getFileCount()), FileUtils.byteCountToDisplaySize(getFilesContentLength()),
+            getFileCount(), plural("file", getFileCount()), byteCountToDisplaySize(getFilesContentLength()),
             commitDetails.getFromSubDirectory() != null ? " from " + commitDetails.getFromSubDirectory() : "",
             commitDetails.getHashModeUsedToGetTheStatus());
         if (getComment().length() > 0) {

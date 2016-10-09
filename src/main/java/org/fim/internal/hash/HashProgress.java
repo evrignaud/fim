@@ -18,7 +18,6 @@
  */
 package org.fim.internal.hash;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.fim.model.Constants;
@@ -29,6 +28,7 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static org.fim.model.HashMode.dontHash;
 
 public class HashProgress {
@@ -88,7 +88,7 @@ public class HashProgress {
             if (fileLength == 0) {
                 sb.append(" otherwise");
             } else {
-                sb.append(" > ").append(FileUtils.byteCountToDisplaySize(fileLength));
+                sb.append(" > ").append(byteCountToDisplaySize(fileLength));
             }
             sb.append(", ");
         }

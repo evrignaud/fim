@@ -18,7 +18,6 @@
  */
 package org.fim.internal;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.fim.internal.hash.FileHasher;
 import org.fim.internal.hash.HashProgress;
@@ -49,6 +48,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static org.atteo.evo.inflector.English.plural;
 import static org.fim.internal.hash.HashProgress.PROGRESS_DISPLAY_FILE_COUNT;
 import static org.fim.model.HashMode.dontHash;
@@ -156,8 +156,8 @@ public class StateGenerator {
     }
 
     protected void displayStatistics(long duration, int fileCount, long filesContentLength, long totalBytesHashed) {
-        String totalFileContentLengthStr = FileUtils.byteCountToDisplaySize(filesContentLength);
-        String totalBytesHashedStr = FileUtils.byteCountToDisplaySize(totalBytesHashed);
+        String totalFileContentLengthStr = byteCountToDisplaySize(filesContentLength);
+        String totalBytesHashedStr = byteCountToDisplaySize(totalBytesHashed);
         String durationStr = DurationFormatUtils.formatDuration(duration, "HH:mm:ss");
 
         long durationSeconds = duration / 1000;
@@ -166,7 +166,7 @@ public class StateGenerator {
         }
 
         long globalThroughput = totalBytesHashed / durationSeconds;
-        String throughputStr = FileUtils.byteCountToDisplaySize(globalThroughput);
+        String throughputStr = byteCountToDisplaySize(globalThroughput);
 
         if (context.getHashMode() == dontHash) {
             Logger.info(String.format("Scanned %d %s (%s), during %s%n",
