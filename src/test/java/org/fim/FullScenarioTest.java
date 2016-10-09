@@ -20,12 +20,12 @@ package org.fim;
 
 import org.apache.commons.io.FileUtils;
 import org.fim.command.CommitCommand;
-import org.fim.command.StatusCommand;
 import org.fim.command.DisplayIgnoredFilesCommand;
 import org.fim.command.FindDuplicatesCommand;
 import org.fim.command.InitCommand;
 import org.fim.command.LogCommand;
 import org.fim.command.RollbackCommand;
+import org.fim.command.StatusCommand;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;

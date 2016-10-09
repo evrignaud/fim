@@ -31,12 +31,12 @@ import java.util.Comparator;
 import java.util.List;
 
 public class DuplicateFinder {
+    private static final Comparator<FileState> hashComparator = new FileState.HashComparator();
+
     private final Context context;
-    private final Comparator<FileState> hashComparator;
 
     public DuplicateFinder(Context context) {
         this.context = context;
-        this.hashComparator = new FileState.HashComparator();
     }
 
     public DuplicateResult findDuplicates(State state) {
@@ -62,6 +62,7 @@ public class DuplicateFinder {
         }
         result.addDuplicatedFiles(duplicatedFiles);
 
+        result.sortDuplicateSets();
         return result;
     }
 }

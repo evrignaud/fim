@@ -22,11 +22,15 @@ import org.apache.commons.io.FileUtils;
 import org.fim.util.Console;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.atteo.evo.inflector.English.plural;
 
 public class DuplicateResult {
+    private static final Comparator<DuplicateSet> wastedSpaceDescendingComparator = new WastedSpaceDescendingComparator();
+
     private final Context context;
     private final List<DuplicateSet> duplicateSets;
     private long duplicatedFilesCount;
@@ -50,6 +54,10 @@ public class DuplicateResult {
             DuplicateSet duplicateSet = new DuplicateSet(duplicatedFiles);
             duplicateSets.add(duplicateSet);
         }
+    }
+
+    public void sortDuplicateSets() {
+        Collections.sort(duplicateSets, wastedSpaceDescendingComparator);
     }
 
     public DuplicateResult displayDuplicates() {
@@ -96,5 +104,12 @@ public class DuplicateResult {
 
     private String pluralForLong(String word, long count) {
         return plural(word, count > 1 ? 2 : 1);
+    }
+
+    public static class WastedSpaceDescendingComparator implements Comparator<DuplicateSet> {
+        @Override
+        public int compare(DuplicateSet ds1, DuplicateSet ds2) {
+            return Long.compare(ds2.getWastedSpace(), ds1.getWastedSpace());
+        }
     }
 }
