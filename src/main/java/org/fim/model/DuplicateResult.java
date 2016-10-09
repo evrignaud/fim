@@ -69,32 +69,7 @@ public class DuplicateResult {
     public DuplicateResult displayAndRemoveDuplicates(PrintStream out) {
         if (context.isVerbose() || context.isRemoveDuplicates()) {
             for (DuplicateSet duplicateSet : duplicateSets) {
-                int index = duplicateSets.indexOf(duplicateSet) + 1;
-                List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
-                long fileLength = duplicatedFiles.get(0).getFileLength();
-                int duplicateTime = duplicatedFiles.size() - 1;
-                long wastedSpace = duplicateSet.getWastedSpace();
-                out.printf("- Duplicate set #%d: duplicated %d %s, %s each, %s of wasted space%n",
-                    index, duplicateTime, plural("time", duplicateTime),
-                    byteCountToDisplaySize(fileLength), byteCountToDisplaySize(wastedSpace));
-
-                if (context.isRemoveDuplicates()) {
-                    selectFilesToRemove(context, duplicatedFiles);
-                }
-
-                String action;
-                for (FileState fileState : duplicatedFiles) {
-                    action = "   ";
-                    if (fileState.isToRemove()) {
-                        if (removeFile(context, context.getRepositoryRootDir(), fileState)) {
-                            action = "[-]";
-                            filesRemoved++;
-                            spaceFreed += fileState.getFileLength();
-                        }
-                    }
-                    out.printf("  %s %s%n", action, fileState.getFileName());
-                }
-                Console.newLine();
+                manageDuplicateSet(out, duplicateSet);
             }
         }
 
@@ -117,6 +92,33 @@ public class DuplicateResult {
             }
         }
         return this;
+    }
+
+    private void manageDuplicateSet(PrintStream out, DuplicateSet duplicateSet) {
+        int index = duplicateSets.indexOf(duplicateSet) + 1;
+        List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
+        long fileLength = duplicatedFiles.get(0).getFileLength();
+        int duplicateTime = duplicatedFiles.size() - 1;
+        long wastedSpace = duplicateSet.getWastedSpace();
+        out.printf("- Duplicate set #%d: duplicated %d %s, %s each, %s of wasted space%n",
+            index, duplicateTime, plural("time", duplicateTime),
+            byteCountToDisplaySize(fileLength), byteCountToDisplaySize(wastedSpace));
+
+        if (context.isRemoveDuplicates()) {
+            selectFilesToRemove(context, duplicatedFiles);
+        }
+
+        String action;
+        for (FileState fileState : duplicatedFiles) {
+            action = "   ";
+            if (fileState.isToRemove() && removeFile(context, context.getRepositoryRootDir(), fileState)) {
+                action = "[-]";
+                filesRemoved++;
+                spaceFreed += fileState.getFileLength();
+            }
+            out.printf("  %s %s%n", action, fileState.getFileName());
+        }
+        Console.newLine();
     }
 
     private void selectFilesToRemove(Context context, List<FileState> duplicatedFiles) {
