@@ -56,7 +56,7 @@ public class DuplicateResult {
         if (context.isVerbose()) {
             for (DuplicateSet duplicateSet : duplicateSets) {
                 System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
-                long wastedSpace = getWastedSpace(duplicateSet);
+                long wastedSpace = duplicateSet.getWastedSpace();
                 System.out.printf("- Duplicate set #%d, %s of wasted space%n", duplicateSets.indexOf(duplicateSet) + 1, FileUtils.byteCountToDisplaySize(wastedSpace));
                 List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
                 for (FileState fileState : duplicatedFiles) {
@@ -88,17 +88,6 @@ public class DuplicateResult {
 
     public long getTotalWastedSpace() {
         return totalWastedSpace;
-    }
-
-    public long getWastedSpace(DuplicateSet duplicateSet) {
-        long wastedSpace = 0;
-        List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
-        for (FileState fileState : duplicatedFiles) {
-            if (duplicatedFiles.indexOf(fileState) > 0) {
-                wastedSpace += fileState.getFileLength();
-            }
-        }
-        return wastedSpace;
     }
 
     public List<DuplicateSet> getDuplicateSets() {

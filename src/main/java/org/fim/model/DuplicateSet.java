@@ -21,18 +21,34 @@ package org.fim.model;
 import com.google.common.base.MoreObjects;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class DuplicateSet {
     private List<FileState> duplicatedFiles;
+    private long wastedSpace;
 
     public DuplicateSet(List<FileState> duplicatedFiles) {
         this.duplicatedFiles = new ArrayList<>(duplicatedFiles);
+        computeWastedSpace();
     }
 
     public List<FileState> getDuplicatedFiles() {
-        return duplicatedFiles;
+        return Collections.unmodifiableList(duplicatedFiles);
+    }
+
+    public long getWastedSpace() {
+        return wastedSpace;
+    }
+
+    private void computeWastedSpace() {
+        wastedSpace = 0;
+        for (FileState fileState : duplicatedFiles) {
+            if (duplicatedFiles.indexOf(fileState) > 0) {
+                wastedSpace += fileState.getFileLength();
+            }
+        }
     }
 
     @Override

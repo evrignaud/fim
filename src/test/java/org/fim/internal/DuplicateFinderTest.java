@@ -42,7 +42,7 @@ public class DuplicateFinderTest extends DuplicateAssert {
         DuplicateResult result = cut.findDuplicates(s);
         int totalWastedSpace = "file_10".length();
         assertThat(result.getDuplicateSets().size()).isEqualTo(1);
-        assertThat(result.getWastedSpace(result.getDuplicateSets().get(0))).isEqualTo(totalWastedSpace);
+        assertThat(result.getDuplicateSets().get(0).getWastedSpace()).isEqualTo(totalWastedSpace);
         assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10"));
         assertThat(result.getTotalWastedSpace()).isEqualTo(totalWastedSpace);
 
@@ -50,7 +50,7 @@ public class DuplicateFinderTest extends DuplicateAssert {
         result = cut.findDuplicates(s);
         totalWastedSpace = ("file_10" + "file_11").length();
         assertThat(result.getDuplicateSets().size()).isEqualTo(1);
-        assertThat(result.getWastedSpace(result.getDuplicateSets().get(0))).isEqualTo(totalWastedSpace);
+        assertThat(result.getDuplicateSets().get(0).getWastedSpace()).isEqualTo(totalWastedSpace);
         assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10", "file_11"));
         assertThat(result.getTotalWastedSpace()).isEqualTo(totalWastedSpace);
 
@@ -60,8 +60,8 @@ public class DuplicateFinderTest extends DuplicateAssert {
         int wastedSpace2 = "file_08_".length();
         totalWastedSpace = wastedSpace1 + wastedSpace2;
         assertThat(result.getDuplicateSets().size()).isEqualTo(2);
-        assertThat(result.getWastedSpace(result.getDuplicateSets().get(0))).isEqualTo(wastedSpace1);
-        assertThat(result.getWastedSpace(result.getDuplicateSets().get(1))).isEqualTo(wastedSpace2);
+        assertThat(result.getDuplicateSets().get(0).getWastedSpace()).isEqualTo(wastedSpace1);
+        assertThat(result.getDuplicateSets().get(1).getWastedSpace()).isEqualTo(wastedSpace2);
         assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10", "file_11"), duplicatedFiles("file_02_", "file_08_"));
         assertThat(result.getTotalWastedSpace()).isEqualTo(totalWastedSpace);
     }
