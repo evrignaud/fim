@@ -42,7 +42,7 @@ If you don't have the Fim Docker image locally it will pull the image first.
 $ ./fim-docker -h
 ----
 
-If you want to be sure the have the latest version of the Fim Docker image you can pull it manually:
+If you want to use the latest version of the Fim Docker image you can pull it manually:
 
 [source, bash]
 ----

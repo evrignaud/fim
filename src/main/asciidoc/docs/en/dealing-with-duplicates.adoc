@@ -9,12 +9,6 @@ See it in action in <<simple-example.adoc#_search_for_duplicated_files,Search fo
 
 If you want to remove them, Fim won't do it. It does not provide a smart way to remove duplicates inside the same repository.
 
-[NOTE]
-====
-If you wan't to force to remove duplicates you can copy the `.fim` directory outside the repository and use the `rdup` command. +
-See below for details.
-====
-
 == Duplicates that are outside
 
 You can use Fim to remove duplicated files that are located outside a Fim repository using the `rdup` command.

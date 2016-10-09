@@ -114,7 +114,7 @@ Fim is meant to solve that.
 Each time you have a stable set of files you can commit them to store their properties into a State and be able to compare it with your set of files later.
 
 The big difference with Git is that Fim does not keep track of the different contents of the files that are managed. +
-This is why we can call it an Unversioned Control System (UVCS).
+This is why we can call it an UnVersioned Control System (UVCS).
 
 Fim is able to manage hundreds of thousands of files with a total size of several terabytes.
 This kind of file tree could not be managed by Git.

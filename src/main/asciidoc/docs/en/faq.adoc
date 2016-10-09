@@ -32,6 +32,17 @@ For example:
 $ fim st -i attrs,dates,renamed
 ----
 
+== Ignoring files or directories
+
+You can specify files or directories that you want to be ignored by Fim.
+For this, you can add a `.fimignore` file in one of the directories contained into the Fim repository. +
+You can also set global ignores by creating a `.fimignore` into the user home directory.
+
+Each line of the `.fimignore` file specifies a pattern. The pattern is mainly a file or directory name. +
+Use wildcards in order to match many of them. For example `\*.mp3` will match all the files ending with `.mp3`. +
+A leading `*\*` followed by a slash means match in all directories. +
+For example, `**/foo` matches a file or a directory named `foo` anywhere, starting from where the `.fimignore` contain this pattern.
+
 == Changing default hash mode
 
 If you never want to hash the complete content of your files you can set a global hash mode that will indicate the maximum hash mode you want to use for this repository.
@@ -63,17 +74,6 @@ $ fim st -s
 
 $ fim st -n
 ----
-
-== Ignoring files or directories
-
-You can specify files or directories that you want to be ignored by Fim.
-For this, you can add a `.fimignore` file in one of the directories contained into the Fim repository. +
-You can also set global ignores by creating a `.fimignore` into the user home directory.
-
-Each line of the `.fimignore` file specifies a pattern. The pattern is mainly a file or directory name. +
-Use wildcards in order to match many of them. For example `\*.mp3` will match all the files ending with `.mp3`. +
-A leading `*\*` followed by a slash means match in all directories. +
-For example, `**/foo` matches a file or a directory named `foo` anywhere, starting from where the `.fimignore` contain this pattern.
 
 == Hash files in multi-thread
 

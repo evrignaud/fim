@@ -118,7 +118,7 @@ public class Fim {
         opts.addOption(buildOption("h", "help", "Prints the Fim help").build());
         opts.addOption(buildOption("i", "ignore", "Ignore some difference during State comparison. You can ignore:\n" +
             "- attrs: File attributes\n" +
-            "- dates: Modification dates\n" +
+            "- dates: Modification and creation dates\n" +
             "- renamed: Renamed files\n" +
             "- all: All of the above\n" +
             "You can specify multiple kind of difference to ignore separated by a comma.\n" +
