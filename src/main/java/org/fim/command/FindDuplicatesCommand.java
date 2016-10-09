@@ -60,7 +60,7 @@ public class FindDuplicatesCommand extends AbstractCommand {
         }
 
         DuplicateResult result = new DuplicateFinder(context).findDuplicates(state);
-        result.displayDuplicates();
+        result.displayDuplicates(System.out);
         return result;
     }
 }

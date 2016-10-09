@@ -18,14 +18,15 @@
  */
 package org.fim.model;
 
-import org.apache.commons.io.FileUtils;
 import org.fim.util.Console;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static org.atteo.evo.inflector.English.plural;
 
 public class DuplicateResult {
@@ -60,20 +61,19 @@ public class DuplicateResult {
         Collections.sort(duplicateSets, wastedSpaceDescendingComparator);
     }
 
-    public DuplicateResult displayDuplicates() {
+    public DuplicateResult displayDuplicates(PrintStream out) {
         if (context.isVerbose()) {
             for (DuplicateSet duplicateSet : duplicateSets) {
-                System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
-                long wastedSpace = duplicateSet.getWastedSpace();
-                System.out.printf("- Duplicate set #%d, %s of wasted space%n", duplicateSets.indexOf(duplicateSet) + 1, FileUtils.byteCountToDisplaySize(wastedSpace));
+                int index = duplicateSets.indexOf(duplicateSet) + 1;
                 List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
+                long fileLength = duplicatedFiles.get(0).getFileLength();
+                int duplicateTime = duplicatedFiles.size() - 1;
+                long wastedSpace = duplicateSet.getWastedSpace();
+                out.printf("- Duplicate set #%d: duplicated %d %s, %s each, %s of wasted space%n",
+                    index, duplicateTime, plural("time", duplicateTime),
+                    byteCountToDisplaySize(fileLength), byteCountToDisplaySize(wastedSpace));
                 for (FileState fileState : duplicatedFiles) {
-                    if (duplicatedFiles.indexOf(fileState) == 0) {
-                        int duplicateTime = duplicatedFiles.size() - 1;
-                        System.out.printf("  %s duplicated %d %s%n", fileState.getFileName(), duplicateTime, plural("time", duplicateTime));
-                    } else {
-                        System.out.printf("      %s - %s%n", FileUtils.byteCountToDisplaySize(fileState.getFileLength()), fileState.getFileName());
-                    }
+                    out.printf("      %s%n", fileState.getFileName());
                 }
                 Console.newLine();
             }
@@ -81,11 +81,11 @@ public class DuplicateResult {
 
         if (duplicatedFilesCount > 0) {
             int duplicateCount = duplicateSets.size();
-            System.out.printf("%d duplicated %s spread into %d duplicate %s, %s of total wasted space%n",
+            out.printf("%d duplicated %s spread into %d duplicate %s, %s of total wasted space%n",
                 duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount),
-                duplicateCount, plural("set", duplicateCount), FileUtils.byteCountToDisplaySize(totalWastedSpace));
+                duplicateCount, plural("set", duplicateCount), byteCountToDisplaySize(totalWastedSpace));
         } else {
-            System.out.println("No duplicated file found");
+            out.println("No duplicated file found");
         }
         return this;
     }

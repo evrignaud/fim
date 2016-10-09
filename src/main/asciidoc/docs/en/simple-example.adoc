@@ -186,16 +186,14 @@ simple-example$ fim fdup
 .
 2016/05/09 21:58:37 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-- Duplicate set #1, 12 bytes of wasted space
-  file07 duplicated 1 time
-      12 bytes - file07.dup1
+- Duplicate set #1: duplicated 2 times, 12 bytes each, 24 bytes of wasted space
+      file03
+      file03.dup1
+      file03.dup2
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-- Duplicate set #2, 24 bytes of wasted space
-  file03 duplicated 2 times
-      12 bytes - file03.dup1
-      12 bytes - file03.dup2
+- Duplicate set #2: duplicated 1 time, 12 bytes each, 12 bytes of wasted space
+      file07
+      file07.dup1
 
 3 duplicated files spread into 2 duplicate sets, 36 bytes of total wasted space
 ----

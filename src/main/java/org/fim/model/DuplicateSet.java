@@ -31,7 +31,7 @@ public class DuplicateSet {
 
     public DuplicateSet(List<FileState> duplicatedFiles) {
         this.duplicatedFiles = new ArrayList<>(duplicatedFiles);
-        computeWastedSpace();
+        wastedSpace = (this.duplicatedFiles.size() - 1) * this.duplicatedFiles.get(0).getFileLength();
     }
 
     public List<FileState> getDuplicatedFiles() {
@@ -40,15 +40,6 @@ public class DuplicateSet {
 
     public long getWastedSpace() {
         return wastedSpace;
-    }
-
-    private void computeWastedSpace() {
-        wastedSpace = 0;
-        for (FileState fileState : duplicatedFiles) {
-            if (duplicatedFiles.indexOf(fileState) > 0) {
-                wastedSpace += fileState.getFileLength();
-            }
-        }
     }
 
     @Override
