@@ -92,9 +92,9 @@ public abstract class AbstractCommand implements Command {
 
         Logger.out.printf("Do you really want to %s (y/n/A)? ", action);
         String str = scanner.next();
-        if (str.equalsIgnoreCase("y")) {
+        if ("y".equalsIgnoreCase(str)) {
             return true;
-        } else if (str.equals("A")) {
+        } else if ("A".equals(str)) {
             context.setAlwaysYes(true);
             return true;
         }
