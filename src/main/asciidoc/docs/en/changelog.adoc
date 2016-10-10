@@ -14,7 +14,7 @@ https://github.com/evrignaud/fim/releases/tag/1.2.1[image:icons/package.png[Pack
 * Fix https://github.com/evrignaud/fim/issues/6[issue #6] - Add commitDetails into the State in order to display more details regarding each commit while running 'fim log'.
 The 'log' command displays now the same output as the 'status' command. It works completely with States generated with this version of Fim
 * Thanks to @ch3v, clarified the 'find-duplicates' command output and sort duplicate sets by wasted space to display the biggest first
-* Fim is now able to *remove duplicates* that are in the repository see more in <<dealing-with-duplicates.adoc#_delete_duplicates_from_a_workspace,Delete duplicates from a workspace>>
+* Fim is now able to *remove duplicates* that are in the repository see more in <<dealing-with-duplicates.adoc#_remove_duplicates,Remove duplicates>>
 * Add http://evrignaud.github.io/fim/slides/fr[French slides]
 
 === Bug fix
