@@ -54,3 +54,10 @@ In order to commit faster you can use the Super-fast commit. More details in <<i
 ----
 $ fim ci -s -c "My commit comment"
 ----
+
+You can display the history of the modifications using the `log` command.
+
+[source, bash]
+----
+$ fim log
+----
