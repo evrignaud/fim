@@ -2,7 +2,14 @@
 
 Fim can be used for different kind of use cases.
 
-== Binary Workspace management
+== Managing a workspace
+
+* Manage directories filled with binary. For example: pictures, music or movies
+
+* Know the status of a workspace in which we work episodically
+
+* Track changes over time
+
 Personally I use Fim to manage my photos and videos.
 When I have new photos, I put them at the right place in my pictures folder and then I do `fim&nbsp;ci` from the sub-directory
 containing the new photos to record a new State, as I could do with Git.
@@ -13,9 +20,16 @@ More details on using Fim from a sub-directory can be found in <<faq.adoc#_run_f
 
 The `fim status` command let me know when I want (even super quickly) if something changed in my pictures folder.
 
-== Duplicates removal
-I can easily identify and delete the photos I have duplicated on my drive or another computer with the command `fim rdup`. +
-For this, I just need to copy the `.fim` directory on the other computer. +
+== Duplicates detection and removal
+
+Fim detects duplicate files and distinguishes two cases:
+
+* Duplicates inside a Fim repository: +
+Fim can detect and remove them
+
+* Duplicates that are outside: +
+Useful to cleanup desynchronized old backups
+
 More details in <<dealing-with-duplicates.adoc#_dealing_with_duplicates,Dealing with duplicates>>.
 
 == Backup integrity

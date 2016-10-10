@@ -174,12 +174,12 @@ Deleted:          file06
 1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 1 renamed, 1 deleted
 ----
 
-=== Search for duplicated files
+=== Search for duplicate files
 
 [source, bash]
 ----
 simple-example$ fim fdup
-2016/05/09 21:58:37 - Info  - Searching for duplicated files
+2016/05/09 21:58:37 - Info  - Searching for duplicate files
 
 2016/05/09 21:58:37 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
@@ -195,7 +195,7 @@ simple-example$ fim fdup
       file07
       file07.dup1
 
-3 duplicated files spread into 2 duplicate sets, 36 bytes of total wasted space
+3 duplicate files spread into 2 duplicate sets, 36 bytes of total wasted space
 ----
 
 === From the `dir01` sub-directory
@@ -225,18 +225,18 @@ Added:            dir01/file01
 1 added
 ----
 
-There are no duplicated file as we are looking only inside `dir01`.
+There are no duplicate file as we are looking only inside `dir01`.
 
 [source, bash]
 ----
 simple-example/dir01$ fim fdup
-2016/05/09 21:58:37 - Info  - Searching for duplicated files
+2016/05/09 21:58:37 - Info  - Searching for duplicate files
 
 2016/05/09 21:58:37 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
 2016/05/09 21:58:38 - Info  - Scanned 1 file (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-No duplicated file found
+No duplicate file found
 ----
 
 Commit only the local modifications done inside this directory.

@@ -62,7 +62,8 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Remove duplicated files from local directory based on a remote master Fim repository";
+        return "Remove duplicates found by the 'fdup' command.\n" +
+            "                                If you specify the '-m' option it removes duplicates based on a master repository";
     }
 
     @Override
@@ -112,7 +113,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
         }
         context.setRepositoryRootDir(masterFimRepository);
 
-        Logger.info(String.format("Searching for duplicated files using the %s directory as master", context.getMasterFimRepositoryDir()));
+        Logger.info(String.format("Searching for duplicate files using the %s directory as master", context.getMasterFimRepositoryDir()));
         Logger.newLine();
 
         State masterState = new StateManager(context).loadLastState();
@@ -142,13 +143,13 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
 
         if (totalFilesRemoved == 0) {
             if (duplicatedFilesCount == 0) {
-                Logger.out.println("No duplicated file found");
+                Logger.out.println("No duplicate file found");
             } else {
-                Logger.out.printf("Found %d duplicated %s. No files removed%n", duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount));
+                Logger.out.printf("Found %d duplicate %s. No files removed%n", duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount));
             }
         } else {
             Logger.newLine();
-            Logger.out.printf("%d duplicated %s found. %d duplicated %s removed%n",
+            Logger.out.printf("%d duplicate %s found. %d duplicate %s removed%n",
                 duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount),
                 totalFilesRemoved, pluralForLong("file", totalFilesRemoved));
         }

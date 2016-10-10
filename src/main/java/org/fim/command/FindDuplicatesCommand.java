@@ -39,7 +39,7 @@ public class FindDuplicatesCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Find local duplicated files in the Fim repository";
+        return "Find local duplicate files in the Fim repository";
     }
 
     @Override
@@ -48,7 +48,7 @@ public class FindDuplicatesCommand extends AbstractCommand {
 
         fileContentHashingMandatory(context);
 
-        Logger.info(String.format("Searching for duplicated files%s", context.isUseLastState() ? " from the last committed State" : ""));
+        Logger.info(String.format("Searching for duplicate files%s", context.isUseLastState() ? " from the last committed State" : ""));
         Logger.newLine();
 
         State state;

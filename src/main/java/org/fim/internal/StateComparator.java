@@ -282,7 +282,7 @@ public class StateComparator {
                 }
                 List<FileState> removed = notFoundInCurrentFileStateList.removeAll(originalFileHash);
                 if (removed != null && removed.size() > 0) {
-                    // Used to check other duplicated files that have been renamed
+                    // Used to check other duplicate files that have been renamed
                     foundInPreviousState.put(originalFileHash, originalFileState);
                 }
             } else {

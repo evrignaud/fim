@@ -1,18 +1,71 @@
 = Dealing with duplicates
 
-Duplicated files are addressed by Fim in two different ways.
+Duplicate files are addressed by Fim in two different ways.
 
 == Duplicates inside a Fim repository
 
-Fim allow you to detect duplicates using the `fdup` command. It displays the list of duplicated files. +
-See it in action in <<simple-example.adoc#_search_for_duplicated_files,Search for duplicated files>>.
+Fim allow you to detect duplicates using the `fdup` command.
 
-If you want to remove them, Fim won't do it. It does not provide a smart way to remove duplicates inside the same repository.
+You can also remove them.
+
+=== Find duplicates
+
+Fim is able to display duplicates contained in a repository using the `fdup` (`find-duplicates`) command.
+It displays the list of duplicate files. +
+See it in action in <<simple-example.adoc#_search_for_duplicate_files,Search for duplicate files>>.
+
+[source, bash]
+----
+$ fim fdup
+----
+
+If the current State is already commited, you can skip the workspace scanning phase with the `-l` option :
+
+[source, bash]
+----
+$ fim fdup -l
+----
+
+=== Remove duplicates
+
+You can remove duplicate files.
+
+* Either interactive:
+
+[source, bash]
+----
+$ fim rdup
+----
+
+• Or automatically preserving the first file in the list:
+
+[source, bash]
+----
+$ fim rdup -y
+----
+
+In both cases, it is possible to use the current State as with `fdup` by adding the `-l` option:
+
+[source, bash]
+----
+$ fim rdup -l
+----
 
 == Duplicates that are outside
 
-You can use Fim to remove duplicated files that are located outside a Fim repository using the `rdup` command.
-It can be useful if you want to cleanup old backups that are no more synchronized and you want to be sure to not lose any files that could have been modified or added.
+Fim can delete duplicate files contained in another repository. +
+It can be useful if you want to cleanup old backups that are no more synchronized and you want to be sure to not lose any files that could have been modified or added. +
+It erases all files locally that already exist in the master workspace.
+
+For example, `backup` is a copy of the repository named `source` :
+
+[source, bash]
+----
+$ cd backup
+$ fim rdup -m ../source
+----
+
+When the workspace to clean is remote, you can just copy the `.fim` in an empty directory and set it as parameter to the `-m` option of the `rdup` command
 
 === Simple duplicates removing
 
@@ -146,7 +199,7 @@ Do you really want to commit (y/n/A)? y
 ------
 ~/rdup-example/source$ cd ../backup/
 ~/rdup-example/backup$ fim rdup -m ../source
-2016/05/21 08:39:14 - Info  - Searching for duplicated files using the ../source directory as master
+2016/05/21 08:39:14 - Info  - Searching for duplicate files using the ../source directory as master
 
 2016/05/21 08:39:14 - Info  - Scanning recursively local files, using 'full' mode and 4 threads
 (Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
@@ -173,13 +226,13 @@ Do you really want to remove it (y/n/A)? A
 'file10' is a duplicate of '../source/file10'
   'file10' removed
 
-8 duplicated files found. 8 duplicated files removed
+8 duplicate files found. 8 duplicate files removed
 ------
 
 [IMPORTANT]
 =====
 When you are prompted with a question asking for (y/n/A) which means Yes, No, or All Yes. +
-All Yes will reply Yes to all the remaining questions. You can see it in action above.
+'All Yes' will reply Yes to all the remaining questions. You can see it in action above.
 =====
 
 ==== Only the two modified files remains

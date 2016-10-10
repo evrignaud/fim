@@ -107,7 +107,7 @@ public class Fim {
         opts.addOption(buildOption("d", "directory", "Run Fim into the specified directory").hasArg().build());
         opts.addOption(buildOption("e", "errors", "Display execution error details").build());
         opts.addOption(buildOption("m", "master-fim-repository", "Fim repository directory that you want to use as remote master.\n" +
-            "Only for the remove duplicated files command").hasArg().build());
+            "Only for the 'remove-duplicates' command").hasArg().build());
         opts.addOption(buildOption("n", "do-not-hash", "Do not hash file content. Uses only file names and modification dates").build());
         opts.addOption(buildOption("s", "super-fast-mode", "Use super-fast mode. Hash only 3 small blocks.\n" +
             "One at the beginning, one in the middle and one at the end").build());
@@ -122,7 +122,7 @@ public class Fim {
             "You can specify multiple kind of difference to ignore separated by a comma.\n" +
             "For example: -i attrs,dates,renamed").hasArg().valueSeparator(',').build());
         opts.addOption(buildOption("l", "use-last-state", "Use the last committed State.\n" +
-            "Only for the find local duplicated files command").build());
+            "Both for the 'find-duplicates' and 'remove-duplicates' commands").build());
         opts.addOption(buildOption("c", "comment", "Comment to set during init and commit").hasArg().build());
         opts.addOption(buildOption("o", "output-max-lines", "Change the maximum number lines displayed for the same kind of modification.\n" +
             "Default value is 200 lines").hasArg().build());

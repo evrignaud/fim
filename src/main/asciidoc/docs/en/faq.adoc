@@ -9,7 +9,7 @@ Doing this allow you to:
 
 - Quickly find the modifications done in this specific sub-directory. You will hash only the files contained inside and not the complete file tree
 - Quickly commit the modifications done in this sub-directory
-- Quickly find the duplicated files contained in this sub-directory
+- Quickly find the duplicate files contained in this sub-directory and remove them
 - Quickly reset the attributes of files contained in this sub-directory
 
 All the other commands will run as if you were on the top of the Fim repository.

@@ -75,20 +75,20 @@ public class DuplicateResult {
 
         if (filesRemoved == 0) {
             if (duplicatedFilesCount > 0) {
-                Logger.out.printf("%d duplicated %s, %s of total wasted space%n",
+                Logger.out.printf("%d duplicate %s, %s of total wasted space%n",
                     duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount), byteCountToDisplaySize(totalWastedSpace));
             } else {
-                Logger.out.println("No duplicated file found");
+                Logger.out.println("No duplicate file found");
             }
         } else {
             Logger.out.printf("Removed %d files and freed %s%n", filesRemoved, byteCountToDisplaySize(spaceFreed));
             long remainingDuplicates = duplicatedFilesCount - filesRemoved;
             long remainingWastedSpace = totalWastedSpace - spaceFreed;
             if (remainingDuplicates > 0) {
-                Logger.out.printf("Still have %d duplicated %s, %s of total wasted space%n",
+                Logger.out.printf("Still have %d duplicate %s, %s of total wasted space%n",
                     remainingDuplicates, pluralForLong("file", remainingDuplicates), byteCountToDisplaySize(remainingWastedSpace));
             } else {
-                Logger.out.println("No duplicated file remains");
+                Logger.out.println("No duplicate file remains");
             }
         }
         return this;

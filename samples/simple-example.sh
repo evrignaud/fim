@@ -91,7 +91,7 @@ set -x
 	fim st || exit $?
 
 	echo
-	echo \# Search for duplicated files
+	echo \# Search for duplicate files
 	fim fdup || exit $?
 
 	echo
@@ -103,7 +103,7 @@ set -x
 	fim st || exit $?
 
 	echo
-	echo \# No duplicated files as we are looking only inside the dir01
+	echo \# No duplicate files as we are looking only inside the dir01
 	fim fdup || exit $?
 
 	echo
