@@ -2,7 +2,8 @@
 
 # Supported tags and respective Dockerfile links
 
-* `latest`, `1.2.0` ([Dockerfile](https://github.com/evrignaud/fim/blob/1.2.0/Dockerfile))
+* `latest`, `1.2.1` ([Dockerfile](https://github.com/evrignaud/fim/blob/1.2.1/Dockerfile))
+* `1.2.0` ([Dockerfile](https://github.com/evrignaud/fim/blob/1.2.0/Dockerfile))
 
 [![Latest version](https://images.microbadger.com/badges/version/evrignaud/fim.svg)](https://microbadger.com/images/evrignaud/fim) &nbsp; [![Download size](https://images.microbadger.com/badges/image/evrignaud/fim.svg)](https://microbadger.com/images/evrignaud/fim)
 
