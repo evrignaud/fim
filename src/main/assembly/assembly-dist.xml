@@ -54,5 +54,12 @@
                 <include>*.css</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>target/slides</directory>
+            <outputDirectory>slides</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
     </fileSets>
 </assembly>
