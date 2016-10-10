@@ -1,0 +1,148 @@
+@import 'https://fonts.googleapis.com/css?family=Roboto';
+@import 'https://fonts.googleapis.com/css?family=Source+Sans+Pro';
+
+.reveal {
+    font-family: Roboto, sans-serif;
+    letter-spacing: 0;
+}
+
+.reveal .pause-overlay {
+    background: #aed9e4;
+}
+
+.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+    font-family: Roboto, sans-serif;
+    text-transform: none;
+    letter-spacing: 0;
+    line-height: 1em;
+}
+
+.reveal tt, .reveal code, .reveal pre,
+.reveal code[class*="language-"], .reveal pre[class*="language-"] {
+    font-family: "Source Code Pro", Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8em;
+    line-height: 1.3em;
+}
+
+.reveal h1, .reveal h2 {
+    color: #005d9e;
+}
+
+.reveal h2 code {
+    font-size: 1em;
+}
+
+#intro h1 {
+    font-size: 3.77em;
+}
+
+#intro h2 {
+    font-size: 2.11em;
+}
+
+.reveal h1 {
+    font-size: 3.77em;
+}
+
+.reveal h2 {
+    font-size: 1.55em;
+}
+
+.reveal h3 {
+    font-size: 1em;
+}
+
+.reveal p {
+    font-size: 0.8em;
+}
+
+.language-bash:before {
+    content: "$ ";
+}
+
+img.logo {
+    vertical-align: middle;
+    max-height: 60px;
+}
+
+img.logo.big {
+    max-height: 120px;
+}
+
+.reveal p {
+    margin: 15px 0;
+    line-height: 1.2;
+    text-align: left;
+}
+
+.reveal .text-centered {
+    text-align: center;
+}
+
+.reveal pre {
+    width: 100%;
+}
+
+.reveal pre code {
+    max-height: 600px;
+    line-height: 1em;
+    background: white;
+}
+
+.reveal section img {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.reveal .slides > section, .reveal .slides > section > section {
+    padding: 0px 0px;
+}
+
+.reveal section img {
+    margin: 0px 0px;
+}
+
+.reveal img, .reveal video, .reveal iframe {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+    font-weight: normal;
+    line-height: 0.9em;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    text-shadow: none;
+    word-wrap: break-word;
+    margin: 0 0 30px 0;
+}
+
+.reveal h1 {
+    font-size: 1.6em;
+}
+
+.reveal h2 {
+    font-size: 1.3em;
+}
+
+.reveal pre code {
+    max-height: 650px;
+}
+
+.reveal .progress {
+    height: 8px;
+}
+
+.reveal a {
+    line-height: 1em;
+}
+
+.reveal blockquote {
+    width: 95%;
+}
