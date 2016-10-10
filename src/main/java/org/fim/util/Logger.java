@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Logger {
+    public static PrintStream out = System.out;
+
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public static String getCurrentDate() {
@@ -60,6 +62,10 @@ public class Logger {
         writeLogMessage(getCurrentDate() + " - Error - " + message);
     }
 
+    public static void newLine() {
+        out.println("");
+    }
+
     private static String exceptionStackTraceToString(Exception ex) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PrintStream ps = new PrintStream(baos);
@@ -71,7 +77,7 @@ public class Logger {
     }
 
     private static void writeLogMessage(String message) {
-        System.out.println(message);
-        System.out.flush();
+        out.println(message);
+        out.flush();
     }
 }

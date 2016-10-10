@@ -19,6 +19,7 @@
 package org.fim.command;
 
 import org.fim.model.Context;
+import org.fim.util.Logger;
 
 public class VersionCommand extends AbstractCommand {
     @Override
@@ -48,7 +49,7 @@ public class VersionCommand extends AbstractCommand {
             implementationVersion = "dev";
         }
 
-        System.out.println("Fim version " + implementationVersion);
+        Logger.out.println("Fim version " + implementationVersion);
         return null;
     }
 }

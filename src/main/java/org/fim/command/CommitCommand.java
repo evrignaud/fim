@@ -33,7 +33,6 @@ import org.fim.model.HashMode;
 import org.fim.model.Modification;
 import org.fim.model.ModificationCounts;
 import org.fim.model.State;
-import org.fim.util.Console;
 import org.fim.util.Logger;
 
 import java.security.NoSuchAlgorithmException;
@@ -86,14 +85,14 @@ public class CommitCommand extends AbstractCommand {
         adjustThreadCount(context);
 
         if (context.getComment().length() == 0) {
-            System.out.println("No comment provided. You are going to commit your modifications without any comment.");
+            Logger.out.println("No comment provided. You are going to commit your modifications without any comment.");
             if (!confirmAction(context, "continue")) {
                 throw new DontWantToContinueException();
             }
         }
 
         manager = new StateManager(context);
-        State currentState = new StateGenerator(context).generateState(System.out, context.getComment(), context.getRepositoryRootDir(), context.getCurrentDirectory());
+        State currentState = new StateGenerator(context).generateState(context.getComment(), context.getRepositoryRootDir(), context.getCurrentDirectory());
         State lastState = manager.loadLastState();
         State lastStateToCompare = lastState;
 
@@ -106,9 +105,9 @@ public class CommitCommand extends AbstractCommand {
             lastStateToCompare = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
         }
 
-        CompareResult result = new StateComparator(context, lastStateToCompare, currentState).compare().displayChanges(System.out);
+        CompareResult result = new StateComparator(context, lastStateToCompare, currentState).compare().displayChanges();
         if (result.somethingModified()) {
-            Console.newLine();
+            Logger.newLine();
             if (confirmAction(context, "commit")) {
                 commitModifications(context, currentState, lastState, result);
             } else {

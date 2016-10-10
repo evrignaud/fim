@@ -59,7 +59,7 @@ public class InitCommand extends AbstractCommand {
     @Override
     public Object execute(Context context) throws Exception {
         if (context.getComment().length() == 0) {
-            System.out.println("No comment provided. You are going to initialize your repository using the default comment.");
+            Logger.out.println("No comment provided. You are going to initialize your repository using the default comment.");
             if (!confirmAction(context, "continue")) {
                 throw new DontWantToContinueException();
             }
@@ -69,9 +69,9 @@ public class InitCommand extends AbstractCommand {
         if (comment.length() == 0) {
             comment = "Initial State";
         }
-        State currentState = new StateGenerator(context).generateState(System.out, comment, context.getCurrentDirectory(), context.getCurrentDirectory());
+        State currentState = new StateGenerator(context).generateState(comment, context.getCurrentDirectory(), context.getCurrentDirectory());
 
-        CompareResult result = new StateComparator(context, null, currentState).compare().displayChanges(System.out);
+        CompareResult result = new StateComparator(context, null, currentState).compare().displayChanges();
         currentState.setModificationCounts(result.getModificationCounts());
 
         createRepository(context);

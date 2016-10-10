@@ -22,9 +22,8 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.fim.model.Constants;
 import org.fim.model.Context;
-import org.fim.util.Console;
+import org.fim.util.Logger;
 
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,21 +57,21 @@ public class HashProgress {
         fileCount = 0;
     }
 
-    synchronized void updateOutput(PrintStream out, long fileSize) {
+    synchronized void updateOutput(long fileSize) {
         fileCount++;
 
         if (isProgressDisplayed()) {
             summedFileLength += fileSize;
 
             if (fileCount % PROGRESS_DISPLAY_FILE_COUNT == 0) {
-                out.print(getProgressChar(summedFileLength));
+                Logger.out.print(getProgressChar(summedFileLength));
                 summedFileLength = 0;
             }
         }
 
         if (fileCount % (hashProgressWidth * PROGRESS_DISPLAY_FILE_COUNT) == 0) {
             if (isProgressDisplayed()) {
-                Console.newLine();
+                Logger.newLine();
             }
         }
     }
@@ -112,7 +111,7 @@ public class HashProgress {
     public synchronized void outputStop() {
         if (isProgressDisplayed()) {
             if (fileCount >= PROGRESS_DISPLAY_FILE_COUNT) {
-                Console.newLine();
+                Logger.newLine();
             }
         }
     }

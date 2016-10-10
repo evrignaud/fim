@@ -349,7 +349,7 @@ public class StateComparator {
 
     private void logDebug(String message) {
         if (context.isLogDebugEnabled()) {
-            System.out.println(message);
+            Logger.out.println(message);
         }
     }
 

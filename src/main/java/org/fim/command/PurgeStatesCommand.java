@@ -73,7 +73,7 @@ public class PurgeStatesCommand extends AbstractCommand {
         if (statesPurgedCount == 0) {
             Logger.info("No State to purge");
         } else {
-            System.out.printf("You are going to delete the %d previous State %s, keeping only the last one%n",
+            Logger.out.printf("You are going to delete the %d previous State %s, keeping only the last one%n",
                 statesPurgedCount, plural("file", statesPurgedCount));
             if (confirmAction(context, "remove them")) {
                 for (Path stateToDelete : statesToPurge) {

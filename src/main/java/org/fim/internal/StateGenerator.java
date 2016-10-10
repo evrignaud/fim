@@ -25,12 +25,10 @@ import org.fim.model.Context;
 import org.fim.model.FileState;
 import org.fim.model.FimIgnore;
 import org.fim.model.State;
-import org.fim.util.Console;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -77,14 +75,14 @@ public class StateGenerator {
         this.fimIgnoreManager = new FimIgnoreManager(context);
     }
 
-    public State generateState(PrintStream out, String comment, Path rootDir, Path dirToScan) throws NoSuchAlgorithmException {
+    public State generateState(String comment, Path rootDir, Path dirToScan) throws NoSuchAlgorithmException {
         this.rootDir = rootDir;
 
         int threadCount = context.getThreadCount();
         Logger.info(String.format("Scanning recursively local files, using '%s' mode and %d %s",
             hashModeToString(context.getHashMode()), threadCount, plural("thread", threadCount)));
         if (hashProgress.isProgressDisplayed()) {
-            out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgress.hashLegend());
+            Logger.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgress.hashLegend());
         }
 
         State state = new State();
@@ -199,7 +197,7 @@ public class StateGenerator {
                 }
             }
         } catch (IOException ex) {
-            Console.newLine();
+            Logger.newLine();
             Logger.error("Skipping - Error scanning directory '" + directory + "'", ex, context.isDisplayStackTrace());
         }
     }

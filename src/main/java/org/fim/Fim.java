@@ -48,10 +48,8 @@ import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
 import org.fim.model.Context;
 import org.fim.model.Ignored;
-import org.fim.util.Console;
 import org.fim.util.Logger;
 
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -338,7 +336,7 @@ public class Fim {
         throw new BadFimUsageException();
     }
 
-    public void printUsage(PrintStream out) {
+    public void printUsage() {
         StringBuilder usage = new StringBuilder();
         usage.append("\n");
         usage.append("File Integrity Checker\n");
@@ -357,12 +355,12 @@ public class Fim {
         usage.append("\n");
         usage.append("Available options:\n");
 
-        PrintWriter writer = new PrintWriter(out);
+        PrintWriter writer = new PrintWriter(Logger.out);
         HelpFormatter helpFormatter = new HelpFormatter();
 
-        Console.newLine();
+        Logger.newLine();
         helpFormatter.printHelp(writer, 120, "fim <command>", usage.toString(), options, 5, 3, "", true);
         writer.flush();
-        Console.newLine();
+        Logger.newLine();
     }
 }

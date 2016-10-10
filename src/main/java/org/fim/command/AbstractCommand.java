@@ -90,7 +90,7 @@ public abstract class AbstractCommand implements Command {
             return true;
         }
 
-        System.out.printf("Do you really want to %s (y/n/A)? ", action);
+        Logger.out.printf("Do you really want to %s (y/n/A)? ", action);
         String str = scanner.next();
         if (str.equalsIgnoreCase("y")) {
             return true;

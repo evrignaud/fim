@@ -50,7 +50,7 @@ public class HelpCommand extends AbstractCommand {
 
     @Override
     public Object execute(Context context) throws Exception {
-        fim.printUsage(System.out);
+        fim.printUsage();
         return null;
     }
 }

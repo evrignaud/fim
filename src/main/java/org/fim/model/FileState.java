@@ -172,7 +172,7 @@ public class FileState implements Hashable {
 
     /**
      * @deprecated hashCode() should not be used, because there is a big risk of hash collision. Use longHashCode() instead.
-     *             Those hash collision appears when you manage millions of FileStates.
+     * Those hash collision appears when you manage millions of FileStates.
      */
     @Override
     @Deprecated

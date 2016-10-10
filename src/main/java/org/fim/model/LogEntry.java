@@ -18,7 +18,7 @@
  */
 package org.fim.model;
 
-import java.io.PrintStream;
+import org.fim.util.Logger;
 
 import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static org.atteo.evo.inflector.English.plural;
@@ -110,13 +110,13 @@ public class LogEntry {
         this.compareResult = compareResult;
     }
 
-    public void displayEntryHeader(PrintStream out) {
-        out.printf("- State #%d: %s (%d %s - %s - generated%s using hash mode %s)%n", getStateNumber(), formatDate(getTimestamp()),
+    public void displayEntryHeader() {
+        Logger.out.printf("- State #%d: %s (%d %s - %s - generated%s using hash mode %s)%n", getStateNumber(), formatDate(getTimestamp()),
             getFileCount(), plural("file", getFileCount()), byteCountToDisplaySize(getFilesContentLength()),
             commitDetails.getFromSubDirectory() != null ? " from " + commitDetails.getFromSubDirectory() : "",
             commitDetails.getHashModeUsedToGetTheStatus());
         if (getComment().length() > 0) {
-            out.printf("\tComment: %s%n", getComment());
+            Logger.out.printf("\tComment: %s%n", getComment());
         }
     }
 

@@ -27,7 +27,6 @@ import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.model.Range;
-import org.fim.util.Console;
 import org.fim.util.DosFilePermissions;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;
@@ -36,7 +35,6 @@ import sun.misc.Cleaner;
 import sun.nio.ch.DirectBuffer;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
@@ -94,7 +92,7 @@ public class FileHasher implements Runnable {
     public void run() {
         try {
             while (isQueueStillFilled()) {
-                hashFilesInQueue(System.out);
+                hashFilesInQueue();
                 if (isQueueStillFilled()) {
                     Thread.sleep(500);
                 }
@@ -104,7 +102,7 @@ public class FileHasher implements Runnable {
         }
     }
 
-    private void hashFilesInQueue(PrintStream out) throws InterruptedException {
+    private void hashFilesInQueue() throws InterruptedException {
         Path file;
         while ((file = filesToHashQueue.poll(100, TimeUnit.MILLISECONDS)) != null) {
             try {
@@ -124,7 +122,7 @@ public class FileHasher implements Runnable {
                     attributes = posixFileAttributes;
                 }
 
-                hashProgress.updateOutput(out, attributes.size());
+                hashProgress.updateOutput(attributes.size());
 
                 FileHash fileHash = hashFile(file, attributes.size());
                 String normalizedFileName = FileUtil.getNormalizedFileName(file);
@@ -132,7 +130,7 @@ public class FileHasher implements Runnable {
 
                 fileStates.add(new FileState(relativeFileName, attributes, fileHash, fileAttributes));
             } catch (Exception ex) {
-                Console.newLine();
+                Logger.newLine();
                 Logger.error("Skipping - Error hashing file '" + file + "'", ex, context.isDisplayStackTrace());
             }
         }

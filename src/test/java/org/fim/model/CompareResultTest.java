@@ -21,6 +21,7 @@ package org.fim.model;
 import org.fim.tooling.BuildableContext;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.StateAssert;
+import org.fim.util.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -114,40 +115,45 @@ public class CompareResultTest extends StateAssert {
         final AtomicBoolean called = new AtomicBoolean(false);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        PrintStream printStream = new PrintStream(outputStream);
+        PrintStream oldOut = Logger.out;
+        try {
+            Logger.out = new PrintStream(outputStream);
 
-        ArrayList<Difference> differences = new ArrayList<>();
-        String actionStr = "action: ";
-        Consumer<Difference> differenceConsumer = diff -> called.set(true);
+            ArrayList<Difference> differences = new ArrayList<>();
+            String actionStr = "action: ";
+            Consumer<Difference> differenceConsumer = diff -> called.set(true);
 
-        // No differences
-        context.setTruncateOutput(0);
-        displayDifferences(printStream, context, actionStr, differences, differenceConsumer);
-        assertThat(called.get()).isEqualTo(false);
-        assertThat(outputStream.toString()).isEqualTo("");
+            // No differences
+            context.setTruncateOutput(0);
+            displayDifferences(context, actionStr, differences, differenceConsumer);
+            assertThat(called.get()).isEqualTo(false);
+            assertThat(outputStream.toString()).isEqualTo("");
 
-        // Only one with output truncated
-        called.set(false);
-        differences.add(difference);
-        context.setTruncateOutput(0);
-        displayDifferences(printStream, context, actionStr, differences, differenceConsumer);
-        assertThat(called.get()).isEqualTo(false);
-        assertThat(outputStream.toString()).isEqualTo("");
+            // Only one with output truncated
+            called.set(false);
+            differences.add(difference);
+            context.setTruncateOutput(0);
+            displayDifferences(context, actionStr, differences, differenceConsumer);
+            assertThat(called.get()).isEqualTo(false);
+            assertThat(outputStream.toString()).isEqualTo("");
 
-        // Only one with output set to one line
-        called.set(false);
-        context.setTruncateOutput(1);
-        displayDifferences(printStream, context, actionStr, differences, differenceConsumer);
-        assertThat(called.get()).isEqualTo(true);
-        assertThat(outputStream.toString()).isEqualTo("");
+            // Only one with output set to one line
+            called.set(false);
+            context.setTruncateOutput(1);
+            displayDifferences(context, actionStr, differences, differenceConsumer);
+            assertThat(called.get()).isEqualTo(true);
+            assertThat(outputStream.toString()).isEqualTo("");
 
-        // Three differences with output set to 2 lines
-        differences.add(difference);
-        differences.add(difference);
-        called.set(false);
-        context.setTruncateOutput(2);
-        displayDifferences(printStream, context, actionStr, differences, differenceConsumer);
-        assertThat(called.get()).isEqualTo(true);
-        assertThat(outputStream.toString()).isEqualTo("  [Too many lines. Truncating the output] ..." + lineSeparator() + "action: 1 file more" + lineSeparator());
+            // Three differences with output set to 2 lines
+            differences.add(difference);
+            differences.add(difference);
+            called.set(false);
+            context.setTruncateOutput(2);
+            displayDifferences(context, actionStr, differences, differenceConsumer);
+            assertThat(called.get()).isEqualTo(true);
+            assertThat(outputStream.toString()).isEqualTo("  [Too many lines. Truncating the output] ..." + lineSeparator() + "action: 1 file more" + lineSeparator());
+        } finally {
+            Logger.out = oldOut;
+        }
     }
 }

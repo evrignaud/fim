@@ -22,7 +22,6 @@ import org.apache.commons.io.FileUtils;
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
 import org.fim.model.State;
-import org.fim.util.Console;
 import org.fim.util.Logger;
 
 import java.nio.file.Files;
@@ -61,15 +60,15 @@ public class DisplayIgnoredFilesCommand extends AbstractCommand {
         Path statFile = manager.getStateFile(lastStateNumber);
         if (Files.exists(statFile)) {
             State state = manager.loadState(lastStateNumber);
-            System.out.printf("Files or directories ignored in State #%d: %s (%d %s - %s)%n", lastStateNumber, formatDate(state.getTimestamp()),
+            Logger.out.printf("Files or directories ignored in State #%d: %s (%d %s - %s)%n", lastStateNumber, formatDate(state.getTimestamp()),
                 state.getFileCount(), plural("file", state.getFileCount()),
                 FileUtils.byteCountToDisplaySize(state.getFilesContentLength()));
             if (state.getComment().length() > 0) {
-                System.out.printf("\tComment: %s%n", state.getComment());
+                Logger.out.printf("\tComment: %s%n", state.getComment());
             }
             Set<String> ignoredFiles = state.getIgnoredFiles();
             displayIgnore(ignoredFiles);
-            Console.newLine();
+            Logger.newLine();
 
             return ignoredFiles;
         }
@@ -79,13 +78,13 @@ public class DisplayIgnoredFilesCommand extends AbstractCommand {
 
     private void displayIgnore(Set<String> ignoredFiles) {
         if (ignoredFiles == null || ignoredFiles.isEmpty()) {
-            Console.newLine();
-            System.out.println("No files or directories ignored into this State");
+            Logger.newLine();
+            Logger.out.println("No files or directories ignored into this State");
         } else {
-            Console.newLine();
+            Logger.newLine();
 
             for (String ignoredFile : ignoredFiles) {
-                System.out.printf("\t%s%n", ignoredFile);
+                Logger.out.printf("\t%s%n", ignoredFile);
             }
         }
     }

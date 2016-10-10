@@ -46,7 +46,7 @@ public class StatusCommand extends AbstractCommand {
     public Object execute(Context context) throws Exception {
         checkHashMode(context, Option.ALLOW_COMPATIBLE);
 
-        State currentState = new StateGenerator(context).generateState(System.out, "", context.getRepositoryRootDir(), context.getCurrentDirectory());
+        State currentState = new StateGenerator(context).generateState("", context.getRepositoryRootDir(), context.getCurrentDirectory());
         State lastState = new StateManager(context).loadLastState();
 
         if (context.isInvokedFromSubDirectory()) {
@@ -54,7 +54,7 @@ public class StatusCommand extends AbstractCommand {
         }
 
         CompareResult result = new StateComparator(context, lastState, currentState).compare();
-        result.displayChanges(System.out);
+        result.displayChanges();
         return result;
     }
 }

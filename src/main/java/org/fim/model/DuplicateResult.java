@@ -18,9 +18,8 @@
  */
 package org.fim.model;
 
-import org.fim.util.Console;
+import org.fim.util.Logger;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -67,46 +66,46 @@ public class DuplicateResult {
         Collections.sort(duplicateSets, wastedSpaceDescendingComparator);
     }
 
-    public DuplicateResult displayAndRemoveDuplicates(PrintStream out) {
+    public DuplicateResult displayAndRemoveDuplicates() {
         if (context.isVerbose() || context.isRemoveDuplicates()) {
             for (DuplicateSet duplicateSet : duplicateSets) {
-                manageDuplicateSet(out, duplicateSet);
+                manageDuplicateSet(duplicateSet);
             }
         }
 
         if (filesRemoved == 0) {
             if (duplicatedFilesCount > 0) {
-                out.printf("%d duplicated %s, %s of total wasted space%n",
+                Logger.out.printf("%d duplicated %s, %s of total wasted space%n",
                     duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount), byteCountToDisplaySize(totalWastedSpace));
             } else {
-                out.println("No duplicated file found");
+                Logger.out.println("No duplicated file found");
             }
         } else {
-            out.printf("Removed %d files and freed %s%n", filesRemoved, byteCountToDisplaySize(spaceFreed));
+            Logger.out.printf("Removed %d files and freed %s%n", filesRemoved, byteCountToDisplaySize(spaceFreed));
             long remainingDuplicates = duplicatedFilesCount - filesRemoved;
             long remainingWastedSpace = totalWastedSpace - spaceFreed;
             if (remainingDuplicates > 0) {
-                out.printf("Still have %d duplicated %s, %s of total wasted space%n",
+                Logger.out.printf("Still have %d duplicated %s, %s of total wasted space%n",
                     remainingDuplicates, pluralForLong("file", remainingDuplicates), byteCountToDisplaySize(remainingWastedSpace));
             } else {
-                out.println("No duplicated file remains");
+                Logger.out.println("No duplicated file remains");
             }
         }
         return this;
     }
 
-    private void manageDuplicateSet(PrintStream out, DuplicateSet duplicateSet) {
+    private void manageDuplicateSet(DuplicateSet duplicateSet) {
         int index = duplicateSets.indexOf(duplicateSet) + 1;
         List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
         long fileLength = duplicatedFiles.get(0).getFileLength();
         int duplicateTime = duplicatedFiles.size() - 1;
         long wastedSpace = duplicateSet.getWastedSpace();
-        out.printf("- Duplicate set #%d: duplicated %d %s, %s each, %s of wasted space%n",
+        Logger.out.printf("- Duplicate set #%d: duplicated %d %s, %s each, %s of wasted space%n",
             index, duplicateTime, plural("time", duplicateTime),
             byteCountToDisplaySize(fileLength), byteCountToDisplaySize(wastedSpace));
 
         if (context.isRemoveDuplicates()) {
-            selectFilesToRemove(out, duplicatedFiles);
+            selectFilesToRemove(duplicatedFiles);
         }
 
         String action;
@@ -117,12 +116,12 @@ public class DuplicateResult {
                 filesRemoved++;
                 spaceFreed += fileState.getFileLength();
             }
-            out.printf("  %s %s%n", action, fileState.getFileName());
+            Logger.out.printf("  %s %s%n", action, fileState.getFileName());
         }
-        Console.newLine();
+        Logger.newLine();
     }
 
-    private void selectFilesToRemove(PrintStream out, List<FileState> duplicatedFiles) {
+    private void selectFilesToRemove(List<FileState> duplicatedFiles) {
         if (context.isAlwaysYes()) {
             for (FileState fileState : duplicatedFiles) {
                 if (duplicatedFiles.indexOf(fileState) > 0) {
@@ -132,23 +131,23 @@ public class DuplicateResult {
         } else {
             for (FileState fileState : duplicatedFiles) {
                 int index = duplicatedFiles.indexOf(fileState) + 1;
-                out.printf("  [%s] %s%n", index, fileState.getFileName());
+                Logger.out.printf("  [%s] %s%n", index, fileState.getFileName());
                 fileState.setToRemove(true);
             }
 
             while (true) {
-                if (manageAnswers(out, duplicatedFiles)) {
+                if (manageAnswers(duplicatedFiles)) {
                     break;
                 }
             }
         }
     }
 
-    private boolean manageAnswers(PrintStream out, List<FileState> duplicatedFiles) {
+    private boolean manageAnswers(List<FileState> duplicatedFiles) {
         boolean gotCorrectAnswer = false;
         int count = duplicatedFiles.size();
 
-        out.printf("  Preserve files [1 - %d, all or a]: ", count);
+        Logger.out.printf("  Preserve files [1 - %d, all or a]: ", count);
         String line = readInputLine();
 
         try (Scanner scanner = new Scanner(line)) {

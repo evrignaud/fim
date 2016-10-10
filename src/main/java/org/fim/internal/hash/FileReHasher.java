@@ -21,7 +21,6 @@ package org.fim.internal.hash;
 import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
-import org.fim.util.Console;
 import org.fim.util.Logger;
 
 import java.nio.file.Path;
@@ -46,12 +45,12 @@ public class FileReHasher extends FileHasher {
             while ((fileState = toRehashQueue.poll(100, TimeUnit.MILLISECONDS)) != null) {
                 try {
                     long fileLength = fileState.getFileLength();
-                    hashProgress.updateOutput(System.out, fileLength);
+                    hashProgress.updateOutput(fileLength);
 
                     FileHash fileHash = hashFile(rootPath.resolve(fileState.getFileName()), fileLength);
                     fileState.setFileHash(fileHash);
                 } catch (Exception ex) {
-                    Console.newLine();
+                    Logger.newLine();
                     Logger.error("Skipping - Error hashing file '" + fileState.getFileName() + "'", ex, context.isDisplayStackTrace());
                 }
             }

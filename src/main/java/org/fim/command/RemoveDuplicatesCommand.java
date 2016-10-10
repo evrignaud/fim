@@ -30,7 +30,6 @@ import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.model.State;
-import org.fim.util.Console;
 import org.fim.util.Logger;
 
 import java.nio.file.Files;
@@ -85,7 +84,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
         fileContentHashingMandatory(context);
 
         if ((context.getHashMode() == HashMode.hashSmallBlock) || (context.getHashMode() == hashMediumBlock)) {
-            System.out.printf("You are going to detect duplicates and remove them using '%s' mode.%n", hashModeToString(context.getHashMode()));
+            Logger.out.printf("You are going to detect duplicates and remove them using '%s' mode.%n", hashModeToString(context.getHashMode()));
             if (!confirmAction(context, "continue")) {
                 throw new DontWantToContinueException();
             }
@@ -114,14 +113,14 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
         context.setRepositoryRootDir(masterFimRepository);
 
         Logger.info(String.format("Searching for duplicated files using the %s directory as master", context.getMasterFimRepositoryDir()));
-        Console.newLine();
+        Logger.newLine();
 
         State masterState = new StateManager(context).loadLastState();
         Map<FileHash, FileState> masterFilesHash = buildFileHashMap(masterState);
 
         long duplicatedFilesCount = 0;
         long totalFilesRemoved = 0;
-        State localState = new StateGenerator(context).generateState(System.out, "", context.getCurrentDirectory(), context.getCurrentDirectory());
+        State localState = new StateGenerator(context).generateState("", context.getCurrentDirectory(), context.getCurrentDirectory());
         for (FileState localFileState : localState.getFileStates()) {
             if (localFileState.getFileLength() == 0) {
                 continue;
@@ -130,11 +129,11 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
             FileState masterFileState = masterFilesHash.get(localFileState.getFileHash());
             if (masterFileState != null) {
                 duplicatedFilesCount++;
-                System.out.printf("'%s' is a duplicate of '%s/%s'%n", localFileState.getFileName(),
+                Logger.out.printf("'%s' is a duplicate of '%s/%s'%n", localFileState.getFileName(),
                     context.getMasterFimRepositoryDir(), masterFileState.getFileName());
                 if (confirmAction(context, "remove it")) {
                     if (removeFile(context, normalizedCurrentDir, localFileState)) {
-                        System.out.printf("  '%s' removed%n", localFileState.getFileName());
+                        Logger.out.printf("  '%s' removed%n", localFileState.getFileName());
                         totalFilesRemoved++;
                     }
                 }
@@ -143,13 +142,13 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
 
         if (totalFilesRemoved == 0) {
             if (duplicatedFilesCount == 0) {
-                System.out.println("No duplicated file found");
+                Logger.out.println("No duplicated file found");
             } else {
-                System.out.printf("Found %d duplicated %s. No files removed%n", duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount));
+                Logger.out.printf("Found %d duplicated %s. No files removed%n", duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount));
             }
         } else {
-            Console.newLine();
-            System.out.printf("%d duplicated %s found. %d duplicated %s removed%n",
+            Logger.newLine();
+            Logger.out.printf("%d duplicated %s found. %d duplicated %s removed%n",
                 duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount),
                 totalFilesRemoved, pluralForLong("file", totalFilesRemoved));
         }

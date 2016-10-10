@@ -24,7 +24,6 @@ import org.fim.model.Context;
 import org.fim.model.FileAttribute;
 import org.fim.model.FileState;
 import org.fim.model.State;
-import org.fim.util.Console;
 import org.fim.util.DosFilePermissions;
 import org.fim.util.Logger;
 import org.fim.util.SELinux;
@@ -69,12 +68,12 @@ public class ResetFileAttributesCommand extends AbstractCommand {
         State lastState = manager.loadLastState();
         int fileResetCount = 0;
 
-        System.out.printf(String.format("You are going to reset files attributes based on the last committed State done %s%n", formatDate(lastState.getTimestamp())));
+        Logger.out.printf(String.format("You are going to reset files attributes based on the last committed State done %s%n", formatDate(lastState.getTimestamp())));
         if (confirmAction(context, "continue")) {
             if (lastState.getComment().length() > 0) {
-                System.out.println("Comment: " + lastState.getComment());
+                Logger.out.println("Comment: " + lastState.getComment());
             }
-            Console.newLine();
+            Logger.newLine();
 
             if (context.isInvokedFromSubDirectory()) {
                 lastState = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
@@ -90,7 +89,7 @@ public class ResetFileAttributesCommand extends AbstractCommand {
             if (fileResetCount == 0) {
                 Logger.info("No file attributes have been reset");
             } else {
-                Console.newLine();
+                Logger.newLine();
                 Logger.info(String.format("The attributes of %d %s have been reset", fileResetCount, plural("file", fileResetCount)));
             }
         }
@@ -126,7 +125,7 @@ public class ResetFileAttributesCommand extends AbstractCommand {
         String previousPermissions = getAttribute(fileState, FileAttribute.DosFilePermissions);
         if (previousPermissions != null && !Objects.equals(permissions, previousPermissions)) {
             DosFilePermissions.setPermissions(context, file, previousPermissions);
-            System.out.printf("Set permissions: %s \t%s -> %s%n", fileState.getFileName(), permissions, previousPermissions);
+            Logger.out.printf("Set permissions: %s \t%s -> %s%n", fileState.getFileName(), permissions, previousPermissions);
             return true;
         }
         return false;
@@ -138,7 +137,7 @@ public class ResetFileAttributesCommand extends AbstractCommand {
         if (previousPermissions != null && !Objects.equals(permissions, previousPermissions)) {
             Set<PosixFilePermission> permissionSet = PosixFilePermissions.fromString(previousPermissions);
             Files.getFileAttributeView(file, PosixFileAttributeView.class).setPermissions(permissionSet);
-            System.out.printf("Set permissions: %s \t%s -> %s%n", fileState.getFileName(), permissions, previousPermissions);
+            Logger.out.printf("Set permissions: %s \t%s -> %s%n", fileState.getFileName(), permissions, previousPermissions);
             return true;
         }
         return false;
@@ -149,7 +148,7 @@ public class ResetFileAttributesCommand extends AbstractCommand {
         long previousCreationTime = fileState.getFileTime().getCreationTime();
         if (creationTime != previousCreationTime) {
             setCreationTime(file, FileTime.fromMillis(previousCreationTime));
-            System.out.printf("Set creation Time: %s \t%s -> %s%n", fileState.getFileName(), formatDate(creationTime), formatDate(previousCreationTime));
+            Logger.out.printf("Set creation Time: %s \t%s -> %s%n", fileState.getFileName(), formatDate(creationTime), formatDate(previousCreationTime));
             return true;
         }
         return false;
@@ -160,7 +159,7 @@ public class ResetFileAttributesCommand extends AbstractCommand {
         long previousLastModified = fileState.getFileTime().getLastModified();
         if (lastModified != previousLastModified) {
             Files.setLastModifiedTime(file, FileTime.fromMillis(previousLastModified));
-            System.out.printf("Set last modified: %s \t%s -> %s%n", fileState.getFileName(), formatDate(lastModified), formatDate(previousLastModified));
+            Logger.out.printf("Set last modified: %s \t%s -> %s%n", fileState.getFileName(), formatDate(lastModified), formatDate(previousLastModified));
             return true;
         }
         return false;
@@ -172,7 +171,7 @@ public class ResetFileAttributesCommand extends AbstractCommand {
             String previousLabel = getAttribute(fileState, FileAttribute.SELinuxLabel);
             if (previousLabel != null && !Objects.equals(label, previousLabel)) {
                 SELinux.setLabel(context, file, previousLabel);
-                System.out.printf("Set SELinux: %s \t%s -> %s%n", fileState.getFileName(), label, previousLabel);
+                Logger.out.printf("Set SELinux: %s \t%s -> %s%n", fileState.getFileName(), label, previousLabel);
                 return true;
             }
         }
