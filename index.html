@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.3">
+<meta name="generator" content="Asciidoctor 1.5.4">
 <title>Fim - File Integrity Manager</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -429,8 +429,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_fim_workflow">3. Fim workflow</a></li>
 <li><a href="#_most_common_use_cases">4. Most Common use cases</a>
 <ul class="sectlevel2">
-<li><a href="#_binary_workspace_management">4.1. Binary Workspace management</a></li>
-<li><a href="#_duplicates_removal">4.2. Duplicates removal</a></li>
+<li><a href="#_managing_a_workspace">4.1. Managing a workspace</a></li>
+<li><a href="#_duplicates_detection_and_removal">4.2. Duplicates detection and removal</a></li>
 <li><a href="#_backup_integrity">4.3. Backup integrity</a></li>
 </ul>
 </li>
@@ -457,9 +457,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_real_life_example">8. Real life example</a>
 <ul class="sectlevel2">
 <li><a href="#_initialize_the_big_fim_repository">8.1. Initialize the big Fim repository</a></li>
-<li><a href="#_check_very_quickly_for_differences">8.2. Check very quickly for differences</a></li>
-<li><a href="#_check_more_accurately_for_differences">8.3. Check more accurately for differences</a></li>
-<li><a href="#_fully_checking_for_differences">8.4. Fully checking for differences</a></li>
+<li><a href="#_check_the_status_very_quickly">8.2. Check the status very quickly</a></li>
+<li><a href="#_check_the_status_more_accurately">8.3. Check the status more accurately</a></li>
+<li><a href="#_full_status_checking">8.4. Full status checking</a></li>
 <li><a href="#_checking_without_hashing">8.5. Checking without hashing</a></li>
 </ul>
 </li>
@@ -479,11 +479,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_faq">13. FAQ</a>
 <ul class="sectlevel2">
 <li><a href="#_run_fim_commands_from_a_sub_directory">13.1. Run Fim commands from a sub-directory</a></li>
-<li><a href="#_changing_default_hash_mode">13.2. Changing default hash mode</a></li>
+<li><a href="#_ignore_some_difference_during_state_comparison">13.2. Ignore some difference during State comparison</a></li>
 <li><a href="#_ignoring_files_or_directories">13.3. Ignoring files or directories</a></li>
-<li><a href="#_hash_files_in_multi_thread">13.4. Hash files in multi-thread</a></li>
-<li><a href="#_state_integrity">13.5. State integrity</a></li>
-<li><a href="#_cross_platform_compatibility">13.6. Cross platform compatibility</a></li>
+<li><a href="#_changing_default_hash_mode">13.4. Changing default hash mode</a></li>
+<li><a href="#_hash_files_in_multi_thread">13.5. Hash files in multi-thread</a></li>
+<li><a href="#_state_integrity">13.6. State integrity</a></li>
+<li><a href="#_cross_platform_compatibility">13.7. Cross platform compatibility</a></li>
 </ul>
 </li>
 <li><a href="#_fim_requirements">14. Fim requirements</a></li>
@@ -533,6 +534,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
     $(document).ready(function () {
         var offset = 250;
         var duration = 700;
+
+        if ($(this).scrollTop() <= offset) {
+            $('.back-to-top').fadeOut(0);
+        }
+
         $(window).scroll(function () {
             if ($(this).scrollTop() > offset) {
                 $('.back-to-top').fadeIn(duration);
@@ -550,13 +556,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </script>
 
 <script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-	ga('create', 'UA-65608268-1', 'auto');
-	ga('send', 'pageview');
+    ga('create', 'UA-65608268-1', 'auto');
+    ga('send', 'pageview');
 </script>
 
 <p>
@@ -575,7 +581,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="openblock partintro">
 <div class="content">
 <div class="paragraph">
-<p>Version 1.2.0</p>
+<p>Version 1.2.1</p>
 </div>
 <hr>
 <div class="paragraph">
@@ -603,7 +609,7 @@ Fim is meant to solve that.</p>
 </div>
 <div class="paragraph">
 <p>The big difference with Git is that Fim does not keep track of the different contents of the files that are managed.<br>
-This is why we can call it an Unversioned Control System (UVCS).</p>
+This is why we can call it an UnVersioned Control System (UVCS).</p>
 </div>
 <div class="paragraph">
 <p>Fim is able to manage hundreds of thousands of files with a total size of several terabytes.
@@ -628,7 +634,7 @@ With <code>btrfs</code> all those files would have appeared as OK.</p>
 <div class="paragraph">
 <p>Fim allows you also to check the integrity of files with filesystems that do not maintain file checksums.<br>
 For example you will be able to detect hardware corruption on a DVD. You simply have to burn the complete Fim repository on the DVD, all the files and the <code>.fim</code> content.<br>
-You can verify the integrity of this DVD by going on the top of the DVD and type <code>fim diff</code> or <code>fim dcor</code>.
+You can verify the integrity of this DVD by going on the top of the DVD and type <code>fim st</code> or <code>fim dcor</code>.
 More details in <a href="#_hardware_corruption_detection">Hardware corruption detection</a>.</p>
 </div>
 <div class="paragraph">
@@ -711,12 +717,13 @@ This will record the first State of your file tree.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Then you can compare the differences between the recorded State and the current file tree using the <code>diff</code> command.
-You can do a full diff that will compare the hash of all the files. It can be very slow as all the file contents will be read and hashed.</p>
+<p>After having done modifications into the file tree, you can compare get the status that will show the differences between the recorded State and
+the current file tree using the <code>status</code> command. You can do a full status check that will compare the hash of all the files.
+It can be slow as all the file contents will be read and hashed.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim diff</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim st</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -724,7 +731,7 @@ You can do a full diff that will compare the hash of all the files. It can be ve
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim diff -f</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim st -f</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -732,7 +739,7 @@ You can do a full diff that will compare the hash of all the files. It can be ve
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim diff -s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim st -s</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -741,7 +748,7 @@ You will not be able to detect files that have been renamed or duplicated.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim diff -n</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim st -n</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -754,11 +761,19 @@ It&#8217;s a time consuming operation that will compute hash of every file conte
 </div>
 </div>
 <div class="paragraph">
-<p>In order to commit faster you can use the Super-fast commit. More details in <a href="super_fast_commit.html#_super_fast_commit">Super-fast commit</a>. (with this option you can miss some modified files)</p>
+<p>In order to commit faster you can use the Super-fast commit. More details in <a href="#_super_fast_commit">Super-fast commit</a>. (with this option you can miss some modified files)</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim ci -s -c "My commit comment"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can display the history of the modifications using the <code>log</code> command.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim log</code></pre>
 </div>
 </div>
 </div>
@@ -770,7 +785,20 @@ It&#8217;s a time consuming operation that will compute hash of every file conte
 <p>Fim can be used for different kind of use cases.</p>
 </div>
 <div class="sect2">
-<h3 id="_binary_workspace_management">4.1. Binary Workspace management</h3>
+<h3 id="_managing_a_workspace">4.1. Managing a workspace</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Manage directories filled with binary. For example: pictures, music or movies</p>
+</li>
+<li>
+<p>Know the status of a workspace in which we work episodically</p>
+</li>
+<li>
+<p>Track changes over time</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
 <p>Personally I use Fim to manage my photos and videos.
 When I have new photos, I put them at the right place in my pictures folder and then I do <code>fim&nbsp;ci</code> from the sub-directory
@@ -782,15 +810,28 @@ by merging those new hashes with the previous State.</p>
 <p>More details on using Fim from a sub-directory can be found in <a href="#_run_fim_commands_from_a_sub_directory">Run Fim commands from a sub-directory</a>.</p>
 </div>
 <div class="paragraph">
-<p>The <code>fim diff</code> command let me know when I want (even super quickly) if something changed in my pictures folder.</p>
+<p>The <code>fim status</code> command let me know when I want (even super quickly) if something changed in my pictures folder.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_duplicates_removal">4.2. Duplicates removal</h3>
+<h3 id="_duplicates_detection_and_removal">4.2. Duplicates detection and removal</h3>
 <div class="paragraph">
-<p>I can easily identify and delete the photos I have duplicated on my drive or another computer with the command <code>fim rdup</code>.<br>
-For this, I just need to copy the <code>.fim</code> directory on the other computer.<br>
-More details in <a href="#_dealing_with_duplicates">Dealing with duplicates</a>.</p>
+<p>Fim detects duplicate files and distinguishes two cases:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Duplicates inside a Fim repository:<br>
+Fim can detect and remove them</p>
+</li>
+<li>
+<p>Duplicates that are outside:<br>
+Useful to cleanup desynchronized old backups</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>More details in <a href="#_dealing_with_duplicates">Dealing with duplicates</a>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -810,22 +851,24 @@ and <a href="#_hardware_corruption_detection">Hardware corruption detection</a>.
 <div class="content">
 <pre>$ fim --help
 
-usage: fim &lt;command&gt; [-c &lt;arg&gt;] [-d &lt;arg&gt;] [-e] [-f] [-h] [-l] [-m &lt;arg&gt;] [-n] [-o &lt;arg&gt;] [-p] [-q] [-s]
-                     [-t &lt;arg&gt;] [-v] [-y]
+usage: fim &lt;command&gt; [-c &lt;arg&gt;] [-d &lt;arg&gt;] [-e] [-f] [-h] [-i &lt;arg&gt;] [-l] [-m &lt;arg&gt;] [-n] [-o &lt;arg&gt;] [-p] [-q] [-s] [-t
+       &lt;arg&gt;] [-v] [-y]
 
 File Integrity Checker
 
 Available commands:
      init                       Initialize a Fim repository and create the first State
      ci / commit                Commit the current directory State
-     diff                       Compare the current directory State with the previous one.
+     st / status                Display the difference between the current directory State with the previous one.
                                 You can get a quick result by using the -f or -s or -n options
+     diff                       Deprecated command that is an alias on the 'status' command for backward compatibility
      rfa / reset-file-attrs     Reset the files attributes like they were stored in the last committed State
      dcor / detect-corruption   Find changes most likely caused by a hardware corruption or a filesystem bug.
                                 Change in content, but not in creation time and last modified time
-     fdup / find-duplicates     Find local duplicated files in the Fim repository
-     rdup / remove-duplicates   Remove duplicated files from local directory based on a remote master Fim repository
-     log                        Display the history of the States and a summary of the changes that were made
+     fdup / find-duplicates     Find local duplicate files in the Fim repository
+     rdup / remove-duplicates   Remove duplicates found by the 'fdup' command.
+                                If you specify the '-m' option it removes duplicates based on a master repository
+     log                        Display the history of the States with the same output as the 'status' command
      dign / display-ignored     Display the files or directories that are ignored into the last State
      rbk / rollback             Rollback the last commit. It will remove the last State
      pst / purge-states         Purge previous States
@@ -839,10 +882,17 @@ Available options:
      -f,--fast-mode                     Use fast mode. Hash only 3 medium blocks.
                                         One at the beginning, one in the middle and one at the end
      -h,--help                          Prints the Fim help
+     -i,--ignore &lt;arg&gt;                  Ignore some difference during State comparison. You can ignore:
+                                        - attrs: File attributes
+                                        - dates: Modification and creation dates
+                                        - renamed: Renamed files
+                                        - all: All of the above
+                                        You can specify multiple kind of difference to ignore separated by a comma.
+                                        For example: -i attrs,dates,renamed
      -l,--use-last-state                Use the last committed State.
-                                        Only for the find local duplicated files command
+                                        Both for the 'find-duplicates' and 'remove-duplicates' commands
      -m,--master-fim-repository &lt;arg&gt;   Fim repository directory that you want to use as remote master.
-                                        Only for the remove duplicated files command
+                                        Only for the 'remove-duplicates' command
      -n,--do-not-hash                   Do not hash file content. Uses only file names and modification dates
      -o,--output-max-lines &lt;arg&gt;        Change the maximum number lines displayed for the same kind of modification.
                                         Default value is 200 lines
@@ -869,7 +919,56 @@ Available options:
 <div class="sect2">
 <h3 id="_fim_changelog">6.2. Fim changelog</h3>
 <div class="sect3">
-<h4 id="_version_1_2_0">6.2.1. Version 1.2.0</h4>
+<h4 id="_version_1_2_1">6.2.1. Version 1.2.1</h4>
+<div class="paragraph">
+<p><strong>(Released 2016-10-10)</strong></p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/evrignaud/fim/tree/1.2.1"><span class="image"><img src="images/icons/octocat.png" alt="GitHub"></span> Sources</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/compare/1.2.0%2E%2E%2E1.2.1"><span class="image"><img src="images/icons/list.png" alt="List"></span> Full Changelog</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/releases/tag/1.2.1"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
+</div>
+<div class="sect4">
+<h5 id="_general">General</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>'diff' command deprecated in favor of the 'status' command</p>
+</li>
+<li>
+<p>Fix <a href="https://github.com/evrignaud/fim/issues/6">issue #6</a> - Add commitDetails into the State in order to display more details regarding each commit while running 'fim log'.
+The 'log' command displays now the same output as the 'status' command. It works completely with States generated with this version of Fim</p>
+</li>
+<li>
+<p>Thanks to @ch3v, clarified the 'find-duplicates' command output and sort duplicate sets by wasted space to display the biggest first</p>
+</li>
+<li>
+<p>Fim is now able to <strong>remove duplicates</strong> that are in the repository see more in <a href="#_delete_duplicates_from_a_workspace">Delete duplicates from a workspace</a></p>
+</li>
+<li>
+<p>Add <a href="http://evrignaud.github.io/fim/slides/fr">French slides</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_bug_fix">Bug fix</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Update memory maximum sizes to more accurate values</p>
+</li>
+<li>
+<p>In <code>fim-docker</code>, don&#8217;t use the <code>realpath</code> command that is not installed by default</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_version_1_2_0">6.2.2. Version 1.2.0</h4>
 <div class="paragraph">
 <p><strong>(Released 2016-05-23)</strong></p>
 </div>
@@ -888,7 +987,7 @@ Available options:
 <p><strong>Decrease the State size</strong> in memory and on the disc by using Ascii85 instead of Hexa to store hash. Each hash string length is now 80 instead of 128.</p>
 </li>
 <li>
-<p>Add <strong>Super-fast commit</strong> support see more in <a href="super_fast_commit.html#_super_fast_commit">Super-fast commit</a></p>
+<p>Add <strong>Super-fast commit</strong> support see more in <a href="#_super_fast_commit">Super-fast commit</a></p>
 </li>
 <li>
 <p>Allow to <strong>manage a very big amount a files</strong> (1 098 138 files is working for me)</p>
@@ -900,7 +999,7 @@ Available options:
 </div>
 </div>
 <div class="sect4">
-<h5 id="_general">General</h5>
+<h5 id="_general_2">General</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -922,7 +1021,7 @@ Available options:
 </div>
 </div>
 <div class="sect4">
-<h5 id="_bug_fix">Bug fix</h5>
+<h5 id="_bug_fix_2">Bug fix</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -954,7 +1053,7 @@ To migrate type:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_1_0">6.2.2. Version 1.1.0</h4>
+<h4 id="_version_1_1_0">6.2.3. Version 1.1.0</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-11-01)</strong></p>
 </div>
@@ -1003,7 +1102,7 @@ Details in <a href="#_ignoring_files_or_directories">Ignoring files or directori
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_2">6.2.3. Version 1.0.2</h4>
+<h4 id="_version_1_0_2">6.2.4. Version 1.0.2</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-09-04)</strong></p>
 </div>
@@ -1027,7 +1126,7 @@ Hash the second 4 KB / 1 MB block to ensure that the headers don&#8217;t increas
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_1">6.2.4. Version 1.0.1</h4>
+<h4 id="_version_1_0_1">6.2.5. Version 1.0.1</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-08-26)</strong></p>
 </div>
@@ -1056,7 +1155,7 @@ Hash the second 4 KB / 1 MB block to ensure that the headers don&#8217;t increas
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_0">6.2.5. Version 1.0.0</h4>
+<h4 id="_version_1_0_0">6.2.6. Version 1.0.0</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-07-29)</strong></p>
 </div>
@@ -1128,7 +1227,7 @@ If you don&#8217;t have the Fim Docker image locally it will pull the image firs
 </div>
 </div>
 <div class="paragraph">
-<p>If you want to be sure the have the latest version of the Fim Docker image you can pull it manually:</p>
+<p>If you want to use the latest version of the Fim Docker image you can pull it manually:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1460,7 +1559,7 @@ drwxrwxr-x 4 evrignaud evrignaud 4096 mai    9 21:58 ..
 <h4 id="_fim_detects_the_modifications">7.1.5. Fim detects the modifications</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim diff
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim st
 2016/05/09 21:58:36 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 .
@@ -1474,15 +1573,9 @@ Copied:           file11 	(was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-
-Content modified: file04 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-
-Content modified: file05 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-
+Date modified:    file02 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Content modified: file04 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Content modified: file05 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
 Renamed:          file01 -&gt; dir01/file01
 Deleted:          file06
 
@@ -1491,29 +1584,27 @@ Deleted:          file06
 </div>
 </div>
 <div class="sect3">
-<h4 id="_search_for_duplicated_files">7.1.6. Search for duplicated files</h4>
+<h4 id="_search_for_duplicate_files">7.1.6. Search for duplicate files</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim fdup
-2016/05/09 21:58:37 - Info  - Searching for duplicated files
+2016/05/09 21:58:37 - Info  - Searching for duplicate files
 
 2016/05/09 21:58:37 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 .
 2016/05/09 21:58:37 - Info  - Scanned 14 files (176 bytes), hashed 176 bytes (avg 176 bytes/s), during 00:00:00
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-- Duplicate set #1
-  file07 duplicated 1 time
-      12 bytes - file07.dup1
+- Duplicate set #1: duplicated 2 times, 12 bytes each, 24 bytes of wasted space
+      file03
+      file03.dup1
+      file03.dup2
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-- Duplicate set #2
-  file03 duplicated 2 times
-      12 bytes - file03.dup1
-      12 bytes - file03.dup2
+- Duplicate set #2: duplicated 1 time, 12 bytes each, 12 bytes of wasted space
+      file07
+      file07.dup1
 
-3 duplicated files spread into 2 duplicate sets, 36 bytes of wasted space</code></pre>
+3 duplicate files spread into 2 duplicate sets, 36 bytes of total wasted space</code></pre>
 </div>
 </div>
 </div>
@@ -1533,7 +1624,7 @@ More details on using Fim from a sub-directory can be found in <a href="#_run_fi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example/dir01$ fim diff
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example/dir01$ fim st
 2016/05/09 21:58:37 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 2016/05/09 21:58:37 - Info  - Scanned 1 file (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
@@ -1547,18 +1638,18 @@ Added:            dir01/file01
 </div>
 </div>
 <div class="paragraph">
-<p>There are no duplicated file as we are looking only inside <code>dir01</code>.</p>
+<p>There are no duplicate file as we are looking only inside <code>dir01</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example/dir01$ fim fdup
-2016/05/09 21:58:37 - Info  - Searching for duplicated files
+2016/05/09 21:58:37 - Info  - Searching for duplicate files
 
 2016/05/09 21:58:37 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 2016/05/09 21:58:38 - Info  - Scanned 1 file (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
 
-No duplicated file found</code></pre>
+No duplicate file found</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1584,7 +1675,7 @@ Added:            dir01/file01
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example/dir01$ fim diff
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example/dir01$ fim st
 2016/05/09 21:58:38 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 2016/05/09 21:58:38 - Info  - Scanned 1 file (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
@@ -1622,15 +1713,9 @@ Copied:           file11 	(was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-
-Content modified: file04 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-
-Content modified: file05 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-
+Date modified:    file02 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Content modified: file04 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Content modified: file05 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
 Deleted:          file01
 Deleted:          file06
 
@@ -1642,7 +1727,7 @@ Deleted:          file06
 <h4 id="_nothing_is_modified_now">7.1.9. Nothing is modified now</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim diff
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim st
 2016/05/09 21:58:39 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 .
@@ -1661,17 +1746,54 @@ Nothing modified</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim log
-State #1: 2016/05/09 21:58:36 (10 files - 120 bytes)
+- State #1: 2016/05/09 21:58:36 (10 files - 120 bytes)
 	Comment: First State
-	10 added
 
-State #2: 2016/05/09 21:58:38 (11 files - 132 bytes)
+Added:            file01
+Added:            file02
+Added:            file03
+Added:            file04
+Added:            file05
+Added:            file06
+Added:            file07
+Added:            file08
+Added:            file09
+Added:            file10
+
+10 added
+
+- State #2: 2016/05/09 21:58:38 (11 files - 132 bytes)
 	Comment: Modifications from dir01
-	11 added
 
-State #3: 2016/05/09 21:58:39 (14 files - 176 bytes)
+Added:            dir01/file01
+Added:            file01
+Added:            file02
+Added:            file03
+Added:            file04
+Added:            file05
+Added:            file06
+Added:            file07
+Added:            file08
+Added:            file09
+Added:            file10
+
+11 added
+
+- State #3: 2016/05/09 21:58:39 (14 files - 176 bytes)
 	Comment: All modifications
-	1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 2 deleted</code></pre>
+
+Added:            file12
+Copied:           file11 	(was file05)
+Duplicated:       file03.dup1 = file03
+Duplicated:       file03.dup2 = file03
+Duplicated:       file07.dup1 = file07
+Date modified:    file02 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Content modified: file04 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Content modified: file05 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Deleted:          file01
+Deleted:          file06
+
+1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 2 deleted</code></pre>
 </div>
 </div>
 </div>
@@ -1683,7 +1805,23 @@ State #3: 2016/05/09 21:58:39 (14 files - 176 bytes)
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim rbk -y
-You are going to rollback the last commit. State 3 will be removed</code></pre>
+You are going to rollback the last commit. State #3 will be removed
+
+- State #3: 2016/05/09 21:58:39 (14 files - 176 bytes)
+	Comment: All modifications
+
+Added:            file12
+Copied:           file11 	(was file05)
+Duplicated:       file03.dup1 = file03
+Duplicated:       file03.dup2 = file03
+Duplicated:       file07.dup1 = file07
+Date modified:    file02 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Content modified: file04 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Content modified: file05 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Deleted:          file01
+Deleted:          file06
+
+1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 2 deleted</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1692,7 +1830,24 @@ You are going to rollback the last commit. State 3 will be removed</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim rbk -y
-You are going to rollback the last commit. State 2 will be removed</code></pre>
+You are going to rollback the last commit. State #2 will be removed
+
+- State #2: 2016/05/09 21:58:38 (11 files - 132 bytes)
+	Comment: Modifications from dir01
+
+Added:            dir01/file01
+Added:            file01
+Added:            file02
+Added:            file03
+Added:            file04
+Added:            file05
+Added:            file06
+Added:            file07
+Added:            file08
+Added:            file09
+Added:            file10
+
+11 added</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1723,15 +1878,9 @@ Copied:           file11 	(was file05)
 Duplicated:       file03.dup1 = file03
 Duplicated:       file03.dup2 = file03
 Duplicated:       file07.dup1 = file07
-Date modified:    file02 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-
-Content modified: file04 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-
-Content modified: file05 	creationTime: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-                         	lastModified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
-
+Date modified:    file02 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Content modified: file04 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Content modified: file05 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
 Renamed:          file01 -&gt; dir01/file01
 Deleted:          file06
 
@@ -1750,7 +1899,7 @@ But with huge files it makes a big difference.</p>
 <h3 id="_again_nothing_is_modified_now">7.5. Again, nothing is modified now</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim diff
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim st
 2016/05/09 21:58:41 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 .
@@ -1768,13 +1917,37 @@ Nothing modified</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim log
-State #1: 2016/05/09 21:58:36 (10 files - 120 bytes)
+- State #1: 2016/05/09 21:58:36 (10 files - 120 bytes)
 	Comment: First State
-	10 added
 
-State #2: 2016/05/09 21:58:40 (14 files - 176 bytes)
+Added:            file01
+Added:            file02
+Added:            file03
+Added:            file04
+Added:            file05
+Added:            file06
+Added:            file07
+Added:            file08
+Added:            file09
+Added:            file10
+
+10 added
+
+- State #2: 2016/05/09 21:58:40 (14 files - 176 bytes)
 	Comment: Commit modifications very quickly using super-fast commit
-	1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 1 renamed, 1 deleted</code></pre>
+
+Added:            file12
+Copied:           file11 	(was file05)
+Duplicated:       file03.dup1 = file03
+Duplicated:       file03.dup2 = file03
+Duplicated:       file07.dup1 = file07
+Date modified:    file02 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Content modified: file04 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Content modified: file05 	last modified: 2016/05/09 21:58:33 -&gt; 2016/05/09 21:58:36
+Renamed:          file01 -&gt; dir01/file01
+Deleted:          file06
+
+1 added, 1 copied, 3 duplicated, 1 date modified, 2 content modified, 1 renamed, 1 deleted</code></pre>
 </div>
 </div>
 </div>
@@ -1787,7 +1960,7 @@ State #2: 2016/05/09 21:58:40 (14 files - 176 bytes)
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ zmore .fim/states/state_2.json.gz
 {
-  "stateHash": "a58921...23d61d",
+  "stateHash": "WKE\\VP&lt;9...`$SnPo",
   "modelVersion": "4",
   "timestamp": 1462827520971,
   "comment": "Commit modifications very quickly using super-fast commit",
@@ -1817,9 +1990,9 @@ State #2: 2016/05/09 21:58:40 (14 files - 176 bytes)
       },
       "modification": "renamed",
       "fileHash": {
-        "smallBlockHash": "fa5d74...aaa2df",
-        "mediumBlockHash": "fa5d74...aaa2df",
-        "fullHash": "fa5d74...aaa2df"
+        "smallBlockHash": "qH\\4/L...@7&amp;m!=",
+        "mediumBlockHash": "qH\\4/L...@7&amp;m!=",
+        "fullHash": "qH\\4/L...@7&amp;m!="
       },
       "fileAttributes": {
         "PosixFilePermissions": "rw-rw-r--"
@@ -1870,14 +2043,14 @@ No comment provided. You are going to initialize your repository using the defau
 </div>
 </div>
 <div class="sect2">
-<h3 id="_check_very_quickly_for_differences">8.2. Check very quickly for differences</h3>
+<h3 id="_check_the_status_very_quickly">8.2. Check the status very quickly</h3>
 <div class="paragraph">
-<p>It is possible to check the differences very quickly using the super-fast mode using the <code>-s</code> option that will check only 3 small blocks of 4 KB.<br>
+<p>It is possible to check the status very quickly using the super-fast mode using the <code>-s</code> option that will check only 3 small blocks of 4 KB.<br>
 In my case <strong>it takes 17 minutes :=)</strong>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">photos-videos$ fim diff -s
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">photos-videos$ fim st -s
 2015/10/22 23:15:52 - Info  - Scanning recursively local files, using 'super-fast' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 2015/10/22 23:15:52 - Info  - SELinux is enabled on this system
@@ -1896,16 +2069,16 @@ Nothing modified</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_check_more_accurately_for_differences">8.3. Check more accurately for differences</h3>
+<h3 id="_check_the_status_more_accurately">8.3. Check the status more accurately</h3>
 <div class="paragraph">
 <p>Using the super-fast mode can produce inaccurate results. <strong>You can miss some modified files.</strong><br>
 To increase accuracy, you can use the fast mode using the <code>-f</code> option that will check 3 medium blocks.<br>
 Even if, using this mode increase accuracy, it cannot be completely accurate as we only hash 3 different 1 MB blocks of the files.<br>
-This time in my case, <strong>it takes 42 minutes</strong> to check the differences.</p>
+This time in my case, <strong>it takes 42 minutes</strong> to check the status.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">photos-videos$ fim diff -f
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">photos-videos$ fim st -f
 2015/10/22 23:33:22 - Info  - Scanning recursively local files, using 'fast' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 2015/10/22 23:33:23 - Info  - SELinux is enabled on this system
@@ -1924,9 +2097,9 @@ Nothing modified</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_fully_checking_for_differences">8.4. Fully checking for differences</h3>
+<h3 id="_full_status_checking">8.4. Full status checking</h3>
 <div class="paragraph">
-<p>If you want to be completely sure of the <code>diff</code> result, you need to run a full hash of all the file contents using the <code>diff</code> command without any option.<br>
+<p>If you want to be completely sure of the <code>status</code> result, you need to run a full hash of all the file contents using the <code>status</code> command without any option.<br>
 This time in my case, <strong>it takes almost 3 hours</strong> as for the <code>init</code> command.</p>
 </div>
 </div>
@@ -1939,7 +2112,7 @@ This time in my case, <strong>it takes 46 seconds</strong>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">photos-videos$ fim diff -n
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">photos-videos$ fim st -n
 2015/10/22 23:14:53 - Info  - Not hashing file content so thread count forced to 1
 2015/10/22 23:14:53 - Info  - Scanning recursively local files, using 'do not hash' mode and 1 thread
 2015/10/22 23:14:54 - Info  - SELinux is enabled on this system
@@ -1997,38 +2170,94 @@ Info  - Retrieving the missing hash for all the modified files, using 'full' mod
 <h2 id="_dealing_with_duplicates">10. Dealing with duplicates</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Duplicated files are addressed by Fim in two different ways.</p>
+<p>Duplicate files are addressed by Fim in two different ways.</p>
 </div>
 <div class="sect2">
 <h3 id="_duplicates_inside_a_fim_repository">10.1. Duplicates inside a Fim repository</h3>
 <div class="paragraph">
-<p>Fim allow you to detect duplicates using the <code>fdup</code> command. It displays the list of duplicated files.<br>
-See it in action in <a href="#_search_for_duplicated_files">Search for duplicated files</a>.</p>
+<p>Fim allow you to detect duplicates using the <code>fdup</code> command.</p>
 </div>
 <div class="paragraph">
-<p>If you want to remove them, Fim won&#8217;t do it. It does not provide a smart way to remove duplicates inside the same repository.</p>
+<p>You can also remove them.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<img src="images/icons/note.png" alt="Note">
-</td>
-<td class="content">
+<div class="sect3">
+<h4 id="_find_duplicates">10.1.1. Find duplicates</h4>
 <div class="paragraph">
-<p>If you wan&#8217;t to force to remove duplicates you can copy the <code>.fim</code> directory outside the repository and use the <code>rdup</code> command.<br>
-See below for details.</p>
+<p>Fim is able to display duplicates contained in a repository using the <code>fdup</code> (<code>find-duplicates</code>) command.
+It displays the list of duplicate files.<br>
+See it in action in <a href="#_search_for_duplicate_files">Search for duplicate files</a>.</p>
 </div>
-</td>
-</tr>
-</table>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim fdup</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the current State is already commited, you can skip the workspace scanning phase with the <code>-l</code> option :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim fdup -l</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_remove_duplicates">10.1.2. Remove duplicates</h4>
+<div class="paragraph">
+<p>You can remove duplicate files.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Either interactive:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim rdup</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Or automatically preserving the first file in the list:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim rdup -y</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In both cases, it is possible to use the current State as with <code>fdup</code> by adding the <code>-l</code> option:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim rdup -l</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_duplicates_that_are_outside">10.2. Duplicates that are outside</h3>
 <div class="paragraph">
-<p>You can use Fim to remove duplicated files that are located outside a Fim repository using the <code>rdup</code> command.
-It can be useful if you want to cleanup old backups that are no more synchronized and you want to be sure to not lose any files that could have been modified or added.</p>
+<p>Fim can delete duplicate files contained in another repository.<br>
+It can be useful if you want to cleanup old backups that are no more synchronized and you want to be sure to not lose any files that could have been modified or added.<br>
+It erases all files locally that already exist in the master workspace.</p>
+</div>
+<div class="paragraph">
+<p>For example, <code>backup</code> is a copy of the repository named <code>source</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ cd backup
+$ fim rdup -m ../source</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the workspace to clean is remote, you can just copy the <code>.fim</code> in an empty directory and set it as parameter to the <code>-m</code> option of the <code>rdup</code> command</p>
 </div>
 <div class="sect3">
 <h4 id="_simple_duplicates_removing">10.2.1. Simple duplicates removing</h4>
@@ -2169,7 +2398,7 @@ Do you really want to commit (y/n/A)? y
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">~/rdup-example/source$ cd ../backup/
 ~/rdup-example/backup$ fim rdup -m ../source
-2016/05/21 08:39:14 - Info  - Searching for duplicated files using the ../source directory as master
+2016/05/21 08:39:14 - Info  - Searching for duplicate files using the ../source directory as master
 
 2016/05/21 08:39:14 - Info  - Scanning recursively local files, using 'full' mode and 4 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
@@ -2196,7 +2425,7 @@ Do you really want to remove it (y/n/A)? A
 'file10' is a duplicate of '../source/file10'
   'file10' removed
 
-8 duplicated files found. 8 duplicated files removed</code></pre>
+8 duplicate files found. 8 duplicate files removed</code></pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -2208,7 +2437,7 @@ Do you really want to remove it (y/n/A)? A
 <td class="content">
 <div class="paragraph">
 <p>When you are prompted with a question asking for (y/n/A) which means Yes, No, or All Yes.<br>
-All Yes will reply Yes to all the remaining questions. You can see it in action above.</p>
+'All Yes' will reply Yes to all the remaining questions. You can see it in action above.</p>
 </div>
 </td>
 </tr>
@@ -2360,7 +2589,7 @@ Currently the <strong>SELinux label</strong> is stored, if supported by the OS.<
 </ul>
 </div>
 <div class="paragraph">
-<p>You can check file permissions using the <code>diff</code> command. A quick result can be produced using the do not hash mode (<code>-n</code> option),
+<p>You can check file permissions using the <code>status</code> command. A quick result can be produced using the do not hash mode (<code>-n</code> option),
 but in this case Fim will not be able to detect file permissions change for files that have been renamed.<br>
 If some permission has changed and you want to restore them use the <code>rfa</code> command.</p>
 </div>
@@ -2378,7 +2607,7 @@ A file is suspected to be corrupted when his content has changed, but the timest
 To run hardware corruption detection use the <code>dcor</code> command.</p>
 </div>
 <div class="paragraph">
-<p>The <code>diff</code> command can also be used to check if some file content has changed.<br>
+<p>The <code>status</code> command can also be used to check if some file content has changed.<br>
 The difference for the <code>dcor</code> command is that only corrupted files are displayed. Files that you way have added or modified are not listed in the result.</p>
 </div>
 <div class="sect2">
@@ -2469,7 +2698,7 @@ You can see it in action into the <a href="#_from_the_code_dir01_code_sub_direct
 <p>Quickly commit the modifications done in this sub-directory</p>
 </li>
 <li>
-<p>Quickly find the duplicated files contained in this sub-directory</p>
+<p>Quickly find the duplicate files contained in this sub-directory and remove them</p>
 </li>
 <li>
 <p>Quickly reset the attributes of files contained in this sub-directory</p>
@@ -2481,49 +2710,36 @@ You can see it in action into the <a href="#_from_the_code_dir01_code_sub_direct
 </div>
 </div>
 <div class="sect2">
-<h3 id="_changing_default_hash_mode">13.2. Changing default hash mode</h3>
+<h3 id="_ignore_some_difference_during_state_comparison">13.2. Ignore some difference during State comparison</h3>
 <div class="paragraph">
-<p>If you never want to hash the complete content of your files you can set a global hash mode that will indicate the maximum hash mode you want to use for this repository.
-You can specify this to the init command:</p>
+<p>You may want to get the status of a repository ignoring some kind of differences.
+You can ignore:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>-f</code>: Sets maximum hash mode to fast. You will be able to use <code>-f</code>, <code>-s</code> or <code>-n</code> after</p>
+<p><code>attrs</code>: File attributes</p>
 </li>
 <li>
-<p><code>-s</code>: Sets maximum hash mode to super-fast. You will be able to use <code>-s</code> or <code>-n</code> after</p>
+<p><code>dates</code>: Modification dates</p>
 </li>
 <li>
-<p><code>-n</code>: Means always don&#8217;t hash anything. You won&#8217;t be able to use other hash mode after</p>
+<p><code>renamed</code>: Renamed files</p>
+</li>
+<li>
+<p><code>all</code>: All of the above</p>
 </li>
 </ul>
 </div>
-<div class="sect3">
-<h4 id="_example">13.2.1. Example</h4>
 <div class="paragraph">
-<p>Initialize the Fim repository specifying the global hash mode.</p>
+<p>You can specify multiple kind of difference to ignore separated by a comma.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim init -f</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It sets a global hash mode for the complete repository to fast mode.<br>
-All the Fim commands that you use after will use by default the fast hash mode (or less if specified) and you won&#8217;t be able to hash the full file contents.</p>
-</div>
-<div class="paragraph">
-<p>After the init command that we run in our example, you will be able to run the following commands:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim diff    # will run using -f
-
-$ fim diff -s
-
-$ fim diff -n</code></pre>
-</div>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim st -i attrs,dates,renamed</code></pre>
 </div>
 </div>
 </div>
@@ -2542,17 +2758,64 @@ For example, <code>**/foo</code> matches a file or a directory named <code>foo</
 </div>
 </div>
 <div class="sect2">
-<h3 id="_hash_files_in_multi_thread">13.4. Hash files in multi-thread</h3>
+<h3 id="_changing_default_hash_mode">13.4. Changing default hash mode</h3>
+<div class="paragraph">
+<p>If you never want to hash the complete content of your files you can set a global hash mode that will indicate the maximum hash mode you want to use for this repository.
+You can specify this to the init command:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>-f</code>: Sets maximum hash mode to fast. You will be able to use <code>-f</code>, <code>-s</code> or <code>-n</code> after</p>
+</li>
+<li>
+<p><code>-s</code>: Sets maximum hash mode to super-fast. You will be able to use <code>-s</code> or <code>-n</code> after</p>
+</li>
+<li>
+<p><code>-n</code>: Means always don&#8217;t hash anything. You won&#8217;t be able to use other hash mode after</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_example">13.4.1. Example</h4>
+<div class="paragraph">
+<p>Initialize the Fim repository specifying the global hash mode.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim init -f</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It sets a global hash mode for the complete repository to fast mode.<br>
+All the Fim commands that you use after will use by default the fast hash mode (or less if specified) and you won&#8217;t be able to hash the full file contents.</p>
+</div>
+<div class="paragraph">
+<p>After the init command that we run in our example, you will be able to run the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim st    # will run using -f
+
+$ fim st -s
+
+$ fim st -n</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_hash_files_in_multi_thread">13.5. Hash files in multi-thread</h3>
 <div class="paragraph">
 <p>Fim hashes files using several threads.
 This allows taking advantage of the computer resources and maximizes the overall performances of file hashing.<br>
 By default, Fim use an arbitrary thread count that is the number of CPU core divided by two.<br>
 You can specify, using the <code>-t</code> option, the number of thread to be used for file hashing.<br>
-The best value depends on the kind of hard disk you have. The more throughputs you have, the more thread you can use.</p>
+The best value depends on the kind of hard disk you have. The more throughput you have, the more thread you can use.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_state_integrity">13.5. State integrity</h3>
+<h3 id="_state_integrity">13.6. State integrity</h3>
 <div class="paragraph">
 <p>Every State file contains a hash of the State content.<br>
 If something is modified in the State file, the hash of the State content will change and the State will be reported as corrupted.<br>
@@ -2560,7 +2823,7 @@ Fim won&#8217;t use a corrupted State.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_cross_platform_compatibility">13.6. Cross platform compatibility</h3>
+<h3 id="_cross_platform_compatibility">13.7. Cross platform compatibility</h3>
 <div class="paragraph">
 <p>The same Fim repository can be used by either on Linux, Mac OS X and Windows.<br>
 State content is normalized and the same State content can be loaded on the different supported OS.</p>
@@ -2638,12 +2901,16 @@ is an open source tool which allows you to check the integrity of all your files
 <div class="title"><strong>&bull; <span class="image"><img src="images/icons/linuxfr.org.png" alt="linuxfr.org"></span> &nbsp;&nbsp; LinuxFr.org</strong></div>
 <blockquote>
 <div class="paragraph">
-<p>&mdash; <a href="https://goo.gl/yjMH4U">Sortie de Fim 1.0.2, qui vérifie l&#8217;intégrité de vos fichiers</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://goo.gl/HToiWd"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Fim release 1.0.2, that verifies the integrity of your file</a></p>
+<p>&mdash; <a href="https://goo.gl/UrZK7J">Focus sur les performances avec Fim 1.2.0</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="https://goo.gl/cZsQLN"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Focus on performance with Fim 1.2.0</a></p>
 </div>
 <div class="paragraph">
 <p>&mdash; <a href="https://goo.gl/LAuKqp">Fim 1.1.0</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://goo.gl/KaO0Hm"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Fim 1.1.0</a></p>
+</div>
+<div class="paragraph">
+<p>&mdash; <a href="https://goo.gl/yjMH4U">Sortie de Fim 1.0.2, qui vérifie l&#8217;intégrité de vos fichiers</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://goo.gl/HToiWd"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Fim release 1.0.2, that verifies the integrity of your file</a></p>
 </div>
 </blockquote>
 </div>
@@ -2673,7 +2940,7 @@ is an open source tool which allows you to check the integrity of all your files
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-23 21:43:22 CEST
+Last updated 2016-10-10 07:38:29 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/xcode.min.css">

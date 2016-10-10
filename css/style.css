@@ -20,7 +20,7 @@ h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 {
 }
 
 #header, #content, #footnotes {
-    max-width: 75em;
+    max-width: 80em;
 }
 
 #footer {
