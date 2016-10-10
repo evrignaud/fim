@@ -28,7 +28,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DuplicateAssert extends StateAssert {
+public class DuplicateAssert {
     protected void assertFilesDuplicated(DuplicateResult result, DuplicatedFiles... expectedDuplicatedFiles) {
         List<DuplicateSet> duplicateSets = result.getDuplicateSets();
         assertThat(duplicateSets.size()).isEqualTo(expectedDuplicatedFiles.length);

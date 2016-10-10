@@ -25,6 +25,8 @@ import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.State;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,6 +51,11 @@ public class DuplicateFinder {
         FileHash previousFileHash = new FileHash(Constants.NO_HASH, Constants.NO_HASH, Constants.NO_HASH);
         for (FileState fileState : fileStates) {
             if (fileState.getFileLength() == 0) {
+                continue;
+            }
+
+            Path file = context.getRepositoryRootDir().resolve(fileState.getFileName());
+            if (!Files.exists(file)) {
                 continue;
             }
 

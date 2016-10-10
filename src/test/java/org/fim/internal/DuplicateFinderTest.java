@@ -18,16 +18,49 @@
  */
 package org.fim.internal;
 
+import org.apache.commons.io.FileUtils;
+import org.fim.model.Context;
 import org.fim.model.DuplicateResult;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.DuplicateAssert;
+import org.fim.tooling.RepositoryTool;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.fim.model.HashMode.hashAll;
 
 public class DuplicateFinderTest extends DuplicateAssert {
-    private DuplicateFinder cut = new DuplicateFinder(defaultContext());
-    private BuildableState s = new BuildableState(defaultContext()).addFiles("file_01", "file_02_", "file_03", "file_04");
+    private Path rootDir;
+    private RepositoryTool tool;
+    private Context context;
+    private DuplicateFinder cut;
+    private BuildableState s;
+
+    @Before
+    public void setup() throws IOException {
+        rootDir = Paths.get("target/" + this.getClass().getSimpleName());
+        FileUtils.deleteDirectory(rootDir.toFile());
+        Files.createDirectories(rootDir);
+
+        tool = new RepositoryTool(rootDir);
+
+        Context context = tool.createContext(hashAll, false);
+        context.setRepositoryRootDir(rootDir);
+
+        cut = new DuplicateFinder(context);
+        s = new BuildableState(context).addFiles("file_01", "file_02_", "file_03", "file_04");
+
+        tool.createFile(rootDir.resolve("file_01"));
+        tool.createFile(rootDir.resolve("file_02_"));
+        tool.createFile(rootDir.resolve("file_03"));
+        tool.createFile(rootDir.resolve("file_04"));
+    }
 
     @Test
     public void noDuplicatesWhenFilesHaveDifferentContent() {
@@ -37,8 +70,10 @@ public class DuplicateFinderTest extends DuplicateAssert {
     }
 
     @Test
-    public void duplicatesWhenFilesHaveSameContent() {
+    public void duplicatesWhenFilesHaveSameContent() throws IOException {
         s = s.copy("file_01", "file_10");
+        Files.copy(rootDir.resolve("file_01"), rootDir.resolve("file_10"));
+
         DuplicateResult result = cut.findDuplicates(s);
         int totalWastedSpace = "file_10".length();
         assertThat(result.getDuplicateSets().size()).isEqualTo(1);
@@ -47,6 +82,8 @@ public class DuplicateFinderTest extends DuplicateAssert {
         assertThat(result.getTotalWastedSpace()).isEqualTo(totalWastedSpace);
 
         s = s.copy("file_01", "file_11");
+        Files.copy(rootDir.resolve("file_01"), rootDir.resolve("file_11"));
+
         result = cut.findDuplicates(s);
         totalWastedSpace = ("file_10" + "file_11").length();
         assertThat(result.getDuplicateSets().size()).isEqualTo(1);
@@ -55,6 +92,8 @@ public class DuplicateFinderTest extends DuplicateAssert {
         assertThat(result.getTotalWastedSpace()).isEqualTo(totalWastedSpace);
 
         s = s.copy("file_02_", "file_08_");
+        Files.copy(rootDir.resolve("file_02_"), rootDir.resolve("file_08_"));
+
         result = cut.findDuplicates(s);
         int wastedSpace1 = ("file_10" + "file_11").length();
         int wastedSpace2 = "file_08_".length();
@@ -67,8 +106,13 @@ public class DuplicateFinderTest extends DuplicateAssert {
     }
 
     @Test
-    public void emptyFilesAreNeverSeenAsDuplicates() {
+    public void emptyFilesAreNeverSeenAsDuplicates() throws IOException {
         s = s.addEmptyFiles("empty_file_01", "empty_file_02", "empty_file_03", "empty_file_04");
+        rootDir.resolve("empty_file_01").toFile().createNewFile();
+        rootDir.resolve("empty_file_02").toFile().createNewFile();
+        rootDir.resolve("empty_file_03").toFile().createNewFile();
+        rootDir.resolve("empty_file_04").toFile().createNewFile();
+
         DuplicateResult result = cut.findDuplicates(s);
         assertFilesDuplicated(result);
         assertThat(result.getTotalWastedSpace()).isEqualTo(0);
