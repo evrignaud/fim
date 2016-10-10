@@ -31,6 +31,10 @@ Fim manages the integrity of a complete file tree
   * [FAQ](http://evrignaud.github.io/fim/#_faq)
   * [License](http://evrignaud.github.io/fim/LICENSE.html)
 
+## Fim slides
+
+  * [French slides](http://evrignaud.github.io/fim/slides/fr)
+
 ## Fim releases
 
 You can download Fim binary distributions from [here](https://github.com/evrignaud/fim/releases/latest)
