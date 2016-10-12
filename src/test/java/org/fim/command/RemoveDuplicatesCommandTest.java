@@ -47,7 +47,6 @@ public class RemoveDuplicatesCommandTest {
     private static Path rootDirCopy = Paths.get("target/" + RemoveDuplicatesCommandTest.class.getSimpleName() + "-copy");
 
     private InitCommand initCommand;
-    private StatusCommand statusCommand;
     private RemoveDuplicatesCommand removeDuplicatesCommand;
 
     private RepositoryTool tool;
@@ -62,7 +61,6 @@ public class RemoveDuplicatesCommandTest {
         createDirectories(rootDirCopy);
 
         initCommand = new InitCommand();
-        statusCommand = new StatusCommand();
         removeDuplicatesCommand = new RemoveDuplicatesCommand(new Fim());
         assertThat(removeDuplicatesCommand.getFimReposConstraint()).isEqualTo(DONT_CARE);
 
