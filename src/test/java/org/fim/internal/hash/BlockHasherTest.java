@@ -99,7 +99,7 @@ public class BlockHasherTest {
     }
 
     @Test
-    public void weCanRetrieveTheNextRange() {
+    public void canRetrieveTheNextRange() {
         cut.reset(_20_KB + 509);
         assertThat(cut.getNextRange(0)).isEqualTo(new Range(_4_KB, _8_KB));
 

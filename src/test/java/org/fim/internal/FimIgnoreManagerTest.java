@@ -87,7 +87,7 @@ public class FimIgnoreManagerTest extends StateAssert {
     }
 
     @Test
-    public void weCanLoadCorrectlyAFimIgnore() throws IOException {
+    public void canLoadCorrectlyAFimIgnore() throws IOException {
         FimIgnore fimIgnore = cut.loadFimIgnore(rootDir);
         assertThat(fimIgnore.getFilesToIgnoreLocally().size()).isEqualTo(0);
         assertThat(fimIgnore.getFilesToIgnoreInAllDirectories().size()).isEqualTo(0);

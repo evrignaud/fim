@@ -85,7 +85,7 @@ public class StateManagerTest extends StateAssert {
     }
 
     @Test
-    public void weCanCreateNewState() throws IOException {
+    public void canCreateNewState() throws IOException {
         int count = 10;
         for (int index = 0; index < count; index++) {
             String dirName = "dir_" + index;
@@ -117,7 +117,7 @@ public class StateManagerTest extends StateAssert {
     }
 
     @Test
-    public void weCanRetrieveLastStateNumberWhenAStateFileIsMissing() throws IOException {
+    public void canRetrieveLastStateNumberWhenAStateFileIsMissing() throws IOException {
         s = s.addFiles("file_1", "file_2");
         cut.createNewState(s);
 
@@ -132,7 +132,7 @@ public class StateManagerTest extends StateAssert {
     }
 
     @Test
-    public void weCanRetrieveLastStateNumberWhenThereAreStatesAfterTheLastState() throws IOException {
+    public void canRetrieveLastStateNumberWhenThereAreStatesAfterTheLastState() throws IOException {
         s = s.addFiles("file_1", "file_2");
         cut.createNewState(s);
 

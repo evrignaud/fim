@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileUtilTest {
     @Test
-    public void weCanNormalizeAFileName() {
+    public void canNormalizeAFileName() {
         String normalizedFileName;
 
         if (SystemUtils.IS_OS_WINDOWS) {
@@ -40,7 +40,7 @@ public class FileUtilTest {
     }
 
     @Test
-    public void weCanGetTheRelativeFileName() {
+    public void canGetTheRelativeFileName() {
         String relativeFileName = FileUtil.getRelativeFileName("/dir1/dir2/dir3", "/dir1/dir2/dir3/dir4/file1");
         assertThat(relativeFileName).isEqualTo("dir4/file1");
 

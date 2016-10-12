@@ -169,15 +169,15 @@ public class FullScenarioTest {
         Set<String> ignoredFiles = (Set<String>) displayIgnoredFilesCommand.execute(context);
         assertThat(ignoredFiles.size()).isEqualTo(6);
 
-        assertWeCanRollbackLastCommit(context, 2, 3);
+        assertCanRollbackLastCommit(context, 2, 3);
 
         assertFilesModifiedCountEqualsTo(context, 13);
 
         // We can rollback again
-        assertWeCanRollbackLastCommit(context, 1, 0);
+        assertCanRollbackLastCommit(context, 1, 0);
 
         // Nothing more to rollback
-        assertWeCanRollbackLastCommit(context, 1, 0);
+        assertCanRollbackLastCommit(context, 1, 0);
 
         if (hashMode == hashAll || hashMode == hashMediumBlock) {
             Context superFastModeContext = tool.createContext(hashSmallBlock, hashMode == hashAll);
@@ -365,7 +365,7 @@ public class FullScenarioTest {
         }
     }
 
-    private void assertWeCanRollbackLastCommit(Context context, int expectedLogEntriesCount, int expectedIgnoredFilesCount) throws Exception {
+    private void assertCanRollbackLastCommit(Context context, int expectedLogEntriesCount, int expectedIgnoredFilesCount) throws Exception {
         rollbackCommand.execute(context);
 
         LogResult logResult = (LogResult) logCommand.execute(context);

@@ -22,7 +22,7 @@ import org.junit.Test;
 
 public class LoggerTest {
     @Test
-    public void weCanLogMessages() {
+    public void canLogMessages() {
         Logger.info("Info message");
         Logger.warning("Warning message");
         Logger.alert("Alert message");
@@ -30,7 +30,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void weCanLogAnException() {
+    public void canLogAnException() {
         try {
             throw new RuntimeException("Exception for test");
         } catch (RuntimeException ex) {

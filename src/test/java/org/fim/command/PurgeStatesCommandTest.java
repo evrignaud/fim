@@ -59,7 +59,7 @@ public class PurgeStatesCommandTest {
     }
 
     @Test
-    public void weCanPurgePreviousStates() throws Exception {
+    public void canPurgePreviousStates() throws Exception {
         Context context = tool.createContext(hashAll, true);
 
         tool.createOneFile();

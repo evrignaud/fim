@@ -53,18 +53,18 @@ public class FormatUtilTest {
     }
 
     @Test
-    public void weCanFormatADate() {
+    public void canFormatADate() {
         assertThat(FormatUtil.formatDate(calendar.getTimeInMillis())).isEqualTo("2015/11/14 13:12:10");
     }
 
     @Test
-    public void weCanFormatCreationTime() {
+    public void canFormatCreationTime() {
         fileState.getFileTime().setCreationTime(calendar.getTimeInMillis());
         assertThat(FormatUtil.formatCreationTime(fileState)).isEqualTo("2015/11/14 13:12:10");
     }
 
     @Test
-    public void weCanFormatLastModified() {
+    public void canFormatLastModified() {
         fileState.getFileTime().setLastModified(calendar.getTimeInMillis());
         assertThat(FormatUtil.formatLastModified(fileState)).isEqualTo("2015/11/14 13:12:10");
     }

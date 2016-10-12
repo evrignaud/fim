@@ -27,7 +27,7 @@ public class HashProgressTest extends StateAssert {
     private HashProgress cut = new HashProgress(defaultContext());
 
     @Test
-    public void weCanGetProgressChar() {
+    public void canGetProgressChar() {
         assertThat(cut.getProgressChar(-1)).isEqualTo(' ');
 
         assertThat(cut.getProgressChar(0)).isEqualTo('.');

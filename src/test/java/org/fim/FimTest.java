@@ -85,7 +85,7 @@ public class FimTest {
     }
 
     @Test
-    public void weCanPrintUsage() throws Exception {
+    public void canPrintUsage() throws Exception {
         exit.expectSystemExitWithStatus(0);
         Fim.main(new String[]{"help"});
     }
@@ -97,7 +97,7 @@ public class FimTest {
     }
 
     @Test
-    public void weCanCommitUsingMultipleThreads() throws Exception {
+    public void canCommitUsingMultipleThreads() throws Exception {
         initRepoAndCreateOneFile();
         cut.run(new String[]{"ci", "-y", "-t", "4"}, context);
         assertThat(context.getThreadCount()).isEqualTo(4);
@@ -109,13 +109,13 @@ public class FimTest {
     }
 
     @Test
-    public void weCanCommitUsingFim() throws Exception {
+    public void canCommitUsingFim() throws Exception {
         initRepoAndCreateOneFile();
         cut.run(new String[]{"ci", "-y"}, context);
     }
 
     @Test
-    public void weCanCommitFromASubDirectory() throws Exception {
+    public void canCommitFromASubDirectory() throws Exception {
         initRepoAndCreateOneFile();
         String subdir = "sub-dir";
         Path subdirPath = rootDir.resolve(subdir);
@@ -186,12 +186,12 @@ public class FimTest {
     }
 
     @Test
-    public void weCanRunVersionCommand() throws Exception {
+    public void canRunVersionCommand() throws Exception {
         cut.run(new String[]{"-v"}, context);
     }
 
     @Test
-    public void weCanRunHelpCommand() throws Exception {
+    public void canRunHelpCommand() throws Exception {
         cut.run(new String[]{"-h"}, context);
     }
 

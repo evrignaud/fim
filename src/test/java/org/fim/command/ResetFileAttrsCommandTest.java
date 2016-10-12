@@ -57,7 +57,7 @@ public class ResetFileAttrsCommandTest {
     }
 
     @Test
-    public void weCanResetFileAttributes() throws Exception {
+    public void canResetFileAttributes() throws Exception {
         Context context = tool.createContext(hashAll, true);
 
         tool.createASetOfFiles(5);

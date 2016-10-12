@@ -52,7 +52,7 @@ public class DosFilePermissionsTest {
     }
 
     @Test
-    public void weCanRetrieveTheStringVersion() {
+    public void canRetrieveTheStringVersion() {
         DosFileAttributes dosFileAttributes = mock(DosFileAttributes.class);
 
         assertThat(DosFilePermissions.toString(dosFileAttributes)).isEqualTo("");
@@ -71,18 +71,18 @@ public class DosFilePermissionsTest {
     }
 
     @Test
-    public void weCanSetPermissions() throws IOException {
+    public void canSetPermissions() throws IOException {
         if (IS_OS_WINDOWS) {
             Path file = rootDir.resolve("file");
             Files.write(file, "file content".getBytes(), CREATE);
 
-            assertWeCanSetPermissions(file, "A");
-            assertWeCanSetPermissions(file, "HR");
-            assertWeCanSetPermissions(file, "S");
+            assertCanSetPermissions(file, "A");
+            assertCanSetPermissions(file, "HR");
+            assertCanSetPermissions(file, "S");
         }
     }
 
-    private void assertWeCanSetPermissions(Path file, String permissions) throws IOException {
+    private void assertCanSetPermissions(Path file, String permissions) throws IOException {
         DosFilePermissions.setPermissions(context, file, permissions);
 
         DosFileAttributes dosFileAttributes = Files.readAttributes(file, DosFileAttributes.class);

@@ -64,7 +64,7 @@ public class StateTest extends StateAssert {
     }
 
     @Test
-    public void weCanHashAState() throws ParseException {
+    public void canHashAState() throws ParseException {
         fixTimeStamps(a1);
 
         String a1_hash = a1.hashState();
@@ -98,7 +98,7 @@ public class StateTest extends StateAssert {
     }
 
     @Test
-    public void weCanFilterFilesInside() {
+    public void canFilterFilesInside() {
         State s = a1.addFiles("dir_1/file_1", "dir_1/file_2", "dir_2/file_1", "dir_2/file_2");
 
         State filteredState = s.filterDirectory(Paths.get("."), Paths.get("dir_1"), true);
@@ -107,7 +107,7 @@ public class StateTest extends StateAssert {
     }
 
     @Test
-    public void weCanFilterFilesOutside() {
+    public void canFilterFilesOutside() {
         State s = a1.addFiles("dir_1/file_1", "dir_1/file_2", "dir_2/file_1", "dir_2/file_2");
 
         State filteredState = s.filterDirectory(Paths.get("."), Paths.get("dir_1"), false);

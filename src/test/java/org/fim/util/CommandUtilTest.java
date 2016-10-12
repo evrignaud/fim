@@ -43,7 +43,7 @@ public class CommandUtilTest {
     }
 
     @Test
-    public void weCanExecuteACommand() throws Exception {
+    public void canExecuteACommand() throws Exception {
         String output = CommandUtil.executeCommand(cmdArray);
         Assertions.assertThat(output.length()).isGreaterThan(10);
     }
@@ -54,7 +54,7 @@ public class CommandUtilTest {
     }
 
     @Test
-    public void weCanExecuteACommandAndGetLines() throws Exception {
+    public void canExecuteACommandAndGetLines() throws Exception {
         List<String> lines = CommandUtil.executeCommandAndGetLines(cmdArray);
         Assertions.assertThat(lines.size()).isGreaterThan(5);
     }

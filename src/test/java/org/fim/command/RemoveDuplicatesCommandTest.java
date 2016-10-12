@@ -71,7 +71,7 @@ public class RemoveDuplicatesCommandTest {
     }
 
     @Test
-    public void weCanRemoveDuplicates() throws Exception {
+    public void canRemoveDuplicates() throws Exception {
         Context context = tool.createContext(hashAll, false);
 
         tool.createASetOfFiles(5);

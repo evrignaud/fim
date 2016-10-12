@@ -82,7 +82,7 @@ public class DetectCorruptionCommandTest {
     }
 
     @Test
-    public void weCanDetectHardwareCorruption() throws Exception {
+    public void canDetectHardwareCorruption() throws Exception {
         Context context = tool.createContext(hashAll, true);
 
         tool.createASetOfFiles(5);

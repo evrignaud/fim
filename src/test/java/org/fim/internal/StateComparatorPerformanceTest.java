@@ -45,7 +45,7 @@ public class StateComparatorPerformanceTest {
     private static SecureRandom random = new SecureRandom();
 
     @Test
-    public void weCanCompareQuicklyTwoBigStates() {
+    public void canCompareQuicklyTwoBigStates() {
         TimeElapsed te = new TimeElapsed();
         Context context = new Context();
 

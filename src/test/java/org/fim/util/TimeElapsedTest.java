@@ -27,7 +27,7 @@ public class TimeElapsedTest {
     private boolean stopCalled = false;
 
     @Test
-    public void weCanEstimateTheElapsedTime() throws InterruptedException {
+    public void canEstimateTheElapsedTime() throws InterruptedException {
         TimeElapsed cut = new MyTimeElapsed();
         assertThat(startCalled).isEqualTo(true);
         startCalled = false;

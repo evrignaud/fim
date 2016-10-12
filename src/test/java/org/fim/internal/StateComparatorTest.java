@@ -76,7 +76,7 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Test
-    public void weCanManageSameContent() {
+    public void canManageSameContent() {
         // Set the same file content
         s2 = s1.setContent("file_01", "file_01");
         result = new StateComparator(context, s1, s2).compare();
@@ -84,14 +84,14 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Test
-    public void weCanManageFileAdded() {
+    public void canManageFileAdded() {
         s2 = s1.addFiles("file_05");
         result = new StateComparator(context, s1, s2).compare();
         assertOnlyFilesAdded(result, "file_05");
     }
 
     @Test
-    public void weCanManageDateModified() {
+    public void canManageDateModified() {
         s2 = s1.touch("file_01");
         result = new StateComparator(context, s1, s2).compare();
         assertOnlyDatesModified(result, "file_01");
@@ -106,7 +106,7 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Test
-    public void weCanManageContentModified() {
+    public void canManageContentModified() {
         s2 = s1.appendContent("file_01", "append_01");
         result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
@@ -117,7 +117,7 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Test
-    public void weCanManageFileRename() {
+    public void canManageFileRename() {
         s2 = s1.rename("file_01", "file_06");
         result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
@@ -140,7 +140,7 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Test
-    public void weCanManageFileCopy() {
+    public void canManageFileCopy() {
         s2 = s1.copy("file_01", "file_06");
         result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
@@ -151,14 +151,14 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Test
-    public void weCanManageFileDelete() {
+    public void canManageFileDelete() {
         s2 = s1.delete("file_01");
         result = new StateComparator(context, s1, s2).compare();
         assertOnlyFileDeleted(result, "file_01");
     }
 
     @Test
-    public void weCanCopyAFileAndChangeDate() {
+    public void canCopyAFileAndChangeDate() {
         s2 = s1.copy("file_01", "file_00")
             .copy("file_01", "file_06")
             .touch("file_01");
@@ -174,7 +174,7 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Test
-    public void weCanCopyAFileAndChangeContent() {
+    public void canCopyAFileAndChangeContent() {
         s2 = s1.copy("file_01", "file_00")
             .copy("file_01", "file_06")
             .appendContent("file_01", "append_01");
@@ -190,7 +190,7 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Test
-    public void weCanCorrectlyDetectRenamedFiles() {
+    public void canCorrectlyDetectRenamedFiles() {
         s1 = s1.copy("file_01", "dup_file_01");
         s2 = s1.rename("file_01", "new_file_01")
             .rename("dup_file_01", "new_dup_file_01");
@@ -199,7 +199,7 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Test
-    public void weCanCorrectlyDetectRenamedFilesThatHaveDateChanged() {
+    public void canCorrectlyDetectRenamedFilesThatHaveDateChanged() {
         s1 = s1.copy("file_01", "dup_file_01");
         s2 = s1.rename("file_01", "new_file_01").touch("new_file_01")
             .rename("dup_file_01", "new_dup_file_01").touch("new_dup_file_01");
@@ -228,7 +228,7 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Test
-    public void weCanDetectHardwareCorruption() {
+    public void canDetectHardwareCorruption() {
         if (hashMode == dontHash) {
             return;
         }
