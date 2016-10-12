@@ -18,7 +18,6 @@
  */
 package org.fim.command;
 
-import org.apache.commons.io.FileUtils;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.State;
@@ -27,39 +26,33 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.hashAll;
 
 public class ResetFileAttrsCommandTest {
-    private static Path rootDir = Paths.get("target/" + ResetFileAttrsCommandTest.class.getSimpleName());
-
     private InitCommand initCommand;
     private StatusCommand statusCommand;
     private ResetFileAttributesCommand resetFileAttributesCommand;
 
     private RepositoryTool tool;
+    private Path rootDir;
+    private Context context;
 
     @Before
     public void setup() throws IOException {
-        FileUtils.deleteDirectory(rootDir.toFile());
-        Files.createDirectories(rootDir);
+        tool = new RepositoryTool(this.getClass());
+        rootDir = tool.getRootDir();
+        context = tool.getContext();
 
         initCommand = new InitCommand();
         statusCommand = new StatusCommand();
         resetFileAttributesCommand = new ResetFileAttributesCommand();
-
-        tool = new RepositoryTool(rootDir);
     }
 
     @Test
     public void canResetFileAttributes() throws Exception {
-        Context context = tool.createContext(hashAll, true);
-
         tool.createASetOfFiles(5);
 
         State state = (State) initCommand.execute(context);

@@ -18,17 +18,15 @@
  */
 package org.fim.util;
 
-import org.apache.commons.io.FileUtils;
 import org.fim.model.Context;
+import org.fim.tooling.RepositoryTool;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
 
 import static java.nio.file.StandardOpenOption.CREATE;
@@ -37,17 +35,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class DosFilePermissionsTest {
-    private static Path rootDir = Paths.get("target/" + DosFilePermissionsTest.class.getSimpleName());
     private Context context;
-
-    @BeforeClass
-    public static void setupOnce() throws IOException {
-        FileUtils.deleteDirectory(rootDir.toFile());
-        Files.createDirectories(rootDir);
-    }
+    private RepositoryTool tool;
 
     @Before
-    public void setup() {
+    public void setup() throws IOException {
+        tool = new RepositoryTool(this.getClass());
+
         context = mock(Context.class);
     }
 
@@ -73,7 +67,7 @@ public class DosFilePermissionsTest {
     @Test
     public void canSetPermissions() throws IOException {
         if (IS_OS_WINDOWS) {
-            Path file = rootDir.resolve("file");
+            Path file = tool.getRootDir().resolve("file");
             Files.write(file, "file content".getBytes(), CREATE);
 
             assertCanSetPermissions(file, "A");

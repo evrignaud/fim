@@ -23,13 +23,13 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import org.apache.commons.io.FileUtils;
+import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
 import org.fim.model.Range;
-import org.fim.tooling.BuildableContext;
+import org.fim.tooling.RepositoryTool;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +40,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -77,7 +76,6 @@ import static org.mockito.Mockito.when;
 public class FileHasherTest extends StateAssert {
     public static final Charset UTF8 = Charset.forName("UTF-8");
     private static byte contentBytes[];
-    private static Path rootDir = Paths.get("target/" + FileHasherTest.class.getSimpleName());
 
     static {
         StringBuilder builder = new StringBuilder();
@@ -90,8 +88,10 @@ public class FileHasherTest extends StateAssert {
     private long globalSequenceCount = 0;
     private HashProgress hashProgress;
     private HashMode hashMode;
-    private BuildableContext context;
+    private Context context;
     private FileHasher cut;
+    private RepositoryTool tool;
+    private Path rootDir;
 
     public FileHasherTest(final HashMode hashMode) {
         this.hashMode = hashMode;
@@ -107,18 +107,13 @@ public class FileHasherTest extends StateAssert {
         });
     }
 
-    @BeforeClass
-    public static void setupOnce() throws IOException {
-        FileUtils.deleteDirectory(rootDir.toFile());
-        Files.createDirectories(rootDir);
-    }
-
     @Before
-    public void setup() throws NoSuchAlgorithmException {
+    public void setup() throws NoSuchAlgorithmException, IOException {
+        tool = new RepositoryTool(this.getClass(), hashMode);
+        rootDir = tool.getRootDir();
+        context = tool.getContext();
+
         hashProgress = mock(HashProgress.class);
-        context = defaultContext();
-        context.setHashMode(hashMode);
-        context.setRepositoryRootDir(rootDir);
 
         when(hashProgress.getContext()).thenReturn(context);
 

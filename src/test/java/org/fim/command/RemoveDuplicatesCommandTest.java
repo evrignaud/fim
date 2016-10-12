@@ -22,7 +22,6 @@ import org.apache.commons.io.FileUtils;
 import org.fim.Fim;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.model.Context;
-import org.fim.model.HashMode;
 import org.fim.model.State;
 import org.fim.tooling.RepositoryTool;
 import org.junit.Before;
@@ -39,39 +38,34 @@ import static java.nio.file.Files.write;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.Command.FimReposConstraint.DONT_CARE;
-import static org.fim.model.HashMode.hashAll;
 import static org.fim.model.HashMode.hashSmallBlock;
 
 public class RemoveDuplicatesCommandTest {
-    private static Path rootDir = Paths.get("target/" + RemoveDuplicatesCommandTest.class.getSimpleName());
-    private static Path rootDirCopy = Paths.get("target/" + RemoveDuplicatesCommandTest.class.getSimpleName() + "-copy");
-
     private InitCommand initCommand;
     private RemoveDuplicatesCommand removeDuplicatesCommand;
 
     private RepositoryTool tool;
     private Context context;
+    private Path rootDir;
+    private Path rootDirCopy;
 
     @Before
     public void setup() throws IOException {
-        FileUtils.deleteDirectory(rootDir.toFile());
-        createDirectories(rootDir);
+        tool = new RepositoryTool(this.getClass());
+        rootDir = tool.getRootDir();
+        context = tool.getContext();
 
+        rootDirCopy = Paths.get("target/" + RemoveDuplicatesCommandTest.class.getSimpleName() + "-copy");
         FileUtils.deleteDirectory(rootDirCopy.toFile());
         createDirectories(rootDirCopy);
 
         initCommand = new InitCommand();
         removeDuplicatesCommand = new RemoveDuplicatesCommand(new Fim());
         assertThat(removeDuplicatesCommand.getFimReposConstraint()).isEqualTo(DONT_CARE);
-
-        tool = new RepositoryTool(rootDir);
-        context = tool.createContext(HashMode.hashAll, true);
     }
 
     @Test
     public void canRemoveDuplicates() throws Exception {
-        Context context = tool.createContext(hashAll, false);
-
         tool.createASetOfFiles(5);
         // Create an empty file that wont be seen as duplicate
         createFile(rootDir.resolve("empty_file_01"));

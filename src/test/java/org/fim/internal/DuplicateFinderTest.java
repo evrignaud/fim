@@ -18,7 +18,6 @@
  */
 package org.fim.internal;
 
-import org.apache.commons.io.FileUtils;
 import org.fim.model.Context;
 import org.fim.model.DuplicateResult;
 import org.fim.tooling.BuildableState;
@@ -30,28 +29,21 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.hashAll;
 
 public class DuplicateFinderTest extends DuplicateAssert {
-    private Path rootDir;
     private RepositoryTool tool;
     private Context context;
     private DuplicateFinder cut;
     private BuildableState s;
+    private Path rootDir;
 
     @Before
     public void setup() throws IOException {
-        rootDir = Paths.get("target/" + this.getClass().getSimpleName());
-        FileUtils.deleteDirectory(rootDir.toFile());
-        Files.createDirectories(rootDir);
-
-        tool = new RepositoryTool(rootDir);
-
-        Context context = tool.createContext(hashAll, false);
-        context.setRepositoryRootDir(rootDir);
+        tool = new RepositoryTool(this.getClass());
+        rootDir = tool.getRootDir();
+        context = tool.getContext();
 
         cut = new DuplicateFinder(context);
         s = new BuildableState(context).addFiles("file_01", "file_02_", "file_03", "file_04");

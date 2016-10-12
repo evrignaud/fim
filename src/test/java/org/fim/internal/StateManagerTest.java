@@ -20,12 +20,13 @@ package org.fim.internal;
 
 import org.apache.commons.io.FileUtils;
 import org.fim.model.Constants;
+import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.model.State;
-import org.fim.tooling.BuildableContext;
 import org.fim.tooling.BuildableState;
+import org.fim.tooling.RepositoryTool;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,6 @@ import org.junit.runners.Parameterized;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -48,10 +48,12 @@ import static org.fim.model.HashMode.hashSmallBlock;
 @RunWith(Parameterized.class)
 public class StateManagerTest extends StateAssert {
     private HashMode hashMode;
-    private BuildableContext context;
+    private Context context;
     private BuildableState s;
 
     private StateManager cut;
+    private RepositoryTool tool;
+    private Path rootDir;
 
     public StateManagerTest(final HashMode hashMode) {
         this.hashMode = hashMode;
@@ -69,11 +71,9 @@ public class StateManagerTest extends StateAssert {
 
     @Before
     public void setup() throws IOException {
-        Path rootDir = Paths.get("target/" + this.getClass().getSimpleName());
-
-        context = defaultContext();
-        context.setHashMode(hashMode);
-        context.setRepositoryRootDir(rootDir);
+        tool = new RepositoryTool(this.getClass(), hashMode);
+        rootDir = tool.getRootDir();
+        context = tool.getContext();
 
         Path statesDir = context.getRepositoryStatesDir();
         FileUtils.deleteDirectory(statesDir.toFile());

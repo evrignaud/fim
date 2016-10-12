@@ -21,11 +21,11 @@ package org.fim.internal.hash;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.fim.model.Constants;
+import org.fim.model.Context;
 import org.fim.model.FileHash;
-import org.fim.tooling.BuildableContext;
+import org.fim.tooling.RepositoryTool;
 import org.fim.tooling.StateAssert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -33,7 +33,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +49,6 @@ import static org.mockito.Mockito.when;
 public class FileHasherPerformanceTest extends StateAssert {
     public static final int TOTAL_FILE_CONT = 2000;
     private static byte contentBytes[];
-    private static Path rootDir = Paths.get("target/" + FileHasherPerformanceTest.class.getSimpleName());
 
     static {
         StringBuilder builder = new StringBuilder();
@@ -62,22 +60,18 @@ public class FileHasherPerformanceTest extends StateAssert {
 
     private long globalSequenceCount = 0;
     private HashProgress hashProgress;
-    private BuildableContext context;
+    private Context context;
     private FileHasher cut;
-
-    @BeforeClass
-    public static void setupOnce() throws IOException {
-        if (!Files.exists(rootDir)) {
-            Files.createDirectories(rootDir);
-        }
-    }
+    private RepositoryTool tool;
+    private Path rootDir;
 
     @Before
-    public void setup() throws NoSuchAlgorithmException {
+    public void setup() throws NoSuchAlgorithmException, IOException {
+        tool = new RepositoryTool(this.getClass(), hashSmallBlock);
+        rootDir = tool.getRootDir();
+        context = tool.getContext();
+
         hashProgress = mock(HashProgress.class);
-        context = defaultContext();
-        context.setHashMode(hashSmallBlock);
-        context.setRepositoryRootDir(rootDir);
 
         when(hashProgress.getContext()).thenReturn(context);
 

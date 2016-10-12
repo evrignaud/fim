@@ -18,6 +18,7 @@
  */
 package org.fim.tooling;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.fim.model.Context;
 import org.fim.model.HashMode;
@@ -26,6 +27,7 @@ import org.fim.util.DosFilePermissions;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
@@ -44,32 +46,44 @@ public class RepositoryTool {
     private int fileCount;
     private Context context;
 
-    public RepositoryTool(Path rootDir) {
-        this.rootDir = rootDir;
+    public RepositoryTool(Class testClass) throws IOException {
+        this(testClass, hashAll);
+    }
+
+    public RepositoryTool(Class testClass, HashMode hashMode) throws IOException {
+        rootDir = Paths.get(String.format("target/%s-%s", testClass.getSimpleName(), hashMode));
+        FileUtils.deleteDirectory(rootDir.toFile());
+        Files.createDirectories(rootDir);
+
         this.fileCount = 1;
 
-        createContext(hashAll, true); // Default context
+        this.context = createContext(hashMode, true);
+    }
+
+    public Path getRootDir() {
+        return rootDir;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     public Context createContext(HashMode hashMode, boolean verbose) {
-        Context context = new Context();
-        context.setHashMode(hashMode);
-        context.setAlwaysYes(true);
-        context.setCurrentDirectory(rootDir);
-        context.setRepositoryRootDir(rootDir);
-        context.setVerbose(verbose);
-        context.setComment("Using hash mode " + hashMode);
-
-        this.context = context;
-
-        return context;
+        Context ctx = new Context();
+        ctx.setHashMode(hashMode);
+        ctx.setAlwaysYes(true);
+        ctx.setCurrentDirectory(rootDir);
+        ctx.setRepositoryRootDir(rootDir);
+        ctx.setVerbose(verbose);
+        ctx.setComment("Using hash mode " + hashMode);
+        return ctx;
     }
 
     public Context createInvokedFromSubDirContext(HashMode hashMode, String subDirectory, boolean verbose) {
-        Context context = createContext(hashMode, verbose);
-        context.setCurrentDirectory(context.getCurrentDirectory().resolve(subDirectory));
-        context.setInvokedFromSubDirectory(true);
-        return context;
+        Context ctx = createContext(hashMode, verbose);
+        ctx.setCurrentDirectory(ctx.getCurrentDirectory().resolve(subDirectory));
+        ctx.setInvokedFromSubDirectory(true);
+        return ctx;
     }
 
     public void createASetOfFiles(int count) throws IOException {

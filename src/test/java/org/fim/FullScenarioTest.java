@@ -18,7 +18,6 @@
  */
 package org.fim;
 
-import org.apache.commons.io.FileUtils;
 import org.fim.command.CommitCommand;
 import org.fim.command.DisplayIgnoredFilesCommand;
 import org.fim.command.FindDuplicatesCommand;
@@ -45,7 +44,6 @@ import org.junit.runners.Parameterized;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
@@ -67,8 +65,6 @@ import static org.fim.model.Modification.renamed;
 
 @RunWith(Parameterized.class)
 public class FullScenarioTest {
-    private static Path rootDir = Paths.get("target/" + FullScenarioTest.class.getSimpleName());
-
     private HashMode hashMode;
     private Path dir01;
 
@@ -81,6 +77,7 @@ public class FullScenarioTest {
     private RollbackCommand rollbackCommand;
 
     private RepositoryTool tool;
+    private Path rootDir;
 
     public FullScenarioTest(final HashMode hashMode) {
         this.hashMode = hashMode;
@@ -98,8 +95,8 @@ public class FullScenarioTest {
 
     @Before
     public void setup() throws IOException {
-        FileUtils.deleteDirectory(rootDir.toFile());
-        Files.createDirectories(rootDir);
+        tool = new RepositoryTool(this.getClass(), hashMode);
+        rootDir = tool.getRootDir();
 
         dir01 = rootDir.resolve("dir01");
 
@@ -110,13 +107,11 @@ public class FullScenarioTest {
         logCommand = new LogCommand();
         displayIgnoredFilesCommand = new DisplayIgnoredFilesCommand();
         rollbackCommand = new RollbackCommand();
-
-        tool = new RepositoryTool(rootDir);
     }
 
     @Test
     public void fullScenario() throws Exception {
-        Context context = tool.createContext(hashMode, hashMode == hashAll);
+        Context context = tool.getContext();
 
         tool.createASetOfFiles(10);
         Thread.sleep(2); // In order to detect modified dates

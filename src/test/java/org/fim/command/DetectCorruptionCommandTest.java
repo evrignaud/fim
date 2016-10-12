@@ -18,7 +18,6 @@
  */
 package org.fim.command;
 
-import org.apache.commons.io.FileUtils;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
@@ -31,7 +30,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 
@@ -43,8 +41,6 @@ import static org.fim.model.HashMode.hashMediumBlock;
 import static org.fim.model.HashMode.hashSmallBlock;
 
 public class DetectCorruptionCommandTest {
-    private static Path rootDir = Paths.get("target/" + DetectCorruptionCommandTest.class.getSimpleName());
-
     private InitCommand initCommand;
     private StatusCommand statusCommand;
     private DetectCorruptionCommand detectCorruptionCommand;
@@ -53,14 +49,11 @@ public class DetectCorruptionCommandTest {
 
     @Before
     public void setup() throws IOException {
-        FileUtils.deleteDirectory(rootDir.toFile());
-        Files.createDirectories(rootDir);
-
         initCommand = new InitCommand();
         statusCommand = new StatusCommand();
         detectCorruptionCommand = new DetectCorruptionCommand();
 
-        tool = new RepositoryTool(rootDir);
+        tool = new RepositoryTool(this.getClass());
     }
 
     @Test(expected = BadFimUsageException.class)
@@ -117,7 +110,7 @@ public class DetectCorruptionCommandTest {
     }
 
     private void simulateHardwareCorruption(String fileName) throws IOException {
-        Path file = rootDir.resolve(fileName);
+        Path file = tool.getRootDir().resolve(fileName);
         // Keep original timestamps
         BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
 

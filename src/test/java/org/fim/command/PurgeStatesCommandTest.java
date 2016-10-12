@@ -18,7 +18,6 @@
  */
 package org.fim.command;
 
-import org.apache.commons.io.FileUtils;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.LogResult;
@@ -28,40 +27,34 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.hashAll;
 
 public class PurgeStatesCommandTest {
-    private static Path rootDir = Paths.get("target/" + PurgeStatesCommandTest.class.getSimpleName());
-
     private InitCommand initCommand;
     private CommitCommand commitCommand;
     private LogCommand logCommand;
     private PurgeStatesCommand purgeStatesCommand;
 
     private RepositoryTool tool;
+    private Path rootDir;
+    private Context context;
 
     @Before
     public void setup() throws IOException {
-        FileUtils.deleteDirectory(rootDir.toFile());
-        Files.createDirectories(rootDir);
+        tool = new RepositoryTool(this.getClass());
+        rootDir = tool.getRootDir();
+        context = tool.getContext();
 
         initCommand = new InitCommand();
         commitCommand = new CommitCommand();
         purgeStatesCommand = new PurgeStatesCommand();
         logCommand = new LogCommand();
-
-        tool = new RepositoryTool(rootDir);
     }
 
     @Test
     public void canPurgePreviousStates() throws Exception {
-        Context context = tool.createContext(hashAll, true);
-
         tool.createOneFile();
         State state = (State) initCommand.execute(context);
         assertThat(state.getModificationCounts().getAdded()).isEqualTo(1);

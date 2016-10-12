@@ -18,34 +18,35 @@
  */
 package org.fim.internal;
 
-import org.apache.commons.io.FileUtils;
 import org.fim.model.FileToIgnore;
 import org.fim.model.FimIgnore;
+import org.fim.tooling.RepositoryTool;
 import org.fim.tooling.StateAssert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FimIgnoreManagerTest extends StateAssert {
-    private static Path rootDir = Paths.get("target/" + FimIgnoreManagerTest.class.getSimpleName());
-
-    private FimIgnoreManager cut = new FimIgnoreManager(defaultContext());
+    private FimIgnoreManager cut;
 
     private BasicFileAttributes fileAttributes;
+    private RepositoryTool tool;
+    private Path rootDir;
 
-    @BeforeClass
-    public static void setupOnce() throws IOException {
-        FileUtils.deleteDirectory(rootDir.toFile());
-        Files.createDirectories(rootDir);
+    @Before
+    public void setup() throws IOException {
+        tool = new RepositoryTool(this.getClass());
+        rootDir = tool.getRootDir();
+
+        cut = new FimIgnoreManager(tool.getContext());
     }
 
     @Test

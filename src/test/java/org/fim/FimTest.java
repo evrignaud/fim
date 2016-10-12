@@ -18,11 +18,9 @@
  */
 package org.fim;
 
-import org.apache.commons.io.FileUtils;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.RepositoryException;
 import org.fim.model.Context;
-import org.fim.model.HashMode;
 import org.fim.tooling.RepositoryTool;
 import org.junit.Before;
 import org.junit.Rule;
@@ -32,30 +30,26 @@ import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FimTest {
-    private static Path rootDir = Paths.get("target/" + FullScenarioTest.class.getSimpleName());
-
     @Rule
     public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
     private Fim cut;
     private RepositoryTool tool;
     private Context context;
+    private Path rootDir;
 
     @Before
     public void setUp() throws IOException {
-        FileUtils.deleteDirectory(rootDir.toFile());
-        Files.createDirectories(rootDir);
+        tool = new RepositoryTool(this.getClass());
+        rootDir = tool.getRootDir();
+        context = tool.getContext();
 
         cut = new Fim();
-
-        tool = new RepositoryTool(rootDir);
-        context = tool.createContext(HashMode.hashAll, true);
     }
 
     @Test(expected = BadFimUsageException.class)
