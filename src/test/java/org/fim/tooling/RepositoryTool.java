@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
@@ -51,7 +52,8 @@ public class RepositoryTool {
     }
 
     public RepositoryTool(Class testClass, HashMode hashMode) throws IOException {
-        rootDir = Paths.get(String.format("target/%s-%s", testClass.getSimpleName(), hashMode));
+        String fileName = String.format("target/%s-%s", testClass.getSimpleName(), hashMode);
+        rootDir = Paths.get(fileName);
         FileUtils.deleteDirectory(rootDir.toFile());
         Files.createDirectories(rootDir);
 
@@ -128,6 +130,11 @@ public class RepositoryTool {
         fileCount++;
     }
 
+    public void createFile(Path file, int fileSize) throws IOException {
+        setFileContent(file, "File content " + String.format("%02d", fileCount), fileSize);
+        fileCount++;
+    }
+
     public void setFileContent(String fileName, String content) throws IOException {
         Path file = rootDir.resolve(fileName);
         setFileContent(file, content);
@@ -152,6 +159,10 @@ public class RepositoryTool {
         }
 
         Files.write(file, sb.toString().getBytes(), CREATE);
+    }
+
+    public void appendFileContent(Path file, String content) throws IOException {
+        Files.write(file, content.getBytes(), StandardOpenOption.APPEND);
     }
 
     public void setReadOnly(Path rootDir) throws IOException {

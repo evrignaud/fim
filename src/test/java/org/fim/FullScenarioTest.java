@@ -175,7 +175,7 @@ public class FullScenarioTest {
         assertCanRollbackLastCommit(context, 1, 0);
 
         if (hashMode == hashAll || hashMode == hashMediumBlock) {
-            Context superFastModeContext = tool.createContext(hashSmallBlock, hashMode == hashAll);
+            Context superFastModeContext = tool.createContext(hashSmallBlock, true);
             superFastModeContext.setComment("Using hash mode " + hashSmallBlock);
 
             // Commit using super-fast mode (hashSmallBlock)
