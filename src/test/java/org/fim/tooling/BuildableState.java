@@ -111,6 +111,7 @@ public class BuildableState extends State {
     public BuildableState setContent(String fileName, String fileContent) {
         BuildableState newState = clone();
         FileState fileState = findFileState(newState, fileName, true);
+        fileState.setFileLength(fileContent.length());
         fileState.setFileHash(createHash(fileContent));
         return newState;
     }
@@ -118,6 +119,7 @@ public class BuildableState extends State {
     public BuildableState appendContent(String fileName, String fileContent) {
         BuildableState newState = clone();
         FileState fileState = findFileState(newState, fileName, true);
+        fileState.setFileLength(fileState.getFileLength() + fileContent.length());
         fileState.setFileHash(appendHash(fileState.getFileHash(), fileContent));
         return newState;
     }

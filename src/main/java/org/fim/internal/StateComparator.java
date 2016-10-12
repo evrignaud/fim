@@ -221,7 +221,7 @@ public class StateComparator {
                         managed = true;
                     }
                 } else {
-                    if (previousFileState.getFileHash().equals(fileState.getFileHash())) {
+                    if (sameContent(previousFileState, fileState)) {
                         if (!previousFileState.getFileTime().equals(fileState.getFileTime())) {
                             result.getDateModified().add(new Difference(previousFileState, fileState));
                             fileState.setModification(Modification.dateModified);
@@ -250,6 +250,11 @@ public class StateComparator {
         notFoundInCurrentFileState = new ArrayList<>(notFoundInCurrentFileStateNamesMap.values());
 
         logDebug("Search done for same FileNames", "notFoundInCurrentFileState", notFoundInCurrentFileState, "addedOrModified", addedOrModified);
+    }
+
+    // Compare the FileLength and the FileHash
+    private boolean sameContent(FileState fileState1, FileState fileState2) {
+        return fileState1.getFileLength() == fileState2.getFileLength() && fileState1.getFileHash().equals(fileState2.getFileHash());
     }
 
     private void searchForDifferences() {

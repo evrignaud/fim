@@ -120,12 +120,16 @@ public class RepositoryTool {
     }
 
     public void setFileContent(Path file, String content) throws IOException {
+        int fileSize = FILE_SIZE + (301_457 * fileCount);
+        setFileContent(file, content, fileSize);
+    }
+
+    public void setFileContent(Path file, String content, int fileSize) throws IOException {
         if (Files.exists(file)) {
             Files.delete(file);
         }
 
         // Creates a big content based on the provided content
-        int fileSize = FILE_SIZE + (301_457 * fileCount);
         StringBuilder sb = new StringBuilder(fileSize);
         int index = 0;
         while (sb.length() < fileSize) {

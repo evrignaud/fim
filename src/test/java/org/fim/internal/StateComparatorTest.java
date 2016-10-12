@@ -109,11 +109,7 @@ public class StateComparatorTest extends StateAssert {
     public void canManageContentModified() {
         s2 = s1.appendContent("file_01", "append_01");
         result = new StateComparator(context, s1, s2).compare();
-        if (hashMode == dontHash) {
-            assertNothingModified(result);
-        } else {
-            assertOnlyContentModified(result, "file_01");
-        }
+        assertOnlyContentModified(result, "file_01");
     }
 
     @Test
@@ -180,7 +176,8 @@ public class StateComparatorTest extends StateAssert {
             .appendContent("file_01", "append_01");
         result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
-            assertGotOnlyModifications(result, added);
+            assertGotOnlyModifications(result, contentModified, added);
+            assertFilesModified(result, contentModified, "file_01");
             assertFilesModified(result, added, "file_00", "file_06");
         } else {
             assertGotOnlyModifications(result, copied, contentModified);
