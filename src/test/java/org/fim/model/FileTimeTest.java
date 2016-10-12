@@ -29,7 +29,7 @@ public class FileTimeTest {
     private FileTime c;
 
     @Before
-    public void setup() {
+    public void setUp() {
         a1 = new FileTime(1_000L, 2_000L);
         a2 = new FileTime(1_000L, 2_000L);
 

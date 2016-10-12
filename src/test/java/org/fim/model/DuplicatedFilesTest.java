@@ -32,7 +32,7 @@ public class DuplicatedFilesTest {
     private DuplicatedFiles b;
 
     @Before
-    public void setup() {
+    public void setUp() {
         a1 = new DuplicatedFiles(Arrays.asList("file_1", "file_2"));
         a2 = new DuplicatedFiles(Arrays.asList("file_1", "file_2"));
 

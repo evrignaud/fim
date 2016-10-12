@@ -39,7 +39,7 @@ public class DosFilePermissionsTest {
     private RepositoryTool tool;
 
     @Before
-    public void setup() throws IOException {
+    public void setUp() throws IOException {
         tool = new RepositoryTool(this.getClass());
 
         context = mock(Context.class);

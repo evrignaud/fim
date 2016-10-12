@@ -69,7 +69,7 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Before
-    public void setup() {
+    public void setUp() {
         context = defaultContext();
         context.setHashMode(hashMode);
         s1 = new BuildableState(context).addFiles("file_01", "file_02", "file_03", "file_04");

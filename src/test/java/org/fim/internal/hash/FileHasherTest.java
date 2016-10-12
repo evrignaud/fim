@@ -108,7 +108,7 @@ public class FileHasherTest extends StateAssert {
     }
 
     @Before
-    public void setup() throws NoSuchAlgorithmException, IOException {
+    public void setUp() throws NoSuchAlgorithmException, IOException {
         tool = new RepositoryTool(this.getClass(), hashMode);
         rootDir = tool.getRootDir();
         context = tool.getContext();

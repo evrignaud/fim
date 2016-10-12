@@ -48,7 +48,7 @@ public class DetectCorruptionCommandTest {
     private RepositoryTool tool;
 
     @Before
-    public void setup() throws IOException {
+    public void setUp() throws IOException {
         initCommand = new InitCommand();
         statusCommand = new StatusCommand();
         detectCorruptionCommand = new DetectCorruptionCommand();

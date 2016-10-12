@@ -50,7 +50,7 @@ public class RemoveDuplicatesCommandTest {
     private Path rootDirCopy;
 
     @Before
-    public void setup() throws IOException {
+    public void setUp() throws IOException {
         tool = new RepositoryTool(this.getClass());
         rootDir = tool.getRootDir();
         context = tool.getContext();

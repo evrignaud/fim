@@ -66,7 +66,7 @@ public class FileHasherPerformanceTest extends StateAssert {
     private Path rootDir;
 
     @Before
-    public void setup() throws NoSuchAlgorithmException, IOException {
+    public void setUp() throws NoSuchAlgorithmException, IOException {
         tool = new RepositoryTool(this.getClass(), hashSmallBlock);
         rootDir = tool.getRootDir();
         context = tool.getContext();

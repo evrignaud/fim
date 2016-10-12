@@ -42,7 +42,7 @@ public class FimIgnoreManagerTest extends StateAssert {
     private Path rootDir;
 
     @Before
-    public void setup() throws IOException {
+    public void setUp() throws IOException {
         tool = new RepositoryTool(this.getClass());
         rootDir = tool.getRootDir();
 

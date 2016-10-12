@@ -94,7 +94,7 @@ public class FullScenarioTest {
     }
 
     @Before
-    public void setup() throws IOException {
+    public void setUp() throws IOException {
         tool = new RepositoryTool(this.getClass(), hashMode);
         rootDir = tool.getRootDir();
 

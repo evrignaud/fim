@@ -32,7 +32,7 @@ public class FileStateTest {
     private FileState b;
 
     @Before
-    public void setup() {
+    public void setUp() {
         a1 = new FileState("file_1", 1L, new FileTime(1_000L), new FileHash("1", "11", "111"), Arrays.asList(new Attribute("n1", "v1"), new Attribute("n2", "v2"), new Attribute("n3", "v3")));
         a2 = new FileState("file_1", 1L, new FileTime(1_000L), new FileHash("1", "11", "111"), Arrays.asList(new Attribute("n3", "v3"), new Attribute("n2", "v2"), new Attribute("n1", "v1")));
 

@@ -52,7 +52,7 @@ public class CompareResultTest extends StateAssert {
     private Difference difference;
 
     @Before
-    public void setup() {
+    public void setUp() {
         context = defaultContext();
 
         int year = 115;

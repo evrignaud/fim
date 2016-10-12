@@ -39,7 +39,7 @@ public class BlockHasherTest {
     private BlockHasher cut;
 
     @Before
-    public void setup() throws NoSuchAlgorithmException {
+    public void setUp() throws NoSuchAlgorithmException {
         cut = new BlockHasher(hashSmallBlock) {
             @Override
             protected int getBlockSize() {

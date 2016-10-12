@@ -28,7 +28,7 @@ public class FileToIgnoreTest {
     private FileToIgnore b;
 
     @Before
-    public void setup() {
+    public void setUp() {
         a1 = new FileToIgnore("*.mp3");
         a2 = new FileToIgnore("*.mp3");
 

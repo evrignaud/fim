@@ -29,7 +29,7 @@ public class FileHashTest {
     private FileHash c;
 
     @Before
-    public void setup() {
+    public void setUp() {
         a1 = new FileHash("hash_1", "hash_2", "hash_3");
         a2 = new FileHash("hash_1", "hash_2", "hash_3");
 

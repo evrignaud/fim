@@ -36,7 +36,7 @@ public class FormatUtilTest {
     FileState fileState;
 
     @Before
-    public void setup() {
+    public void setUp() {
         int year = 115;
         int month = 11;
         int day = 14;

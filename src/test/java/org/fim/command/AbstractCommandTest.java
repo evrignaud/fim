@@ -32,7 +32,7 @@ public class AbstractCommandTest {
     private MyCommand cut = new MyCommand();
 
     @Before
-    public void setup() {
+    public void setUp() {
         context = new BuildableContext();
     }
 

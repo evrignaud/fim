@@ -32,7 +32,7 @@ public class RangeTest {
     private Range c;
 
     @Before
-    public void setup() {
+    public void setUp() {
         a1 = new Range(1, 2);
         a2 = new Range(1, 2);
 

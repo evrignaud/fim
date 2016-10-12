@@ -32,7 +32,7 @@ public class CommandUtilTest {
     private List<String> badArgumentCmdArray;
 
     @Before
-    public void setup() {
+    public void setUp() {
         if (IS_OS_WINDOWS) {
             cmdArray = Arrays.asList("cmd", "/c", "dir /AH");
             badArgumentCmdArray = Arrays.asList("cmd", "/c", "dir /+++");

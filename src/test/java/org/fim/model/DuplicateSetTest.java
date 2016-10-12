@@ -32,7 +32,7 @@ public class DuplicateSetTest {
     private DuplicateSet b;
 
     @Before
-    public void setup() {
+    public void setUp() {
         a1 = new DuplicateSet(Arrays.asList(
             new FileState("file_1", 1L, new FileTime(1_000L), new FileHash("1", "11", "111"), null),
             new FileState("file_2", 2L, new FileTime(2_000L), new FileHash("2", "22", "222"), null)
