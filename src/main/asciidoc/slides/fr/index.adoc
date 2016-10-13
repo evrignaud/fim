@@ -277,7 +277,8 @@ http://evrignaud.github.io/fim/#_super_fast_commit[Détails]
 Certaines commandes sont plus rapides quand elles sont exécutées depuis un sous-répertoire,
 car elles ont moins de fichiers à traiter :
 
-* `commit` : Commiter les modifications
+* `st` (`status`) : Connaître l'état du sous-répertoire
+* `ci` (`commit`) : Commiter les modifications
 * `fdup` (`find-duplicates`) : Trouver les fichiers dupliqués
 * `rdup` (`remove-duplicates`) : Effacer les fichiers dupliqués
 * `rfa` (`reset-file-attrs`) : Réinitialiser les attributs des fichiers
@@ -590,11 +591,9 @@ Cela permet d'avoir un repository où les commit seront plus rapides, mais il po
 
 &bull; `-f` : Mode de hash max. : fast. Après utilisable uniquement `-f`, `-s` ou `-n`
 
-&bull; `-f` : Mode de hash max. : super-fast. Après utilisable uniquement `-s` ou `-n`
+&bull; `-s` : Mode de hash max. : super-fast. Après utilisable uniquement `-s` ou `-n`
 
 &bull; `-n` : Mode de hash max. : no-hash. Après utilisable uniquement `-n`
-
-{empty} +
 
 +++<u>Exemple :</u>+++
 
@@ -603,7 +602,12 @@ Cela permet d'avoir un repository où les commit seront plus rapides, mais il po
 fim init -f
 ----
 
-{empty} +
+Après la commande `status` fonctionne par défaut avec le niveau 'fast'.
+
+[source,bash]
+----
+fim st    # S'exécute en utilisant '-f'
+----
 
 http://evrignaud.github.io/fim/#_changing_default_hash_mode[Détails]
 
