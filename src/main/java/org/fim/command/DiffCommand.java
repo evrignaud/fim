@@ -18,6 +18,9 @@
  */
 package org.fim.command;
 
+import org.fim.model.Context;
+import org.fim.util.Logger;
+
 public class DiffCommand extends StatusCommand {
     @Override
     public String getCmdName() {
@@ -32,5 +35,12 @@ public class DiffCommand extends StatusCommand {
     @Override
     public String getDescription() {
         return "Deprecated command that is an alias on the 'status' command for backward compatibility";
+    }
+
+    @Override
+    public Object execute(Context context) throws Exception {
+        Logger.out.println("The 'diff' command is deprecated and will be removed in the future: use 'status' instead\n");
+
+        return super.execute(context);
     }
 }
