@@ -219,11 +219,13 @@ $ fim log
 
 {empty} +
 
-* Cas 1 - Gestion d'un workspace
+* *Cas 1* - Gestion d'un workspace
 
-* Cas 2 - Détection et effacement de fichiers dupliqués
+* *Cas 2* - Détection et effacement des doublons d’un workspace
 
-* Cas 3 - Intégrité d'un backup
+* *Cas 3* - Fichiers dupliqués d’un autre workspace
+
+* *Cas 4* - Intégrité d'un backup
 
 == Cas 1 - Gestion d'un workspace
 
@@ -253,7 +255,7 @@ fim ci -c "My commit comment"
 > image:important.png[] *Fim ne sauvegarde pas les contenus.* +
 > Il est recommandé de vous munir d'un logiciel de sauvegarde
 
-== Super-fast commit
+== Cas 1 - Super-fast commit
 
 {empty} +
 
@@ -272,7 +274,7 @@ fim ci -s -y -c "Commit very quickly using super-fast commit"
 
 http://evrignaud.github.io/fim/#_super_fast_commit[Détails]
 
-== Exécuter les commandes Fim à{nbsp}partir{nbsp}d'un{nbsp}sous-répertoire
+== Cas 1 - Exécuter les commandes Fim à{nbsp}partir{nbsp}d'un{nbsp}sous-répertoire
 
 Certaines commandes sont plus rapides quand elles sont exécutées depuis un sous-répertoire,
 car elles ont moins de fichiers à traiter :
@@ -291,7 +293,7 @@ Toutes les autres commandes fonctionnent, mais pas plus rapidement
 
 http://evrignaud.github.io/fim/#_run_fim_commands_from_a_sub_directory[Détails]
 
-== Ignorer des fichiers ou répertoires
+== Cas 1 - Ignorer des fichiers ou répertoires
 
 {empty} +
 
@@ -311,7 +313,7 @@ Par exemple pour ignorer tous les mp3 même ceux qui sont dans des sous réperto
 
 http://evrignaud.github.io/fim/#_ignoring_files_or_directories[Détails]
 
-== Ignorer certaines modifications
+== Cas 1 - Ignorer certaines modifications
 
 {empty} +
 
@@ -341,7 +343,7 @@ fim st -i all
 
 http://evrignaud.github.io/fim/#_ignore_some_difference_during_state_comparison[Détails]
 
-== Gestion des permissions
+== Cas 1 - Gestion des permissions
 
 Il est important de s'assurer que les fichiers conservent leurs permissions. +
 Fim les sauvegarde et est capable de les restaurer. +
@@ -364,19 +366,7 @@ fim rfa
 
 http://evrignaud.github.io/fim/#_file_permissions_management[Détails]
 
-== Cas 2 - Détection et effacement de{nbsp}fichiers{nbsp}dupliqués
-
-{empty} +
-{empty} +
-{empty} +
-
-Fim détecte les fichiers en double et distingue 2 cas :
-
-* Fichiers en double dans le workspace
-
-* Fichiers dupliqués d'un autre workspace
-
-== Détection des doublons d'un workspace
+== Cas 2 - Détection des doublons d'un{nbsp}workspace
 
 {empty} +
 {empty} +
@@ -402,7 +392,7 @@ fim fdup -l
 
 http://evrignaud.github.io/fim/#_search_for_duplicate_files[Détails]
 
-== Effacement des doublons d'un workspace
+== Cas 2 - Effacement des doublons d'un{nbsp}workspace
 
 {empty} +
 
@@ -430,9 +420,7 @@ Dans les deux cas, il est possible d'utiliser l'état courant comme avec `fdup` 
 fim rdup -l
 ----
 
-== Fichiers dupliqués d'un autre workspace
-
-{empty} +
+== Cas 3 - Fichiers dupliqués d'un{nbsp}autre{nbsp}workspace
 
 Fim peut effacer les fichiers en double contenu dans un autre workspace. +
 Par exemple un vieux backup désynchronisé où vous voulez conserver uniquement les fichiers que vous n'avez pas. +
@@ -455,7 +443,7 @@ et le mettre en paramètre de l'option `-m` de la commande `rdup`
 
 http://evrignaud.github.io/fim/#_duplicates_that_are_outside[Détails]
 
-== Cas 3 - Intégrité d'un backup
+== Cas 4 - Intégrité d'un backup
 
 {empty} +
 
@@ -474,7 +462,7 @@ vous pouvez aller à la racine et obtenir le statut :
 fim st
 ----
 
-== Détection de corruption matérielle
+== Cas 4 - Détection de corruption matérielle
 
 image::hardware-corruption.png[]
 
@@ -558,7 +546,7 @@ docker pull evrignaud/fim
 
 image::hands-on-little.png[]
 
-+++<u>Idées pour essayer sois même :</u>+++
++++<u>Idées pour essayer soi-même :</u>+++
 
 * http://evrignaud.github.io/fim/#_simple_example[simple-example]
 
