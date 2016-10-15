@@ -2,7 +2,11 @@
 
 == Download a Fim release
 
-You can download a prebuilt release of Fim from the https://github.com/evrignaud/fim/releases/latest[image:icons/download.png[Download] Latest release]
+You can download a prebuilt release of Fim from the https://github.com/evrignaud/fim/releases/latest[image:icons/download.png[Download] Latest release] +
+Then you have to:
+
+* Untar / Unzip the Fim package
+* Add the created directory into your PATH to be able to use the `fim` command
 
 :leveloffset: 2
 
