@@ -13,8 +13,8 @@ https://github.com/evrignaud/fim/releases/tag/1.2.1[image:icons/package.png[Pack
 * 'diff' command deprecated in favor of the 'status' command
 * Fix https://github.com/evrignaud/fim/issues/6[issue #6] - Add commitDetails into the State in order to display more details regarding each commit while running 'fim log'.
 The 'log' command displays now the same output as the 'status' command. It works completely with States generated with this version of Fim
-* Thanks to @ch3v, clarified the 'find-duplicates' command output and sort duplicate sets by wasted space to display the biggest first
-* Fim is now able to *remove duplicates* that are in the repository see more in <<dealing-with-duplicates.adoc#_remove_duplicates,Remove duplicates>>
+* Thanks to https://twitter.com/nch3v[@nch3v], clarified the 'find-duplicates' command output and sort duplicate sets by wasted space to display the biggest first
+* Fim is now able to *remove duplicates* that are in the repository. See more in <<dealing-with-duplicates.adoc#_remove_duplicates,Remove duplicates>>
 * Add http://evrignaud.github.io/fim/slides/fr[French slides]
 
 === Bug fix
@@ -32,12 +32,12 @@ https://github.com/evrignaud/fim/releases/tag/1.2.0[image:icons/package.png[Pack
 
 === Global improvement of the performance
 * **Decrease the State size** in memory and on the disc by using Ascii85 instead of Hexa to store hash. Each hash string length is now 80 instead of 128.
-* Add **Super-fast commit** support see more in <<index.adoc#_super_fast_commit,Super-fast commit>>
+* Add **Super-fast commit** support. See more in <<index.adoc#_super_fast_commit,Super-fast commit>>
 * Allow to **manage a very big amount a files** (1 098 138 files is working for me)
 * **Optimisation of the State comparison** to be able to compare quickly two States that contains 1 000 000 files
 
 === General
-* Fim is now distributed as **Docker image** on Docker Hub see more in <<how-can-you-use-fim.adoc#_run_fim_using_docker,Run Fim using Docker>>
+* Fim is now distributed as **Docker image** on Docker Hub. See more in <<how-can-you-use-fim.adoc#_run_fim_using_docker,Run Fim using Docker>>
 * Add the **`--directory`** option to be able to specify where to run Fim commands
 * Every commit on Fim is now tested on **Mac OS X** thanks to the Travis Mac builder
 * Run static code analysis on **Sonar** and **Coverity**
