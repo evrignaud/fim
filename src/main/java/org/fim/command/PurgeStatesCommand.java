@@ -79,12 +79,6 @@ public class PurgeStatesCommand extends AbstractCommand {
                 for (Path stateToDelete : statesToPurge) {
                     Files.delete(stateToDelete);
                 }
-
-                stateFile = stateManager.getStateFile(index);
-                Path newStateFile = stateManager.getStateFile(1);
-                Files.move(stateFile, newStateFile);
-
-                stateManager.saveLastStateNumber(1);
             }
         }
         return statesPurgedCount;
