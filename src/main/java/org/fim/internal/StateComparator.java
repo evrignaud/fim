@@ -62,11 +62,13 @@ public class StateComparator {
     private int notModifiedCount;
 
     private CompareResult result;
+    private boolean hardwareCorruptionDetection;
 
     public StateComparator(Context context, State lastState, State currentState) {
         this.context = context;
         this.lastState = lastState;
         this.currentState = currentState;
+        this.hardwareCorruptionDetection = false;
 
         init();
     }
@@ -152,7 +154,7 @@ public class StateComparator {
     }
 
     public StateComparator searchForHardwareCorruption() {
-        result.setSearchForHardwareCorruption(true);
+        hardwareCorruptionDetection = true;
         return this;
     }
 
@@ -160,7 +162,7 @@ public class StateComparator {
         searchForAddedOrModified();
         searchForSameFileNames();
 
-        if (!result.isSearchForHardwareCorruption()) {
+        if (!hardwareCorruptionDetection) {
             searchForDifferences();
             checkAllFilesManagedCorrectly();
 
@@ -214,7 +216,7 @@ public class StateComparator {
             if ((previousFileState = findFileWithSameFileName(fileState, notFoundInCurrentFileStateNamesMap)) != null) {
                 notFoundInCurrentFileStateNamesMap.remove(previousFileState.getFileName());
 
-                if (result.isSearchForHardwareCorruption()) {
+                if (hardwareCorruptionDetection) {
                     if (!previousFileState.getFileHash().equals(fileState.getFileHash()) && previousFileState.getFileTime().equals(fileState.getFileTime())) {
                         result.getCorrupted().add(new Difference(previousFileState, fileState));
                         fileState.setModification(Modification.corrupted);

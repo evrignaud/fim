@@ -53,7 +53,7 @@ public class StateComparatorPerformanceTest {
         State lastState = createState(count);
         State currentState = createState(count);
 
-        CompareResult result = new StateComparator(context, lastState, currentState).compare().displayChanges();
+        CompareResult result = new StateComparator(context, lastState, currentState).compare().displayChanges("Nothing modified");
         assertThat(result.getAdded().size()).isEqualTo(count);
         assertThat(result.getDeleted().size()).isEqualTo(count);
         long duration = te.getDuration();

@@ -24,6 +24,7 @@ No comment provided. You are going to initialize your repository using the defau
 ... # File list is skipped as it is too long
 
 41467 added
+Repository initialized
 ----
 
 == Check the status very quickly

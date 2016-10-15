@@ -122,6 +122,7 @@ Added:            file09
 Added:            file10
 
 10 added
+Repository initialized
 ------
 
 ==== Create a backup of this directory

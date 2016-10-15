@@ -51,7 +51,6 @@ public class CompareResult {
 
     private Context context;
     private State lastState;
-    private boolean searchForHardwareCorruption;
 
     public CompareResult(Context context, State lastState) {
         this(context, lastState, null);
@@ -60,7 +59,6 @@ public class CompareResult {
     public CompareResult(Context context, State lastState, State currentState) {
         this.context = context;
         this.lastState = lastState;
-        this.searchForHardwareCorruption = false;
 
         added = buildModifications(currentState, Modification.added);
         copied = buildModifications(currentState, Modification.copied);
@@ -86,14 +84,6 @@ public class CompareResult {
         return differences;
     }
 
-    public boolean isSearchForHardwareCorruption() {
-        return searchForHardwareCorruption;
-    }
-
-    public void setSearchForHardwareCorruption(boolean searchForHardwareCorruption) {
-        this.searchForHardwareCorruption = searchForHardwareCorruption;
-    }
-
     public void sortResults() {
         sortDifferences(added);
         sortDifferences(copied);
@@ -111,6 +101,10 @@ public class CompareResult {
     }
 
     public CompareResult displayChanges() {
+        return displayChanges(null);
+    }
+
+    public CompareResult displayChanges(String notModifiedMessage) {
         if (lastState != null) {
             Logger.out.printf("Comparing with the last committed state from %s%n", formatDate(lastState.getTimestamp()));
             if (lastState.getComment().length() > 0) {
@@ -119,56 +113,51 @@ public class CompareResult {
             Logger.newLine();
         }
 
-        if (!context.isVerbose()) {
-            displayCounts();
-            return this;
-        }
+        if (context.isVerbose() && somethingModified()) {
+            String stateFormat = "%-17s ";
 
-        String stateFormat = "%-17s ";
+            final String addedStr = String.format(stateFormat, "Added:");
+            displayDifferences(context, addedStr, added,
+                diff -> Logger.out.printf(addedStr + "%s%n", diff.getFileState().getFileName()));
 
-        final String addedStr = String.format(stateFormat, "Added:");
-        displayDifferences(context, addedStr, added,
-            diff -> Logger.out.printf(addedStr + "%s%n", diff.getFileState().getFileName()));
+            final String copiedStr = String.format(stateFormat, "Copied:");
+            displayDifferences(context, copiedStr, copied,
+                diff -> Logger.out.printf(copiedStr + "%s \t(was %s)%n", diff.getFileState().getFileName(), getPreviousFileName(diff)));
 
-        final String copiedStr = String.format(stateFormat, "Copied:");
-        displayDifferences(context, copiedStr, copied,
-            diff -> Logger.out.printf(copiedStr + "%s \t(was %s)%n", diff.getFileState().getFileName(), getPreviousFileName(diff)));
+            final String duplicatedStr = String.format(stateFormat, "Duplicated:");
+            displayDifferences(context, duplicatedStr, duplicated,
+                diff -> Logger.out.printf(duplicatedStr + "%s = %s%s%n", diff.getFileState().getFileName(), getPreviousFileName(diff),
+                    formatModifiedAttributesWithoutTimeChange(diff, true)));
 
-        final String duplicatedStr = String.format(stateFormat, "Duplicated:");
-        displayDifferences(context, duplicatedStr, duplicated,
-            diff -> Logger.out.printf(duplicatedStr + "%s = %s%s%n", diff.getFileState().getFileName(), getPreviousFileName(diff),
-                formatModifiedAttributesWithoutTimeChange(diff, true)));
+            final String dateModifiedStr = String.format(stateFormat, "Date modified:");
+            displayDifferences(context, dateModifiedStr, dateModified,
+                diff -> Logger.out.printf(dateModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
 
-        final String dateModifiedStr = String.format(stateFormat, "Date modified:");
-        displayDifferences(context, dateModifiedStr, dateModified,
-            diff -> Logger.out.printf(dateModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
+            final String contentModifiedStr = String.format(stateFormat, "Content modified:");
+            displayDifferences(context, contentModifiedStr, contentModified,
+                diff -> Logger.out.printf(contentModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
 
-        final String contentModifiedStr = String.format(stateFormat, "Content modified:");
-        displayDifferences(context, contentModifiedStr, contentModified,
-            diff -> Logger.out.printf(contentModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
+            final String attrsModifiedStr = String.format(stateFormat, "Attrs. modified:");
+            displayDifferences(context, attrsModifiedStr, attributesModified,
+                diff -> Logger.out.printf(attrsModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
 
-        final String attrsModifiedStr = String.format(stateFormat, "Attrs. modified:");
-        displayDifferences(context, attrsModifiedStr, attributesModified,
-            diff -> Logger.out.printf(attrsModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
+            final String renamedStr = String.format(stateFormat, "Renamed:");
+            displayDifferences(context, renamedStr, renamed,
+                diff -> Logger.out.printf(renamedStr + "%s -> %s%s%n", getPreviousFileName(diff), diff.getFileState().getFileName(),
+                    formatModifiedAttributesWithoutTimeChange(diff, true)));
 
-        final String renamedStr = String.format(stateFormat, "Renamed:");
-        displayDifferences(context, renamedStr, renamed,
-            diff -> Logger.out.printf(renamedStr + "%s -> %s%s%n", getPreviousFileName(diff), diff.getFileState().getFileName(),
-                formatModifiedAttributesWithoutTimeChange(diff, true)));
+            final String deletedStr = String.format(stateFormat, "Deleted:");
+            displayDifferences(context, deletedStr, deleted,
+                diff -> Logger.out.printf(deletedStr + "%s%n", diff.getFileState().getFileName()));
 
-        final String deletedStr = String.format(stateFormat, "Deleted:");
-        displayDifferences(context, deletedStr, deleted,
-            diff -> Logger.out.printf(deletedStr + "%s%n", diff.getFileState().getFileName()));
+            final String corruptedStr = String.format(stateFormat, "Corrupted?:");
+            displayDifferences(context, corruptedStr, corrupted,
+                diff -> Logger.out.printf(corruptedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
 
-        final String corruptedStr = String.format(stateFormat, "Corrupted?:");
-        displayDifferences(context, corruptedStr, corrupted,
-            diff -> Logger.out.printf(corruptedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
-
-        if (somethingModified()) {
             Logger.newLine();
         }
 
-        displayCounts();
+        displayCounts(notModifiedMessage);
 
         return this;
     }
@@ -296,7 +285,7 @@ public class CompareResult {
         return value;
     }
 
-    private CompareResult displayCounts() {
+    private CompareResult displayCounts(String notModifiedMessage) {
         if (somethingModified()) {
             String message = "";
             if (!added.isEmpty()) {
@@ -337,12 +326,8 @@ public class CompareResult {
 
             message = message.replaceAll(", $", "");
             Logger.out.println(message + addExpectIgnored());
-        } else {
-            if (isSearchForHardwareCorruption()) {
-                Logger.out.println("Nothing corrupted");
-            } else {
-                Logger.out.println("Nothing modified" + addExpectIgnored());
-            }
+        } else if (notModifiedMessage != null) {
+            Logger.out.println(notModifiedMessage + addExpectIgnored());
         }
 
         return this;

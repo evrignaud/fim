@@ -58,6 +58,7 @@ Added:            file09
 Added:            file10
 
 10 added
+Repository initialized
 ----
 
 === A new `.fim` directory is created

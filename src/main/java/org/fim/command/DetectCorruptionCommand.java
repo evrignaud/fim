@@ -63,7 +63,7 @@ public class DetectCorruptionCommand extends AbstractCommand {
         }
 
         CompareResult result = new StateComparator(context, lastState, currentState).searchForHardwareCorruption().compare();
-        result.displayChanges();
+        result.displayChanges("Nothing corrupted");
         return result;
     }
 }

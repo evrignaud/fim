@@ -54,7 +54,7 @@ public class StatusCommand extends AbstractCommand {
         }
 
         CompareResult result = new StateComparator(context, lastState, currentState).compare();
-        result.displayChanges();
+        result.displayChanges("Nothing modified");
         return result;
     }
 }

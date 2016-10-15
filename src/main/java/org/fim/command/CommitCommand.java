@@ -105,16 +105,11 @@ public class CommitCommand extends AbstractCommand {
             lastStateToCompare = lastState.filterDirectory(context.getRepositoryRootDir(), context.getCurrentDirectory(), true);
         }
 
-        CompareResult result = new StateComparator(context, lastStateToCompare, currentState).compare().displayChanges();
+        CompareResult result = new StateComparator(context, lastStateToCompare, currentState).compare();
         if (result.somethingModified()) {
-            Logger.newLine();
-            if (confirmAction(context, "commit")) {
-                commitModifications(context, currentState, lastState, result);
-            } else {
-                Logger.info("Nothing committed");
-            }
+            commitModifications(context, currentState, lastState, result);
         }
-
+        result.displayChanges("Nothing committed");
         return result;
     }
 
