@@ -1,5 +1,9 @@
 = Fim changelog
 
+=== Known limitations
+
+* The '-M' option that is dedicated to specify the master Fim repository does not work when using the Fim Docker image
+
 == Version 1.2.1
 *(Released 2016-10-10)*
 
