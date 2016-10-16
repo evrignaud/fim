@@ -1,0 +1,751 @@
+:revnumber: {project-version}
+:idprefix:
+:customcss: css/style.css
+:example-caption!:
+ifndef::imagesdir[:imagesdir: images]
+
+// More info on asciidoctor-reveal.js here:
+//    https://github.com/asciidoctor/asciidoctor-reveal.js
+
+++++
+<link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="images/favicon/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
+<link rel="manifest" href="images/favicon/manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-65608268-2', 'auto');
+    ga('send', 'pageview');
+</script>
+++++
+
+== Fim
+
+++++
+<div class="paragraph">
+    <p class="text-centered">
+        <strong>File Integrity Manager</strong> <small>__project_version__</small>
+    </p>
+</div>
+<div class="paragraph">
+    <p class="text-centered">
+        <a href="https://github.com/evrignaud/fim"><span class="image"><img src="images/fimbox.png" alt="fimbox"></span></a>
+        <br/>
+        * <small>Nouvelle icône proposée par <a href="https://github.com/VRad49/fim/pull/1">VRad49</a></small>
+    </p>
+</div>
+<br/>
+<div class="paragraph">
+    <p class="text-centered">
+        Etienne Vrignaud
+    </p>
+</div>
+++++
+
+== A quoi sert Fim
+
+{empty} +
+
+*Avec Fim vous pouvez :*
+
+* Vérifier l'intégrité de fichiers qui peuvent être gros et binaires, +
+donc non comparables (.doc, .jpg, .png, .mp3, .mp4, ...)
+* Connaître rapidement la liste fichiers qui auraient été +
+renommés, déplacés, effacés ou corrompus. +
+Cela peut arriver accidentellement
+* Conserver un journal des modifications pour ces fichiers et afficher par la suite une log détaillée de ces modifications
+* Rechercher les fichiers dupliqués et éventuellement les effacer ensuite
+
+{empty} +
+
+_Plus de détails dans les cas d'utilisation à suivre..._
+
+[NOTE.speaker]
+--
+* Cette présentation n'apporte pas toutes les solutions
+
+* Elle permet de réfléchir et se poser des questions
+--
+
+== Pourquoi j'ai écrit Fim
+
+{empty} +
+
+* Un outil comme Git est capable de gérer des gros fichiers binaires
+* Mais avec Git le workspace local occupe au minimum le double de place car il y a tout le contenu du repository dans le .git
+* Et avec Git on ne peut pas supprimer définitivement un fichier. +
+Il sera toujours présent dans l'historique de Git
+* De plus tous les contenus des fichiers modifiés sont conservés. +
+Ce qui prend une place énorme à la longue
+* Certains outils ne fonctionnent que sur des systèmes de fichier propriétaires
+(Exemple: https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc[btrfs-scrub])
+
+Le but était d'avoir un outil qui puisse afficher rapidement le statut du workspace local
+
+== Comment ça fonctionne
+
+Fim crée le répertoire `.fim` à la racine du workspace. C'est son référentiel. +
+Dedans il stocke un index des fichiers contenus dans le workspace. +
+
+L'index contient pour chaque fichier : +
+&mdash; Nom et taille +
+&mdash; Attributs (dates, permissions) +
+&mdash; Hash de 3 petits blocks +
+&mdash; Hash de 3 blocks moyens +
+&mdash; Hash complet du fichier
+
+L'index s'appelle le `State` et les hash sont fait avec du SHA-512
+
+Un nouveau `State` est créé à chaque commit
+
+Les données des fichiers ne sont pas conservées.
+On peut donc mettre Fim dans la catégorie des *UVCS* (UnVersioned Control System)
+
+{empty} +
+
+http://evrignaud.github.io/fim/#_how_does_it_work[Détails]
+
+== Fim workflow
+
+*1/ Créer le repository Fim*
+
+[source, bash]
+----
+fim init
+----
+
+*2/ Travailler sur les fichiers, modifications*
+
+\...
+
+*3/ Connaître l'état du workspace*
+
+[source, bash]
+----
+fim st         # Commande 'status'
+----
+
+*4/ Commiter pour sauvegarder l'état courant* +
+
+[source, bash]
+----
+fim ci -m "My commit comment"
+----
+
+*5/ Afficher l'historique*
+
+[source, bash]
+----
+fim log
+----
+
+{empty} +
+
+http://evrignaud.github.io/fim/#_fim_workflow[Détails]
+
+== Différents mode de hash
+
+Pour obtenir un status plus rapide, Fim est capable de hasher seulement 3 blocks du fichier
+au début, au milieu et à la fin. +
+On peut utiliser les options :
+
+* `-f` : Mode fast. Hash 3 block de 1 MB
+
+* `-s` : Mode super-fast. Hash 3 blocks de 4 KB
+
+[source, bash]
+----
+fim st -f
+----
+
+[source, bash]
+----
+fim st -s
+----
+
+Avec l'option `-n` (pas de hash) Fim regarde juste les noms de fichiers
+
+[source, bash]
+----
+fim st -n
+----
+
+{empty} +
+
+http://evrignaud.github.io/fim/#_real_life_example[Détails]
+
+== !
+
+image::demo-little.png[]
+
+[source, bash]
+----
+mkdir test1
+$ cd test1
+
+$ for i in 01 02 03 04 05 06 07 08 09 10 ;
+  do echo "New File $i" > file${i} ; done
+
+$ fim init -m "First State"
+
+# Modifications
+
+$ fim st
+
+$ fim ci -m "My modifications"
+
+$ fim log
+----
+
+== Différents cas d'utilisation
+
+{empty} +
+
+* *Cas 1* - Gestion d'un workspace
+
+* *Cas 2* - Détection et effacement des doublons d’un workspace
+
+* *Cas 3* - Fichiers dupliqués d’un autre workspace
+
+* *Cas 4* - Intégrité d'un backup
+
+== Cas 1 - Gestion d'un workspace
+
+{empty} +
+
+* Gestion de répertoires remplis de binaires. +
+Par exemple : photos, musique ou films
+
+* Connaître l'état d'un workspace dans lequel on travail épisodiquement
+
+* Suivre les évolutions au fil du temps
+
+[source, bash]
+----
+fim st
+----
+
+Modifications effectuées
+
+[source, bash]
+----
+fim ci -m "My commit comment"
+----
+
+{empty} +
+
+> image:important.png[] *Fim ne sauvegarde pas les contenus.* +
+> Il est recommandé de vous munir d'un logiciel de sauvegarde
+
+== Cas 1 - Super-fast commit
+
+{empty} +
+
+Le mode super-fast durant un commit permet de vérifier l'état courant en mode super-fast
+pour que le commit soit plus rapide. +
+Les fichiers modifiés sont alors hashés a nouveau en mode{nbsp}complet
+
+[source, bash]
+----
+fim ci -s -y -m "Commit very quickly using super-fast commit"
+----
+
+{empty} +
+{empty} +
+{empty} +
+
+http://evrignaud.github.io/fim/#_super_fast_commit[Détails]
+
+== Cas 1 - Exécuter les commandes Fim à{nbsp}partir{nbsp}d'un{nbsp}sous-répertoire
+
+Certaines commandes sont plus rapides quand elles sont exécutées depuis un sous-répertoire,
+car elles ont moins de fichiers à traiter :
+
+* `st` (`status`) : Connaître l'état du sous-répertoire
+* `ci` (`commit`) : Commiter les modifications
+* `fdup` (`find-duplicates`) : Trouver les fichiers dupliqués
+* `rdup` (`remove-duplicates`) : Effacer les fichiers dupliqués
+* `rfa` (`reset-file-attrs`) : Réinitialiser les attributs des fichiers
+
+{empty} +
+
+Toutes les autres commandes fonctionnent, mais pas plus rapidement
+
+{empty} +
+
+http://evrignaud.github.io/fim/#_run_fim_commands_from_a_sub_directory[Détails]
+
+== Cas 1 - Ignorer des fichiers ou répertoires
+
+{empty} +
+
+Vous pouvez ajouter un fichier `.fimignore` a tous les niveaux du repository,
+et aussi globalement dans le Home de l'utilisateur
+
+Chaque ligne du fichier contient un nom de fichier ou de répertoire à ignorer.
+Vous pouvez aussi utiliser les expressions suivantes :
+
+* Un astérisque pour ignorer plusieurs (Exemple : `*.mp3`)
+
+* `\**/` en début de ligne. Le reste sera ignoré dans tous les sous répertoires.
+Par exemple pour ignorer tous les mp3 même ceux qui sont dans des sous répertoires :
+`*\*/*.mp3`
+
+{empty} +
+
+http://evrignaud.github.io/fim/#_ignoring_files_or_directories[Détails]
+
+== Cas 1 - Ignorer certaines modifications
+
+{empty} +
+
+Limiter l'affichage avec `-i` pour ignorer les modifications sur :
+
+* `attrs` : Attributs des fichiers
+
+* `dates` : Dates de modification et de création
+
+* `renamed` : Fichiers renommés
+
+[source, bash]
+----
+fim st -i attrs,dates,renamed
+----
+
+{empty} +
+
+Pour ignorer tous les types, indiquer `all`
+
+[source, bash]
+----
+fim st -i all
+----
+
+{empty} +
+
+http://evrignaud.github.io/fim/#_ignore_some_difference_during_state_comparison[Détails]
+
+== Cas 1 - Gestion des permissions
+
+Il est important de s'assurer que les fichiers conservent leurs permissions. +
+Fim les sauvegarde et est capable de les restaurer. +
+Il stocke pour chaque fichier les informations suivantes :
+
+* https://en.wikipedia.org/wiki/Discretionary_access_control[DAC] - Discretionary access control : +
+&mdash; Sur Linux et Mac OS, les permissions *`rwxrwxrwx`* +
+&mdash; Sur Windows, les attributs *`Archive`*, *`Hidden`*, *`ReadOnly`* et *`System`*
+
+* https://en.wikipedia.org/wiki/Mandatory_access_control[MAC] - Mandatory access control : +
+&mdash; Sur Linux, le label *SELinux* si il est pris en charge
+
+Vous pouvez restaurer les permissions à l'aide la commande +
+`rfa` (`reset-file-attrs`) :
+
+[source, bash]
+----
+fim rfa
+----
+
+http://evrignaud.github.io/fim/#_file_permissions_management[Détails]
+
+== Cas 2 - Détection des doublons d'un{nbsp}workspace
+
+{empty} +
+{empty} +
+
+Fim est capable d'afficher les doublons contenus dans un workspace à l'aide de la commande `fdup` (`find-duplicates`) :
+
+[source,bash]
+----
+fim fdup
+----
+
+{empty} +
+
+Si l'état courant est déjà commité, vous pouvez éviter la phase de scan du workspace à l'aide de l'option `-l` :
+
+[source,bash]
+----
+fim fdup -l
+----
+
+{empty} +
+{empty} +
+
+http://evrignaud.github.io/fim/#_search_for_duplicate_files[Détails]
+
+== Cas 2 - Effacement des doublons d'un{nbsp}workspace
+
+{empty} +
+
+Il est possible d'effacer les fichiers dupliqués.
+
+&bull; Soit en interactif :
+
+[source,bash]
+----
+fim rdup
+----
+
+&bull; Ou en automatique en conservant le premier fichier de la liste :
+
+[source,bash]
+----
+fim rdup -y
+----
+
+{empty} +
+
+Dans les deux cas, il est possible d'utiliser l'état courant comme avec `fdup` en ajoutant l'option `-l` :
+
+----
+fim rdup -l
+----
+
+== Cas 3 - Fichiers dupliqués d'un{nbsp}autre{nbsp}workspace
+
+Fim peut effacer les fichiers en double contenu dans un autre workspace. +
+Par exemple un vieux backup désynchronisé où vous voulez conserver uniquement les fichiers que vous n'avez pas. +
+Il efface localement tous les fichiers déjà présents dans le workspace master.
+
+Par exemple, avec `backup` qui est une copie du repository nommé `source` :
+
+[source,bash]
+----
+cd backup
+$ fim rdup -M ../source
+----
+
+{empty} +
+
+Quand le workspace à nettoyer est distant,  vous pouvez juste copier le `.fim` dans un répertoire vide
+et le mettre en paramètre de l'option `-M` de la commande `rdup`
+
+{empty} +
+
+http://evrignaud.github.io/fim/#_duplicates_that_are_outside[Détails]
+
+== Cas 4 - Intégrité d'un backup
+
+{empty} +
+
+Fim permet de vérifier l'intégrité des fichiers stockés sur tout type de système de fichiers.
+Notamment les backups offlines.
+
+Pour cela il faut ajouter dans le backup le référentiel Fim (`.fim`) qui correspond
+
+Il sera possible par la suite, de vérifier avec Fim l'intégrité des données du backup
+
+Par exemple, dans le cas d'un DVD qui contient un backup et le référentiel Fim,
+vous pouvez aller à la racine et obtenir le statut :
+
+[source,bash]
+----
+fim st
+----
+
+== Cas 4 - Détection de corruption matérielle
+
+image::hardware-corruption.png[]
+
+Fim diagnostique une corruption matérielle si le contenu du fichier a changé alors que les dates de création / modification n'ont pas été modifiées
+
+On utilise la commande `dcor` (`detect-corruption`) :
+
+[source,bash]
+----
+fim dcor
+----
+
+> image:important.png[] *Fim peut produire des faux positifs* si le contenu a changé et que les dates ont été réinitialisées. Par exemple avec la commande `rfa`
+
+http://evrignaud.github.io/fim/#_hardware_corruption_detection[Détails]
+
+== Les autres commandes
+
+{empty} +
+
+* `dign` (`display-ignored`) : +
+Affiche les fichiers ou répertoires ignorés dans le dernier State
+
+* `rbk` (`rollback`) : +
+Supprime le dernier State commité
+
+* `pst` (`purge-states`) : +
+Purge les vieux State. Conserve uniquement le dernier
+
+== Comment utiliser Fim
+
+{empty} +
+
+* Vous pouvez télécharger une distribution de Fim +
+https://github.com/evrignaud/fim/releases/latest[image:download.png[Download] Dernière release]
+
+* Ou construire une version depuis le master (http://evrignaud.github.io/fim/#_build_fim[Détails])
+
+{empty} +
+
+.*Prérequis pour Fim*
+
+* Fim est écrit en Java. Il a besoin du JDK 8
+
+* Il fonctionne sur Linux, Windows et Mac OS X
+
+* Il est testé sur ces trois plateformes
+
+== Image Docker de Fim
+
+Pour Linux, si vous n'avez pas Java ou pas la bonne version, +
+une image Docker est disponible sur https://hub.docker.com/r/evrignaud/fim/[Docker Hub]
+https://microbadger.com/images/evrignaud/fim[image:https://images.microbadger.com/badges/version/evrignaud/fim.svg[Image version]]
+https://microbadger.com/images/evrignaud/fim[image:https://images.microbadger.com/badges/image/evrignaud/fim.svg[Image size]]
+
+&bull; *Récupérer le script `fim-docker`*{nbsp}{nbsp}{nbsp}{nbsp}image:docker-little.png[]
+
+[source,bash]
+----
+curl goo.gl/XwERDY -L -o fim-docker && chmod a+rx fim-docker
+----
+
+&bull; *Lancer Fim*
+
+Le script récupère l'image docker de Fim, puis la démarre. +
+Il prend les mêmes arguments que la commande `fim`
+
+[source,bash]
+----
+./fim-docker -h
+----
+
+&bull; *Mettre à jour l'image utilisée*
+
+[source,bash]
+----
+docker pull evrignaud/fim
+----
+
+== Essais en tout genre
+
+image::hands-on-little.png[]
+
++++<u>Idées pour essayer soi-même :</u>+++
+
+* http://evrignaud.github.io/fim/#_simple_example[simple-example]
+
+* http://evrignaud.github.io/fim/#_duplicates_that_are_outside[remove-duplicates-example]
+
+== Contenu du `.fim`
+
+* Le répertoire `.fim` contient :
+
+** Un fichier avec les settings du référentiel : `settings.json`
+** Un fichier pour chaque état (State). C'est un fichier json compressé
+
+{empty} +
+
+.*Le State*
+
+* Il contient un hash global qui en assure l'intégrité. +
+Fim refuse d'utiliser un State modifié
+
+* Le contenu des State est normalisé et peut-être utilisé sur les différents OS pris en charge
+
+* http://evrignaud.github.io/fim/#_state_file_content[Aperçu du contenu d'un State]
+
+== Modification du mode{nbsp}de{nbsp}hachage{nbsp}par{nbsp}défaut
+
+{empty} +
+
+A la création du référentiel de Fim vous pouvez demander à ne pas utiliser certains hash.
+Cela permet d'avoir un repository où les commit seront plus rapides, mais il pourrait y avoir des collisions :
+
+&bull; `-f` : Mode de hash max. : fast. Après utilisable uniquement `-f`, `-s` ou `-n`
+
+&bull; `-s` : Mode de hash max. : super-fast. Après utilisable uniquement `-s` ou `-n`
+
+&bull; `-n` : Mode de hash max. : no-hash. Après utilisable uniquement `-n`
+
++++<u>Exemple :</u>+++
+
+[source,bash]
+----
+fim init -f
+----
+
+Après la commande `status` fonctionne par défaut avec le niveau 'fast'.
+
+[source,bash]
+----
+fim st    # S'exécute en utilisant '-f'
+----
+
+http://evrignaud.github.io/fim/#_changing_default_hash_mode[Détails]
+
+== L'algorithme de Hash utilisé
+
+{empty} +
+
+* L'algo de hash utilisé est le SHA-512
+
+* Le SHA-512 est 2 * plus lent que MD5 car c'est un algo cryptographique
+
+* Par contre la taille de la clé produite (512 bits / 64 octets) permet de minimiser les risques de collision sur les gros fichiers
+
+* Ce qui ralenti le plus c'est le disque
+
+* Quand le statut est vérifié en mode full, les 3 hash sont utilisés ce qui limite encore plus les risques de collision
+
+== Performances
+
+image::performance.png[]
+
+* Fim peut gérer au moins 1 million de fichiers
+
+* Hashage en multi-thread pour utiliser au mieux les ressources
+
+* Dans beaucoup de cas, les performances sont conditionnées par la vitesse du disque +
+
+* +++<u>Par défaut :</u>+++ `#thread = #core / 2` +
+Option `-t` pour modifier le nombre de threads utilisés (http://evrignaud.github.io/fim/#_hash_files_in_multi_thread[Détails])
+
+== Processus de hashage
+
+Un Thread scanne le workspace et rempli la
+https://docs.oracle.com/javase/8/docs/api/index.html?java/util/concurrent/LinkedBlockingDeque.html[Queue] des fichiers à Hasher
+
+Plusieurs thread hashent chacun un fichier :
+
+&mdash; Calcul de la taille et de l'emplacement du prochain block
+
+&mdash; Map du block en mémoire en utilisant un https://docs.oracle.com/javase/8/docs/api/index.html?java/nio/channels/FileChannel.html[FileChannel] des NIO
+
+&mdash; Hashage ou non par les 3 hasheurs qui produisent les 3 hash +
+{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}a l'aide de https://docs.oracle.com/javase/8/docs/api/index.html?java/security/MessageDigest.html[MessageDigest] +
+{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}Ils recoivent les mêmes blocs afin de limiter les I/O +
+{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}et donc lire une seul fois les blocks
+
+image::hash-blocks.png[]
+
+== Plus performant que certains programmes{nbsp}C++ ?
+
+{empty} +
+
+*Purposely using btrfs RAID1 in degraded mode ?*
+http://www.spinics.net/lists/linux-btrfs/msg50990.html[http://www.spinics.net/lists/linux-btrfs/msg50990.html] +
+
+> For offline long term backups I also used to work with hashdeep to
+> perform and store a hash of all the files and recently started playing
+> with *Fim* which is similar but with a git backend for storing history.
+> Don't get fooled by fim being a java application. +
+> *It easily outperformed hashdeep on large datasets*.
+
+== Les différentes versions de Fim
+
+{empty} +
+
+.> http://evrignaud.github.io/fim/#_fim_changelog[Fim changelog] <
+
+{empty} +
+
+Articles que j'ai écrit sur https://linuxfr.org/[LinuxFr.org] pour les sorties des versions de Fim :
+
+* *1.2.0* - https://goo.gl/UrZK7J[Focus sur les performances avec Fim 1.2.0] +
+Support des repository avec au moins 1 million de fichiers
+* *1.1.0* - https://goo.gl/LAuKqp[Fim 1.1.0] +
+Réécriture de l'algorithme de hachage pour hacher +
+un bloc au début, un au milieu et un à la fin
+* *1.0.2* - https://goo.gl/yjMH4U[Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers] +
+Première version de Fim annoncée publiquement
+
+== Ils parlent de Fim
+
+* *Korben* - http://goo.gl/1gwX1g[Vérifier l’intégrité de très nombreux fichiers] +
+Fim est un outil vraiment excellent qui permet de gérer l'intégrité de nombreux fichiers ...
+
+* *01net.com* - http://goo.gl/OYKGxe[Pour Linux] - http://goo.gl/Bn2CMH[Pour Windows] +
+\... permet de vérifier l'intégrité de tous vos fichiers après les avoir manipulés en lots ...
+
+* *Pirate Informatique n°26* page 41 - https://pdf.websafe.fr/pirate-informatique/PI27_52p.pdf[Vérifiez l’intégrité de vos fichiers] +
+Si vous avez un paquet de fichiers à transférer, vous aimeriez sans doute être absolument
+sûr que les données n’ont pas été endommagées{nbsp}...
+
+* *linux-btrfs* - http://www.spinics.net/lists/linux-btrfs/msg50990.html[Purposely using btrfs RAID1 in degraded mode ?] ou https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg50185.html[ici] +
+\... Don't get fooled by fim being a java application. It easily outperformed hashdeep on large datasets.
+
+* *Stack Overflow* - http://stackoverflow.com/questions/38041543/signing-every-file-created-in-a-folder[Signing every file created in a folder]
+
+== L'OpenSource
+
+Fim a été mis en OpenSource pour qu'il profite à tous. +
+Cela permet aussi de bénéficier des idées de chacun. +
+Voici les idées et merge request qui ont été soumises :
+
+* https://github.com/evrignaud/fim/issues/1[Ignorer le premier block pour éviter que les headers n'augmentent la chance de collision]
+
+* https://github.com/evrignaud/fim/issues/2[Détection des corruptions hardware]
+
+* https://github.com/evrignaud/fim/issues/3[Support des labels SELinux]
+
+* https://github.com/evrignaud/fim/issues/4[Meilleur support du Mac OS X]
+
+* https://github.com/evrignaud/fim/issues/5[Gestion correcte quand `.fim` read-only]
+
+* https://github.com/evrignaud/fim/issues/6[Meilleur affichage de l'historique]
+
+* https://github.com/VRad49/fim/pull/1[Nouvelle icône pour Fim]
+
+_N'hésitez pas à ouvrir des issues avec vos idées sur GitHub_
+
+== Les alternatives à Fim
+
+* *https://git-lfs.github.com/[git-lfs]* - Git Large File Storage (LFS) replaces large files such as audio samples, videos, datasets, and graphics with text pointers inside Git
+
+* *https://git-annex.branchable.com/[git-annex]* - Managing files with git, without checking the file contents into git
+
+* *https://github.com/mildred/doc[doc]* - Manage your files and documents
+
+* *https://github.com/maxim2266/DIRT[DIRT (DIRectory Tracker)]* - Another little Linux command line utility to track changed files in a directory tree.
+
+* *http://md5deep.sourceforge.net/[hashdeep]* - https://linhost.info/2010/05/using-hashdeep-to-ensure-data-integrity/[Using Hashdeep To Ensure Data Integrity]
+
+* *http://www.md5summer.org/[MD5 Summer]* - Application for Windows 9x, NT, ME, 2000 and XP which generates and verifies md5 checksums
+
+* *https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc[btrfs-scrub]* - Reads all data from the disk and verifies checksums
+
+*Ils n'ont pas le mode super-fast pour le statut ou le commit*
+
+== Découverte du projet sur GitHub et{nbsp}des{nbsp}outils utilisés
+
+image::octocat.png[]
+
+* https://github.com/[GitHub] - Server Git hébergé sur le web - https://github.com/evrignaud/fim[Projet Fim]
+* https://travis-ci.org/[Travis CI] - CI pour Linux et Mac OS X - https://goo.gl/QfQTE8[image:https://travis-ci.org/evrignaud/fim.svg[]]
+* https://www.appveyor.com/[AppVeyor] - CI pour Windows - https://goo.gl/foWAWQ[image:https://ci.appveyor.com/api/projects/status/txadqci1hrr3lkko?svg=true[]]
+* https://coveralls.io/[Coveralls] - Couverture de code - https://goo.gl/hJGXqj[image:https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github[]]
+* https://scan.coverity.com/[Coverity] - Analyse statique de code - https://goo.gl/lbM77o[image:https://scan.coverity.com/projects/8749/badge.svg[]]
+
+http://asciidoctor.org/[Asciidoctor] - Implémentation Ruby de http://asciidoc.org/[AsciiDoc] pour générer +
+la http://evrignaud.github.io/fim/[doc de Fim] et les slides de cette présentation
+
+== Questions
+
+image::question.png[]
+
