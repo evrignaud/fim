@@ -120,7 +120,7 @@ public class FimTest {
 
     @Test(expected = BadFimUsageException.class)
     public void masterFimRepositoryDirectoryMustExist() throws Exception {
-        cut.run(new String[]{"rdup", "-m", "dummy_directory"}, context);
+        cut.run(new String[]{"rdup", "-M", "dummy_directory"}, context);
     }
 
     @Test

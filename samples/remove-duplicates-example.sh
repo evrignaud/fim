@@ -54,11 +54,11 @@ ls -la
 ls -la subdir
 
 echo \# Commit all the modifications
-fim ci -s -c "Modifications"
+fim ci -s -m "Modifications"
 
 echo \# Remove the duplicates
 cd ../backup/
-fim rdup -m ../source || exit $?
+fim rdup -M ../source || exit $?
 
 echo \# Only the two modified files remains
 ls -la

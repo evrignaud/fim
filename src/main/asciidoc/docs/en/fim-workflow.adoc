@@ -45,14 +45,14 @@ It's a time consuming operation that will compute hash of every file contents.
 
 [source, bash]
 ----
-$ fim ci -c "My commit comment"
+$ fim ci -m "My commit comment"
 ----
 
 In order to commit faster you can use the Super-fast commit. More details in <<index.adoc#_super_fast_commit,Super-fast commit>>. (with this option you can miss some modified files)
 
 [source, bash]
 ----
-$ fim ci -s -c "My commit comment"
+$ fim ci -s -m "My commit comment"
 ----
 
 You can display the history of the modifications using the `log` command.

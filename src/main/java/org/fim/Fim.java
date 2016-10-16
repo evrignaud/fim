@@ -106,7 +106,7 @@ public class Fim {
         Options opts = new Options();
         opts.addOption(buildOption("d", "directory", "Run Fim into the specified directory").hasArg().build());
         opts.addOption(buildOption("e", "errors", "Display execution error details").build());
-        opts.addOption(buildOption("m", "master-fim-repository", "Fim repository directory that you want to use as remote master.\n" +
+        opts.addOption(buildOption("M", "master-fim-repository", "Fim repository directory that you want to use as remote master.\n" +
             "Only for the 'remove-duplicates' command").hasArg().build());
         opts.addOption(buildOption("n", "do-not-hash", "Do not hash file content. Uses only file names and modification dates").build());
         opts.addOption(buildOption("s", "super-fast-mode", "Use super-fast mode. Hash only 3 small blocks.\n" +
@@ -123,7 +123,8 @@ public class Fim {
             "For example: -i attrs,dates,renamed").hasArg().valueSeparator(',').build());
         opts.addOption(buildOption("l", "use-last-state", "Use the last committed State.\n" +
             "Both for the 'find-duplicates' and 'remove-duplicates' commands").build());
-        opts.addOption(buildOption("c", "comment", "Comment to set during init and commit").hasArg().build());
+        opts.addOption(buildOption("m", "comment", "Comment to set during init and commit").hasArg().build());
+        opts.addOption(buildOption("c", "", "Deprecated option used to set the init or commit comment. Use '-m' instead").hasArg().build());
         opts.addOption(buildOption("o", "output-max-lines", "Change the maximum number lines displayed for the same kind of modification.\n" +
             "Default value is 200 lines").hasArg().build());
         opts.addOption(buildOption("p", "purge-states", "Purge previous States if the commit succeed").build());
@@ -159,15 +160,20 @@ public class Fim {
             if (ignoredKinds != null) {
                 parseIgnored(context, ignoredKinds);
             }
+            if (commandLine.hasOption('c')) {
+                Logger.out.println("The '-c' option is deprecated and will be removed in the future. use '-m' instead\n");
+                context.setComment(commandLine.getOptionValue('c', context.getComment()));
+            }
+
             context.setVerbose(!commandLine.hasOption('q'));
-            context.setComment(commandLine.getOptionValue('c', context.getComment()));
+            context.setComment(commandLine.getOptionValue('m', context.getComment()));
             context.setUseLastState(commandLine.hasOption('l'));
             context.setPurgeStates(commandLine.hasOption('p'));
             context.setAlwaysYes(commandLine.hasOption('y'));
             context.setDisplayStackTrace(commandLine.hasOption('e'));
 
-            if (commandLine.hasOption('m')) {
-                String masterFimRepositoryDir = commandLine.getOptionValue('m');
+            if (commandLine.hasOption('M')) {
+                String masterFimRepositoryDir = commandLine.getOptionValue('M');
                 if (!Files.exists(Paths.get(masterFimRepositoryDir))) {
                     Logger.error(String.format("Master Fim repository directory '%s' does not exist", masterFimRepositoryDir));
                     throw new BadFimUsageException();

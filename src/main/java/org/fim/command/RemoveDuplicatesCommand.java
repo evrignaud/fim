@@ -56,7 +56,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
     @Override
     public String getDescription() {
         return "Remove duplicates found by the 'fdup' command.\n" +
-            "                                If you specify the '-m' option it removes duplicates based on a master repository";
+            "                                If you specify the '-M' option it removes duplicates based on a master repository";
     }
 
     @Override

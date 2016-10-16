@@ -62,10 +62,10 @@ For example, `backup` is a copy of the repository named `source` :
 [source, bash]
 ----
 $ cd backup
-$ fim rdup -m ../source
+$ fim rdup -M ../source
 ----
 
-When the workspace to clean is remote, you can just copy the `.fim` in an empty directory and set it as parameter to the `-m` option of the `rdup` command
+When the workspace to clean is remote, you can just copy the `.fim` in an empty directory and set it as parameter to the `-M` option of the `rdup` command
 
 === Simple duplicates removing
 
@@ -173,7 +173,7 @@ drwxrwxr-x 4 evrignaud evrignaud 4096 mai   21 08:39 ..
 
 [source, bash]
 ------
-~/rdup-example/source$ fim ci -s -c "Modifications"
+~/rdup-example/source$ fim ci -s -m "Modifications"
 2016/05/21 08:39:13 - Info  - Scanning recursively local files, using 'super-fast' mode and 4 threads
 (Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
 .
@@ -199,7 +199,7 @@ Do you really want to commit (y/n/A)? y
 [source, bash]
 ------
 ~/rdup-example/source$ cd ../backup/
-~/rdup-example/backup$ fim rdup -m ../source
+~/rdup-example/backup$ fim rdup -M ../source
 2016/05/21 08:39:14 - Info  - Searching for duplicate files using the ../source directory as master
 
 2016/05/21 08:39:14 - Info  - Scanning recursively local files, using 'full' mode and 4 threads
@@ -274,7 +274,7 @@ The backup location can contain also his own `.fim` directory. It will be ignore
 [source, bash]
 ----
 $ cd <source location>
-$ fim ci -y -c "Content added"
+$ fim ci -y -m "Content added"
 ----
 
 * If the backup location cannot reach the source location (so master location is not the source location),
@@ -297,6 +297,6 @@ The source `.fim` directory can't be nested into the root folder of the backup l
 [source, bash]
 ----
 $ cd <backup location>
-$ fim rdup -m <master location>
+$ fim rdup -M <master location>
 ----
 

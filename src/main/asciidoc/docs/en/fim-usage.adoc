@@ -3,8 +3,8 @@
 --------
 $ fim --help
 
-usage: fim <command> [-c <arg>] [-d <arg>] [-e] [-f] [-h] [-i <arg>] [-l] [-m <arg>] [-n] [-o <arg>] [-p] [-q] [-s] [-t
-       <arg>] [-v] [-y]
+usage: fim <command> [-c <arg>] [-d <arg>] [-e] [-f] [-h] [-i <arg>] [-l] [-M <arg>] [-m <arg>] [-n] [-o <arg>] [-p]
+       [-q] [-s] [-t <arg>] [-v] [-y]
 
 File Integrity Checker
 
@@ -19,7 +19,7 @@ Available commands:
                                 Change in content, but not in creation time and last modified time
      fdup / find-duplicates     Find local duplicate files in the Fim repository
      rdup / remove-duplicates   Remove duplicates found by the 'fdup' command.
-                                If you specify the '-m' option it removes duplicates based on a master repository
+                                If you specify the '-M' option it removes duplicates based on a master repository
      log                        Display the history of the States with the same output as the 'status' command
      dign / display-ignored     Display the files or directories that are ignored into the last State
      rbk / rollback             Rollback the last commit. It will remove the last State
@@ -28,7 +28,7 @@ Available commands:
      version                    Prints the Fim version
 
 Available options:
-     -c,--comment <arg>                 Comment to set during init and commit
+     -c,-- <arg>                        Deprecated option used to set the init or commit comment. Use '-m' instead
      -d,--directory <arg>               Run Fim into the specified directory
      -e,--errors                        Display execution error details
      -f,--fast-mode                     Use fast mode. Hash only 3 medium blocks.
@@ -43,8 +43,9 @@ Available options:
                                         For example: -i attrs,dates,renamed
      -l,--use-last-state                Use the last committed State.
                                         Both for the 'find-duplicates' and 'remove-duplicates' commands
-     -m,--master-fim-repository <arg>   Fim repository directory that you want to use as remote master.
+     -M,--master-fim-repository <arg>   Fim repository directory that you want to use as remote master.
                                         Only for the 'remove-duplicates' command
+     -m,--comment <arg>                 Comment to set during init and commit
      -n,--do-not-hash                   Do not hash file content. Uses only file names and modification dates
      -o,--output-max-lines <arg>        Change the maximum number lines displayed for the same kind of modification.
                                         Default value is 200 lines

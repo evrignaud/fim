@@ -36,7 +36,7 @@ set -x
 
 	echo
 	echo \# Initialize the Fim repository
-	fim init -c "First State" || exit $?
+	fim init -m "First State" || exit $?
 
 	echo
 	echo \# A new .fim directory have been created
@@ -108,7 +108,7 @@ set -x
 
 	echo
 	echo \# Commit only the local modifications done inside this directory
-	fim ci -c "Modifications from dir01" -y || exit $?
+	fim ci -m "Modifications from dir01" -y || exit $?
 
 	echo
 	echo \# No more local modifications
@@ -118,7 +118,7 @@ set -x
 
 	echo
 	echo \# Commit the modifications
-	fim ci -c "All modifications" -y || exit $?
+	fim ci -m "All modifications" -y || exit $?
 
 	echo
 	echo \# Nothing is modified now
@@ -142,7 +142,7 @@ set -x
 
 	echo
 	echo \# Commit using super-fast mode
-	fim ci -s -c "Commit modifications very quickly using super-fast commit" -y || exit $?
+	fim ci -s -m "Commit modifications very quickly using super-fast commit" -y || exit $?
 
 	echo
 	echo \# Again, nothing is modified now

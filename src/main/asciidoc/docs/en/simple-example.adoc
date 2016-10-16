@@ -40,7 +40,7 @@ drwx------ 3 evrignaud evrignaud 4096 mai    9 21:58 ..
 
 [source, bash]
 ----
-simple-example$ fim init -c 'First State'
+simple-example$ fim init -m 'First State'
 2016/05/09 21:58:36 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
 .
@@ -244,7 +244,7 @@ Commit only the local modifications done inside this directory.
 
 [source, bash]
 ----
-simple-example/dir01$ fim ci -c 'Modifications from dir01' -y
+simple-example/dir01$ fim ci -m 'Modifications from dir01' -y
 2016/05/09 21:58:38 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
 2016/05/09 21:58:38 - Info  - Scanned 1 file (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
@@ -283,7 +283,7 @@ simple-example/dir01$ cd ..
 
 [source, bash]
 ----
-simple-example$ fim ci -c 'All modifications' -y
+simple-example$ fim ci -m 'All modifications' -y
 2016/05/09 21:58:39 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
 .
@@ -440,7 +440,7 @@ simple-example$ fim rbk -y
 
 [source, bash]
 ----
-simple-example$ fim ci -s -c 'Commit modifications very quickly using super-fast commit' -y
+simple-example$ fim ci -s -m 'Commit modifications very quickly using super-fast commit' -y
 2016/05/09 21:58:40 - Info  - Scanning recursively local files, using 'super-fast' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # > 1 GB, @ > 200 MB, O > 100 MB, 8 > 50 MB, o > 20 MB, . otherwise)
 .

@@ -147,7 +147,7 @@ fim st         # Commande 'status'
 
 [source, bash]
 ----
-fim ci -c "My commit comment"
+fim ci -m "My commit comment"
 ----
 
 *5/ Afficher l'historique*
@@ -204,13 +204,13 @@ $ cd test1
 $ for i in 01 02 03 04 05 06 07 08 09 10 ;
   do echo "New File $i" > file${i} ; done
 
-$ fim init -c "First State"
+$ fim init -m "First State"
 
 # Modifications
 
 $ fim st
 
-$ fim ci -c "My modifications"
+$ fim ci -m "My modifications"
 
 $ fim log
 ----
@@ -247,7 +247,7 @@ Modifications effectuées
 
 [source, bash]
 ----
-fim ci -c "My commit comment"
+fim ci -m "My commit comment"
 ----
 
 {empty} +
@@ -265,7 +265,7 @@ Les fichiers modifiés sont alors hashés a nouveau en mode{nbsp}complet
 
 [source, bash]
 ----
-fim ci -s -y -c "Commit very quickly using super-fast commit"
+fim ci -s -y -m "Commit very quickly using super-fast commit"
 ----
 
 {empty} +
@@ -431,13 +431,13 @@ Par exemple, avec `backup` qui est une copie du repository nommé `source` :
 [source,bash]
 ----
 cd backup
-$ fim rdup -m ../source
+$ fim rdup -M ../source
 ----
 
 {empty} +
 
 Quand le workspace à nettoyer est distant,  vous pouvez juste copier le `.fim` dans un répertoire vide
-et le mettre en paramètre de l'option `-m` de la commande `rdup`
+et le mettre en paramètre de l'option `-M` de la commande `rdup`
 
 {empty} +
 
