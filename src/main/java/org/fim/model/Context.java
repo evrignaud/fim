@@ -47,6 +47,7 @@ public class Context {
     private boolean logDebugEnabled;
     private Ignored ignored;
     private boolean removeDuplicates;
+    private boolean calledFromTest;
 
     public Context() {
         setInvokedFromSubDirectory(false);
@@ -63,6 +64,8 @@ public class Context {
         setTruncateOutput(200);
         setLogDebugEnabled(checkLogDebugEnabled());
         setIgnored(new Ignored());
+        setRemoveDuplicates(false);
+        setCalledFromTest(false);
     }
 
     public boolean isInvokedFromSubDirectory() {
@@ -215,6 +218,14 @@ public class Context {
 
     public void setRemoveDuplicates(boolean removeDuplicates) {
         this.removeDuplicates = removeDuplicates;
+    }
+
+    public boolean isCalledFromTest() {
+        return calledFromTest;
+    }
+
+    public void setCalledFromTest(boolean calledFromTest) {
+        this.calledFromTest = calledFromTest;
     }
 
     @Override

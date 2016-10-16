@@ -121,7 +121,7 @@ public class DuplicateResult {
         Logger.newLine();
     }
 
-    private void selectFilesToRemove(List<FileState> duplicatedFiles) {
+    protected void selectFilesToRemove(List<FileState> duplicatedFiles) {
         if (context.isAlwaysYes()) {
             for (FileState fileState : duplicatedFiles) {
                 if (duplicatedFiles.indexOf(fileState) > 0) {
@@ -132,25 +132,27 @@ public class DuplicateResult {
             for (FileState fileState : duplicatedFiles) {
                 int index = duplicatedFiles.indexOf(fileState) + 1;
                 Logger.out.printf("  [%s] %s%n", index, fileState.getFileName());
-                fileState.setToRemove(true);
             }
 
             while (true) {
-                if (manageAnswers(duplicatedFiles)) {
+                String inputLine = readInputLine();
+                if (manageAnswers(duplicatedFiles, inputLine)) {
                     break;
                 }
             }
         }
     }
 
-    private boolean manageAnswers(List<FileState> duplicatedFiles) {
+    protected boolean manageAnswers(List<FileState> duplicatedFiles, String inputLine) {
         boolean gotCorrectAnswer = false;
         int count = duplicatedFiles.size();
 
-        Logger.out.printf("  Preserve files [1 - %d, all or a]: ", count);
-        String line = readInputLine();
+        for (FileState fileState : duplicatedFiles) {
+            fileState.setToRemove(true);
+        }
 
-        try (Scanner scanner = new Scanner(line)) {
+        Logger.out.printf("  Preserve files [1 - %d, all or a, none or n]: ", count);
+        try (Scanner scanner = new Scanner(inputLine)) {
             while (scanner.hasNext()) {
                 String answer = scanner.next();
                 if ("a".equals(answer) || "all".equals(answer)) {
@@ -159,7 +161,11 @@ public class DuplicateResult {
                     }
                     gotCorrectAnswer = true;
                     break;
+                } else if ("n".equals(answer) || "none".equals(answer)) {
+                    gotCorrectAnswer = true;
+                    break;
                 }
+
                 int index = safeParseInt(answer);
 
                 if (index >= 1 && index <= count) {

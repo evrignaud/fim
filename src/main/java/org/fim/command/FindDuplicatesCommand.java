@@ -18,6 +18,7 @@
  */
 package org.fim.command;
 
+import org.fim.command.exception.DontWantToContinueException;
 import org.fim.internal.DuplicateFinder;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
@@ -47,6 +48,15 @@ public class FindDuplicatesCommand extends AbstractCommand {
         checkHashMode(context, Option.ALLOW_COMPATIBLE);
 
         fileContentHashingMandatory(context);
+
+        if (context.isRemoveDuplicates() && context.isAlwaysYes() && !context.isCalledFromTest()) {
+            context.setAlwaysYes(false);
+            Logger.out.println("You are going to remove automatically all duplicates, keeping the first of each duplicate set.");
+            if (!confirmAction(context, "continue")) {
+                throw new DontWantToContinueException();
+            }
+            Logger.newLine();
+        }
 
         Logger.info(String.format("Searching for duplicate files%s", context.isUseLastState() ? " from the last committed State" : ""));
         Logger.newLine();

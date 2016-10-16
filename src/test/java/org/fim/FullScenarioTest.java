@@ -23,6 +23,7 @@ import org.fim.command.DisplayIgnoredFilesCommand;
 import org.fim.command.FindDuplicatesCommand;
 import org.fim.command.InitCommand;
 import org.fim.command.LogCommand;
+import org.fim.command.RemoveDuplicatesCommand;
 import org.fim.command.RollbackCommand;
 import org.fim.command.StatusCommand;
 import org.fim.command.exception.BadFimUsageException;
@@ -72,6 +73,7 @@ public class FullScenarioTest {
     private StatusCommand statusCommand;
     private CommitCommand commitCommand;
     private FindDuplicatesCommand findDuplicatesCommand;
+    private RemoveDuplicatesCommand removeDuplicatesCommand;
     private LogCommand logCommand;
     private DisplayIgnoredFilesCommand displayIgnoredFilesCommand;
     private RollbackCommand rollbackCommand;
@@ -104,6 +106,7 @@ public class FullScenarioTest {
         statusCommand = new StatusCommand();
         commitCommand = new CommitCommand();
         findDuplicatesCommand = new FindDuplicatesCommand();
+        removeDuplicatesCommand = new RemoveDuplicatesCommand();
         logCommand = new LogCommand();
         displayIgnoredFilesCommand = new DisplayIgnoredFilesCommand();
         rollbackCommand = new RollbackCommand();
@@ -227,6 +230,16 @@ public class FullScenarioTest {
             assertThat(modificationCounts.getAdded()).isEqualTo(1);
             assertThat(modificationCounts.getDeleted()).isEqualTo(0);
             assertThat(modificationCounts.getCopied()).isEqualTo(0);
+
+            assertFileExists(rootDir, "file03.dup1");
+            assertFileExists(rootDir, "file03.dup2");
+            assertFileExists(rootDir, "file07.dup1");
+            context.setCalledFromTest(true);
+            long totalFilesRemoved = (long) removeDuplicatesCommand.execute(context);
+            assertThat(totalFilesRemoved).isEqualTo(3);
+            assertFileDoesNotExist(rootDir, "file03.dup1");
+            assertFileDoesNotExist(rootDir, "file03.dup2");
+            assertFileDoesNotExist(rootDir, "file07.dup1");
         }
     }
 
@@ -370,11 +383,19 @@ public class FullScenarioTest {
         assertThat(ignoredFiles.size()).isEqualTo(expectedIgnoredFilesCount);
     }
 
-    public Path getStateFile(Context context, int stateNumber) {
+    private void assertFileExists(Path directory, String fileName) {
+        assertThat(Files.exists(directory.resolve(fileName))).isTrue();
+    }
+
+    private void assertFileDoesNotExist(Path directory, String fileName) {
+        assertThat(Files.exists(directory.resolve(fileName))).isFalse();
+    }
+
+    private Path getStateFile(Context context, int stateNumber) {
         return context.getRepositoryStatesDir().resolve("state_" + stateNumber + STATE_EXTENSION);
     }
 
-    public int getLastStateNumber(Context context) {
+    private int getLastStateNumber(Context context) {
         for (int index = 1; ; index++) {
             if (!Files.exists(getStateFile(context, index))) {
                 return index - 1;

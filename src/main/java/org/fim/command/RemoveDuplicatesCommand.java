@@ -18,7 +18,6 @@
  */
 package org.fim.command;
 
-import org.fim.Fim;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.DontWantToContinueException;
 import org.fim.internal.StateGenerator;
@@ -44,12 +43,6 @@ import static org.fim.util.FileUtil.removeFile;
 import static org.fim.util.HashModeUtil.hashModeToString;
 
 public class RemoveDuplicatesCommand extends AbstractCommand {
-    private final Fim fim;
-
-    public RemoveDuplicatesCommand(Fim fim) {
-        this.fim = fim;
-    }
-
     @Override
     public String getCmdName() {
         return "remove-duplicates";

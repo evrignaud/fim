@@ -19,7 +19,6 @@
 package org.fim.command;
 
 import org.apache.commons.io.FileUtils;
-import org.fim.Fim;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.model.Context;
 import org.fim.model.State;
@@ -60,7 +59,7 @@ public class RemoveDuplicatesCommandTest {
         createDirectories(rootDirCopy);
 
         initCommand = new InitCommand();
-        removeDuplicatesCommand = new RemoveDuplicatesCommand(new Fim());
+        removeDuplicatesCommand = new RemoveDuplicatesCommand();
         assertThat(removeDuplicatesCommand.getFimReposConstraint()).isEqualTo(DONT_CARE);
     }
 

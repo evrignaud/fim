@@ -93,7 +93,7 @@ public class Fim {
             new ResetFileAttributesCommand(),
             new DetectCorruptionCommand(),
             new FindDuplicatesCommand(),
-            new RemoveDuplicatesCommand(this),
+            new RemoveDuplicatesCommand(),
             new LogCommand(),
             new DisplayIgnoredFilesCommand(),
             new RollbackCommand(),
