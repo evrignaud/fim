@@ -14,11 +14,11 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <docs.en.source.directory>src/main/asciidoc/docs/en</docs.en.source.directory>
-        <docs.en.output.directory>${project.build.directory}/docs/en</docs.en.output.directory>
+        <docs.source.directory>src/main/asciidoc/docs/en</docs.source.directory>
+        <docs.output.directory>${project.build.directory}/docs/en</docs.output.directory>
 
-        <slides.fr.source.directory>src/main/asciidoc/slides/fr</slides.fr.source.directory>
-        <slides.fr.output.directory>${project.build.directory}/slides/fr</slides.fr.output.directory>
+        <slides.source.directory>src/main/asciidoc/slides</slides.source.directory>
+        <slides.output.directory>${project.build.directory}/slides</slides.output.directory>
 
         <!-- versions -->
         <java.version>1.8</java.version>
@@ -357,7 +357,7 @@
                             <url>https://github.com/hakimel/reveal.js/archive/${revealjs.version}.zip</url>
                             <unpack>true</unpack>
                             <outputFileName>reveal.js-${revealjs.version}.zip</outputFileName>
-                            <outputDirectory>${slides.fr.output.directory}</outputDirectory>
+                            <outputDirectory>${slides.output.directory}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -387,8 +387,8 @@
                             <goal>process-asciidoc</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${docs.en.source.directory}</sourceDirectory>
-                            <outputDirectory>${docs.en.output.directory}</outputDirectory>
+                            <sourceDirectory>${docs.source.directory}</sourceDirectory>
+                            <outputDirectory>${docs.output.directory}</outputDirectory>
                             <sourceHighlighter>highlight.js</sourceHighlighter>
                             <backend>html5</backend>
                             <doctype>book</doctype>
@@ -407,8 +407,8 @@
                             <goal>process-asciidoc</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${slides.fr.source.directory}</sourceDirectory>
-                            <outputDirectory>${slides.fr.output.directory}</outputDirectory>
+                            <sourceDirectory>${slides.source.directory}</sourceDirectory>
+                            <outputDirectory>${slides.output.directory}</outputDirectory>
                             <sourceHighlighter>coderay</sourceHighlighter>
                             <backend>revealjs</backend>
                             <templateDir>
@@ -442,21 +442,34 @@
                         </goals>
                         <configuration>
                             <target>
-                                <replace file="${docs.en.output.directory}/index.html">
+                                <replace file="${docs.output.directory}/index.html">
                                     <replacefilter>
                                         <replacetoken><![CDATA[</head>]]></replacetoken>
                                         <replacevalue>
                                             <![CDATA[<link rel="icon" type="image/x-icon" href="images/favicon/favicon.ico" /></head>]]></replacevalue>
                                     </replacefilter>
                                 </replace>
-                                <replace file="${slides.fr.output.directory}/index.html">
+                                <replace file="${slides.output.directory}/en.html">
                                     <replacefilter>
                                         <replacetoken><![CDATA[</head>]]></replacetoken>
                                         <replacevalue>
                                             <![CDATA[<link rel="icon" type="image/x-icon" href="images/favicon/favicon.ico" /></head>]]></replacevalue>
                                     </replacefilter>
                                 </replace>
-                                <replace file="${slides.fr.output.directory}/index.html">
+                                <replace file="${slides.output.directory}/en.html">
+                                    <replacefilter>
+                                        <replacetoken>__project_version__</replacetoken>
+                                        <replacevalue>${project.version}</replacevalue>
+                                    </replacefilter>
+                                </replace>
+                                <replace file="${slides.output.directory}/fr.html">
+                                    <replacefilter>
+                                        <replacetoken><![CDATA[</head>]]></replacetoken>
+                                        <replacevalue>
+                                            <![CDATA[<link rel="icon" type="image/x-icon" href="images/favicon/favicon.ico" /></head>]]></replacevalue>
+                                    </replacefilter>
+                                </replace>
+                                <replace file="${slides.output.directory}/fr.html">
                                     <replacefilter>
                                         <replacetoken>__project_version__</replacetoken>
                                         <replacevalue>${project.version}</replacevalue>
