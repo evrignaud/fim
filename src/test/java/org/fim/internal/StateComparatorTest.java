@@ -33,6 +33,7 @@ import org.junit.runners.Parameterized.Parameters;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
 import static org.fim.model.HashMode.hashMediumBlock;
@@ -244,5 +245,21 @@ public class StateComparatorTest extends StateAssert {
         result = new StateComparator(context, s1, s2).searchForHardwareCorruption().compare();
         assertGotOnlyModifications(result, corrupted);
         assertFilesModified(result, corrupted, "file_01");
+    }
+
+    @Test
+    public void withLogDebugWeHaveAResut() {
+        context.setLogDebugEnabled(true);
+        s2 = s1.clone();
+        String result = new StateComparator(context, s1, s2).fileStatesToString("My message", s1.getFileStates());
+        assertThat(result).startsWith("  My message:");
+    }
+
+    @Test
+    public void withoutLogDebugWeHaveNothing() {
+        context.setLogDebugEnabled(false);
+        s2 = s1.clone();
+        String result = new StateComparator(context, s1, s2).fileStatesToString("My message", s1.getFileStates());
+        assertThat(result).isEqualTo("");
     }
 }

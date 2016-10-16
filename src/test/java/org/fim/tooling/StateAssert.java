@@ -20,9 +20,12 @@ package org.fim.tooling;
 
 import org.fim.model.CompareResult;
 import org.fim.model.Difference;
+import org.fim.model.FileHash;
 import org.fim.model.FileState;
+import org.fim.model.FileTime;
 import org.fim.model.Modification;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +35,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StateAssert {
     protected BuildableContext defaultContext() {
         return new BuildableContext();
+    }
+
+    public static List<FileState> createFileStates(int count) {
+        List<FileState> fileStates = new ArrayList<>();
+        for (int index = 0; index < count; index++) {
+            FileState fileState = new FileState("file_" + index, 256, new FileTime(512, 512), new FileHash("A", "A", "A"), new ArrayList<>());
+            fileStates.add(fileState);
+        }
+        return fileStates;
     }
 
     protected void assertNothingModified(CompareResult result) {

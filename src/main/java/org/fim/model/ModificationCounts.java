@@ -29,6 +29,7 @@ public class ModificationCounts {
     private int attributesModified;
     private int renamed;
     private int deleted;
+    private int corrupted;
 
     public ModificationCounts() {
         // Use the default values
@@ -69,6 +70,10 @@ public class ModificationCounts {
 
                     case deleted:
                         deleted++;
+                        break;
+
+                    case corrupted:
+                        corrupted++;
                         break;
 
                     default:
@@ -139,5 +144,13 @@ public class ModificationCounts {
 
     public void setDeleted(int deleted) {
         this.deleted = deleted;
+    }
+
+    public int getCorrupted() {
+        return corrupted;
+    }
+
+    public void setCorrupted(int corrupted) {
+        this.corrupted = corrupted;
     }
 }

@@ -360,7 +360,7 @@ public class StateComparator {
         }
     }
 
-    private String fileStatesToString(String message, List<FileState> fileStates) {
+    protected String fileStatesToString(String message, List<FileState> fileStates) {
         if (!context.isLogDebugEnabled()) {
             return "";
         }

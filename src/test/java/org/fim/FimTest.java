@@ -118,6 +118,11 @@ public class FimTest {
         assertThat(context.getCurrentDirectory()).isEqualTo(subdirPath);
     }
 
+    @Test(expected = BadFimUsageException.class)
+    public void masterFimRepositoryDirectoryMustExist() throws Exception {
+        cut.run(new String[]{"rdup", "-m", "dummy_directory"}, context);
+    }
+
     @Test
     public void negativeOutputTruncatingIsSetToZero() throws Exception {
         initRepoAndCreateOneFile();

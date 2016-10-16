@@ -22,10 +22,10 @@ import org.fim.tooling.BuildableContext;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.fim.tooling.StateAssert.createFileStates;
 
 public class DuplicateResultTest {
     private DuplicateResult cut;
@@ -38,11 +38,7 @@ public class DuplicateResultTest {
         context.setAlwaysYes(true);
         cut = new DuplicateResult(context);
 
-        duplicatedFiles = new ArrayList<>();
-        for (int index = 0; index < 10; index++) {
-            FileState fileState = new FileState("file_" + index, 256, new FileTime(512, 512), new FileHash("A", "A", "A"), new ArrayList<>());
-            duplicatedFiles.add(fileState);
-        }
+        duplicatedFiles = createFileStates(10);
     }
 
     @Test
