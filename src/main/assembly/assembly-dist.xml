@@ -33,7 +33,7 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>target/docs/en</directory>
+            <directory>target/docs</directory>
             <outputDirectory></outputDirectory>
             <includes>
                 <include>index.html</include>
@@ -41,14 +41,14 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>target/docs/en/images</directory>
+            <directory>target/docs/images</directory>
             <outputDirectory>images</outputDirectory>
             <includes>
                 <include>**/*</include>
             </includes>
         </fileSet>
         <fileSet>
-            <directory>target/docs/en/css</directory>
+            <directory>target/docs/css</directory>
             <outputDirectory>css</outputDirectory>
             <includes>
                 <include>*.css</include>

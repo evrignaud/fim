@@ -14,8 +14,8 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <docs.source.directory>src/main/asciidoc/docs/en</docs.source.directory>
-        <docs.output.directory>${project.build.directory}/docs/en</docs.output.directory>
+        <docs.source.directory>src/main/asciidoc/docs</docs.source.directory>
+        <docs.output.directory>${project.build.directory}/docs</docs.output.directory>
 
         <slides.source.directory>src/main/asciidoc/slides</slides.source.directory>
         <slides.output.directory>${project.build.directory}/slides</slides.output.directory>
