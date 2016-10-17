@@ -95,7 +95,7 @@ _Plus de détails dans les cas d'utilisation à suivre..._
 Il sera toujours présent dans l'historique de Git
 * De plus tous les contenus des fichiers modifiés sont conservés. +
 Ce qui prend une place énorme à la longue
-* Certains outils ne fonctionnent que sur des systèmes de fichier propriétaires
+* Certains outils ne fonctionnent que sur des systèmes de fichier particuliers
 (Exemple: https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc[btrfs-scrub])
 
 Le but était d'avoir un outil qui puisse afficher rapidement le statut du workspace local
@@ -167,7 +167,7 @@ Pour obtenir un status plus rapide, Fim est capable de hasher seulement 3 blocks
 au début, au milieu et à la fin. +
 On peut utiliser les options :
 
-* `-f` : Mode fast. Hash 3 block de 1 MB
+* `-f` : Mode fast. Hash 3 blocks de 1 MB
 
 * `-s` : Mode super-fast. Hash 3 blocks de 4 KB
 
@@ -181,7 +181,7 @@ fim st -f
 fim st -s
 ----
 
-Avec l'option `-n` (pas de hash) Fim regarde juste les noms de fichiers
+Avec l'option `-n` (pas de hash) Fim regarde juste les noms de fichiers et les attributs
 
 [source, bash]
 ----
@@ -405,7 +405,7 @@ Il est possible d'effacer les fichiers dupliqués.
 fim rdup
 ----
 
-&bull; Ou en automatique en conservant le premier fichier de la liste :
+&bull; Ou en automatique en conservant le premier fichier de la liste des fichiers dupliqués :
 
 [source,bash]
 ----
@@ -505,7 +505,7 @@ https://github.com/evrignaud/fim/releases/latest[image:download.png[Download] De
 
 .*Prérequis pour Fim*
 
-* Fim est écrit en Java. Il a besoin du JDK 8
+* Fim est écrit en Java. Il a besoin de Java 8
 
 * Il fonctionne sur Linux, Windows et Mac OS X
 
@@ -605,9 +605,10 @@ http://evrignaud.github.io/fim/#_changing_default_hash_mode[Détails]
 
 * L'algo de hash utilisé est le SHA-512
 
-* Le SHA-512 est 2 * plus lent que MD5 car c'est un algo cryptographique
+* Le SHA-512 est 2 * plus lent que MD5. C'est un algo cryptographique. +
+Cela diminue les risques de collision
 
-* Par contre la taille de la clé produite (512 bits / 64 octets) permet de minimiser les risques de collision sur les gros fichiers
+* La taille de la clé produite (512 bits / 64 octets) permet de minimiser les risques de collision sur les gros fichiers
 
 * Ce qui ralenti le plus c'est le disque
 
@@ -642,7 +643,7 @@ Plusieurs thread hashent chacun un fichier :
 {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}Ils recoivent les mêmes blocs afin de limiter les I/O +
 {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}et donc lire une seul fois les blocks
 
-image::hash-blocks.png[]
+image::hash-blocks-fr.png[]
 
 == Plus performant que certains programmes{nbsp}C++ ?
 
@@ -665,7 +666,7 @@ http://www.spinics.net/lists/linux-btrfs/msg50990.html[http://www.spinics.net/li
 
 {empty} +
 
-Articles que j'ai écrit sur https://linuxfr.org/[LinuxFr.org] pour les sorties des versions de Fim :
+Articles que j'ai écrit sur https://linuxfr.org/[LinuxFr.org] pour promouvoir Fim :
 
 * *1.2.0* - https://goo.gl/UrZK7J[Focus sur les performances avec Fim 1.2.0] +
 Support des repository avec au moins 1 million de fichiers
