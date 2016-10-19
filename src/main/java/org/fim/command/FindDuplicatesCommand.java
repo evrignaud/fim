@@ -50,12 +50,7 @@ public class FindDuplicatesCommand extends AbstractCommand {
         fileContentHashingMandatory(context);
 
         if (context.isRemoveDuplicates() && context.isAlwaysYes() && !context.isCalledFromTest()) {
-            context.setAlwaysYes(false);
-            Logger.out.println("You are going to remove automatically all duplicates, keeping the first of each duplicate set.");
-            if (!confirmAction(context, "continue")) {
-                throw new DontWantToContinueException();
-            }
-            Logger.newLine();
+            explicitlyConfirmAutomaticRemoval(context);
         }
 
         Logger.info(String.format("Searching for duplicate files%s", context.isUseLastState() ? " from the last committed State" : ""));
@@ -71,5 +66,14 @@ public class FindDuplicatesCommand extends AbstractCommand {
         DuplicateResult result = new DuplicateFinder(context).findDuplicates(state);
         result.displayAndRemoveDuplicates();
         return result;
+    }
+
+    private void explicitlyConfirmAutomaticRemoval(Context context) {
+        context.setAlwaysYes(false);
+        Logger.out.println("You are going to remove automatically all duplicates, keeping the first of each duplicate set.");
+        if (!confirmAction(context, "continue")) {
+            throw new DontWantToContinueException();
+        }
+        Logger.newLine();
     }
 }
