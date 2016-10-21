@@ -78,9 +78,14 @@ public class StateGenerator {
     public State generateState(String comment, Path rootDir, Path dirToScan) throws NoSuchAlgorithmException {
         this.rootDir = rootDir;
 
-        int threadCount = context.getThreadCount();
-        Logger.info(String.format("Scanning recursively local files, using '%s' mode and %d %s",
-            hashModeToString(context.getHashMode()), threadCount, plural("thread", threadCount)));
+        String usingThreads;
+        if (context.isDynamicScaling()) {
+            usingThreads = "automatic scaling";
+        } else {
+            usingThreads = String.format("%d %s", context.getThreadCount(), plural("thread", context.getThreadCount()));
+        }
+        Logger.info(String.format("Scanning recursively local files, using '%s' mode and %s",
+            hashModeToString(context.getHashMode()), usingThreads));
         if (hashProgress.isProgressDisplayed()) {
             Logger.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgress.hashLegend());
         }
@@ -129,23 +134,58 @@ public class StateGenerator {
     protected void initializeFileHashers() {
         fileHashersStarted = false;
         fileHashers = new ArrayList<>();
-        executorService = Executors.newFixedThreadPool(context.getThreadCount());
+
+        int maxThreads = context.getThreadCount();
+        if (context.isDynamicScaling()) {
+            maxThreads = Runtime.getRuntime().availableProcessors();
+        }
+        executorService = Executors.newFixedThreadPool(maxThreads);
     }
 
     protected void startFileHashers() throws NoSuchAlgorithmException {
         if (!fileHashersStarted) {
-            String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
-            for (int index = 0; index < context.getThreadCount(); index++) {
-                FileHasher hasher = new FileHasher(context, scanInProgress, hashProgress, filesToHashQueue, normalizedRootDir);
-                executorService.submit(hasher);
-                fileHashers.add(hasher);
+            if (context.isDynamicScaling()) {
+                Thread thread = new Thread(new DynamicScaling(this));
+                thread.start();
+            } else {
+                String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
+                for (int index = 0; index < context.getThreadCount(); index++) {
+                    startFileHasher(normalizedRootDir);
+                }
             }
             fileHashersStarted = true;
         }
     }
 
+    public FileHasher startFileHasher() throws NoSuchAlgorithmException {
+        String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
+        return startFileHasher(normalizedRootDir);
+    }
+
+    public FileHasher startFileHasher(String normalizedRootDir) throws NoSuchAlgorithmException {
+        FileHasher hasher = new FileHasher(context, scanInProgress, hashProgress, filesToHashQueue, normalizedRootDir);
+        executorService.submit(hasher);
+        fileHashers.add(hasher);
+        if (context.isDynamicScaling()) {
+            context.setThreadCount(fileHashers.size());
+        }
+        return hasher;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public List<FileHasher> getFileHashers() {
+        return fileHashers;
+    }
+
     protected void waitAllFilesToBeHashed() {
         try {
+            while (!filesToHashQueue.isEmpty()) {
+                filesToHashQueue.wait();
+            }
+
             executorService.shutdown();
             executorService.awaitTermination(3, TimeUnit.DAYS);
         } catch (InterruptedException ex) {
@@ -166,12 +206,17 @@ public class StateGenerator {
         long globalThroughput = totalBytesHashed / durationSeconds;
         String throughputStr = byteCountToDisplaySize(globalThroughput);
 
+        String usingThreads = "";
+        if (context.isDynamicScaling()) {
+            usingThreads = String.format(", using %d %s", context.getThreadCount(), plural("thread", context.getThreadCount()));
+        }
+
         if (context.getHashMode() == dontHash) {
-            Logger.info(String.format("Scanned %d %s (%s), during %s%n",
-                fileCount, plural("file", fileCount), totalFileContentLengthStr, durationStr));
+            Logger.info(String.format("Scanned %d %s (%s)%s, during %s%n",
+                fileCount, plural("file", fileCount), totalFileContentLengthStr, usingThreads, durationStr));
         } else {
-            Logger.info(String.format("Scanned %d %s (%s), hashed %s (avg %s/s), during %s%n",
-                fileCount, plural("file", fileCount), totalFileContentLengthStr, totalBytesHashedStr, throughputStr, durationStr));
+            Logger.info(String.format("Scanned %d %s (%s)%s, hashed %s (avg %s/s), during %s%n",
+                fileCount, plural("file", fileCount), totalFileContentLengthStr, usingThreads, totalBytesHashedStr, throughputStr, durationStr));
         }
     }
 

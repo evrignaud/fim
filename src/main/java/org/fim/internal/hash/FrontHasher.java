@@ -142,6 +142,14 @@ public class FrontHasher implements Hasher {
     }
 
     @Override
+    public long getInstantThroughput() {
+        long instantThroughput =
+            max(smallBlockHasher.getInstantThroughput(),
+                max(mediumBlockHasher.getInstantThroughput(), fullHasher.getInstantThroughput()));
+        return instantThroughput;
+    }
+
+    @Override
     public boolean hashComplete() {
         return smallBlockHasher.hashComplete() && mediumBlockHasher.hashComplete() && fullHasher.hashComplete();
     }

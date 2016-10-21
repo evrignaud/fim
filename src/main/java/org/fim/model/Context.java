@@ -47,6 +47,7 @@ public class Context {
     private Ignored ignored;
     private boolean removeDuplicates;
     private boolean calledFromTest;
+    private boolean dynamicScaling;
 
     public Context() {
         setInvokedFromSubDirectory(false);
@@ -56,8 +57,9 @@ public class Context {
         setHashMode(hashAll);
         setComment("");
         setUseLastState(false);
-        setThreadCount(Runtime.getRuntime().availableProcessors() / 2);
+        setThreadCount(-1);
         setThreadCountSpecified(false);
+        setDynamicScaling(true);
         setMasterFimRepositoryDir(null);
         setAlwaysYes(false);
         setTruncateOutput(200);
@@ -163,11 +165,7 @@ public class Context {
     }
 
     public void setThreadCount(int threadCount) {
-        if (threadCount < 1) {
-            this.threadCount = 1;
-        } else {
-            this.threadCount = threadCount;
-        }
+        this.threadCount = threadCount;
     }
 
     public boolean isThreadCountSpecified() {
@@ -176,6 +174,14 @@ public class Context {
 
     public void setThreadCountSpecified(boolean threadCountSpecified) {
         this.threadCountSpecified = threadCountSpecified;
+    }
+
+    public void setDynamicScaling(boolean dynamicScaling) {
+        this.dynamicScaling = dynamicScaling;
+    }
+
+    public boolean isDynamicScaling() {
+        return dynamicScaling;
     }
 
     public void setTruncateOutput(int truncateOutput) {

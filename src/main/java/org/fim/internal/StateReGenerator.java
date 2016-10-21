@@ -18,6 +18,7 @@
  */
 package org.fim.internal;
 
+import org.fim.command.exception.FimInternalError;
 import org.fim.internal.hash.FileHasher;
 import org.fim.internal.hash.FileReHasher;
 import org.fim.model.Context;
@@ -37,6 +38,9 @@ public class StateReGenerator extends StateGenerator {
 
     public StateReGenerator(Context context) {
         super(context);
+        if (context.getThreadCount() <= 0) {
+            throw new FimInternalError("ThreadCount must be set");
+        }
     }
 
     public void reHashFiles(List<FileState> toReHash) throws NoSuchAlgorithmException {

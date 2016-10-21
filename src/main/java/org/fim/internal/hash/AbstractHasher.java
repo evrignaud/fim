@@ -35,9 +35,13 @@ public abstract class AbstractHasher implements Hasher {
     private long bytesHashed;
     private long totalBytesHashed;
 
+    private ThroughputKeeper throughputKeeper;
+
     public AbstractHasher(HashMode hashMode) throws NoSuchAlgorithmException {
         this.active = isCompatible(hashMode);
         this.totalBytesHashed = 0;
+
+        this.throughputKeeper = new ThroughputKeeper();
 
         if (this.active) {
             this.digest = MessageDigest.getInstance(HASH_ALGORITHM);
@@ -99,7 +103,14 @@ public abstract class AbstractHasher implements Hasher {
 
                 bytesHashed += remaining;
                 totalBytesHashed += remaining;
+
+                throughputKeeper.update(remaining);
             }
         }
+    }
+
+    @Override
+    public long getInstantThroughput() {
+        return throughputKeeper.getInstantThroughput();
     }
 }

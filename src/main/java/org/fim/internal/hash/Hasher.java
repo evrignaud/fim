@@ -38,4 +38,6 @@ public interface Hasher {
     boolean hashComplete();
 
     long getTotalBytesHashed();
+
+    long getInstantThroughput();
 }

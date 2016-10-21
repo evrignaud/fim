@@ -21,6 +21,7 @@ package org.fim.internal.hash;
 import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
+import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 
 import java.nio.file.Path;
@@ -30,12 +31,12 @@ import java.util.concurrent.TimeUnit;
 
 public class FileReHasher extends FileHasher {
     private final BlockingDeque<FileState> toRehashQueue;
-    private final Path rootPath;
+    private final Path rootDir;
 
-    public FileReHasher(Context context, HashProgress hashProgress, BlockingDeque<FileState> toRehashQueue, Path rootPath) throws NoSuchAlgorithmException {
-        super(context, null, hashProgress, null, rootPath.toString());
+    public FileReHasher(Context context, HashProgress hashProgress, BlockingDeque<FileState> toRehashQueue, Path rootDir) throws NoSuchAlgorithmException {
+        super(context, null, hashProgress, null, FileUtil.getNormalizedFileName(rootDir));
         this.toRehashQueue = toRehashQueue;
-        this.rootPath = rootPath;
+        this.rootDir = rootDir;
     }
 
     @Override
@@ -47,7 +48,7 @@ public class FileReHasher extends FileHasher {
                     long fileLength = fileState.getFileLength();
                     hashProgress.updateOutput(fileLength);
 
-                    FileHash fileHash = hashFile(rootPath.resolve(fileState.getFileName()), fileLength);
+                    FileHash fileHash = hashFile(rootDir.resolve(fileState.getFileName()), fileLength);
                     fileState.setFileHash(fileHash);
                 } catch (Exception ex) {
                     Logger.newLine();

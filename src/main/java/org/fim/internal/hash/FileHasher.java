@@ -216,4 +216,8 @@ public class FileHasher implements Runnable {
             cleaner.clean();
         }
     }
+
+    public long getInstantThroughput() {
+        return frontHasher.getInstantThroughput();
+    }
 }

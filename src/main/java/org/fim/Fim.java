@@ -129,7 +129,8 @@ public class Fim {
             "Default value is 200 lines").hasArg().build());
         opts.addOption(buildOption("p", "purge-states", "Purge previous States if the commit succeed").build());
         opts.addOption(buildOption("q", "quiet", "Do not display details").build());
-        opts.addOption(buildOption("t", "thread-count", "Number of thread used to hash file contents in parallel").hasArg().build());
+        opts.addOption(buildOption("t", "thread-count", "Number of thread used to hash file contents in parallel.\n" +
+            "By default this number depends on the disk throughput").hasArg().build());
         opts.addOption(buildOption("v", "version", "Prints the Fim version").build());
         opts.addOption(buildOption("y", "always-yes", "Always yes to every questions").build());
         return opts;
@@ -186,9 +187,11 @@ public class Fim {
             }
 
             if (commandLine.hasOption('t')) {
-                context.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "1")));
+                context.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "-1")));
                 context.setThreadCountSpecified(true);
             }
+
+            context.setDynamicScaling(context.getThreadCount() <= 0);
 
             context.setTruncateOutput(Integer.parseInt(commandLine.getOptionValue('o', "200")));
             if (context.getTruncateOutput() < 0) {
