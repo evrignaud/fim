@@ -31,10 +31,9 @@ import org.fim.util.DosFilePermissions;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 import org.fim.util.SELinux;
-import sun.misc.Cleaner;
-import sun.nio.ch.DirectBuffer;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
@@ -62,6 +61,9 @@ public class FileHasher implements Runnable {
     private final String rootDir;
     private final List<FileState> fileStates;
     private final FrontHasher frontHasher;
+
+    private Method clean = null;
+    private boolean cleanInitialized = false;
 
     public FileHasher(Context context, AtomicBoolean scanInProgress, HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException {
         this.context = context;
@@ -203,15 +205,33 @@ public class FileHasher implements Runnable {
     }
 
     /**
-     * Comes from here: http://stackoverflow.com/questions/8553158/prevent-outofmemory-when-using-java-nio-mappedbytebuffer
+     * Use reflection to avoid problems with non-SUN virtual machines.
+     * As mentioned in: http://stackoverflow.com/questions/2972986/how-to-unmap-a-file-from-memory-mapped-using-filechannel-in-java/19447758#19447758
+     * Original implementation comes from: http://stackoverflow.com/questions/8553158/prevent-outofmemory-when-using-java-nio-mappedbytebuffer
      */
     private void unmap(MappedByteBuffer bb) {
-        if (bb == null) {
+        if (!cleanInitialized) {
+            try {
+                cleanInitialized = true;
+                clean = Class.forName("sun.misc.Cleaner").getMethod("clean");
+                clean.setAccessible(true);
+            } catch (Exception ex) {
+                // This method might not exist
+                ex.printStackTrace();
+            }
+        }
+
+        if (clean == null || bb == null || !bb.isDirect()) {
             return;
         }
-        Cleaner cleaner = ((DirectBuffer) bb).cleaner();
-        if (cleaner != null) {
-            cleaner.clean();
+
+        try {
+            Method cleaner = bb.getClass().getMethod("cleaner");
+            cleaner.setAccessible(true);
+            clean.invoke(cleaner.invoke(bb));
+        } catch (Exception ex) {
+            // Never mind the buffer will be cleaner a bit later by the JVM
+            ex.printStackTrace();
         }
     }
 
