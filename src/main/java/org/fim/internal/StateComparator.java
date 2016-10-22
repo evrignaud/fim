@@ -344,24 +344,18 @@ public class StateComparator {
     }
 
     private void logDebug(String message, String desc, List<FileState> fileStates) {
-        logDebug("\n-- " + message);
-        logDebug(fileStatesToString(desc, fileStates));
+        Logger.rawDebug("\n-- " + message);
+        Logger.rawDebug(fileStatesToString(desc, fileStates));
     }
 
     private void logDebug(String message, String desc_1, List<FileState> fileStates_1, String desc_2, List<FileState> fileStates_2) {
-        logDebug("\n-- " + message);
-        logDebug(fileStatesToString(desc_1, fileStates_1));
-        logDebug(fileStatesToString(desc_2, fileStates_2));
-    }
-
-    private void logDebug(String message) {
-        if (context.isLogDebugEnabled()) {
-            Logger.out.println(message);
-        }
+        Logger.rawDebug("\n-- " + message);
+        Logger.rawDebug(fileStatesToString(desc_1, fileStates_1));
+        Logger.rawDebug(fileStatesToString(desc_2, fileStates_2));
     }
 
     protected String fileStatesToString(String message, List<FileState> fileStates) {
-        if (!context.isLogDebugEnabled()) {
+        if (!Logger.debugEnabled) {
             return "";
         }
 

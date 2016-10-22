@@ -44,7 +44,6 @@ public class Context {
     private boolean displayStackTrace;
     private int truncateOutput;
     private boolean purgeStates;
-    private boolean logDebugEnabled;
     private Ignored ignored;
     private boolean removeDuplicates;
     private boolean calledFromTest;
@@ -62,7 +61,6 @@ public class Context {
         setMasterFimRepositoryDir(null);
         setAlwaysYes(false);
         setTruncateOutput(200);
-        setLogDebugEnabled(checkLogDebugEnabled());
         setIgnored(new Ignored());
         setRemoveDuplicates(false);
         setCalledFromTest(false);
@@ -188,14 +186,6 @@ public class Context {
         return truncateOutput;
     }
 
-    public void setLogDebugEnabled(boolean logDebugEnabled) {
-        this.logDebugEnabled = logDebugEnabled;
-    }
-
-    public boolean isLogDebugEnabled() {
-        return logDebugEnabled;
-    }
-
     public void setPurgeStates(boolean purgeStates) {
         this.purgeStates = purgeStates;
     }
@@ -231,13 +221,5 @@ public class Context {
     @Override
     public Context clone() {
         return CLONER.deepClone(this);
-    }
-
-    private boolean checkLogDebugEnabled() {
-        String debug = System.getenv("DEBUG");
-        if (debug == null) {
-            return false;
-        }
-        return Boolean.parseBoolean(debug);
     }
 }

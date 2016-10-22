@@ -24,6 +24,7 @@ import org.fim.tooling.BuildableContext;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.FileNameDiff;
 import org.fim.tooling.StateAssert;
+import org.fim.util.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -248,18 +249,28 @@ public class StateComparatorTest extends StateAssert {
     }
 
     @Test
-    public void withLogDebugWeHaveAResut() {
-        context.setLogDebugEnabled(true);
-        s2 = s1.clone();
-        String result = new StateComparator(context, s1, s2).fileStatesToString("My message", s1.getFileStates());
-        assertThat(result).startsWith("  My message:");
+    public void withLogDebugWeHaveAResult() {
+        boolean debugEnabled = Logger.debugEnabled;
+        try {
+            Logger.debugEnabled = true;
+            s2 = s1.clone();
+            String result = new StateComparator(context, s1, s2).fileStatesToString("My message", s1.getFileStates());
+            assertThat(result).startsWith("  My message:");
+        } finally {
+            Logger.debugEnabled = debugEnabled;
+        }
     }
 
     @Test
     public void withoutLogDebugWeHaveNothing() {
-        context.setLogDebugEnabled(false);
-        s2 = s1.clone();
-        String result = new StateComparator(context, s1, s2).fileStatesToString("My message", s1.getFileStates());
-        assertThat(result).isEqualTo("");
+        boolean debugEnabled = Logger.debugEnabled;
+        try {
+            Logger.debugEnabled = false;
+            s2 = s1.clone();
+            String result = new StateComparator(context, s1, s2).fileStatesToString("My message", s1.getFileStates());
+            assertThat(result).isEqualTo("");
+        } finally {
+            Logger.debugEnabled = debugEnabled;
+        }
     }
 }

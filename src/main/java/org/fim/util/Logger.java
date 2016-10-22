@@ -26,11 +26,17 @@ import java.util.Date;
 
 public class Logger {
     public static PrintStream out = System.out;
-
+    public static boolean debugEnabled = checkDebugEnabled();
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public static String getCurrentDate() {
         return dateFormat.format(new Date());
+    }
+
+    public static void rawDebug(String message) {
+        if (debugEnabled) {
+            out.println(message);
+        }
     }
 
     public static void info(String message) {
@@ -79,5 +85,13 @@ public class Logger {
     private static void writeLogMessage(String message) {
         out.println(message);
         out.flush();
+    }
+
+    private static boolean checkDebugEnabled() {
+        String debug = System.getenv("DEBUG");
+        if (debug == null) {
+            return false;
+        }
+        return Boolean.parseBoolean(debug);
     }
 }
