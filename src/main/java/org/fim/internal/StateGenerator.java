@@ -46,10 +46,10 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static org.atteo.evo.inflector.English.plural;
 import static org.fim.internal.hash.HashProgress.PROGRESS_DISPLAY_FILE_COUNT;
 import static org.fim.model.HashMode.dontHash;
+import static org.fim.util.FileUtil.byteCountToDisplaySize;
 import static org.fim.util.HashModeUtil.hashModeToString;
 
 public class StateGenerator {

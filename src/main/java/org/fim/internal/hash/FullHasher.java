@@ -18,6 +18,7 @@
  */
 package org.fim.internal.hash;
 
+import org.fim.model.Context;
 import org.fim.model.HashMode;
 import org.fim.model.Range;
 import org.fim.util.HashModeUtil;
@@ -34,8 +35,8 @@ public class FullHasher extends AbstractHasher {
 
     private long fileSize;
 
-    public FullHasher(HashMode hashMode) throws NoSuchAlgorithmException {
-        super(hashMode);
+    public FullHasher(Context context) throws NoSuchAlgorithmException {
+        super(context);
     }
 
     @Override

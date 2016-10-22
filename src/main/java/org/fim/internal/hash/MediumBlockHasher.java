@@ -18,6 +18,7 @@
  */
 package org.fim.internal.hash;
 
+import org.fim.model.Context;
 import org.fim.model.HashMode;
 import org.fim.util.HashModeUtil;
 
@@ -27,8 +28,8 @@ import static org.fim.model.Constants._1_MB;
 import static org.fim.model.HashMode.hashMediumBlock;
 
 public class MediumBlockHasher extends BlockHasher {
-    public MediumBlockHasher(HashMode hashMode) throws NoSuchAlgorithmException {
-        super(hashMode);
+    public MediumBlockHasher(Context context) throws NoSuchAlgorithmException {
+        super(context);
     }
 
     @Override

@@ -22,7 +22,6 @@ import com.blackducksoftware.tools.commonframework.core.encoding.Ascii85Encoder;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
-import org.apache.commons.io.FileUtils;
 import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.model.HashMode;
@@ -69,6 +68,7 @@ import static org.fim.tooling.TestConstants._512_KB;
 import static org.fim.tooling.TestConstants._60_MB;
 import static org.fim.tooling.TestConstants._6_KB;
 import static org.fim.tooling.TestConstants._8_KB;
+import static org.fim.util.FileUtil.byteCountToDisplaySize;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -237,7 +237,7 @@ public class FileHasherTest extends StateAssert {
     }
 
     private void displayFileHash(long fileSize, FileHash fileHash) {
-        System.out.println("File " + FileUtils.byteCountToDisplaySize(fileSize));
+        System.out.println("File " + byteCountToDisplaySize(fileSize));
         System.out.println("\tsmallBlockHash=" + fileHash.getSmallBlockHash());
         System.out.println("\tmediumBlockHash=" + fileHash.getMediumBlockHash());
         System.out.println("\tfullHash=" + fileHash.getFullHash());

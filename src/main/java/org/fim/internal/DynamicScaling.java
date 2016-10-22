@@ -22,7 +22,7 @@ import org.fim.internal.hash.FileHasher;
 import org.fim.model.Context;
 import org.fim.util.Logger;
 
-import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
+import static org.fim.util.FileUtil.byteCountToDisplaySize;
 
 public class DynamicScaling implements Runnable {
     private final StateGenerator stateGenerator;

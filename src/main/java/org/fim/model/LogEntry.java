@@ -20,9 +20,9 @@ package org.fim.model;
 
 import org.fim.util.Logger;
 
-import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static org.atteo.evo.inflector.English.plural;
 import static org.fim.model.HashMode.hashAll;
+import static org.fim.util.FileUtil.byteCountToDisplaySize;
 import static org.fim.util.FormatUtil.formatDate;
 
 public class LogEntry {

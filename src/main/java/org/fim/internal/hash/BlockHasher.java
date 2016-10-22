@@ -18,7 +18,7 @@
  */
 package org.fim.internal.hash;
 
-import org.fim.model.HashMode;
+import org.fim.model.Context;
 import org.fim.model.Range;
 
 import java.nio.ByteBuffer;
@@ -33,8 +33,8 @@ public abstract class BlockHasher extends AbstractHasher {
     private long fileSize;
     private long sizeToHash;
 
-    public BlockHasher(HashMode hashMode) throws NoSuchAlgorithmException {
-        super(hashMode);
+    public BlockHasher(Context context) throws NoSuchAlgorithmException {
+        super(context);
     }
 
     protected abstract int getBlockSize();

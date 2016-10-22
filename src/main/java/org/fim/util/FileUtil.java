@@ -18,6 +18,7 @@
  */
 package org.fim.util;
 
+import org.apache.commons.io.FileUtils;
 import org.fim.model.Context;
 import org.fim.model.FileState;
 
@@ -56,5 +57,23 @@ public class FileUtil {
             Logger.error("Error deleting file", ex, context.isDisplayStackTrace());
         }
         return false;
+    }
+
+    /**
+     * Call commons.io.FileUtils.byteCountToDisplaySize() with negative number support.
+     */
+    public static String byteCountToDisplaySize(final long size) {
+        long localSize = size;
+        boolean isNegative = false;
+        if (size < 0) {
+            localSize = -size;
+            isNegative = true;
+        }
+
+        String displaySize = FileUtils.byteCountToDisplaySize(localSize);
+        if (isNegative) {
+            displaySize = "-" + displaySize;
+        }
+        return displaySize;
     }
 }

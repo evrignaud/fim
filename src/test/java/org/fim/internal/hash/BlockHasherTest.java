@@ -20,13 +20,13 @@ package org.fim.internal.hash;
 
 import org.fim.model.HashMode;
 import org.fim.model.Range;
+import org.fim.tooling.BuildableContext;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.hashSmallBlock;
 import static org.fim.tooling.TestConstants._12_KB;
 import static org.fim.tooling.TestConstants._16_KB;
 import static org.fim.tooling.TestConstants._1_KB;
@@ -40,7 +40,8 @@ public class BlockHasherTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException {
-        cut = new BlockHasher(hashSmallBlock) {
+        BuildableContext context = new BuildableContext().hashSmallBlock();
+        cut = new BlockHasher(context) {
             @Override
             protected int getBlockSize() {
                 return _4_KB;

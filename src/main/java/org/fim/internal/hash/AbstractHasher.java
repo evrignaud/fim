@@ -19,6 +19,7 @@
 package org.fim.internal.hash;
 
 import org.fim.model.Constants;
+import org.fim.model.Context;
 import org.fim.model.HashMode;
 import org.fim.util.Ascii85Util;
 
@@ -29,6 +30,7 @@ import java.security.NoSuchAlgorithmException;
 public abstract class AbstractHasher implements Hasher {
     public static final String HASH_ALGORITHM = "SHA-512";
 
+    private final Context context;
     private final boolean active;
 
     private MessageDigest digest;
@@ -37,11 +39,14 @@ public abstract class AbstractHasher implements Hasher {
 
     private ThroughputKeeper throughputKeeper;
 
-    public AbstractHasher(HashMode hashMode) throws NoSuchAlgorithmException {
-        this.active = isCompatible(hashMode);
+    public AbstractHasher(Context context) throws NoSuchAlgorithmException {
+        this.context = context;
+        this.active = isCompatible(context.getHashMode());
         this.totalBytesHashed = 0;
 
-        this.throughputKeeper = new ThroughputKeeper();
+        if (context.isDynamicScaling()) {
+            this.throughputKeeper = new ThroughputKeeper();
+        }
 
         if (this.active) {
             this.digest = MessageDigest.getInstance(HASH_ALGORITHM);
@@ -104,7 +109,9 @@ public abstract class AbstractHasher implements Hasher {
                 bytesHashed += remaining;
                 totalBytesHashed += remaining;
 
-                throughputKeeper.update(remaining);
+                if (context.isDynamicScaling()) {
+                    throughputKeeper.update(remaining);
+                }
             }
         }
     }

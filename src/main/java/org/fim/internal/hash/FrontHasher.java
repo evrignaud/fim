@@ -19,8 +19,8 @@
 package org.fim.internal.hash;
 
 import org.fim.command.exception.FimInternalError;
+import org.fim.model.Context;
 import org.fim.model.FileHash;
-import org.fim.model.HashMode;
 import org.fim.model.Range;
 
 import java.nio.ByteBuffer;
@@ -33,10 +33,10 @@ public class FrontHasher implements Hasher {
     private final BlockHasher mediumBlockHasher;
     private final Hasher fullHasher;
 
-    public FrontHasher(HashMode hashMode) throws NoSuchAlgorithmException {
-        this.smallBlockHasher = new SmallBlockHasher(hashMode);
-        this.mediumBlockHasher = new MediumBlockHasher(hashMode);
-        this.fullHasher = new FullHasher(hashMode);
+    public FrontHasher(Context context) throws NoSuchAlgorithmException {
+        this.smallBlockHasher = new SmallBlockHasher(context);
+        this.mediumBlockHasher = new MediumBlockHasher(context);
+        this.fullHasher = new FullHasher(context);
     }
 
     @Override

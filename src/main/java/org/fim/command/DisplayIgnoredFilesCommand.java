@@ -18,7 +18,6 @@
  */
 package org.fim.command;
 
-import org.apache.commons.io.FileUtils;
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
 import org.fim.model.State;
@@ -29,6 +28,7 @@ import java.nio.file.Path;
 import java.util.Set;
 
 import static org.atteo.evo.inflector.English.plural;
+import static org.fim.util.FileUtil.byteCountToDisplaySize;
 import static org.fim.util.FormatUtil.formatDate;
 
 public class DisplayIgnoredFilesCommand extends AbstractCommand {
@@ -62,7 +62,7 @@ public class DisplayIgnoredFilesCommand extends AbstractCommand {
             State state = manager.loadState(lastStateNumber);
             Logger.out.printf("Files or directories ignored in State #%d: %s (%d %s - %s)%n", lastStateNumber, formatDate(state.getTimestamp()),
                 state.getFileCount(), plural("file", state.getFileCount()),
-                FileUtils.byteCountToDisplaySize(state.getFilesContentLength()));
+                byteCountToDisplaySize(state.getFilesContentLength()));
             if (state.getComment().length() > 0) {
                 Logger.out.printf("\tComment: %s%n", state.getComment());
             }

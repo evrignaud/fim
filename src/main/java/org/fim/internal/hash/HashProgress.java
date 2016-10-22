@@ -27,8 +27,8 @@ import org.fim.util.Logger;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static org.fim.model.HashMode.dontHash;
+import static org.fim.util.FileUtil.byteCountToDisplaySize;
 
 public class HashProgress {
     public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;

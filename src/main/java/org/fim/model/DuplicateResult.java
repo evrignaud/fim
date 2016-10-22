@@ -26,8 +26,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
-import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static org.atteo.evo.inflector.English.plural;
+import static org.fim.util.FileUtil.byteCountToDisplaySize;
 import static org.fim.util.FileUtil.removeFile;
 
 public class DuplicateResult {

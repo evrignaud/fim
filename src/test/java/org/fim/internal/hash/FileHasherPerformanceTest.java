@@ -18,8 +18,6 @@
  */
 package org.fim.internal.hash;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.fim.model.Constants;
 import org.fim.model.Context;
 import org.fim.model.FileHash;
@@ -39,9 +37,11 @@ import java.util.List;
 
 import static java.lang.Math.min;
 import static java.nio.file.StandardOpenOption.CREATE;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.hashSmallBlock;
 import static org.fim.tooling.TestConstants._1_KB;
+import static org.fim.util.FileUtil.byteCountToDisplaySize;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -87,7 +87,7 @@ public class FileHasherPerformanceTest extends StateAssert {
         }
 
         long duration = System.currentTimeMillis() - start;
-        System.out.println("Took: " + DurationFormatUtils.formatDuration(duration, "HH:mm:ss"));
+        System.out.println("Took: " + formatDuration(duration, "HH:mm:ss"));
     }
 
     @Test
@@ -101,8 +101,8 @@ public class FileHasherPerformanceTest extends StateAssert {
         }
 
         long duration = System.currentTimeMillis() - start;
-        System.out.println("Took: " + DurationFormatUtils.formatDuration(duration, "HH:mm:ss"));
-        System.out.println("Total bytes hash=" + FileUtils.byteCountToDisplaySize(cut.getTotalBytesHashed()));
+        System.out.println("Took: " + formatDuration(duration, "HH:mm:ss"));
+        System.out.println("Total bytes hash=" + byteCountToDisplaySize(cut.getTotalBytesHashed()));
     }
 
     private Path createFileWithSize(int fileCount, int fileSize) throws IOException {

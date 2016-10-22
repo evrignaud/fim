@@ -18,6 +18,7 @@
  */
 package org.fim.internal.hash;
 
+import org.fim.model.Context;
 import org.fim.model.HashMode;
 import org.fim.util.HashModeUtil;
 
@@ -27,8 +28,8 @@ import static org.fim.model.Constants._4_KB;
 import static org.fim.model.HashMode.hashSmallBlock;
 
 public class SmallBlockHasher extends BlockHasher {
-    public SmallBlockHasher(HashMode hashMode) throws NoSuchAlgorithmException {
-        super(hashMode);
+    public SmallBlockHasher(Context context) throws NoSuchAlgorithmException {
+        super(context);
     }
 
     @Override

@@ -71,9 +71,7 @@ public class FileHasher implements Runnable {
         this.rootDir = rootDir;
 
         this.fileStates = new ArrayList<>();
-
-        HashMode hashMode = hashProgress.getContext().getHashMode();
-        frontHasher = new FrontHasher(hashMode);
+        this.frontHasher = new FrontHasher(context);
     }
 
     public List<FileState> getFileStates() {
