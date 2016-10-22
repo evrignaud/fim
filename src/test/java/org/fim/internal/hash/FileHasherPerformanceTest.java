@@ -43,7 +43,6 @@ import static org.fim.model.HashMode.hashSmallBlock;
 import static org.fim.tooling.TestConstants._1_KB;
 import static org.fim.util.FileUtil.byteCountToDisplaySize;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @Ignore // Don't run it during unit tests
 public class FileHasherPerformanceTest extends StateAssert {
@@ -72,8 +71,6 @@ public class FileHasherPerformanceTest extends StateAssert {
         context = tool.getContext();
 
         hashProgress = mock(HashProgress.class);
-
-        when(hashProgress.getContext()).thenReturn(context);
 
         cut = new FileHasher(context, null, hashProgress, null, rootDir.toString());
     }

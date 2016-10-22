@@ -33,6 +33,7 @@ public class DynamicScaling implements Runnable {
     private int resourceLimitReached;
     private int scaleLevel;
     private int maxScaleLevel;
+    private boolean stopRequested;
 
     public DynamicScaling(StateGenerator stateGenerator) {
         this.stateGenerator = stateGenerator;
@@ -42,16 +43,18 @@ public class DynamicScaling implements Runnable {
         this.resourceLimitReached = 0;
         this.scaleLevel = 0;
         this.maxScaleLevel = Runtime.getRuntime().availableProcessors();
+        this.stopRequested = false;
     }
 
     @Override
     public void run() {
         try {
-            scaleUp();
+            waitBeforeCheckingThroughput();
+
             while (true) {
                 checkThroughput();
 
-                if (scaleLevel >= maxScaleLevel || resourceLimitReached > 20) {
+                if (stopRequested || scaleLevel >= maxScaleLevel || resourceLimitReached > 20) {
                     break;
                 }
 
@@ -95,7 +98,12 @@ public class DynamicScaling implements Runnable {
     }
 
     private void waitBeforeCheckingThroughput() throws InterruptedException {
-        Thread.sleep(1_000L * scaleLevel);
+        for (int i = 0; i < scaleLevel * 2; i++) {
+            if (stopRequested) {
+                return;
+            }
+            Thread.sleep(500L);
+        }
     }
 
     private long getTotalInstantThroughput() {
@@ -104,5 +112,9 @@ public class DynamicScaling implements Runnable {
             totalInstantThroughput += fileHasher.getInstantThroughput();
         }
         return totalInstantThroughput;
+    }
+
+    public void requestStop() {
+        stopRequested = true;
     }
 }

@@ -57,6 +57,8 @@ public class FileReHasher extends FileHasher {
             }
         } catch (InterruptedException ex) {
             Logger.error("Exception while hashing", ex, context.isDisplayStackTrace());
+        } finally {
+            hashProgress.noMoreFileToHash();
         }
     }
 }

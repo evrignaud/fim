@@ -99,6 +99,8 @@ public class FileHasher implements Runnable {
             }
         } catch (InterruptedException ex) {
             Logger.error("Exception while hashing", ex, context.isDisplayStackTrace());
+        } finally {
+            hashProgress.noMoreFileToHash();
         }
     }
 
@@ -156,7 +158,7 @@ public class FileHasher implements Runnable {
     }
 
     protected FileHash hashFile(Path file, long fileSize) throws IOException {
-        HashMode hashMode = hashProgress.getContext().getHashMode();
+        HashMode hashMode = context.getHashMode();
 
         if (hashMode == dontHash) {
             return new FileHash(NO_HASH, NO_HASH, NO_HASH);

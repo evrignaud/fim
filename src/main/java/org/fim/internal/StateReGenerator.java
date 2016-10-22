@@ -81,11 +81,11 @@ public class StateReGenerator extends StateGenerator {
     @Override
     protected void startFileHashers() throws NoSuchAlgorithmException {
         initializeFileHashers();
+        hashProgress.hashStarted();
         for (int index = 0; index < context.getThreadCount(); index++) {
             FileHasher hasher = new FileReHasher(context, hashProgress, toRehashQueue, rootDir);
             executorService.submit(hasher);
             fileHashers.add(hasher);
         }
-        fileHashersStarted = true;
     }
 }

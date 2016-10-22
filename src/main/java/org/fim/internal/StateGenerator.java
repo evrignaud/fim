@@ -66,13 +66,15 @@ public class StateGenerator {
     protected Path rootDir;
     private BlockingDeque<Path> filesToHashQueue;
     private AtomicBoolean scanInProgress;
-    boolean fileHashersStarted;
     List<FileHasher> fileHashers;
+    private DynamicScaling dynamicScaling;
+    private Thread dynamicScalingThread;
 
     public StateGenerator(Context context) {
         this.context = context;
         this.hashProgress = new HashProgress(context);
         this.fimIgnoreManager = new FimIgnoreManager(context);
+        this.dynamicScaling = null;
     }
 
     public State generateState(String comment, Path rootDir, Path dirToScan) throws NoSuchAlgorithmException {
@@ -132,7 +134,6 @@ public class StateGenerator {
     }
 
     protected void initializeFileHashers() {
-        fileHashersStarted = false;
         fileHashers = new ArrayList<>();
 
         int maxThreads = context.getThreadCount();
@@ -143,17 +144,20 @@ public class StateGenerator {
     }
 
     protected void startFileHashers() throws NoSuchAlgorithmException {
-        if (!fileHashersStarted) {
+        if (!hashProgress.isHashStarted()) {
+            hashProgress.hashStarted();
+            String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
             if (context.isDynamicScaling()) {
-                Thread thread = new Thread(new DynamicScaling(this));
-                thread.start();
+                startFileHasher(normalizedRootDir);
+
+                dynamicScaling = new DynamicScaling(this);
+                dynamicScalingThread = new Thread(dynamicScaling, "dynamic-scaling");
+                dynamicScalingThread.start();
             } else {
-                String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
                 for (int index = 0; index < context.getThreadCount(); index++) {
                     startFileHasher(normalizedRootDir);
                 }
             }
-            fileHashersStarted = true;
         }
     }
 
@@ -166,6 +170,7 @@ public class StateGenerator {
         FileHasher hasher = new FileHasher(context, scanInProgress, hashProgress, filesToHashQueue, normalizedRootDir);
         executorService.submit(hasher);
         fileHashers.add(hasher);
+
         if (context.isDynamicScaling()) {
             context.setThreadCount(fileHashers.size());
         }
@@ -182,12 +187,15 @@ public class StateGenerator {
 
     protected void waitAllFilesToBeHashed() {
         try {
-            while (!filesToHashQueue.isEmpty()) {
-                filesToHashQueue.wait();
-            }
+            hashProgress.waitAllFilesToBeHashed();
 
             executorService.shutdown();
             executorService.awaitTermination(3, TimeUnit.DAYS);
+
+            if (dynamicScaling != null) {
+                dynamicScaling.requestStop();
+                dynamicScalingThread.join(1_000);
+            }
         } catch (InterruptedException ex) {
             Logger.error("Exception while waiting for files to be hashed", ex, context.isDisplayStackTrace());
         }
@@ -225,7 +233,7 @@ public class StateGenerator {
             FimIgnore fimIgnore = fimIgnoreManager.loadLocalIgnore(directory, parentFimIgnore);
 
             for (Path file : stream) {
-                if (!fileHashersStarted && filesToHashQueue.size() > FILES_QUEUE_CAPACITY / 2) {
+                if (!hashProgress.isHashStarted() && filesToHashQueue.size() > FILES_QUEUE_CAPACITY / 2) {
                     startFileHashers();
                 }
 
