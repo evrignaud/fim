@@ -162,6 +162,10 @@ public class DuplicateResult {
                     break;
                 } else if ("n".equals(answer) || "none".equals(answer)) {
                     gotCorrectAnswer = true;
+
+                    // Add the additional file that we will remove. It was not counted in the initial wasted space.
+                    duplicatedFilesCount++;
+                    totalWastedSpace += duplicatedFiles.get(0).getFileLength();
                     break;
                 }
 
