@@ -130,7 +130,7 @@ public class Fim {
         opts.addOption(buildOption("p", "purge-states", "Purge previous States if the commit succeed").build());
         opts.addOption(buildOption("q", "quiet", "Do not display details").build());
         opts.addOption(buildOption("t", "thread-count", "Number of thread used to hash file contents in parallel.\n" +
-            "By default this number depends on the disk throughput").hasArg().build());
+            "By default, this number is dynamic and depends on the disk throughput").hasArg().build());
         opts.addOption(buildOption("v", "version", "Prints the Fim version").build());
         opts.addOption(buildOption("y", "always-yes", "Always yes to every questions").build());
         return opts;
