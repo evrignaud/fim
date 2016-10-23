@@ -27,7 +27,7 @@ fi
 
 baseDir=`dirname "$(${readLinkCommand} -f "$0")"`
 
-if hash tput 2>/dev/null; then
+if type tput > /dev/null 2>&1; then
     export TERMINAL_COLUMNS=$(tput cols)
 fi
 
