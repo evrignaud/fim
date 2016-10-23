@@ -38,6 +38,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
 
 import static java.nio.file.StandardOpenOption.CREATE;
+import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
 
 public class RepositoryTool {
@@ -60,6 +61,15 @@ public class RepositoryTool {
         this.fileCount = 1;
 
         this.context = createContext(hashMode, true);
+    }
+
+    public void useFixedThreadCount() {
+        if (context.getHashMode() == dontHash) {
+            context.setThreadCount(1);
+        } else {
+            context.setThreadCount(Runtime.getRuntime().availableProcessors() / 2);
+        }
+        context.setDynamicScaling(false);
     }
 
     public Path getRootDir() {
