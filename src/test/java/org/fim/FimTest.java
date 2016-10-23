@@ -52,6 +52,12 @@ public class FimTest {
         cut = new Fim();
     }
 
+    @Test
+    public void canFilterCorrectlyEmptyArgs() {
+        String[] filteredArgs = cut.filterEmptyArgs(new String[]{"", "init", "", "-y", ""});
+        assertThat(filteredArgs).isEqualTo(new String[]{"init", "-y"});
+    }
+
     @Test(expected = BadFimUsageException.class)
     public void fimRepositoryAlreadyExist() throws Exception {
         initRepoAndCreateOneFile();

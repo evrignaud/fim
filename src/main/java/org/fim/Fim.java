@@ -326,7 +326,7 @@ public class Fim {
         return builder;
     }
 
-    private String[] filterEmptyArgs(String[] args) {
+    protected String[] filterEmptyArgs(String[] args) {
         List<String> filteredArgs = new ArrayList<>();
         for (String arg : args) {
             if (arg.length() > 0) {
