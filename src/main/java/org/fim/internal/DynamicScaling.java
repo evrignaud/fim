@@ -22,43 +22,46 @@ import org.fim.internal.hash.FileHasher;
 import org.fim.model.Context;
 import org.fim.util.Logger;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static org.fim.util.FileUtil.byteCountToDisplaySize;
 
 public class DynamicScaling implements Runnable {
     private final StateGenerator stateGenerator;
     private final Context context;
 
-    private long lastThroughput;
+    private AtomicBoolean stopRequested;
+    private long lastGoodThroughput;
     private long currentThroughput;
     private int resourceLimitReached;
     private int scaleLevel;
     private int maxScaleLevel;
-    private boolean stopRequested;
 
     public DynamicScaling(StateGenerator stateGenerator) {
         this.stateGenerator = stateGenerator;
         this.context = stateGenerator.getContext();
-        this.lastThroughput = 0;
+        this.stopRequested = new AtomicBoolean(false);
+        this.lastGoodThroughput = 0;
         this.currentThroughput = 0;
         this.resourceLimitReached = 0;
-        this.scaleLevel = 0;
+        this.scaleLevel = 1;
         this.maxScaleLevel = Runtime.getRuntime().availableProcessors();
-        this.stopRequested = false;
     }
 
     @Override
     public void run() {
         try {
-            waitBeforeCheckingThroughput();
+            Thread.sleep(200L);
 
             while (true) {
-                checkThroughput();
-
-                if (stopRequested || scaleLevel >= maxScaleLevel || resourceLimitReached > 20) {
+                if (stopRequested.get() || scaleLevel >= maxScaleLevel || resourceLimitReached > 20) {
                     break;
                 }
 
-                Logger.rawDebug("\n - Current throughput = " + byteCountToDisplaySize(currentThroughput) + ", scaleLevel = " + scaleLevel);
+                checkThroughput();
+
+                waitBeforeCheckingThroughput();
             }
         } catch (Exception ex) {
             Logger.error("Got exception", ex, context.isDisplayStackTrace());
@@ -68,14 +71,20 @@ public class DynamicScaling implements Runnable {
         }
     }
 
-    private void scaleUp() throws Exception {
+    private void scaleUp() throws NoSuchAlgorithmException {
         stateGenerator.startFileHasher();
         scaleLevel = context.getThreadCount();
         Logger.rawDebug("\n - Scaling Up. scaleLevel = " + scaleLevel);
     }
 
-    private void checkThroughput() throws Exception {
-        long difference = currentThroughput - lastThroughput;
+    private void checkThroughput() throws NoSuchAlgorithmException {
+        currentThroughput = getTotalInstantThroughput();
+        if (lastGoodThroughput == 0) {
+            lastGoodThroughput = currentThroughput;
+        }
+        Logger.rawDebug("\n - Current throughput = " + byteCountToDisplaySize(currentThroughput) + ", scaleLevel = " + scaleLevel);
+
+        long difference = currentThroughput - lastGoodThroughput;
         Logger.rawDebug("\n - Throughput difference = " + byteCountToDisplaySize(difference));
         difference = difference / 1_024 / 1_024;
 
@@ -84,25 +93,18 @@ public class DynamicScaling implements Runnable {
                 scaleUp();
                 resourceLimitReached = 0;
             }
-            lastThroughput = currentThroughput;
+            lastGoodThroughput = currentThroughput;
         } else {
             resourceLimitReached++;
-        }
-
-        waitBeforeCheckingThroughput();
-
-        currentThroughput = getTotalInstantThroughput();
-        if (lastThroughput == 0) {
-            lastThroughput = currentThroughput;
         }
     }
 
     private void waitBeforeCheckingThroughput() throws InterruptedException {
-        for (int i = 0; i < scaleLevel * 2; i++) {
-            if (stopRequested) {
+        for (int i = 0; i < scaleLevel * 5; i++) {
+            if (stopRequested.get()) {
                 return;
             }
-            Thread.sleep(500L);
+            Thread.sleep(200L);
         }
     }
 
@@ -115,6 +117,6 @@ public class DynamicScaling implements Runnable {
     }
 
     public void requestStop() {
-        stopRequested = true;
+        stopRequested.set(true);
     }
 }

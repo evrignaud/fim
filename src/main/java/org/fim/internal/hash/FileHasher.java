@@ -94,12 +94,14 @@ public class FileHasher implements Runnable {
             while (isQueueStillFilled()) {
                 hashFilesInQueue();
                 if (isQueueStillFilled()) {
+                    // Wait for the scanFileTree() to fill the queue
                     Thread.sleep(500);
                 }
             }
         } catch (InterruptedException ex) {
             Logger.error("Exception while hashing", ex, context.isDisplayStackTrace());
         } finally {
+            // The queue is empty so all the other FileHasher will do the same
             hashProgress.noMoreFileToHash();
         }
     }

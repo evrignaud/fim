@@ -68,7 +68,6 @@ public class StateGenerator {
     private AtomicBoolean scanInProgress;
     List<FileHasher> fileHashers;
     private DynamicScaling dynamicScaling;
-    private Thread dynamicScalingThread;
 
     public StateGenerator(Context context) {
         this.context = context;
@@ -151,8 +150,8 @@ public class StateGenerator {
                 startFileHasher(normalizedRootDir);
 
                 dynamicScaling = new DynamicScaling(this);
-                dynamicScalingThread = new Thread(dynamicScaling, "dynamic-scaling");
-                dynamicScalingThread.start();
+                Thread thread = new Thread(dynamicScaling, "dynamic-scaling");
+                thread.start();
             } else {
                 for (int index = 0; index < context.getThreadCount(); index++) {
                     startFileHasher(normalizedRootDir);
@@ -189,13 +188,12 @@ public class StateGenerator {
         try {
             hashProgress.waitAllFilesToBeHashed();
 
-            executorService.shutdown();
-            executorService.awaitTermination(3, TimeUnit.DAYS);
-
             if (dynamicScaling != null) {
                 dynamicScaling.requestStop();
-                dynamicScalingThread.join(1_000);
             }
+
+            executorService.shutdown();
+            executorService.awaitTermination(3, TimeUnit.DAYS);
         } catch (InterruptedException ex) {
             Logger.error("Exception while waiting for files to be hashed", ex, context.isDisplayStackTrace());
         }
