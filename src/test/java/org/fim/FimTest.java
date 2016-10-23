@@ -91,6 +91,12 @@ public class FimTest {
     }
 
     @Test
+    public void manyValidOptions() throws Exception {
+        initRepoAndCreateOneFile();
+        cut.run(new String[]{"st", "-s", "-o", "1", "-e", "-t", "1"}, context);
+    }
+
+    @Test
     public void canCommitUsingMultipleThreads() throws Exception {
         initRepoAndCreateOneFile();
         cut.run(new String[]{"ci", "-y", "-t", "4"}, context);
