@@ -135,6 +135,7 @@ public class DuplicateResult {
             }
 
             while (true) {
+                Logger.out.printf("  Preserve files [1 - %d, all or a, none or n]: ", duplicatedFiles.size());
                 String inputLine = readInputLine();
                 if (manageAnswers(duplicatedFiles, inputLine)) {
                     break;
@@ -145,13 +146,11 @@ public class DuplicateResult {
 
     protected boolean manageAnswers(List<FileState> duplicatedFiles, String inputLine) {
         boolean gotCorrectAnswer = false;
-        int count = duplicatedFiles.size();
 
         for (FileState fileState : duplicatedFiles) {
             fileState.setToRemove(true);
         }
 
-        Logger.out.printf("  Preserve files [1 - %d, all or a, none or n]: ", count);
         try (Scanner scanner = new Scanner(inputLine)) {
             while (scanner.hasNext()) {
                 String answer = scanner.next();
@@ -168,7 +167,7 @@ public class DuplicateResult {
 
                 int index = safeParseInt(answer);
 
-                if (index >= 1 && index <= count) {
+                if (index >= 1 && index <= duplicatedFiles.size()) {
                     duplicatedFiles.get(index - 1).setToRemove(false);
                     gotCorrectAnswer = true;
                 }
