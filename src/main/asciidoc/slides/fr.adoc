@@ -622,10 +622,11 @@ image::performance.png[]
 
 * Hashage en multi-thread pour utiliser au mieux les ressources
 
-* Dans beaucoup de cas, les performances sont conditionnées par la vitesse du disque +
+* Dans beaucoup de cas, les performances sont conditionnées par la vitesse du disque
 
-* +++<u>Par défaut :</u>+++ `#thread = #core / 2` +
-Option `-t` pour modifier le nombre de threads utilisés (http://evrignaud.github.io/fim/#_hash_files_in_multi_thread[Détails])
+* Par défaut, le nombre de thread est dynamique et dépend du débit du disque
+
+* Option `-t` pour modifier le nombre de threads utilisés (http://evrignaud.github.io/fim/#_hash_files_in_multi_thread[Détails])
 
 == Processus de hashage
 

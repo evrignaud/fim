@@ -621,10 +621,11 @@ image::performance.png[]
 
 * Multi-thread hash in order to take advantage of the resources
 
-* In many cases, performance are conditioned by the speed of the disk +
+* In many cases, performance are conditioned by the speed of the disk
 
-* +++<u>By default:</u>+++ `#thread = #core / 2` +
-`-t` option to change the number of threads used (http://evrignaud.github.io/fim/#_hash_files_in_multi_thread[Details])
+* By default, the number of thread is dynamic and depends on the disk throughput
+
+* `-t` option to change the number of threads used (http://evrignaud.github.io/fim/#_hash_files_in_multi_thread[Details])
 
 == Hashing process
 
