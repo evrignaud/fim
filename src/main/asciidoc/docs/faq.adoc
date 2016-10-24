@@ -79,9 +79,10 @@ $ fim st -n
 
 Fim hashes files using several threads.
 This allows taking advantage of the computer resources and maximizes the overall performances of file hashing. +
-By default, the number of thread is dynamic and depends on the disk throughput. +
+By default, the number of thread is dynamic and depends on the disk throughput.
+It allows using automatically more threads with an SSD and less with a classical HDD +
 You can specify, using the `-t` option, the number of thread to be used for file hashing. +
-The best value depends on the kind of hard disk you have. The more throughput you have, the more thread you can use.
+The best value depends on the kind of hard disk you have. The more throughput you have, the more thread you may use.
 
 == State integrity
 

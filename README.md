@@ -14,10 +14,10 @@ Fim manages the integrity of a complete file tree
 ## Slides
 
   * [English slides](http://evrignaud.github.io/fim/slides/en.html)<br/>
-  [![English slides](http://evrignaud.github.io/fim/images/slides-preview-en.jpg)](http://evrignaud.github.io/fim/slides/en.html)
+  [![English slides](http://evrignaud.github.io/fim/slides/images/slides-preview-en.jpg)](http://evrignaud.github.io/fim/slides/en.html)
 
   * [French slides](http://evrignaud.github.io/fim/slides/fr.html)<br/>
-  [![French slides](http://evrignaud.github.io/fim/images/slides-preview-fr.jpg)](http://evrignaud.github.io/fim/slides/fr.html)
+  [![French slides](http://evrignaud.github.io/fim/slides/images/slides-preview-fr.jpg)](http://evrignaud.github.io/fim/slides/fr.html)
 
 ## Documentation
 

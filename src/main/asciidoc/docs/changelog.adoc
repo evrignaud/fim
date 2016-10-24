@@ -4,6 +4,28 @@
 
 * The '-M' option that is dedicated to specify the master Fim repository does not work when using the Fim Docker image
 
+== Version 1.2.2
+*(Released 2016-10-24)*
+
+https://github.com/evrignaud/fim/tree/1.2.2[image:icons/octocat.png[GitHub] Sources]
+&nbsp;&nbsp; - &nbsp;&nbsp;
+https://github.com/evrignaud/fim/compare/1.2.1%2E%2E%2E1.2.2[image:icons/list.png[List] Full Changelog]
+&nbsp;&nbsp; - &nbsp;&nbsp;
+https://github.com/evrignaud/fim/releases/tag/1.2.2[image:icons/package.png[Package] Download]
+
+=== General
+* Dynamically allocate hash threads depending on the disk throughput. +
+It allows using automatically more threads with an SSD and less with a classical HDD
+* Add http://evrignaud.github.io/fim/slides/en.html[English slides]
+* On Linux and Mac OS X, display the hash progress depending on terminal width
+* The '-c' option is deprecated in favor of the '-m' one to provide a comment. The rdup command now use the '-M' option
+* When purging states, the file name of the last State is not modified and the State number is kept
+
+=== Bug fix
+* Super fast-mode is able to detect correctly growing files
+* Add explicit confirmation when removing duplicates
+* On Windows, Manage correctly comments with spaces
+
 == Version 1.2.1
 *(Released 2016-10-10)*
 
@@ -19,7 +41,7 @@ https://github.com/evrignaud/fim/releases/tag/1.2.1[image:icons/package.png[Pack
 The 'log' command displays now the same output as the 'status' command. It works completely with States generated with this version of Fim
 * Thanks to https://twitter.com/nch3v[@nch3v], clarified the 'find-duplicates' command output and sort duplicate sets by wasted space to display the biggest first
 * Fim is now able to *remove duplicates* that are in the repository. See more in <<dealing-with-duplicates.adoc#_remove_duplicates,Remove duplicates>>
-* Add http://evrignaud.github.io/fim/slides/fr[French slides]
+* Add http://evrignaud.github.io/fim/slides/fr.html[French slides]
 
 === Bug fix
 * Update memory maximum sizes to more accurate values
