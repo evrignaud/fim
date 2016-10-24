@@ -581,7 +581,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="openblock partintro">
 <div class="content">
 <div class="paragraph">
-<p>Version 1.2.1</p>
+<p>Version 1.2.2</p>
 </div>
 <hr>
 <div class="paragraph">
@@ -757,7 +757,7 @@ It&#8217;s a time consuming operation that will compute hash of every file conte
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim ci -c "My commit comment"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim ci -m "My commit comment"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -765,7 +765,7 @@ It&#8217;s a time consuming operation that will compute hash of every file conte
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim ci -s -c "My commit comment"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim ci -s -m "My commit comment"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -851,8 +851,8 @@ and <a href="#_hardware_corruption_detection">Hardware corruption detection</a>.
 <div class="content">
 <pre>$ fim --help
 
-usage: fim &lt;command&gt; [-c &lt;arg&gt;] [-d &lt;arg&gt;] [-e] [-f] [-h] [-i &lt;arg&gt;] [-l] [-m &lt;arg&gt;] [-n] [-o &lt;arg&gt;] [-p] [-q] [-s] [-t
-       &lt;arg&gt;] [-v] [-y]
+usage: fim &lt;command&gt; [-c &lt;arg&gt;] [-d &lt;arg&gt;] [-e] [-f] [-h] [-i &lt;arg&gt;] [-l] [-M &lt;arg&gt;] [-m &lt;arg&gt;] [-n] [-o &lt;arg&gt;] [-p]
+       [-q] [-s] [-t &lt;arg&gt;] [-v] [-y]
 
 File Integrity Checker
 
@@ -867,7 +867,7 @@ Available commands:
                                 Change in content, but not in creation time and last modified time
      fdup / find-duplicates     Find local duplicate files in the Fim repository
      rdup / remove-duplicates   Remove duplicates found by the 'fdup' command.
-                                If you specify the '-m' option it removes duplicates based on a master repository
+                                If you specify the '-M' option it removes duplicates based on a master repository
      log                        Display the history of the States with the same output as the 'status' command
      dign / display-ignored     Display the files or directories that are ignored into the last State
      rbk / rollback             Rollback the last commit. It will remove the last State
@@ -876,7 +876,7 @@ Available commands:
      version                    Prints the Fim version
 
 Available options:
-     -c,--comment &lt;arg&gt;                 Comment to set during init and commit
+     -c,-- &lt;arg&gt;                        Deprecated option used to set the init or commit comment. Use '-m' instead
      -d,--directory &lt;arg&gt;               Run Fim into the specified directory
      -e,--errors                        Display execution error details
      -f,--fast-mode                     Use fast mode. Hash only 3 medium blocks.
@@ -891,8 +891,9 @@ Available options:
                                         For example: -i attrs,dates,renamed
      -l,--use-last-state                Use the last committed State.
                                         Both for the 'find-duplicates' and 'remove-duplicates' commands
-     -m,--master-fim-repository &lt;arg&gt;   Fim repository directory that you want to use as remote master.
+     -M,--master-fim-repository &lt;arg&gt;   Fim repository directory that you want to use as remote master.
                                         Only for the 'remove-duplicates' command
+     -m,--comment &lt;arg&gt;                 Comment to set during init and commit
      -n,--do-not-hash                   Do not hash file content. Uses only file names and modification dates
      -o,--output-max-lines &lt;arg&gt;        Change the maximum number lines displayed for the same kind of modification.
                                         Default value is 200 lines
@@ -900,7 +901,8 @@ Available options:
      -q,--quiet                         Do not display details
      -s,--super-fast-mode               Use super-fast mode. Hash only 3 small blocks.
                                         One at the beginning, one in the middle and one at the end
-     -t,--thread-count &lt;arg&gt;            Number of thread used to hash file contents in parallel
+     -t,--thread-count &lt;arg&gt;            Number of thread used to hash file contents in parallel.
+                                        By default, this number is dynamic and depends on the disk throughput
      -v,--version                       Prints the Fim version
      -y,--always-yes                    Always yes to every questions</pre>
 </div>
@@ -913,13 +915,86 @@ Available options:
 <div class="sect2">
 <h3 id="_download_a_fim_release">6.1. Download a Fim release</h3>
 <div class="paragraph">
-<p>You can download a prebuilt release of Fim from the <a href="https://github.com/evrignaud/fim/releases/latest"><span class="image"><img src="images/icons/download.png" alt="Download"></span> Latest release</a></p>
+<p>You can download a prebuilt release of Fim from the <a href="https://github.com/evrignaud/fim/releases/latest"><span class="image"><img src="images/icons/download.png" alt="Download"></span> Latest release</a><br>
+Then you have to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Untar / Unzip the Fim package</p>
+</li>
+<li>
+<p>Add the created directory into your PATH to be able to use the <code>fim</code> command</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_fim_changelog">6.2. Fim changelog</h3>
+<div class="sect4">
+<h5 id="_known_limitations">Known limitations</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>The '-M' option that is dedicated to specify the master Fim repository does not work when using the Fim Docker image</p>
+</li>
+</ul>
+</div>
+</div>
 <div class="sect3">
-<h4 id="_version_1_2_1">6.2.1. Version 1.2.1</h4>
+<h4 id="_version_1_2_2">6.2.2. Version 1.2.2</h4>
+<div class="paragraph">
+<p><strong>(Released 2016-10-24)</strong></p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/evrignaud/fim/tree/1.2.2"><span class="image"><img src="images/icons/octocat.png" alt="GitHub"></span> Sources</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/compare/1.2.1%2E%2E%2E1.2.2"><span class="image"><img src="images/icons/list.png" alt="List"></span> Full Changelog</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/releases/tag/1.2.2"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
+</div>
+<div class="sect4">
+<h5 id="_general">General</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Dynamically allocate hash threads depending on the disk throughput.<br>
+It allows using automatically more threads with an SSD and less with a classical HDD</p>
+</li>
+<li>
+<p>Add <a href="http://evrignaud.github.io/fim/slides/en.html">English slides</a></p>
+</li>
+<li>
+<p>On Linux and Mac OS X, display the hash progress depending on terminal width</p>
+</li>
+<li>
+<p>The '-c' option is deprecated in favor of the '-m' one to provide a comment. The rdup command now use the '-M' option</p>
+</li>
+<li>
+<p>When purging states, the file name of the last State is not modified and the State number is kept</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_bug_fix">Bug fix</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Super fast-mode is able to detect correctly growing files</p>
+</li>
+<li>
+<p>Add explicit confirmation when removing duplicates</p>
+</li>
+<li>
+<p>On Windows, Manage correctly comments with spaces</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_version_1_2_1">6.2.3. Version 1.2.1</h4>
 <div class="paragraph">
 <p><strong>(Released 2016-10-10)</strong></p>
 </div>
@@ -931,7 +1006,7 @@ Available options:
 <a href="https://github.com/evrignaud/fim/releases/tag/1.2.1"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
 </div>
 <div class="sect4">
-<h5 id="_general">General</h5>
+<h5 id="_general_2">General</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -942,19 +1017,19 @@ Available options:
 The 'log' command displays now the same output as the 'status' command. It works completely with States generated with this version of Fim</p>
 </li>
 <li>
-<p>Thanks to @ch3v, clarified the 'find-duplicates' command output and sort duplicate sets by wasted space to display the biggest first</p>
+<p>Thanks to <a href="https://twitter.com/nch3v">@nch3v</a>, clarified the 'find-duplicates' command output and sort duplicate sets by wasted space to display the biggest first</p>
 </li>
 <li>
-<p>Fim is now able to <strong>remove duplicates</strong> that are in the repository see more in <a href="#_remove_duplicates">Remove duplicates</a></p>
+<p>Fim is now able to <strong>remove duplicates</strong> that are in the repository. See more in <a href="#_remove_duplicates">Remove duplicates</a></p>
 </li>
 <li>
-<p>Add <a href="http://evrignaud.github.io/fim/slides/fr">French slides</a></p>
+<p>Add <a href="http://evrignaud.github.io/fim/slides/fr.html">French slides</a></p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_bug_fix">Bug fix</h5>
+<h5 id="_bug_fix_2">Bug fix</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -968,7 +1043,7 @@ The 'log' command displays now the same output as the 'status' command. It works
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_2_0">6.2.2. Version 1.2.0</h4>
+<h4 id="_version_1_2_0">6.2.4. Version 1.2.0</h4>
 <div class="paragraph">
 <p><strong>(Released 2016-05-23)</strong></p>
 </div>
@@ -987,7 +1062,7 @@ The 'log' command displays now the same output as the 'status' command. It works
 <p><strong>Decrease the State size</strong> in memory and on the disc by using Ascii85 instead of Hexa to store hash. Each hash string length is now 80 instead of 128.</p>
 </li>
 <li>
-<p>Add <strong>Super-fast commit</strong> support see more in <a href="#_super_fast_commit">Super-fast commit</a></p>
+<p>Add <strong>Super-fast commit</strong> support. See more in <a href="#_super_fast_commit">Super-fast commit</a></p>
 </li>
 <li>
 <p>Allow to <strong>manage a very big amount a files</strong> (1 098 138 files is working for me)</p>
@@ -999,11 +1074,11 @@ The 'log' command displays now the same output as the 'status' command. It works
 </div>
 </div>
 <div class="sect4">
-<h5 id="_general_2">General</h5>
+<h5 id="_general_3">General</h5>
 <div class="ulist">
 <ul>
 <li>
-<p>Fim is now distributed as <strong>Docker image</strong> on Docker Hub see more in <a href="#_run_fim_using_docker">Run Fim using Docker</a></p>
+<p>Fim is now distributed as <strong>Docker image</strong> on Docker Hub. See more in <a href="#_run_fim_using_docker">Run Fim using Docker</a></p>
 </li>
 <li>
 <p>Add the <strong><code>--directory</code></strong> option to be able to specify where to run Fim commands</p>
@@ -1021,7 +1096,7 @@ The 'log' command displays now the same output as the 'status' command. It works
 </div>
 </div>
 <div class="sect4">
-<h5 id="_bug_fix_2">Bug fix</h5>
+<h5 id="_bug_fix_3">Bug fix</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -1053,7 +1128,7 @@ To migrate type:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_1_0">6.2.3. Version 1.1.0</h4>
+<h4 id="_version_1_1_0">6.2.5. Version 1.1.0</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-11-01)</strong></p>
 </div>
@@ -1102,7 +1177,7 @@ Details in <a href="#_ignoring_files_or_directories">Ignoring files or directori
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_2">6.2.4. Version 1.0.2</h4>
+<h4 id="_version_1_0_2">6.2.6. Version 1.0.2</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-09-04)</strong></p>
 </div>
@@ -1126,7 +1201,7 @@ Hash the second 4 KB / 1 MB block to ensure that the headers don&#8217;t increas
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_1">6.2.5. Version 1.0.1</h4>
+<h4 id="_version_1_0_1">6.2.7. Version 1.0.1</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-08-26)</strong></p>
 </div>
@@ -1155,7 +1230,7 @@ Hash the second 4 KB / 1 MB block to ensure that the headers don&#8217;t increas
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_0">6.2.6. Version 1.0.0</h4>
+<h4 id="_version_1_0_0">6.2.8. Version 1.0.0</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-07-29)</strong></p>
 </div>
@@ -1444,7 +1519,7 @@ drwx------ 3 evrignaud evrignaud 4096 mai    9 21:58 ..
 <h4 id="_initialize_the_fim_repository">7.1.2. Initialize the Fim repository</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim init -c 'First State'
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim init -m 'First State'
 2016/05/09 21:58:36 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 .
@@ -1461,7 +1536,8 @@ Added:            file08
 Added:            file09
 Added:            file10
 
-10 added</code></pre>
+10 added
+Repository initialized</code></pre>
 </div>
 </div>
 </div>
@@ -1657,7 +1733,7 @@ No duplicate file found</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example/dir01$ fim ci -c 'Modifications from dir01' -y
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example/dir01$ fim ci -m 'Modifications from dir01' -y
 2016/05/09 21:58:38 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 2016/05/09 21:58:38 - Info  - Scanned 1 file (12 bytes), hashed 12 bytes (avg 12 bytes/s), during 00:00:00
@@ -1699,7 +1775,7 @@ Nothing modified</code></pre>
 <h4 id="_commit_the_modifications">7.1.8. Commit the modifications</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim ci -c 'All modifications' -y
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim ci -m 'All modifications' -y
 2016/05/09 21:58:39 - Info  - Scanning recursively local files, using 'full' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 .
@@ -1864,7 +1940,7 @@ Added:            file10
 <h3 id="_commit_using_super_fast_mode">7.4. Commit using super-fast mode</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim ci -s -c 'Commit modifications very quickly using super-fast commit' -y
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">simple-example$ fim ci -s -m 'Commit modifications very quickly using super-fast commit' -y
 2016/05/09 21:58:40 - Info  - Scanning recursively local files, using 'super-fast' mode and 2 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 .
@@ -2038,7 +2114,8 @@ No comment provided. You are going to initialize your repository using the defau
 
 ... # File list is skipped as it is too long
 
-41467 added</code></pre>
+41467 added
+Repository initialized</code></pre>
 </div>
 </div>
 </div>
@@ -2143,13 +2220,13 @@ And then it do a full hash of the modified files in order to fill up the missing
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim init -y -c "Create the repository slowly in full mode"
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ fim init -y -m "Create the repository slowly in full mode"
 Info  - Scanning recursively local files, using 'full' mode and 2 threads
 ...
 
 # Do some modifications
 
-$ fim ci -s -y -c "Commit modifications very quickly using super-fast commit"
+$ fim ci -s -y -m "Commit modifications very quickly using super-fast commit"
 Info  - Scanning recursively local files, using 'super-fast' mode and 2 threads
 ...
 Info  - Retrieving the missing hash for all the modified files, using 'full' mode and 2 threads
@@ -2157,7 +2234,7 @@ Info  - Retrieving the missing hash for all the modified files, using 'full' mod
 
 # Do some modifications
 
-$ fim ci -f -y -c "Commit modifications quickly using fast commit"
+$ fim ci -f -y -m "Commit modifications quickly using fast commit"
 Info  - Scanning recursively local files, using 'fast' mode and 2 threads
 ...
 Info  - Retrieving the missing hash for all the modified files, using 'full' mode and 2 threads
@@ -2253,11 +2330,11 @@ It erases all files locally that already exist in the master workspace.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ cd backup
-$ fim rdup -m ../source</code></pre>
+$ fim rdup -M ../source</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>When the workspace to clean is remote, you can just copy the <code>.fim</code> in an empty directory and set it as parameter to the <code>-m</code> option of the <code>rdup</code> command</p>
+<p>When the workspace to clean is remote, you can just copy the <code>.fim</code> in an empty directory and set it as parameter to the <code>-M</code> option of the <code>rdup</code> command</p>
 </div>
 <div class="sect3">
 <h4 id="_simple_duplicates_removing">10.2.1. Simple duplicates removing</h4>
@@ -2316,7 +2393,8 @@ Added:            file08
 Added:            file09
 Added:            file10
 
-10 added</code></pre>
+10 added
+Repository initialized</code></pre>
 </div>
 </div>
 </div>
@@ -2370,7 +2448,7 @@ drwxrwxr-x 4 evrignaud evrignaud 4096 mai   21 08:39 ..
 <h5 id="_commit_all_the_modifications">Commit all the modifications</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">~/rdup-example/source$ fim ci -s -c "Modifications"
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">~/rdup-example/source$ fim ci -s -m "Modifications"
 2016/05/21 08:39:13 - Info  - Scanning recursively local files, using 'super-fast' mode and 4 threads
 (Hash progress legend for files grouped 10 by 10: # &gt; 1 GB, @ &gt; 200 MB, O &gt; 100 MB, 8 &gt; 50 MB, o &gt; 20 MB, . otherwise)
 .
@@ -2397,7 +2475,7 @@ Do you really want to commit (y/n/A)? y
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">~/rdup-example/source$ cd ../backup/
-~/rdup-example/backup$ fim rdup -m ../source
+~/rdup-example/backup$ fim rdup -M ../source
 2016/05/21 08:39:14 - Info  - Searching for duplicate files using the ../source directory as master
 
 2016/05/21 08:39:14 - Info  - Scanning recursively local files, using 'full' mode and 4 threads
@@ -2507,7 +2585,7 @@ If the source location is not reachable from the backup location, you just need 
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ cd &lt;source location&gt;
-$ fim ci -y -c "Content added"</code></pre>
+$ fim ci -y -m "Content added"</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -2549,7 +2627,7 @@ $ scp -rp &lt;remote host&gt;@&lt;source location&gt;/.fim &lt;master location&g
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ cd &lt;backup location&gt;
-$ fim rdup -m &lt;master location&gt;</code></pre>
+$ fim rdup -M &lt;master location&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -2809,9 +2887,10 @@ $ fim st -n</code></pre>
 <div class="paragraph">
 <p>Fim hashes files using several threads.
 This allows taking advantage of the computer resources and maximizes the overall performances of file hashing.<br>
-By default, Fim use an arbitrary thread count that is the number of CPU core divided by two.<br>
+By default, the number of thread is dynamic and depends on the disk throughput.
+It allows using automatically more threads with an SSD and less with a classical HDD<br>
 You can specify, using the <code>-t</code> option, the number of thread to be used for file hashing.<br>
-The best value depends on the kind of hard disk you have. The more throughput you have, the more thread you can use.</p>
+The best value depends on the kind of hard disk you have. The more throughput you have, the more thread you may use.</p>
 </div>
 </div>
 <div class="sect2">

@@ -115,7 +115,7 @@ table.CodeRay td.code>pre{padding:0}
 </script>
 <section id="fim"><h2>Fim</h2><div class="paragraph">
     <p class="text-centered">
-        <strong>File Integrity Manager</strong> <small>1.2.1</small>
+        <strong>File Integrity Manager</strong> <small>1.2.2</small>
     </p>
 </div>
 <div class="paragraph">
@@ -143,7 +143,7 @@ Cela peut arriver accidentellement</p></li><li><p>Conserver un journal des modif
 <section id="pourquoi_j_ai_crit_fim"><h2>Pourquoi j&#8217;ai écrit Fim</h2><div class="paragraph"><p><br /></p></div>
 <div class="ulist"><ul><li><p>Un outil comme Git est capable de gérer des gros fichiers binaires</p></li><li><p>Mais avec Git le workspace local occupe au minimum le double de place car il y a tout le contenu du repository dans le .git</p></li><li><p>Et avec Git on ne peut pas supprimer définitivement un fichier.<br />
 Il sera toujours présent dans l&#8217;historique de Git</p></li><li><p>De plus tous les contenus des fichiers modifiés sont conservés.<br />
-Ce qui prend une place énorme à la longue</p></li><li><p>Certains outils ne fonctionnent que sur des systèmes de fichier propriétaires
+Ce qui prend une place énorme à la longue</p></li><li><p>Certains outils ne fonctionnent que sur des systèmes de fichier particuliers
 (Exemple: <a href="https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc">btrfs-scrub</a>)</p></li></ul></div>
 <div class="paragraph"><p>Le but était d&#8217;avoir un outil qui puisse afficher rapidement le statut du workspace local</p></div></section>
 <section id="comment_a_fonctionne"><h2>Comment ça fonctionne</h2><div class="paragraph"><p>Fim crée le répertoire <code>.fim</code> à la racine du workspace. C&#8217;est son référentiel.<br />
@@ -167,7 +167,7 @@ On peut donc mettre Fim dans la catégorie des <strong>UVCS</strong> (UnVersione
 <div class="paragraph"><p><strong>3/ Connaître l&#8217;état du workspace</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim st         # Commande 'status'</code></pre></div></div>
 <div class="paragraph"><p><strong>4/ Commiter pour sauvegarder l&#8217;état courant</strong><br /></p></div>
-<div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim ci -c &quot;My commit comment&quot;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim ci -m &quot;My commit comment&quot;</code></pre></div></div>
 <div class="paragraph"><p><strong>5/ Afficher l&#8217;historique</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim log</code></pre></div></div>
 <div class="paragraph"><p><br /></p></div>
@@ -175,10 +175,10 @@ On peut donc mettre Fim dans la catégorie des <strong>UVCS</strong> (UnVersione
 <section id="diffrents_mode_de_hash"><h2>Différents mode de hash</h2><div class="paragraph"><p>Pour obtenir un status plus rapide, Fim est capable de hasher seulement 3 blocks du fichier
 au début, au milieu et à la fin.<br />
 On peut utiliser les options :</p></div>
-<div class="ulist"><ul><li><p><code>-f</code> : Mode fast. Hash 3 block de 1 MB</p></li><li><p><code>-s</code> : Mode super-fast. Hash 3 blocks de 4 KB</p></li></ul></div>
+<div class="ulist"><ul><li><p><code>-f</code> : Mode fast. Hash 3 blocks de 1 MB</p></li><li><p><code>-s</code> : Mode super-fast. Hash 3 blocks de 4 KB</p></li></ul></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim st -f</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim st -s</code></pre></div></div>
-<div class="paragraph"><p>Avec l&#8217;option <code>-n</code> (pas de hash) Fim regarde juste les noms de fichiers</p></div>
+<div class="paragraph"><p>Avec l&#8217;option <code>-n</code> (pas de hash) Fim regarde juste les noms de fichiers et les attributs</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim st -n</code></pre></div></div>
 <div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_real_life_example">Détails</a></p></div></section>
@@ -189,43 +189,43 @@ $ cd test1
 $ for i in 01 02 03 04 05 06 07 08 09 10 ;
   do echo &quot;New File $i&quot; &gt; file${i} ; done
 
-$ fim init -c &quot;First State&quot;
+$ fim init -m &quot;First State&quot;
 
 # Modifications
 
 $ fim st
 
-$ fim ci -c &quot;My modifications&quot;
+$ fim ci -m &quot;My modifications&quot;
 
 $ fim log</code></pre></div></div></section>
 <section id="diffrents_cas_d_utilisation"><h2>Différents cas d&#8217;utilisation</h2><div class="paragraph"><p><br /></p></div>
-<div class="ulist"><ul><li><p>Cas 1 - Gestion d&#8217;un workspace</p></li><li><p>Cas 2 - Détection et effacement de fichiers dupliqués</p></li><li><p>Cas 3 - Intégrité d&#8217;un backup</p></li></ul></div></section>
+<div class="ulist"><ul><li><p><strong>Cas 1</strong> - Gestion d&#8217;un workspace</p></li><li><p><strong>Cas 2</strong> - Détection et effacement des doublons d’un workspace</p></li><li><p><strong>Cas 3</strong> - Fichiers dupliqués d’un autre workspace</p></li><li><p><strong>Cas 4</strong> - Intégrité d&#8217;un backup</p></li></ul></div></section>
 <section id="cas_1_gestion_d_un_workspace"><h2>Cas 1 - Gestion d&#8217;un workspace</h2><div class="paragraph"><p><br /></p></div>
 <div class="ulist"><ul><li><p>Gestion de répertoires remplis de binaires.<br />
 Par exemple : photos, musique ou films</p></li><li><p>Connaître l&#8217;état d&#8217;un workspace dans lequel on travail épisodiquement</p></li><li><p>Suivre les évolutions au fil du temps</p></li></ul></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim st</code></pre></div></div>
 <div class="paragraph"><p>Modifications effectuées</p></div>
-<div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim ci -c &quot;My commit comment&quot;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim ci -m &quot;My commit comment&quot;</code></pre></div></div>
 <div class="paragraph"><p><br /></p></div>
 <div class="quoteblock"><blockquote><div class="paragraph"><p><span class="image"><img src="images/important.png" alt="important" /></span> <strong>Fim ne sauvegarde pas les contenus.</strong><br />
 Il est recommandé de vous munir d&#8217;un logiciel de sauvegarde</p></div></blockquote></div></section>
-<section id="super_fast_commit"><h2>Super-fast commit</h2><div class="paragraph"><p><br /></p></div>
+<section id="cas_1_super_fast_commit"><h2>Cas 1 - Super-fast commit</h2><div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>Le mode super-fast durant un commit permet de vérifier l&#8217;état courant en mode super-fast
 pour que le commit soit plus rapide.<br />
 Les fichiers modifiés sont alors hashés a nouveau en mode&#160;complet</p></div>
-<div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim ci -s -y -c &quot;Commit very quickly using super-fast commit&quot;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim ci -s -y -m &quot;Commit very quickly using super-fast commit&quot;</code></pre></div></div>
 <div class="paragraph"><p><br />
 <br />
 <br /></p></div>
 <div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_super_fast_commit">Détails</a></p></div></section>
-<section id="excuter_les_commandes_fim__partir_d_un_sous_rpertoire"><h2>Exécuter les commandes Fim à&#160;partir&#160;d&#8217;un&#160;sous-répertoire</h2><div class="paragraph"><p>Certaines commandes sont plus rapides quand elles sont exécutées depuis un sous-répertoire,
+<section id="cas_1_excuter_les_commandes_fim__partir_d_un_sous_rpertoire"><h2>Cas 1 - Exécuter les commandes Fim à&#160;partir&#160;d&#8217;un&#160;sous-répertoire</h2><div class="paragraph"><p>Certaines commandes sont plus rapides quand elles sont exécutées depuis un sous-répertoire,
 car elles ont moins de fichiers à traiter :</p></div>
-<div class="ulist"><ul><li><p><code>commit</code> : Commiter les modifications</p></li><li><p><code>fdup</code> (<code>find-duplicates</code>) : Trouver les fichiers dupliqués</p></li><li><p><code>rdup</code> (<code>remove-duplicates</code>) : Effacer les fichiers dupliqués</p></li><li><p><code>rfa</code> (<code>reset-file-attrs</code>) : Réinitialiser les attributs des fichiers</p></li></ul></div>
+<div class="ulist"><ul><li><p><code>st</code> (<code>status</code>) : Connaître l&#8217;état du sous-répertoire</p></li><li><p><code>ci</code> (<code>commit</code>) : Commiter les modifications</p></li><li><p><code>fdup</code> (<code>find-duplicates</code>) : Trouver les fichiers dupliqués</p></li><li><p><code>rdup</code> (<code>remove-duplicates</code>) : Effacer les fichiers dupliqués</p></li><li><p><code>rfa</code> (<code>reset-file-attrs</code>) : Réinitialiser les attributs des fichiers</p></li></ul></div>
 <div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>Toutes les autres commandes fonctionnent, mais pas plus rapidement</p></div>
 <div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_run_fim_commands_from_a_sub_directory">Détails</a></p></div></section>
-<section id="ignorer_des_fichiers_ou_rpertoires"><h2>Ignorer des fichiers ou répertoires</h2><div class="paragraph"><p><br /></p></div>
+<section id="cas_1_ignorer_des_fichiers_ou_rpertoires"><h2>Cas 1 - Ignorer des fichiers ou répertoires</h2><div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>Vous pouvez ajouter un fichier <code>.fimignore</code> a tous les niveaux du repository,
 et aussi globalement dans le Home de l&#8217;utilisateur</p></div>
 <div class="paragraph"><p>Chaque ligne du fichier contient un nom de fichier ou de répertoire à ignorer.
@@ -235,7 +235,7 @@ Par exemple pour ignorer tous les mp3 même ceux qui sont dans des sous réperto
 <code>**/*.mp3</code></p></li></ul></div>
 <div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_ignoring_files_or_directories">Détails</a></p></div></section>
-<section id="ignorer_certaines_modifications"><h2>Ignorer certaines modifications</h2><div class="paragraph"><p><br /></p></div>
+<section id="cas_1_ignorer_certaines_modifications"><h2>Cas 1 - Ignorer certaines modifications</h2><div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>Limiter l&#8217;affichage avec <code>-i</code> pour ignorer les modifications sur :</p></div>
 <div class="ulist"><ul><li><p><code>attrs</code> : Attributs des fichiers</p></li><li><p><code>dates</code> : Dates de modification et de création</p></li><li><p><code>renamed</code> : Fichiers renommés</p></li></ul></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim st -i attrs,dates,renamed</code></pre></div></div>
@@ -244,7 +244,7 @@ Par exemple pour ignorer tous les mp3 même ceux qui sont dans des sous réperto
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim st -i all</code></pre></div></div>
 <div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_ignore_some_difference_during_state_comparison">Détails</a></p></div></section>
-<section id="gestion_des_permissions"><h2>Gestion des permissions</h2><div class="paragraph"><p>Il est important de s&#8217;assurer que les fichiers conservent leurs permissions.<br />
+<section id="cas_1_gestion_des_permissions"><h2>Cas 1 - Gestion des permissions</h2><div class="paragraph"><p>Il est important de s&#8217;assurer que les fichiers conservent leurs permissions.<br />
 Fim les sauvegarde et est capable de les restaurer.<br />
 Il stocke pour chaque fichier les informations suivantes :</p></div>
 <div class="ulist"><ul><li><p><a href="https://en.wikipedia.org/wiki/Discretionary_access_control">DAC</a> - Discretionary access control :<br />
@@ -255,12 +255,7 @@ Il stocke pour chaque fichier les informations suivantes :</p></div>
 <code>rfa</code> (<code>reset-file-attrs</code>) :</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim rfa</code></pre></div></div>
 <div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_file_permissions_management">Détails</a></p></div></section>
-<section id="cas_2_dtection_et_effacement_de_fichiers_dupliqus"><h2>Cas 2 - Détection et effacement de&#160;fichiers&#160;dupliqués</h2><div class="paragraph"><p><br />
-<br />
-<br /></p></div>
-<div class="paragraph"><p>Fim détecte les fichiers en double et distingue 2 cas :</p></div>
-<div class="ulist"><ul><li><p>Fichiers en double dans le workspace</p></li><li><p>Fichiers dupliqués d&#8217;un autre workspace</p></li></ul></div></section>
-<section id="dtection_des_doublons_d_un_workspace"><h2>Détection des doublons d&#8217;un workspace</h2><div class="paragraph"><p><br />
+<section id="cas_2_dtection_des_doublons_d_un_workspace"><h2>Cas 2 - Détection des doublons d&#8217;un&#160;workspace</h2><div class="paragraph"><p><br />
 <br /></p></div>
 <div class="paragraph"><p>Fim est capable d&#8217;afficher les doublons contenus dans un workspace à l&#8217;aide de la commande <code>fdup</code> (<code>find-duplicates</code>) :</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim fdup</code></pre></div></div>
@@ -270,28 +265,27 @@ Il stocke pour chaque fichier les informations suivantes :</p></div>
 <div class="paragraph"><p><br />
 <br /></p></div>
 <div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_search_for_duplicate_files">Détails</a></p></div></section>
-<section id="effacement_des_doublons_d_un_workspace"><h2>Effacement des doublons d&#8217;un workspace</h2><div class="paragraph"><p><br /></p></div>
+<section id="cas_2_effacement_des_doublons_d_un_workspace"><h2>Cas 2 - Effacement des doublons d&#8217;un&#160;workspace</h2><div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>Il est possible d&#8217;effacer les fichiers dupliqués.</p></div>
 <div class="paragraph"><p>&bull; Soit en interactif :</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim rdup</code></pre></div></div>
-<div class="paragraph"><p>&bull; Ou en automatique en conservant le premier fichier de la liste :</p></div>
+<div class="paragraph"><p>&bull; Ou en automatique en conservant le premier fichier de la liste des fichiers dupliqués :</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim rdup -y</code></pre></div></div>
 <div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>Dans les deux cas, il est possible d&#8217;utiliser l&#8217;état courant comme avec <code>fdup</code> en ajoutant l&#8217;option <code>-l</code> :</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code>fim rdup -l</code></pre></div></div></section>
-<section id="fichiers_dupliqus_d_un_autre_workspace"><h2>Fichiers dupliqués d&#8217;un autre workspace</h2><div class="paragraph"><p><br /></p></div>
-<div class="paragraph"><p>Fim peut effacer les fichiers en double contenu dans un autre workspace.<br />
+<section id="cas_3_fichiers_dupliqus_d_un_autre_workspace"><h2>Cas 3 - Fichiers dupliqués d&#8217;un&#160;autre&#160;workspace</h2><div class="paragraph"><p>Fim peut effacer les fichiers en double contenu dans un autre workspace.<br />
 Par exemple un vieux backup désynchronisé où vous voulez conserver uniquement les fichiers que vous n&#8217;avez pas.<br />
 Il efface localement tous les fichiers déjà présents dans le workspace master.</p></div>
 <div class="paragraph"><p>Par exemple, avec <code>backup</code> qui est une copie du repository nommé <code>source</code> :</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">cd backup
-$ fim rdup -m ../source</code></pre></div></div>
+$ fim rdup -M ../source</code></pre></div></div>
 <div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>Quand le workspace à nettoyer est distant,  vous pouvez juste copier le <code>.fim</code> dans un répertoire vide
-et le mettre en paramètre de l&#8217;option <code>-m</code> de la commande <code>rdup</code></p></div>
+et le mettre en paramètre de l&#8217;option <code>-M</code> de la commande <code>rdup</code></p></div>
 <div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_duplicates_that_are_outside">Détails</a></p></div></section>
-<section id="cas_3_intgrit_d_un_backup"><h2>Cas 3 - Intégrité d&#8217;un backup</h2><div class="paragraph"><p><br /></p></div>
+<section id="cas_4_intgrit_d_un_backup"><h2>Cas 4 - Intégrité d&#8217;un backup</h2><div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>Fim permet de vérifier l&#8217;intégrité des fichiers stockés sur tout type de système de fichiers.
 Notamment les backups offlines.</p></div>
 <div class="paragraph"><p>Pour cela il faut ajouter dans le backup le référentiel Fim (<code>.fim</code>) qui correspond</p></div>
@@ -299,7 +293,7 @@ Notamment les backups offlines.</p></div>
 <div class="paragraph"><p>Par exemple, dans le cas d&#8217;un DVD qui contient un backup et le référentiel Fim,
 vous pouvez aller à la racine et obtenir le statut :</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim st</code></pre></div></div></section>
-<section id="dtection_de_corruption_matrielle"><h2>Détection de corruption matérielle</h2><div class="imageblock" style=""><img src="images/hardware-corruption.png" alt="hardware corruption" /></div>
+<section id="cas_4_dtection_de_corruption_matrielle"><h2>Cas 4 - Détection de corruption matérielle</h2><div class="imageblock" style=""><img src="images/hardware-corruption.png" alt="hardware corruption" /></div>
 <div class="paragraph"><p>Fim diagnostique une corruption matérielle si le contenu du fichier a changé alors que les dates de création / modification n&#8217;ont pas été modifiées</p></div>
 <div class="paragraph"><p>On utilise la commande <code>dcor</code> (<code>detect-corruption</code>) :</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim dcor</code></pre></div></div>
@@ -314,7 +308,7 @@ Purge les vieux State. Conserve uniquement le dernier</p></li></ul></div></secti
 <div class="ulist"><ul><li><p>Vous pouvez télécharger une distribution de Fim<br />
 <a href="https://github.com/evrignaud/fim/releases/latest"><span class="image"><img src="images/download.png" alt="Download" /></span> Dernière release</a></p></li><li><p>Ou construire une version depuis le master (<a href="http://evrignaud.github.io/fim/#_build_fim">Détails</a>)</p></li></ul></div>
 <div class="paragraph"><p><br /></p></div>
-<div class="ulist"><div class="title"><strong>Prérequis pour Fim</strong></div><ul><li><p>Fim est écrit en Java. Il a besoin du JDK 8</p></li><li><p>Il fonctionne sur Linux, Windows et Mac OS X</p></li><li><p>Il est testé sur ces trois plateformes</p></li></ul></div></section>
+<div class="ulist"><div class="title"><strong>Prérequis pour Fim</strong></div><ul><li><p>Fim est écrit en Java. Il a besoin de Java 8</p></li><li><p>Il fonctionne sur Linux, Windows et Mac OS X</p></li><li><p>Il est testé sur ces trois plateformes</p></li></ul></div></section>
 <section id="image_docker_de_fim"><h2>Image Docker de Fim</h2><div class="paragraph"><p>Pour Linux, si vous n&#8217;avez pas Java ou pas la bonne version,<br />
 une image Docker est disponible sur <a href="https://hub.docker.com/r/evrignaud/fim/">Docker Hub</a>
 <a href="https://microbadger.com/images/evrignaud/fim"><span class="image"><img src="https://images.microbadger.com/badges/version/evrignaud/fim.svg" alt="Image version" /></span></a>
@@ -328,7 +322,7 @@ Il prend les mêmes arguments que la commande <code>fim</code></p></div>
 <div class="paragraph"><p>&bull; <strong>Mettre à jour l&#8217;image utilisée</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">docker pull evrignaud/fim</code></pre></div></div></section>
 <section id="essais_en_tout_genre"><h2>Essais en tout genre</h2><div class="imageblock" style=""><img src="images/hands-on-little.png" alt="hands on little" /></div>
-<div class="paragraph"><p><u>Idées pour essayer sois même :</u></p></div>
+<div class="paragraph"><p><u>Idées pour essayer soi-même :</u></p></div>
 <div class="ulist"><ul><li><p><a href="http://evrignaud.github.io/fim/#_simple_example">simple-example</a></p></li><li><p><a href="http://evrignaud.github.io/fim/#_duplicates_that_are_outside">remove-duplicates-example</a></p></li></ul></div></section>
 <section id="contenu_du_code_fim_code"><h2>Contenu du <code>.fim</code></h2><div class="ulist"><ul><li><p>Le répertoire <code>.fim</code> contient :</p><div class="ulist"><ul><li><p>Un fichier avec les settings du référentiel : <code>settings.json</code></p></li><li><p>Un fichier pour chaque état (State). C&#8217;est un fichier json compressé</p></li></ul></div></li></ul></div>
 <div class="paragraph"><p><br /></p></div>
@@ -338,18 +332,18 @@ Fim refuse d&#8217;utiliser un State modifié</p></li><li><p>Le contenu des Stat
 <div class="paragraph"><p>A la création du référentiel de Fim vous pouvez demander à ne pas utiliser certains hash.
 Cela permet d&#8217;avoir un repository où les commit seront plus rapides, mais il pourrait y avoir des collisions :</p></div>
 <div class="paragraph"><p>&bull; <code>-f</code> : Mode de hash max. : fast. Après utilisable uniquement <code>-f</code>, <code>-s</code> ou <code>-n</code></p></div>
-<div class="paragraph"><p>&bull; <code>-f</code> : Mode de hash max. : super-fast. Après utilisable uniquement <code>-s</code> ou <code>-n</code></p></div>
+<div class="paragraph"><p>&bull; <code>-s</code> : Mode de hash max. : super-fast. Après utilisable uniquement <code>-s</code> ou <code>-n</code></p></div>
 <div class="paragraph"><p>&bull; <code>-n</code> : Mode de hash max. : no-hash. Après utilisable uniquement <code>-n</code></p></div>
-<div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p><u>Exemple :</u></p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim init -f</code></pre></div></div>
-<div class="paragraph"><p><br /></p></div>
+<div class="paragraph"><p>Après la commande <code>status</code> fonctionne par défaut avec le niveau 'fast'.</p></div>
+<div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim st    # S'exécute en utilisant '-f'</code></pre></div></div>
 <div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_changing_default_hash_mode">Détails</a></p></div></section>
 <section id="l_algorithme_de_hash_utilis"><h2>L&#8217;algorithme de Hash utilisé</h2><div class="paragraph"><p><br /></p></div>
-<div class="ulist"><ul><li><p>L&#8217;algo de hash utilisé est le SHA-512</p></li><li><p>Le SHA-512 est 2 * plus lent que MD5 car c&#8217;est un algo cryptographique</p></li><li><p>Par contre la taille de la clé produite (512 bits / 64 octets) permet de minimiser les risques de collision sur les gros fichiers</p></li><li><p>Ce qui ralenti le plus c&#8217;est le disque</p></li><li><p>Quand le statut est vérifié en mode full, les 3 hash sont utilisés ce qui limite encore plus les risques de collision</p></li></ul></div></section>
+<div class="ulist"><ul><li><p>L&#8217;algo de hash utilisé est le SHA-512</p></li><li><p>Le SHA-512 est 2 * plus lent que MD5. C&#8217;est un algo cryptographique.<br />
+Cela diminue les risques de collision</p></li><li><p>La taille de la clé produite (512 bits / 64 octets) permet de minimiser les risques de collision sur les gros fichiers</p></li><li><p>Ce qui ralenti le plus c&#8217;est le disque</p></li><li><p>Quand le statut est vérifié en mode full, les 3 hash sont utilisés ce qui limite encore plus les risques de collision</p></li></ul></div></section>
 <section id="performances"><h2>Performances</h2><div class="imageblock" style=""><img src="images/performance.png" alt="performance" /></div>
-<div class="ulist"><ul><li><p>Fim peut gérer au moins 1 million de fichiers</p></li><li><p>Hashage en multi-thread pour utiliser au mieux les ressources</p></li><li><p>Dans beaucoup de cas, les performances sont conditionnées par la vitesse du disque<br /></p></li><li><p><u>Par défaut :</u> <code>#thread = #core / 2</code><br />
-Option <code>-t</code> pour modifier le nombre de threads utilisés (<a href="http://evrignaud.github.io/fim/#_hash_files_in_multi_thread">Détails</a>)</p></li></ul></div></section>
+<div class="ulist"><ul><li><p>Fim peut gérer au moins 1 million de fichiers</p></li><li><p>Hashage en multi-thread pour utiliser au mieux les ressources</p></li><li><p>Dans beaucoup de cas, les performances sont conditionnées par la vitesse du disque</p></li><li><p>Par défaut, le nombre de thread est dynamique et dépend du débit du disque</p></li><li><p>Option <code>-t</code> pour modifier le nombre de threads utilisés (<a href="http://evrignaud.github.io/fim/#_hash_files_in_multi_thread">Détails</a>)</p></li></ul></div></section>
 <section id="processus_de_hashage"><h2>Processus de hashage</h2><div class="paragraph"><p>Un Thread scanne le workspace et rempli la
 <a href="https://docs.oracle.com/javase/8/docs/api/index.html?java/util/concurrent/LinkedBlockingDeque.html">Queue</a> des fichiers à Hasher</p></div>
 <div class="paragraph"><p>Plusieurs thread hashent chacun un fichier :</p></div>
@@ -359,7 +353,7 @@ Option <code>-t</code> pour modifier le nombre de threads utilisés (<a href="ht
 &#160;&#160;&#160;&#160;&#160;a l&#8217;aide de <a href="https://docs.oracle.com/javase/8/docs/api/index.html?java/security/MessageDigest.html">MessageDigest</a><br />
 &#160;&#160;&#160;&#160;&#160;Ils recoivent les mêmes blocs afin de limiter les I/O<br />
 &#160;&#160;&#160;&#160;&#160;et donc lire une seul fois les blocks</p></div>
-<div class="imageblock" style=""><img src="images/hash-blocks.png" alt="hash blocks" /></div></section>
+<div class="imageblock" style=""><img src="images/hash-blocks-fr.png" alt="hash blocks fr" /></div></section>
 <section id="plus_performant_que_certains_programmes_c"><h2>Plus performant que certains programmes&#160;C++ ?</h2><div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p><strong>Purposely using btrfs RAID1 in degraded mode ?</strong>
 <a href="http://www.spinics.net/lists/linux-btrfs/msg50990.html">http://www.spinics.net/lists/linux-btrfs/msg50990.html</a><br /></p></div>
@@ -370,7 +364,7 @@ Don&#8217;t get fooled by fim being a java application.<br />
 <strong>It easily outperformed hashdeep on large datasets</strong>.</p></div></blockquote></div></section>
 <section id="les_diffrentes_versions_de_fim"><h2>Les différentes versions de Fim</h2><div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><div class="title">&gt; <a href="http://evrignaud.github.io/fim/#_fim_changelog">Fim changelog</a> &lt;</div><p><br /></p></div>
-<div class="paragraph"><p>Articles que j&#8217;ai écrit sur <a href="https://linuxfr.org/">LinuxFr.org</a> pour les sorties des versions de Fim :</p></div>
+<div class="paragraph"><p>Articles que j&#8217;ai écrit sur <a href="https://linuxfr.org/">LinuxFr.org</a> pour promouvoir Fim :</p></div>
 <div class="ulist"><ul><li><p><strong>1.2.0</strong> - <a href="https://goo.gl/UrZK7J">Focus sur les performances avec Fim 1.2.0</a><br />
 Support des repository avec au moins 1 million de fichiers</p></li><li><p><strong>1.1.0</strong> - <a href="https://goo.gl/LAuKqp">Fim 1.1.0</a><br />
 Réécriture de l&#8217;algorithme de hachage pour hacher<br />

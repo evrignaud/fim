@@ -11,7 +11,15 @@ Fim manages the integrity of a complete file tree
 #### Linux & Mac OS X: [![Build Status](https://travis-ci.org/evrignaud/fim.svg)](https://goo.gl/QfQTE8) &nbsp; Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/txadqci1hrr3lkko?svg=true)](https://goo.gl/foWAWQ) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Coverage Status](https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github)](https://goo.gl/hJGXqj) &nbsp;&nbsp; [![Coverity Scan Build Status](https://scan.coverity.com/projects/8749/badge.svg)](https://goo.gl/lbM77o)
 [![Latest tag](https://img.shields.io/github/tag/evrignaud/fim.svg)](https://github.com/evrignaud/fim/releases/latest) [![License](https://img.shields.io/github/license/evrignaud/fim.svg)](http://evrignaud.github.io/fim/LICENSE.html)
 
-## Fim documentation
+## Slides
+
+  * [English slides](http://evrignaud.github.io/fim/slides/en.html)<br/>
+  [![English slides](http://evrignaud.github.io/fim/slides/images/slides-preview-en.jpg)](http://evrignaud.github.io/fim/slides/en.html)
+
+  * [French slides](http://evrignaud.github.io/fim/slides/fr.html)<br/>
+  [![French slides](http://evrignaud.github.io/fim/slides/images/slides-preview-fr.jpg)](http://evrignaud.github.io/fim/slides/fr.html)
+
+## Documentation
 
   * [Presentation](http://evrignaud.github.io/fim/#_fim_file_integrity_manager)
   * [Why do you need Fim](http://evrignaud.github.io/fim/#_why_do_you_need_fim)
@@ -31,15 +39,11 @@ Fim manages the integrity of a complete file tree
   * [FAQ](http://evrignaud.github.io/fim/#_faq)
   * [License](http://evrignaud.github.io/fim/LICENSE.html)
 
-## Fim slides
-
-  * [French slides](http://evrignaud.github.io/fim/slides/fr)
-
-## Fim releases
+## Releases
 
 You can download Fim binary distributions from [here](https://github.com/evrignaud/fim/releases/latest)
 
-## Fim requirements
+## Requirements
 
 This tool is written in Java.
 
