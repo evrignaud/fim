@@ -221,7 +221,6 @@ public class FileHasher implements Runnable {
                 clean.setAccessible(true);
             } catch (Exception ex) {
                 // This method might not exist
-                ex.printStackTrace();
             }
         }
 
@@ -235,7 +234,6 @@ public class FileHasher implements Runnable {
             clean.invoke(cleaner.invoke(bb));
         } catch (Exception ex) {
             // Never mind the buffer will be cleaner a bit later by the JVM
-            ex.printStackTrace();
         }
     }
 
