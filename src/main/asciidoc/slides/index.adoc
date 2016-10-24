@@ -1,0 +1,13 @@
+:revnumber: {project-version}
+:idprefix:
+:customcss: css/style.css
+:example-caption!:
+ifndef::imagesdir[:imagesdir: images]
+
+== Fim Slides
+
+* https://evrignaud.github.io/fim/slides/en.html[English slides] +
+ image:https://evrignaud.github.io/fim/slides/images/slides-preview-en.jpg[English slides,link=https://evrignaud.github.io/fim/slides/en.html]
+
+* https://evrignaud.github.io/fim/slides/fr.html[French slides] +
+ image:https://evrignaud.github.io/fim/slides/images/slides-preview-fr.jpg[French slides,link=https://evrignaud.github.io/fim/slides/fr.html]
