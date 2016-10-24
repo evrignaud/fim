@@ -5,7 +5,7 @@
 
     <groupId>org.fim</groupId>
     <artifactId>fim</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3-SNAPSHOT</version>
 
     <name>Fim</name>
     <packaging>jar</packaging>
