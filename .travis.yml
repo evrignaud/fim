@@ -24,6 +24,7 @@ before_install:
 
 after_success:
   - mvn clean cobertura:cobertura org.eluder.coveralls:coveralls-maven-plugin:report -DserviceName=travis-ci -DserviceJobId=$TRAVIS_JOB_ID
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then       mvn org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar          ; fi
 
 addons:
   coverity_scan:
@@ -34,3 +35,11 @@ addons:
     build_command_prepend: "mvn clean"
     build_command:   "mvn -DskipTests=true compile"
     branch_pattern: coverity_scan
+  sonarqube:
+    token:
+      secure: ${SONAR_TOKEN}
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
