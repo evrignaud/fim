@@ -60,12 +60,14 @@ public class LogCommand extends AbstractCommand {
             if (Files.exists(statFile)) {
                 State state = stateManager.loadState(stateNumber, false);
                 LogEntry logEntry = new LogEntry(context, state, stateNumber);
-                logResult.add(logEntry);
 
                 logEntry.displayEntryHeader();
                 Logger.newLine();
                 logEntry.getCompareResult().displayChanges();
                 Logger.newLine();
+
+                logEntry.setCompareResult(null); // Cleanup the compareResult to avoid: java.lang.OutOfMemoryError: GC overhead limit exceeded
+                logResult.add(logEntry);
             }
         }
 
