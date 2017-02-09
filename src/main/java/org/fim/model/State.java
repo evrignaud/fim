@@ -18,14 +18,16 @@
  */
 package org.fim.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.rits.cloning.Cloner;
 import org.fim.util.Ascii85Util;
 import org.fim.util.FileUtil;
@@ -53,6 +55,22 @@ import static org.fim.model.HashMode.hashAll;
 import static org.fim.util.Ascii85Util.UTF8;
 
 public class State implements Hashable {
+    private static ObjectMapper mapper;
+
+    static {
+        JsonFactory jsonFactory = new JsonFactory();
+        // All field names will be intern()ed
+        jsonFactory.enable(JsonFactory.Feature.CANONICALIZE_FIELD_NAMES);
+        jsonFactory.enable(JsonFactory.Feature.INTERN_FIELD_NAMES);
+        mapper = new ObjectMapper(jsonFactory);
+        // Use setters and getters to be able use String.intern(). This reduces the amount of memory needed to load a State file.
+        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.NONE);
+        mapper.setVisibility(PropertyAccessor.CREATOR, JsonAutoDetect.Visibility.NONE);
+        mapper.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.ANY);
+        mapper.setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.ANY);
+    }
+
     public static final String CURRENT_MODEL_VERSION = "5";
 
     private static final Cloner CLONER = new Cloner();
@@ -87,8 +105,9 @@ public class State implements Hashable {
 
     public static State loadFromGZipFile(Path stateFile, boolean loadFullState) throws IOException, CorruptedStateException {
         try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile.toFile())), UTF8)) {
-            Gson gson = new Gson();
-            State state = gson.fromJson(reader, State.class);
+            State state = mapper.readValue(reader, State.class);
+            System.gc(); // Force to cleanup unused memory
+
             if (state == null) {
                 throw new CorruptedStateException();
             }
@@ -119,11 +138,7 @@ public class State implements Hashable {
         stateHash = hashState();
 
         try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile.toFile())), UTF8)) {
-            Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .create();
-            gson.toJson(this, writer);
+            mapper.writeValue(writer, this);
         }
     }
 
@@ -170,7 +185,8 @@ public class State implements Hashable {
     }
 
     public void setComment(String comment) {
-        this.comment = comment;
+        // Intern Strings to decrease memory usage
+        this.comment = comment.intern();
     }
 
     public int getFileCount() {
@@ -217,6 +233,14 @@ public class State implements Hashable {
 
     public void setCommitDetails(CommitDetails commitDetails) {
         this.commitDetails = commitDetails;
+    }
+
+    public String getStateHash() {
+        return stateHash;
+    }
+
+    public void setStateHash(String stateHash) {
+        this.stateHash = stateHash;
     }
 
     public String hashState() {

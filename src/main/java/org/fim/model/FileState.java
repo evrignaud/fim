@@ -46,6 +46,10 @@ public class FileState implements Hashable {
     private transient FileHash originalFileHash;
     private transient boolean toRemove;
 
+    public FileState() {
+        // Empty constructor for Jackson
+    }
+
     public FileState(String fileName, long fileLength, FileTime fileTime, FileHash fileHash, List<Attribute> attributeList) {
         if (fileName == null) {
             throw new IllegalArgumentException("Invalid null fileName");
@@ -58,7 +62,7 @@ public class FileState implements Hashable {
         setFileLength(fileLength);
         setFileTime(fileTime);
         setFileHash(fileHash);
-        setFileAttributes(toMap(attributeList));
+        setFileAttributesList(attributeList);
     }
 
     public FileState(String fileName, BasicFileAttributes attributes, FileHash fileHash, List<Attribute> attributeList) {
@@ -70,7 +74,8 @@ public class FileState implements Hashable {
     }
 
     public void setFileName(String fileName) {
-        this.fileName = fileName;
+        // Intern Strings to decrease memory usage
+        this.fileName = fileName.intern();
     }
 
     public long getFileLength() {
@@ -109,8 +114,12 @@ public class FileState implements Hashable {
         return fileAttributes;
     }
 
+    private void setFileAttributesList(List<Attribute> attributeList) {
+        this.fileAttributes = toMap(attributeList);
+    }
+
     public void setFileAttributes(Map<String, String> fileAttributes) {
-        this.fileAttributes = fileAttributes;
+        this.fileAttributes = internAttributes(fileAttributes);
     }
 
     public FileState getPreviousFileState() {
@@ -240,9 +249,25 @@ public class FileState implements Hashable {
 
         Map<String, String> map = new HashMap<>();
         for (Attribute attr : attrs) {
-            map.put(attr.getName(), attr.getValue());
+            // Intern Strings to decrease memory usage
+            map.put(attr.getName().intern(), attr.getValue().intern());
         }
         return map;
+    }
+
+    /**
+     * Intern Map content to decrease memory usage
+     */
+    private Map<String, String> internAttributes(Map<String, String> attributes) {
+        if (attributes == null) {
+            return null;
+        }
+
+        Map<String, String> newAttributes = new HashMap<>();
+        for (Map.Entry<String, String> entry : attributes.entrySet()) {
+            newAttributes.put(entry.getKey().intern(), entry.getValue().intern());
+        }
+        return newAttributes;
     }
 
     public static class FileNameComparator implements Comparator<FileState> {

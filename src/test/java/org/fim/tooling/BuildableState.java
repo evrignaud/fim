@@ -18,6 +18,7 @@
  */
 package org.fim.tooling;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.fim.model.Constants;
 import org.fim.model.Context;
 import org.fim.model.FileHash;
@@ -182,6 +183,7 @@ public class BuildableState extends State {
         return null;
     }
 
+    @JsonIgnore
     private long getNow() {
         return new Date().getTime();
     }

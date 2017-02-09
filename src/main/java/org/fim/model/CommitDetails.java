@@ -22,6 +22,10 @@ public class CommitDetails {
     private HashMode hashModeUsedToGetTheStatus;
     private String fromSubDirectory;
 
+    public CommitDetails() {
+        // Empty constructor for Jackson
+    }
+
     public CommitDetails(HashMode hashModeUsedToGetTheStatus, String fromSubDirectory) {
         setHashModeUsedToGetTheStatus(hashModeUsedToGetTheStatus);
         setFromSubDirectory(fromSubDirectory);

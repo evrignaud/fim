@@ -29,28 +29,45 @@ public class FileHash implements Comparable<FileHash>, Hashable {
     private String mediumBlockHash;
     private String fullHash;
 
+    public FileHash() {
+        // Empty constructor for Jackson
+    }
+
     public FileHash(String smallBlockHash, String mediumBlockHash, String fullHash) {
-        this.smallBlockHash = smallBlockHash;
-        this.mediumBlockHash = mediumBlockHash;
-        this.fullHash = fullHash;
+        setSmallBlockHash(smallBlockHash);
+        setMediumBlockHash(mediumBlockHash);
+        setFullHash(fullHash);
     }
 
     public FileHash(FileHash fileHash) {
-        this.smallBlockHash = fileHash.getSmallBlockHash();
-        this.mediumBlockHash = fileHash.getMediumBlockHash();
-        this.fullHash = fileHash.getFullHash();
+        this(fileHash.getSmallBlockHash(), fileHash.getMediumBlockHash(), fileHash.getFullHash());
     }
 
     public String getSmallBlockHash() {
         return smallBlockHash;
     }
 
+    public void setSmallBlockHash(String smallBlockHash) {
+        // Intern Strings to decrease memory usage
+        this.smallBlockHash = smallBlockHash.intern();
+    }
+
     public String getMediumBlockHash() {
         return mediumBlockHash;
     }
 
+    public void setMediumBlockHash(String mediumBlockHash) {
+        // Intern Strings to decrease memory usage
+        this.mediumBlockHash = mediumBlockHash.intern();
+    }
+
     public String getFullHash() {
         return fullHash;
+    }
+
+    public void setFullHash(String fullHash) {
+        // Intern Strings to decrease memory usage
+        this.fullHash = fullHash.intern();
     }
 
     @Override

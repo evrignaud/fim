@@ -28,9 +28,9 @@
         <commons-cli.version>1.3.1</commons-cli.version>
         <commons-io.version>2.5</commons-io.version>
         <bds-common-framework.version>1.6.7</bds-common-framework.version>
-        <gson.version>2.8.0</gson.version>
+        <jackson-databind.version>2.8.6</jackson-databind.version>
         <cloning.version>1.9.3</cloning.version>
-        <evo-inflector.version>1.2.1</evo-inflector.version>
+        <evo-inflector.version>1.2.2</evo-inflector.version>
 
         <junit.version>4.12</junit.version>
         <assertj-core.version>3.6.2</assertj-core.version>
@@ -41,6 +41,7 @@
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <maven-shade-plugin.version>2.4.3</maven-shade-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+        <maven-surefire-plugin.version>2.9</maven-surefire-plugin.version>
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
@@ -50,7 +51,7 @@
         <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
         <asciidoctor-maven-plugin.version>1.5.3</asciidoctor-maven-plugin.version>
         <asciidoctorj.version>1.5.4.1</asciidoctorj.version>
-        <jruby.version>9.1.5.0</jruby.version>
+        <jruby.version>9.1.6.0</jruby.version>
         <revealjs.version>3.3.0</revealjs.version>
         <asciidoctor-revealjs.version>master</asciidoctor-revealjs.version>
 
@@ -190,9 +191,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${gson.version}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.version}</version>
         </dependency>
         <dependency>
             <groupId>uk.com.robust-it</groupId>
@@ -286,6 +287,15 @@
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <argLine>-Xmx2g -XX:MaxMetaspaceSize=128m</argLine>
                 </configuration>
             </plugin>
 

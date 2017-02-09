@@ -30,6 +30,10 @@ public class FileTime implements Comparable<FileTime>, Hashable {
     private long creationTime;
     private long lastModified;
 
+    public FileTime() {
+        // Empty constructor for Jackson
+    }
+
     public FileTime(long creationTime, long lastModified) {
         setCreationTime(creationTime);
         setLastModified(lastModified);

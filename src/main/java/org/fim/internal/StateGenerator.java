@@ -115,6 +115,8 @@ public class StateGenerator {
 
         waitAllFilesToBeHashed();
 
+        System.gc(); // Force to cleanup unused memory
+
         long overallTotalBytesHashed = 0;
         for (FileHasher fileHasher : fileHashers) {
             state.getFileStates().addAll(fileHasher.getFileStates());
