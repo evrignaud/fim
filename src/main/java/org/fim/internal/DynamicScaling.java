@@ -67,7 +67,6 @@ public class DynamicScaling implements Runnable {
             Logger.error("Got exception", ex, context.isDisplayStackTrace());
         } finally {
             Logger.rawDebug("\n - Dynamic scaling finished. scaleLevel = " + scaleLevel);
-            context.setDynamicScaling(false);
         }
     }
 
