@@ -148,7 +148,7 @@ public class State implements Hashable {
 
         String rootDir = FileUtil.getNormalizedFileName(repositoryRootDir);
         String curDir = FileUtil.getNormalizedFileName(currentDirectory);
-        String subDirectory = FileUtil.getRelativeFileName(rootDir, curDir);
+        String subDirectory = FileUtil.getRelativeFileName(rootDir, curDir) + '/';
 
         fileStates.stream()
             .filter(fileState -> fileState.getFileName().startsWith(subDirectory) == keepFilesInside)
