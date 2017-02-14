@@ -18,6 +18,7 @@
  */
 package org.fim.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.Hasher;
@@ -130,6 +131,7 @@ public class FileState implements Hashable {
         this.previousFileState = previousFileState;
     }
 
+    @JsonIgnore
     public FileHash getNewFileHash() {
         return newFileHash;
     }
