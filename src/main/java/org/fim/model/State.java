@@ -18,10 +18,11 @@
  */
 package org.fim.model;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.HashCode;
@@ -51,6 +52,7 @@ import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import static org.fim.model.HashMode.hashAll;
 import static org.fim.util.Ascii85Util.UTF8;
 
@@ -64,11 +66,13 @@ public class State implements Hashable {
         jsonFactory.enable(JsonFactory.Feature.INTERN_FIELD_NAMES);
         mapper = new ObjectMapper(jsonFactory);
         // Use setters and getters to be able use String.intern(). This reduces the amount of memory needed to load a State file.
-        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
-        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.NONE);
-        mapper.setVisibility(PropertyAccessor.CREATOR, JsonAutoDetect.Visibility.NONE);
-        mapper.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.ANY);
-        mapper.setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.ANY);
+        mapper.setVisibility(PropertyAccessor.ALL, Visibility.NONE);
+        mapper.setVisibility(PropertyAccessor.FIELD, Visibility.NONE);
+        mapper.setVisibility(PropertyAccessor.CREATOR, Visibility.NONE);
+        mapper.setVisibility(PropertyAccessor.GETTER, Visibility.ANY);
+        mapper.setVisibility(PropertyAccessor.SETTER, Visibility.ANY);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.setSerializationInclusion(Include.NON_NULL);
     }
 
     public static final String CURRENT_MODEL_VERSION = "5";
