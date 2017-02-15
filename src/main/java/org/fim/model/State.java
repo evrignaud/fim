@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
@@ -32,6 +33,7 @@ import com.google.common.hash.Hashing;
 import com.rits.cloning.Cloner;
 import org.fim.util.Ascii85Util;
 import org.fim.util.FileUtil;
+import org.fim.util.FimPrettyPrinter;
 import org.fim.util.Logger;
 
 import java.io.FileInputStream;
@@ -58,6 +60,8 @@ import static org.fim.util.Ascii85Util.UTF8;
 
 public class State implements Hashable {
     private static ObjectMapper mapper;
+    private static FimPrettyPrinter prettyPrinter;
+    private static ObjectWriter prettyWriter;
 
     static {
         JsonFactory jsonFactory = new JsonFactory();
@@ -73,6 +77,9 @@ public class State implements Hashable {
         mapper.setVisibility(PropertyAccessor.SETTER, Visibility.ANY);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.setSerializationInclusion(Include.NON_NULL);
+
+        prettyPrinter = new FimPrettyPrinter();
+        prettyWriter = mapper.writer(prettyPrinter);
     }
 
     public static final String CURRENT_MODEL_VERSION = "5";
@@ -142,8 +149,9 @@ public class State implements Hashable {
         stateHash = hashState();
 
         try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile.toFile())), UTF8)) {
-            mapper.writeValue(writer, this);
+            prettyWriter.writeValue(writer, this);
         }
+        System.gc(); // Force to cleanup unused memory
     }
 
     public State filterDirectory(Path repositoryRootDir, Path currentDirectory, boolean keepFilesInside) {
