@@ -18,12 +18,6 @@
  */
 package org.fim.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.HashCode;
@@ -33,7 +27,7 @@ import com.google.common.hash.Hashing;
 import com.rits.cloning.Cloner;
 import org.fim.util.Ascii85Util;
 import org.fim.util.FileUtil;
-import org.fim.util.FimPrettyPrinter;
+import org.fim.util.JsonIO;
 import org.fim.util.Logger;
 
 import java.io.FileInputStream;
@@ -54,38 +48,15 @@ import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import static org.fim.model.HashMode.hashAll;
 import static org.fim.util.Ascii85Util.UTF8;
 
 public class State implements Hashable {
-    private static ObjectMapper mapper;
-    private static FimPrettyPrinter prettyPrinter;
-    private static ObjectWriter prettyWriter;
-
-    static {
-        JsonFactory jsonFactory = new JsonFactory();
-        // All field names will be intern()ed
-        jsonFactory.enable(JsonFactory.Feature.CANONICALIZE_FIELD_NAMES);
-        jsonFactory.enable(JsonFactory.Feature.INTERN_FIELD_NAMES);
-        mapper = new ObjectMapper(jsonFactory);
-        // Use setters and getters to be able use String.intern(). This reduces the amount of memory needed to load a State file.
-        mapper.setVisibility(PropertyAccessor.ALL, Visibility.NONE);
-        mapper.setVisibility(PropertyAccessor.FIELD, Visibility.NONE);
-        mapper.setVisibility(PropertyAccessor.CREATOR, Visibility.NONE);
-        mapper.setVisibility(PropertyAccessor.GETTER, Visibility.ANY);
-        mapper.setVisibility(PropertyAccessor.SETTER, Visibility.ANY);
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        mapper.setSerializationInclusion(Include.NON_NULL);
-
-        prettyPrinter = new FimPrettyPrinter();
-        prettyWriter = mapper.writer(prettyPrinter);
-    }
-
     public static final String CURRENT_MODEL_VERSION = "5";
 
     private static final Cloner CLONER = new Cloner();
     private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
+    private static JsonIO jsonIO = new JsonIO();
 
     private String stateHash; // Ensure the integrity of the complete State content
 
@@ -116,7 +87,7 @@ public class State implements Hashable {
 
     public static State loadFromGZipFile(Path stateFile, boolean loadFullState) throws IOException, CorruptedStateException {
         try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile.toFile())), UTF8)) {
-            State state = mapper.readValue(reader, State.class);
+            State state = jsonIO.getObjectMapper().readValue(reader, State.class);
             System.gc(); // Force to cleanup unused memory
 
             if (state == null) {
@@ -149,7 +120,7 @@ public class State implements Hashable {
         stateHash = hashState();
 
         try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile.toFile())), UTF8)) {
-            prettyWriter.writeValue(writer, this);
+            jsonIO.getObjectWriter().writeValue(writer, this);
         }
         System.gc(); // Force to cleanup unused memory
     }

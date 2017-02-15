@@ -24,13 +24,13 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 
 import java.io.IOException;
 
-public class FimPrettyPrinter extends DefaultPrettyPrinter {
-    public FimPrettyPrinter() {
+public class JsonPrettyPrinter extends DefaultPrettyPrinter {
+    public JsonPrettyPrinter() {
         super();
         setupIndenters();
     }
 
-    public FimPrettyPrinter(FimPrettyPrinter base) {
+    public JsonPrettyPrinter(JsonPrettyPrinter base) {
         super(base);
         setupIndenters();
     }
@@ -42,8 +42,8 @@ public class FimPrettyPrinter extends DefaultPrettyPrinter {
     }
 
     @Override
-    public FimPrettyPrinter createInstance() {
-        return new FimPrettyPrinter(this);
+    public JsonPrettyPrinter createInstance() {
+        return new JsonPrettyPrinter(this);
     }
 
     @Override
