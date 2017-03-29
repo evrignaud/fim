@@ -18,7 +18,6 @@
  */
 package org.fim.util;
 
-import org.apache.commons.io.FileUtils;
 import org.fim.model.Context;
 import org.fim.model.FileState;
 
@@ -26,8 +25,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 
 public class FileUtil {
+    static DecimalFormat decimalFormat = new DecimalFormat("0.#");
+
     public static String getNormalizedFileName(Path file) {
         String normalizedFileName = file.toAbsolutePath().normalize().toString();
         if (File.separatorChar != '/') {
@@ -70,10 +72,23 @@ public class FileUtil {
             isNegative = true;
         }
 
-        String displaySize = FileUtils.byteCountToDisplaySize(localSize);
+        String displaySize = humanReadableByteCount(localSize, true);
         if (isNegative) {
             displaySize = "-" + displaySize;
         }
         return displaySize;
+    }
+
+    /**
+     * Original code comes from:
+     * http://programming.guide/java/formatting-byte-size-to-human-readable-format.html
+     */
+    private static String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) {
+            return bytes + " bytes";
+        }
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        return decimalFormat.format(bytes / Math.pow(unit, exp)) + " " + "KMGTPE".charAt(exp - 1) + (si ? "B" : "bit");
     }
 }

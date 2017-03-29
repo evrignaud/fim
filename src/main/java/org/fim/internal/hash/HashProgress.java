@@ -20,7 +20,6 @@ package org.fim.internal.hash;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.fim.model.Constants;
 import org.fim.model.Context;
 import org.fim.util.Logger;
 
@@ -36,11 +35,11 @@ public class HashProgress {
 
     private static final List<Pair<Character, Integer>> progressChars = Arrays.asList(
         Pair.of('.', 0),
-        Pair.of('o', Constants._20_MB),
-        Pair.of('8', Constants._50_MB),
-        Pair.of('O', Constants._100_MB),
-        Pair.of('@', Constants._200_MB),
-        Pair.of('#', Constants._1_GB)
+        Pair.of('o', 20_000_000),
+        Pair.of('8', 50_000_000),
+        Pair.of('O', 100_000_000),
+        Pair.of('@', 200_000_000),
+        Pair.of('#', 1000_000_000)
     );
 
     private final Context context;
