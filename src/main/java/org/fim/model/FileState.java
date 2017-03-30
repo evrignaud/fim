@@ -21,9 +21,11 @@ package org.fim.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hasher;
+import com.google.common.hash.Hashing;
 import com.rits.cloning.Cloner;
-import org.fim.util.ObjectsUtil;
 
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
@@ -196,7 +198,11 @@ public class FileState implements Hashable {
      * A long is used to avoid hashCode collisions when we have a huge number of FileStates.
      */
     public long longHashCode() {
-        return ObjectsUtil.longHash(fileName, fileLength, fileTime.millisecondsRemovedHashCode(), fileHash, fileAttributes);
+        HashFunction hashFunction = Hashing.sha512();
+        Hasher hasher = hashFunction.newHasher(Constants._4_KB);
+        hashObject(hasher, true);
+        HashCode hash = hasher.hash();
+        return hash.asLong();
     }
 
     @Override
@@ -213,6 +219,10 @@ public class FileState implements Hashable {
 
     @Override
     public void hashObject(Hasher hasher) {
+        hashObject(hasher, false);
+    }
+
+    public void hashObject(Hasher hasher, boolean millisecondsRemoved) {
         hasher
             .putString("FileState", Charsets.UTF_8)
             .putChar(HASH_FIELD_SEPARATOR)
@@ -221,7 +231,7 @@ public class FileState implements Hashable {
             .putLong(fileLength);
 
         hasher.putChar(HASH_OBJECT_SEPARATOR);
-        fileTime.hashObject(hasher);
+        fileTime.hashObject(hasher, millisecondsRemoved);
 
         hasher.putChar(HASH_OBJECT_SEPARATOR);
         fileHash.hashObject(hasher);

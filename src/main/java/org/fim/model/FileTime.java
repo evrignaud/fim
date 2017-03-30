@@ -21,7 +21,6 @@ package org.fim.model;
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.Hasher;
-import org.fim.util.ObjectsUtil;
 
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
@@ -88,10 +87,6 @@ public class FileTime implements Comparable<FileTime>, Hashable {
             && Objects.equals(this.lastModified / 1000, otherFileTime.lastModified / 1000);
     }
 
-    public long millisecondsRemovedHashCode() {
-        return ObjectsUtil.longHash(creationTime / 1000, lastModified / 1000);
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(creationTime, lastModified);
@@ -118,11 +113,15 @@ public class FileTime implements Comparable<FileTime>, Hashable {
 
     @Override
     public void hashObject(Hasher hasher) {
+        hashObject(hasher, false);
+    }
+
+    public void hashObject(Hasher hasher, boolean millisecondsRemoved) {
         hasher
             .putString("FileTime", Charsets.UTF_8)
             .putChar(HASH_FIELD_SEPARATOR)
-            .putLong(creationTime)
+            .putLong(millisecondsRemoved ? creationTime / 1000 : creationTime)
             .putChar(HASH_FIELD_SEPARATOR)
-            .putLong(lastModified);
+            .putLong(millisecondsRemoved ? lastModified / 1000 : lastModified);
     }
 }
