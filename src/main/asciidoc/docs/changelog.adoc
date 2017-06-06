@@ -4,6 +4,26 @@
 
 * The '-M' option that is dedicated to specify the master Fim repository does not work when using the Fim Docker image
 
+== Version 1.2.3
+*(Released 2017-06-06)*
+
+https://github.com/evrignaud/fim/tree/1.2.3[image:icons/octocat.png[GitHub] Sources]
+&nbsp;&nbsp; - &nbsp;&nbsp;
+https://github.com/evrignaud/fim/compare/1.2.2%2E%2E%2E1.2.3[image:icons/list.png[List] Full Changelog]
+&nbsp;&nbsp; - &nbsp;&nbsp;
+https://github.com/evrignaud/fim/releases/tag/1.2.3[image:icons/package.png[Package] Download]
+
+=== General
+* Move from Gson to Jackson to have a more efficient serializer (https://github.com/fabienrenaud/java-json-benchmark)
+* Reduce the amount of memory needed to load a State file.
+
+=== Bug fix
+* Fix https://github.com/evrignaud/fim/issues/9[issue #9]:
+  Exception in thread "main" java.lang.IllegalStateException
+** Fix the State comparison algorithm
+** When the size is over 1GB, don't round down to the nearest GB boundary
+** Use the International System of Units (SI) to compute file size (1000 instead of 1024)
+
 == Version 1.2.2
 *(Released 2016-10-24)*
 
