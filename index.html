@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.4">
+<meta name="generator" content="Asciidoctor 1.5.5">
 <title>Fim - File Integrity Manager</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -17,7 +17,6 @@ audio:not([controls]){display:none;height:0}
 [hidden],template{display:none}
 script{display:none!important}
 html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
-body{margin:0}
 a{background:transparent}
 a:focus{outline:thin dotted}
 a:active,a:hover{outline:0}
@@ -52,7 +51,7 @@ textarea{overflow:auto;vertical-align:top}
 table{border-collapse:collapse;border-spacing:0}
 *,*:before,*:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
 html,body{font-size:100%}
-body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto;tab-size:4;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
 a:hover{cursor:pointer}
 img,object,embed{max-width:100%;height:auto}
 object,embed{height:100%}
@@ -64,7 +63,6 @@ img{-ms-interpolation-mode:bicubic}
 .text-center{text-align:center!important}
 .text-justify{text-align:justify!important}
 .hide{display:none}
-body{-webkit-font-smoothing:antialiased}
 img,object,svg{display:inline-block;vertical-align:middle}
 textarea{height:auto;min-height:50px}
 select{width:100%}
@@ -119,13 +117,16 @@ table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:
 table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
 table tr.even,table tr.alt,table tr:nth-of-type(even){background:#f8f8f7}
 table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
-body{tab-size:4}
 h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
 h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
 .clearfix:before,.clearfix:after,.float-group:before,.float-group:after{content:" ";display:table}
 .clearfix:after,.float-group:after{clear:both}
-*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed}
+*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed;word-wrap:break-word}
+*:not(pre)>code.nobreak{word-wrap:normal}
+*:not(pre)>code.nowrap{white-space:nowrap}
 pre,pre>code{line-height:1.45;color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;text-rendering:optimizeSpeed}
+em em{font-style:normal}
+strong strong{font-weight:400}
 .keyseq{color:rgba(51,51,51,.8)}
 kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
 .keyseq kbd:first-child{margin-left:0}
@@ -518,7 +519,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png">
 <meta name="theme-color" content="#ffffff">
 
-<link href="http://fonts.googleapis.com/css?family=Roboto:400,500,700,900" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900" rel="stylesheet" type="text/css">
 
 <link rel="stylesheet" href="css/style.css">
 
@@ -528,7 +529,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
     }
 </style>
 
-<script src="http://code.jquery.com/jquery-2.2.3.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -581,7 +582,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="openblock partintro">
 <div class="content">
 <div class="paragraph">
-<p>Version 1.2.2</p>
+<p>Version 1.2.3</p>
 </div>
 <hr>
 <div class="paragraph">
@@ -942,7 +943,57 @@ Then you have to:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_2_2">6.2.2. Version 1.2.2</h4>
+<h4 id="_version_1_2_3">6.2.2. Version 1.2.3</h4>
+<div class="paragraph">
+<p><strong>(Released 2017-06-06)</strong></p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/evrignaud/fim/tree/1.2.3"><span class="image"><img src="images/icons/octocat.png" alt="GitHub"></span> Sources</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/compare/1.2.2%2E%2E%2E1.2.3"><span class="image"><img src="images/icons/list.png" alt="List"></span> Full Changelog</a>
+&nbsp;&nbsp; - &nbsp;&nbsp;
+<a href="https://github.com/evrignaud/fim/releases/tag/1.2.3"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
+</div>
+<div class="sect4">
+<h5 id="_general">General</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Move from Gson to Jackson to have a more efficient serializer (<a href="https://github.com/fabienrenaud/java-json-benchmark" class="bare">https://github.com/fabienrenaud/java-json-benchmark</a>)</p>
+</li>
+<li>
+<p>Reduce the amount of memory needed to load a State file.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_bug_fix">Bug fix</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Fix <a href="https://github.com/evrignaud/fim/issues/9">issue #9</a>:
+Exception in thread "main" java.lang.IllegalStateException</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Fix the State comparison algorithm</p>
+</li>
+<li>
+<p>When the size is over 1GB, don&#8217;t round down to the nearest GB boundary</p>
+</li>
+<li>
+<p>Use the International System of Units (SI) to compute file size (1000 instead of 1024)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_version_1_2_2">6.2.3. Version 1.2.2</h4>
 <div class="paragraph">
 <p><strong>(Released 2016-10-24)</strong></p>
 </div>
@@ -954,7 +1005,7 @@ Then you have to:</p>
 <a href="https://github.com/evrignaud/fim/releases/tag/1.2.2"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
 </div>
 <div class="sect4">
-<h5 id="_general">General</h5>
+<h5 id="_general_2">General</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -962,7 +1013,7 @@ Then you have to:</p>
 It allows using automatically more threads with an SSD and less with a classical HDD</p>
 </li>
 <li>
-<p>Add <a href="http://evrignaud.github.io/fim/slides/en.html">English slides</a></p>
+<p>Add <a href="https://evrignaud.github.io/fim/slides/en.html">English slides</a></p>
 </li>
 <li>
 <p>On Linux and Mac OS X, display the hash progress depending on terminal width</p>
@@ -977,7 +1028,7 @@ It allows using automatically more threads with an SSD and less with a classical
 </div>
 </div>
 <div class="sect4">
-<h5 id="_bug_fix">Bug fix</h5>
+<h5 id="_bug_fix_2">Bug fix</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -994,7 +1045,7 @@ It allows using automatically more threads with an SSD and less with a classical
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_2_1">6.2.3. Version 1.2.1</h4>
+<h4 id="_version_1_2_1">6.2.4. Version 1.2.1</h4>
 <div class="paragraph">
 <p><strong>(Released 2016-10-10)</strong></p>
 </div>
@@ -1006,7 +1057,7 @@ It allows using automatically more threads with an SSD and less with a classical
 <a href="https://github.com/evrignaud/fim/releases/tag/1.2.1"><span class="image"><img src="images/icons/package.png" alt="Package"></span> Download</a></p>
 </div>
 <div class="sect4">
-<h5 id="_general_2">General</h5>
+<h5 id="_general_3">General</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -1023,13 +1074,13 @@ The 'log' command displays now the same output as the 'status' command. It works
 <p>Fim is now able to <strong>remove duplicates</strong> that are in the repository. See more in <a href="#_remove_duplicates">Remove duplicates</a></p>
 </li>
 <li>
-<p>Add <a href="http://evrignaud.github.io/fim/slides/fr.html">French slides</a></p>
+<p>Add <a href="https://evrignaud.github.io/fim/slides/fr.html">French slides</a></p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_bug_fix_2">Bug fix</h5>
+<h5 id="_bug_fix_3">Bug fix</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -1043,7 +1094,7 @@ The 'log' command displays now the same output as the 'status' command. It works
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_2_0">6.2.4. Version 1.2.0</h4>
+<h4 id="_version_1_2_0">6.2.5. Version 1.2.0</h4>
 <div class="paragraph">
 <p><strong>(Released 2016-05-23)</strong></p>
 </div>
@@ -1074,7 +1125,7 @@ The 'log' command displays now the same output as the 'status' command. It works
 </div>
 </div>
 <div class="sect4">
-<h5 id="_general_3">General</h5>
+<h5 id="_general_4">General</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -1096,7 +1147,7 @@ The 'log' command displays now the same output as the 'status' command. It works
 </div>
 </div>
 <div class="sect4">
-<h5 id="_bug_fix_3">Bug fix</h5>
+<h5 id="_bug_fix_4">Bug fix</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -1128,7 +1179,7 @@ To migrate type:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_1_0">6.2.5. Version 1.1.0</h4>
+<h4 id="_version_1_1_0">6.2.6. Version 1.1.0</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-11-01)</strong></p>
 </div>
@@ -1165,19 +1216,19 @@ Details in <a href="#_file_permissions_management">File permissions management</
 Details in <a href="#_ignoring_files_or_directories">Ignoring files or directories</a></p>
 </li>
 <li>
-<p>Add automatic build and testing of Fim using Travis CI for <a href="https://goo.gl/QfQTE8">Linux</a> and Appveyor CI for <a href="https://goo.gl/foWAWQ">Windows</a></p>
+<p>Add automatic build and testing of Fim using Travis CI for <a href="https://travis-ci.org/evrignaud/fim">Linux</a> and Appveyor CI for <a href="https://ci.appveyor.com/project/evrignaud/fim">Windows</a></p>
 </li>
 <li>
-<p>Add Unit test coverage using <a href="https://goo.gl/hJGXqj">Coveralls</a></p>
+<p>Add Unit test coverage using <a href="https://coveralls.io/github/evrignaud/fim?branch=master">Coveralls</a></p>
 </li>
 <li>
-<p>Moved the documentation to AsciiDoc using the <a href="http://asciidoctor.org/docs/asciidoctor-maven-plugin/">asciidoctor-maven-plugin</a></p>
+<p>Moved the documentation to AsciiDoc using the <a href="https://asciidoctor.org/docs/asciidoctor-maven-plugin/">asciidoctor-maven-plugin</a></p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_2">6.2.6. Version 1.0.2</h4>
+<h4 id="_version_1_0_2">6.2.7. Version 1.0.2</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-09-04)</strong></p>
 </div>
@@ -1201,7 +1252,7 @@ Hash the second 4 KB / 1 MB block to ensure that the headers don&#8217;t increas
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_1">6.2.7. Version 1.0.1</h4>
+<h4 id="_version_1_0_1">6.2.8. Version 1.0.1</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-08-26)</strong></p>
 </div>
@@ -1230,7 +1281,7 @@ Hash the second 4 KB / 1 MB block to ensure that the headers don&#8217;t increas
 </div>
 </div>
 <div class="sect3">
-<h4 id="_version_1_0_0">6.2.8. Version 1.0.0</h4>
+<h4 id="_version_1_0_0">6.2.9. Version 1.0.0</h4>
 <div class="paragraph">
 <p><strong>(Released 2015-07-29)</strong></p>
 </div>
@@ -1286,7 +1337,7 @@ You can use them like this.</p>
 <h5 id="_retrieve_the_code_fim_docker_code_script">Retrieve the <code>fim-docker</code> script:</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ curl goo.gl/XwERDY -L -o fim-docker &amp;&amp; chmod a+rx fim-docker</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ curl https://raw.githubusercontent.com/evrignaud/fim/master/fim-docker -L -o fim-docker &amp;&amp; chmod a+rx fim-docker</code></pre>
 </div>
 </div>
 </div>
@@ -1407,7 +1458,7 @@ fim-1.1.0-SNAPSHOT-distribution.zip</code></pre>
 <div class="sect4">
 <h5 id="_getting_maven">Getting Maven</h5>
 <div class="paragraph">
-<p>If you don&#8217;t have Maven, you can either download it from <a href="http://maven.apache.org/index.html">the Apache website</a> or use a packages manager.</p>
+<p>If you don&#8217;t have Maven, you can either download it from <a href="https://maven.apache.org/index.html">the Apache website</a> or use a packages manager.</p>
 </div>
 <div class="sect5">
 <h6 id="_for_linux">For Linux</h6>
@@ -1420,7 +1471,7 @@ fim-1.1.0-SNAPSHOT-distribution.zip</code></pre>
 <div class="sect5">
 <h6 id="_for_mac_os_x">For Mac OS X</h6>
 <div class="paragraph">
-<p>First install <a href="http://brew.sh">Homebrew</a> if you don&#8217;t have it.</p>
+<p>First install <a href="https://brew.sh">Homebrew</a> if you don&#8217;t have it.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2917,7 +2968,7 @@ State content is normalized and the same State content can be loaded on the diff
 <p>This tool is written in Java</p>
 </div>
 <div class="paragraph">
-<p>Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from the <a href="http://goo.gl/p8iYjm">Java SE Downloads</a>.<br>
+<p>Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from the <a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">Java SE Downloads</a>.<br>
 You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.</p>
 </div>
 </div>
@@ -2934,33 +2985,33 @@ You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.</
 <h2 id="_they_talked_about_it">16. They talked about it</h2>
 <div class="sectionbody">
 <div class="quoteblock">
-<div class="title"><strong>&bull; <span class="image"><img src="images/icons/korben.info.png" alt="Korben.info"></span> &nbsp;&nbsp; <a href="http://goo.gl/1gwX1g">Vérifier l’intégrité de très nombreux fichiers</a></strong></div>
+<div class="title"><strong>&bull; <span class="image"><img src="images/icons/korben.info.png" alt="Korben.info"></span> &nbsp;&nbsp; <a href="https://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html">Vérifier l’intégrité de très nombreux fichiers</a></strong></div>
 <blockquote>
 <div class="paragraph">
 <p><strong>Fim (File Integrity Manager)</strong> est un outil vraiment excellent qui permet de gérer l&#8217;intégrité de nombreux fichiers.
-<a href="http://goo.gl/1gwX1g">+ Lire la suite</a></p>
+<a href="https://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html">+ Lire la suite</a></p>
 </div>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
 <p><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp;
-<a href="http://goo.gl/jBE2XY">Check integrity of many files</a><br>
+<a href="https://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html">Verify the integrity of many files </a><br>
 <strong>Fim (File Integrity Manager)</strong> is a really great tool for managing the integrity of many files.
-<a href="http://goo.gl/jBE2XY">+ Read more</a></p>
+<a href="https://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html">+ Read more</a></p>
 </div>
 </blockquote>
 </div>
 </blockquote>
 </div>
 <div class="quoteblock">
-<div class="title"><strong>&bull; <span class="image"><img src="images/icons/01net.com.png" alt="01net.com"></span> &nbsp;&nbsp; <a href="http://goo.gl/OYKGxe">Fim (File Integrity Manager)</a></strong></div>
+<div class="title"><strong>&bull; <span class="image"><img src="images/icons/01net.com.png" alt="01net.com"></span> &nbsp;&nbsp; <a href="http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html">Fim (File Integrity Manager)</a></strong></div>
 <blockquote>
 <div class="paragraph">
 <p><strong>Fim (File Integrity Manager)</strong> est un outil open source qui vous permet de vérifier l&#8217;intégrité de tous vos fichiers après les avoir manipulés en lots.
 &nbsp;&nbsp;
-<a href="http://goo.gl/OYKGxe">+ Lire la suite pour <span class="image"><img src="images/icons/linux.png" alt="Linux"></span></a>
+<a href="http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html">+ Lire la suite pour <span class="image"><img src="images/icons/linux.png" alt="Linux"></span></a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="http://goo.gl/Bn2CMH">+ Lire la suite pour <span class="image"><img src="images/icons/windows.png" alt="Windows"></span></a></p>
+<a href="http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html">+ Lire la suite pour <span class="image"><img src="images/icons/windows.png" alt="Windows"></span></a></p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -2968,9 +3019,9 @@ You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.</
 <p><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; <strong>Fim (File Integrity Manager)</strong>
 is an open source tool which allows you to check the integrity of all your files after have handled them bulk.
 &nbsp;&nbsp;
-<a href="http://goo.gl/nhzJxH">+ Read more for <span class="image"><img src="images/icons/linux.png" alt="Linux"></span></a>
+<a href="https://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Flinux%2FUtilitaires%2Ffiches%2F132315.html">+ Read more for <span class="image"><img src="images/icons/linux.png" alt="Linux"></span></a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="http://goo.gl/JwfoPA">+ Read more for <span class="image"><img src="images/icons/windows.png" alt="Windows"></span></a></p>
+<a href="https://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Fwindows%2FUtilitaire%2Fmanipulation_de_fichier%2Ffiches%2F132314.html">+ Read more for <span class="image"><img src="images/icons/windows.png" alt="Windows"></span></a></p>
 </div>
 </blockquote>
 </div>
@@ -2980,16 +3031,20 @@ is an open source tool which allows you to check the integrity of all your files
 <div class="title"><strong>&bull; <span class="image"><img src="images/icons/linuxfr.org.png" alt="linuxfr.org"></span> &nbsp;&nbsp; LinuxFr.org</strong></div>
 <blockquote>
 <div class="paragraph">
-<p>&mdash; <a href="https://goo.gl/UrZK7J">Focus sur les performances avec Fim 1.2.0</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="https://goo.gl/cZsQLN"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Focus on performance with Fim 1.2.0</a></p>
+<p>&mdash; <a href="http://linuxfr.org/news/effacement-des-doublons-et-historique-complet-pour-fim-1-2-2">Effacement des doublons et historique complet pour Fim 1.2.2</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="https://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Flinuxfr.org%2Fnews%2Feffacement-des-doublons-et-historique-complet-pour-fim-1-2-2&amp;sandbox=1"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Removing duplicates and full history for Fim 1.2.2</a></p>
 </div>
 <div class="paragraph">
-<p>&mdash; <a href="https://goo.gl/LAuKqp">Fim 1.1.0</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://goo.gl/KaO0Hm"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Fim 1.1.0</a></p>
+<p>&mdash; <a href="https://linuxfr.org/news/focus-sur-les-performances-avec-fim-1-2-0">Focus sur les performances avec Fim 1.2.0</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="https://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=https%3A%2F%2Flinuxfr.org%2Fnews%2Ffocus-sur-les-performances-avec-fim-1-2-0&amp;sandbox=1"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Focus on performance with Fim 1.2.0</a></p>
 </div>
 <div class="paragraph">
-<p>&mdash; <a href="https://goo.gl/yjMH4U">Sortie de Fim 1.0.2, qui vérifie l&#8217;intégrité de vos fichiers</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://goo.gl/HToiWd"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Fim release 1.0.2, that verifies the integrity of your file</a></p>
+<p>&mdash; <a href="https://linuxfr.org/news/fim-1-1-0">Fim 1.1.0</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="https://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Flinuxfr.org%2Fnews%2Ffim-1-1-0"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Fim 1.1.0</a></p>
+</div>
+<div class="paragraph">
+<p>&mdash; <a href="https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers">Sortie de Fim 1.0.2, qui vérifie l&#8217;intégrité de vos fichiers</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="https://translate.google.com/translate?hl=en&amp;sl=fr&amp;tl=en&amp;u=http%3A%2F%2Flinuxfr.org%2Fnews%2Fsortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers"><span class="image"><img src="images/icons/english.png" alt="English version"></span> &nbsp; Fim 1.0.2, which checks the integrity of your files</a></p>
 </div>
 </blockquote>
 </div>
@@ -3001,7 +3056,7 @@ is an open source tool which allows you to check the integrity of all your files
 <div class="paragraph">
 <p>Created by Etienne Vrignaud
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="https://goo.gl/5jFdRK"><span class="image"><img src="images/icons/twitter.png" alt="Twitter icon"></span> Follow @evrignaud</a></p>
+<a href="https://twitter.com/evrignaud"><span class="image"><img src="images/icons/twitter.png" alt="Twitter icon"></span> Follow @evrignaud</a></p>
 </div>
 </div>
 </div>
@@ -3019,7 +3074,7 @@ is an open source tool which allows you to check the integrity of all your files
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-10-10 07:38:29 CEST
+Last updated 2017-06-06 21:37:02 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/xcode.min.css">

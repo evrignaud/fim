@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><title>Fim</title><meta content="yes" name="apple-mobile-web-app-capable" /><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style" /><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport" /><link href="reveal.js-3.3.0/css/reveal.css" rel="stylesheet" /><link rel="stylesheet" href="reveal.js-3.3.0/css/theme/sky.css" id="theme" /><style>/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><title>Fim</title><meta content="yes" name="apple-mobile-web-app-capable" /><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style" /><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport" /><link href="reveal.js-3.5.0/css/reveal.css" rel="stylesheet" /><link rel="stylesheet" href="reveal.js-3.5.0/css/theme/sky.css" id="theme" /><style>/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
 /*pre.CodeRay {background-color:#f7f7f8;}*/
 .CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
 .CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
@@ -86,7 +86,7 @@ table.CodeRay td.code>pre{padding:0}
 .CodeRay .insert .insert{color:#080}
 .CodeRay .delete .delete{color:#800}
 .CodeRay .change .change{color:#66f}
-.CodeRay .head .head{color:#f4f}</style><link href="reveal.js-3.3.0/lib/css/zenburn.css" rel="stylesheet" /><script>document.write( '<link rel="stylesheet" href="reveal.js-3.3.0/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );</script><link rel="stylesheet" href="css/style.css" /><link rel="icon" type="image/x-icon" href="images/favicon/favicon.ico" /></head><body><div class="reveal"><div class="slides"><link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png">
+.CodeRay .head .head{color:#f4f}</style><link href="reveal.js-3.5.0/lib/css/zenburn.css" rel="stylesheet" /><script>document.write( '<link rel="stylesheet" href="reveal.js-3.5.0/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );</script><link rel="stylesheet" href="css/style.css" /><link rel="icon" type="image/x-icon" href="images/favicon/favicon.ico" /></head><body><div class="reveal"><div class="slides"><link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png">
 <link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png">
 <link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png">
@@ -115,14 +115,14 @@ table.CodeRay td.code>pre{padding:0}
 </script>
 <section id="fim"><h2>Fim</h2><div class="paragraph">
     <p class="text-centered">
-        <strong>File Integrity Manager</strong> <small>1.2.2</small>
+        <strong>File Integrity Manager</strong> <small>1.2.3</small>
     </p>
 </div>
 <div class="paragraph">
     <p class="text-centered">
         <a href="https://github.com/evrignaud/fim"><span class="image"><img src="images/fimbox.png" alt="fimbox"></span></a>
         <br/>
-        * <small>New Icon proposed by <a href="https://github.com/VRad49/fim/pull/1">VRad49</a></small>
+        * <small>New Icon proposed by <a href="https://github.com/VRad49/fim/pull/1">Raiden</a></small>
     </p>
 </div>
 <br/>
@@ -159,7 +159,7 @@ Inside it stores an index of files contained in the workspace.<br /></p></div>
 <div class="paragraph"><p>The data of the files are not retained.
 One can thus put Fim in the category of the <strong>UVCS</strong> (UnVersioned System Control)</p></div>
 <div class="paragraph"><p><br /></p></div>
-<div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_how_does_it_work">Details</a></p></div></section>
+<div class="paragraph"><p><a href="https://evrignaud.github.io/fim/#_how_does_it_work">Details</a></p></div></section>
 <section id="fim_workflow"><h2>Fim workflow</h2><div class="paragraph"><p><strong>1/ Create the repository Fim</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim init</code></pre></div></div>
 <div class="paragraph"><p><strong>2/ Work on the files, modify</strong></p></div>
@@ -171,7 +171,7 @@ One can thus put Fim in the category of the <strong>UVCS</strong> (UnVersioned S
 <div class="paragraph"><p><strong>5/ Display the history</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim log</code></pre></div></div>
 <div class="paragraph"><p><br /></p></div>
-<div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_fim_workflow">Details</a></p></div></section>
+<div class="paragraph"><p><a href="https://evrignaud.github.io/fim/#_fim_workflow">Details</a></p></div></section>
 <section id="several_hash_modes"><h2>Several hash modes</h2><div class="paragraph"><p>To get a faster status, Fim is able to hash only 3 blocks of the file
 at the beginning, middle and end.<br />
 You can use the options:</p></div>
@@ -181,7 +181,7 @@ You can use the options:</p></div>
 <div class="paragraph"><p>With the <code>-n</code> option (no hash) Fim just check the file names and the attributes</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim st -n</code></pre></div></div>
 <div class="paragraph"><p><br /></p></div>
-<div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_real_life_example">Details</a></p></div></section>
+<div class="paragraph"><p><a href="https://evrignaud.github.io/fim/#_real_life_example">Details</a></p></div></section>
 <section><div class="imageblock" style=""><img src="images/demo-little.png" alt="demo little" /></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">mkdir test1
 $ cd test1
@@ -217,14 +217,14 @@ The modified files are then hashed again in full&#160;mode</p></div>
 <div class="paragraph"><p><br />
 <br />
 <br /></p></div>
-<div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_super_fast_commit">Details</a></p></div></section>
+<div class="paragraph"><p><a href="https://evrignaud.github.io/fim/#_super_fast_commit">Details</a></p></div></section>
 <section id="case_1_run_the_fim_commands_from_a_sub_directory"><h2>Case 1 - Run the Fim commands from&#160;a&#160;sub-directory</h2><div class="paragraph"><p>Some commands are faster when they are executed from a sub-directory,
 because they have less files to address:</p></div>
 <div class="ulist"><ul><li><p><code>st</code> (<code>status</code>): Know the status of the sub-directory</p></li><li><p><code>ci</code> (<code>commit</code>): Commit changes</p></li><li><p><code>fdup</code> (<code>find-duplicates</code>): Find duplicate files</p></li><li><p><code>rdup</code> (<code>remove-duplicates</code>): Delete duplicate files</p></li><li><p><code>rfa</code> (<code>reset-file-attrs</code>): Reset the files attributes</p></li></ul></div>
 <div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>All other commands are working, but not quicker</p></div>
 <div class="paragraph"><p><br /></p></div>
-<div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_run_fim_commands_from_a_sub_directory">Details</a></p></div></section>
+<div class="paragraph"><p><a href="https://evrignaud.github.io/fim/#_run_fim_commands_from_a_sub_directory">Details</a></p></div></section>
 <section id="case_1_ignore_files_or_directories"><h2>case 1 - Ignore files or directories</h2><div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>You can add a <code>.fimignore</code> file at all the repository levels,
 and also globally in the user home directory</p></div>
@@ -234,7 +234,7 @@ You can also use the following expressions:</p></div>
 For example, to ignore all the mp3 even those who are in sub directories:
 <code>**/*.mp3</code></p></li></ul></div>
 <div class="paragraph"><p><br /></p></div>
-<div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_ignoring_files_or_directories">Details</a></p></div></section>
+<div class="paragraph"><p><a href="https://evrignaud.github.io/fim/#_ignoring_files_or_directories">Details</a></p></div></section>
 <section id="case_1_ignore_some_modifications"><h2>Case 1 - Ignore some modifications</h2><div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>Limit the display with <code>-i</code> to ignore the changes on the:</p></div>
 <div class="ulist"><ul><li><p><code>attrs</code>: File attributes</p></li><li><p><code>dates</code>: Modification and creation dates</p></li><li><p><code>renamed</code>: Renamed files</p></li></ul></div>
@@ -243,7 +243,7 @@ For example, to ignore all the mp3 even those who are in sub directories:
 <div class="paragraph"><p>To ignore all kinds, indicate <code>all</code></p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim st -i all</code></pre></div></div>
 <div class="paragraph"><p><br /></p></div>
-<div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_ignore_some_difference_during_state_comparison">Details</a></p></div></section>
+<div class="paragraph"><p><a href="https://evrignaud.github.io/fim/#_ignore_some_difference_during_state_comparison">Details</a></p></div></section>
 <section id="case_1_permissions_management"><h2>Case 1 - Permissions management</h2><div class="paragraph"><p>It is important to ensure that the files keep their permissions.<br />
 Fim backup and is able to restore.<br />
 It stores for each file the following information:</p></div>
@@ -253,7 +253,7 @@ It stores for each file the following information:</p></div>
 &mdash; On Linux, the <strong>SELinux</strong> label if supported</p></li></ul></div>
 <div class="paragraph"><p>You can restore the permissions using the <code>rfa</code>&#160;(<code>reset-file-attrs</code>) command:</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim rfa</code></pre></div></div>
-<div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_file_permissions_management">Details</a></p></div></section>
+<div class="paragraph"><p><a href="https://evrignaud.github.io/fim/#_file_permissions_management">Details</a></p></div></section>
 <section id="case_2_detect_duplicates_inside_a_workspace"><h2>Case 2 - Detect duplicates inside a workspace</h2><div class="paragraph"><p><br />
 <br /></p></div>
 <div class="paragraph"><p>Fim is able to display the duplicates contained in a workspace using the command <code>fdup</code> (<code>find-duplicates</code>):</p></div>
@@ -263,7 +263,7 @@ It stores for each file the following information:</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim fdup -l</code></pre></div></div>
 <div class="paragraph"><p><br />
 <br /></p></div>
-<div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_search_for_duplicate_files">Details</a></p></div></section>
+<div class="paragraph"><p><a href="https://evrignaud.github.io/fim/#_search_for_duplicate_files">Details</a></p></div></section>
 <section id="case_2_remove_duplicates_inside_a_workspace"><h2>Case 2 - Remove duplicates inside a&#160;workspace</h2><div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>It is possible to remove duplicate files.</p></div>
 <div class="paragraph"><p>&bull; Either in interactive:</p></div>
@@ -283,7 +283,7 @@ $ fim rdup -M ../source</code></pre></div></div>
 <div class="paragraph"><p>When the workspace to clean is remote, you can just copy the <code>.fim</code> in an empty directory
 and specify it as parameter of the <code>-m</code> option of the <code>rdup</code> command</p></div>
 <div class="paragraph"><p><br /></p></div>
-<div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_duplicates_that_are_outside">Details</a></p></div></section>
+<div class="paragraph"><p><a href="https://evrignaud.github.io/fim/#_duplicates_that_are_outside">Details</a></p></div></section>
 <section id="case_4_backup_integrity"><h2>Case 4 - Backup integrity</h2><div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>Fim allows you to check the integrity of files stored on any kind of file system.
 In particular the offline backups.</p></div>
@@ -297,7 +297,7 @@ you can go to the root and get the status:</p></div>
 <div class="paragraph"><p>It uses the <code>dcor</code> command (<code>detect-corruption</code>):</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim dcor</code></pre></div></div>
 <div class="quoteblock"><blockquote><div class="paragraph"><p><span class="image"><img src="images/important.png" alt="important" /></span> <strong>Fim can produce false positives</strong> if the content has changed and the dates have been reset. For example with the <code>rfa</code> command</p></div></blockquote></div>
-<div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_hardware_corruption_detection">Details</a></p></div></section>
+<div class="paragraph"><p><a href="https://evrignaud.github.io/fim/#_hardware_corruption_detection">Details</a></p></div></section>
 <section id="other_commands"><h2>Other Commands</h2><div class="paragraph"><p><br /></p></div>
 <div class="ulist"><ul><li><p><code>dign</code> (<code>display-ignored</code>):<br />
 Displays the files or directories ignored in the last State</p></li><li><p><code>rbk</code> (<code>rollback</code>):<br />
@@ -305,7 +305,7 @@ Removes the last committed State</p></li><li><p><code>pst</code> (<code>purge-st
 Purge old states. Keeps only the last</p></li></ul></div></section>
 <section id="how_to_use_fim"><h2>How to use Fim</h2><div class="paragraph"><p><br /></p></div>
 <div class="ulist"><ul><li><p>You can download a Fim distribution<br />
-<a href="https://github.com/evrignaud/fim/releases/latest"><span class="image"><img src="images/download.png" alt="Download" /></span> Last release</a></p></li><li><p>or build a version from the master (<a href="http://evrignaud.github.io/fim/#_build_fim">Details</a>)</p></li></ul></div>
+<a href="https://github.com/evrignaud/fim/releases/latest"><span class="image"><img src="images/download.png" alt="Download" /></span> Last release</a></p></li><li><p>or build a version from the master (<a href="https://evrignaud.github.io/fim/#_build_fim">Details</a>)</p></li></ul></div>
 <div class="paragraph"><p><br /></p></div>
 <div class="ulist"><div class="title"><strong>Fim prerequisites</strong></div><ul><li><p>Fim is written in Java. It requires Java 8</p></li><li><p>Works on Linux, Windows and Mac OS X</p></li><li><p>Tested on those three platforms</p></li></ul></div></section>
 <section id="fim_docker_image"><h2>Fim Docker image</h2><div class="paragraph"><p>For Linux, if you do not have Java or not the correct version,<br />
@@ -313,7 +313,7 @@ a docker image is available on <a href="https://hub.docker.com/r/evrignaud/fim/"
 <a href="https://microbadger.com/images/evrignaud/fim"><span class="image"><img src="https://images.microbadger.com/badges/version/evrignaud/fim.svg" alt="Image version" /></span></a>
 <a href="https://microbadger.com/images/evrignaud/fim"><span class="image"><img src="https://images.microbadger.com/badges/image/evrignaud/fim.svg" alt="Image size" /></span></a></p></div>
 <div class="paragraph"><p>&bull; <strong>Retrieve the <code>fim-docker</code> script</strong>&#160;&#160;&#160;&#160;<span class="image"><img src="images/docker-little.png" alt="docker little" /></span></p></div>
-<div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">curl goo.gl/XwERDY -L -o fim-docker &amp;&amp; chmod a+rx fim-docker</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">curl https://raw.githubusercontent.com/evrignaud/fim/master/fim-docker -L -o fim-docker &amp;&amp; chmod a+rx fim-docker</code></pre></div></div>
 <div class="paragraph"><p>&bull; <strong>Launch Fim</strong></p></div>
 <div class="paragraph"><p>The script retrieves the Fim Docker image, then starts.<br />
 It takes the same arguments as the <code>fim</code> command</p></div>
@@ -322,11 +322,11 @@ It takes the same arguments as the <code>fim</code> command</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">docker pull evrignaud/fim</code></pre></div></div></section>
 <section id="hands_on"><h2>Hands on</h2><div class="imageblock" style=""><img src="images/hands-on-little.png" alt="hands on little" /></div>
 <div class="paragraph"><p><u>Ideas to try it yourself:</u></p></div>
-<div class="ulist"><ul><li><p><a href="http://evrignaud.github.io/fim/#_simple_example">simple-example</a></p></li><li><p><a href="http://evrignaud.github.io/fim/#_duplicates_that_are_outside">remove-duplicates-example</a></p></li></ul></div></section>
+<div class="ulist"><ul><li><p><a href="https://evrignaud.github.io/fim/#_simple_example">simple-example</a></p></li><li><p><a href="https://evrignaud.github.io/fim/#_duplicates_that_are_outside">remove-duplicates-example</a></p></li></ul></div></section>
 <section id="code_fim_code_content"><h2><code>.fim</code> content</h2><div class="ulist"><ul><li><p>The <code>.fim</code> directory contains:</p><div class="ulist"><ul><li><p>A file with the repository settings: <code>settings.json</code></p></li><li><p>A file for each state. It&#8217;s a JSON compressed file</p></li></ul></div></li></ul></div>
 <div class="paragraph"><p><br /></p></div>
 <div class="ulist"><div class="title"><strong>The State</strong></div><ul><li><p>It contains a global hash which ensures the integrity.<br />
-Fim don&#8217;t allow to use a modified state</p></li><li><p>The content of the State is standardized and can be used on the different supported OS</p></li><li><p><a href="http://evrignaud.github.io/fim/#_state_file_content">Preview of a State content</a></p></li></ul></div></section>
+Fim don&#8217;t allow to use a modified state</p></li><li><p>The content of the State is standardized and can be used on the different supported OS</p></li><li><p><a href="https://evrignaud.github.io/fim/#_state_file_content">Preview of a State content</a></p></li></ul></div></section>
 <section id="changing_the_default_hash_mode"><h2>Changing The default hash mode</h2><div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p>During the Fim repository initialization you can ask to not use some hash.
 This allows to have a repository where the commit will be faster, but there could be collisions:</p></div>
@@ -337,12 +337,12 @@ This allows to have a repository where the commit will be faster, but there coul
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim init -f</code></pre></div></div>
 <div class="paragraph"><p>After the <code>status</code> command works by default with the 'fast' level.</p></div>
 <div class="listingblock"><div class="content"><pre class="CodeRay"><code class="bash language-bash">fim st    # Runs using '-f'</code></pre></div></div>
-<div class="paragraph"><p><a href="http://evrignaud.github.io/fim/#_changing_default_hash_mode">Details</a></p></div></section>
+<div class="paragraph"><p><a href="https://evrignaud.github.io/fim/#_changing_default_hash_mode">Details</a></p></div></section>
 <section id="the_hash_algorithm_used"><h2>The hash algorithm used</h2><div class="paragraph"><p><br /></p></div>
 <div class="ulist"><ul><li><p>The hash algorithm is SHA-512</p></li><li><p>SHA-512 is 2 * slower than MD5. It&#8217;s a cryptographic algorithm.<br />
 This decrease collisions</p></li><li><p>The size of the key produced (512 Bit / 64 bytes) allows to minimize the collision risk on large files</p></li><li><p>The disk is slower than the hash algorithm</p></li><li><p>When the status is checked in full mode, the 3 hash are used which decrease the risk of collision</p></li></ul></div></section>
 <section id="performances"><h2>Performances</h2><div class="imageblock" style=""><img src="images/performance.png" alt="performance" /></div>
-<div class="ulist"><ul><li><p>Fim can manage at least 1 million of files</p></li><li><p>Multi-thread hash in order to take advantage of the resources</p></li><li><p>In many cases, performance are conditioned by the speed of the disk</p></li><li><p>By default, the number of thread is dynamic and depends on the disk throughput</p></li><li><p><code>-t</code> option to change the number of threads used (<a href="http://evrignaud.github.io/fim/#_hash_files_in_multi_thread">Details</a>)</p></li></ul></div></section>
+<div class="ulist"><ul><li><p>Fim can manage at least 1 million of files</p></li><li><p>Multi-thread hash in order to take advantage of the resources</p></li><li><p>In many cases, performance are conditioned by the speed of the disk</p></li><li><p>By default, the number of thread is dynamic and depends on the disk throughput</p></li><li><p><code>-t</code> option to change the number of threads used (<a href="https://evrignaud.github.io/fim/#_hash_files_in_multi_thread">Details</a>)</p></li></ul></div></section>
 <section id="hashing_process"><h2>Hashing process</h2><div class="paragraph"><p>A Thread scans the workspace and fills the
 <a href="https://docs.oracle.com/javase/8/docs/api/index.html?java/util/concurrent/LinkedBlockingDeque.html">Queue</a> of files to hash</p></div>
 <div class="paragraph"><p>Several thread hash each one a file:</p></div>
@@ -355,38 +355,38 @@ This decrease collisions</p></li><li><p>The size of the key produced (512 Bit / 
 <div class="imageblock" style=""><img src="images/hash-blocks-en.png" alt="hash blocks en" /></div></section>
 <section id="more_efficient_than_some_c_programs"><h2>More efficient than some C++&#160;programs?</h2><div class="paragraph"><p><br /></p></div>
 <div class="paragraph"><p><strong>Purposely using btrfs RAID1 in degraded mode ?</strong>
-<a href="http://www.spinics.net/lists/linux-btrfs/msg50990.html">http://www.spinics.net/lists/linux-btrfs/msg50990.html</a><br /></p></div>
+<a href="https://www.spinics.net/lists/linux-btrfs/msg50990.html">https://www.spinics.net/lists/linux-btrfs/msg50990.html</a><br /></p></div>
 <div class="quoteblock"><blockquote><div class="paragraph"><p>For offline long term backups I also used to work with hashdeep to
 perform and store a hash of all the files and recently started playing
 with <strong>Fim</strong> which is similar but with a git backend for storing history.
 Don&#8217;t get fooled by fim being a java application.<br />
 <strong>It easily outperformed hashdeep on large datasets</strong>.</p></div></blockquote></div></section>
 <section id="the_different_versions_of_fim"><h2>The different versions of Fim</h2><div class="paragraph"><p><br /></p></div>
-<div class="paragraph"><div class="title">&gt; <a href="http://evrignaud.github.io/fim/#_fim_changelog">Fim changelog</a> &lt;</div><p><br /></p></div>
+<div class="paragraph"><div class="title">&gt; <a href="https://evrignaud.github.io/fim/#_fim_changelog">Fim changelog</a> &lt;</div><p><br /></p></div>
 <div class="paragraph"><p>Articles that I have written to promote Fim on <a href="https://linuxfr.org/">LinuxFr.org</a>:</p></div>
-<div class="ulist"><ul><li><p><strong>1.2.0</strong> - <a href="https://goo.gl/UrZK7J">Focus on performance with Fim 1.2.0</a><br />
-Support of repositories with at least 1 million of files</p></li><li><p><strong>1.1.0</strong> - <a href="https://goo.gl/LAuKqp">Fim 1.1.0</a><br />
+<div class="ulist"><ul><li><p><strong>1.2.2</strong> - <a href="http://linuxfr.org/news/effacement-des-doublons-et-historique-complet-pour-fim-1-2-2">Removing duplicates and full history for Fim 1.2.2</a><br /></p></li><li><p><strong>1.2.0</strong> - <a href="https://linuxfr.org/news/focus-sur-les-performances-avec-fim-1-2-0">Focus on performance with Fim 1.2.0</a><br />
+Support of repositories with at least 1 million of files</p></li><li><p><strong>1.1.0</strong> - <a href="https://linuxfr.org/news/fim-1-1-0">Fim 1.1.0</a><br />
 Hash algorithm rewrite to hash a block at the beginning,<br />
-one in the middle and one at the end</p></li><li><p><strong>1.0.2</strong> - <a href="https://goo.gl/yjMH4U">Fim release 1.0.2, that verifies the integrity of your file</a><br />
+one in the middle and one at the end</p></li><li><p><strong>1.0.2</strong> - <a href="https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers">Fim release 1.0.2, that verifies the integrity of your file</a><br />
 First public version of Fim</p></li></ul></div></section>
-<section id="they_talked_about_it"><h2>They talked about it</h2><div class="ulist"><ul><li><p><strong>Korben</strong> - <a href="http://goo.gl/1gwX1g">Vérifier l’intégrité de très nombreux fichiers</a><br />
-Fim est un outil vraiment excellent qui permet de gérer l&#8217;intégrité de nombreux fichiers &#8230;&#8203;</p></li><li><p><strong>01net.com</strong> - <a href="http://goo.gl/OYKGxe">Pour Linux</a> - <a href="http://goo.gl/Bn2CMH">Pour Windows</a><br />
+<section id="they_talked_about_it"><h2>They talked about it</h2><div class="ulist"><ul><li><p><strong>Korben</strong> - <a href="https://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html">Vérifier l’intégrité de très nombreux fichiers</a><br />
+Fim est un outil vraiment excellent qui permet de gérer l&#8217;intégrité de nombreux fichiers &#8230;&#8203;</p></li><li><p><strong>01net.com</strong> - <a href="http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html">Pour Linux</a> - <a href="http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html">Pour Windows</a><br />
 ... permet de vérifier l&#8217;intégrité de tous vos fichiers après les avoir manipulés en lots &#8230;&#8203;</p></li><li><p><strong>Pirate Informatique n°26</strong> page 41 - <a href="https://pdf.websafe.fr/pirate-informatique/PI27_52p.pdf">Vérifiez l’intégrité de vos fichiers</a><br />
 Si vous avez un paquet de fichiers à transférer, vous aimeriez sans doute être absolument
-sûr que les données n’ont pas été endommagées&#160;&#8230;&#8203;</p></li><li><p><strong>linux-btrfs</strong> - <a href="http://www.spinics.net/lists/linux-btrfs/msg50990.html">Purposely using btrfs RAID1 in degraded mode ?</a> or <a href="https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg50185.html">here</a><br />
-... Don&#8217;t get fooled by fim being a java application. It easily outperformed hashdeep on large datasets.</p></li><li><p><strong>Stack Overflow</strong> - <a href="http://stackoverflow.com/questions/38041543/signing-every-file-created-in-a-folder">Signing every file created in a folder</a></p></li></ul></div></section>
+sûr que les données n’ont pas été endommagées&#160;&#8230;&#8203;</p></li><li><p><strong>linux-btrfs</strong> - <a href="https://www.spinics.net/lists/linux-btrfs/msg50990.html">Purposely using btrfs RAID1 in degraded mode ?</a> or <a href="https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg50185.html">here</a><br />
+... Don&#8217;t get fooled by fim being a java application. It easily outperformed hashdeep on large datasets.</p></li><li><p><strong>Stack Overflow</strong> - <a href="https://stackoverflow.com/questions/38041543/signing-every-file-created-in-a-folder">Signing every file created in a folder</a></p></li></ul></div></section>
 <section id="opensource"><h2>OpenSource</h2><div class="paragraph"><p>Fim is published as OpenSource so that it benefits everyone.<br />
 That also makes it possible to profit from the ideas of each one.<br />
 Here are the ideas and merge request which have been submitted:</p></div>
 <div class="ulist"><ul><li><p><a href="https://github.com/evrignaud/fim/issues/1">Ignore the first block to avoid headers to increase the chance of collision</a></p></li><li><p><a href="https://github.com/evrignaud/fim/issues/2">Hardware corruption detection</a></p></li><li><p><a href="https://github.com/evrignaud/fim/issues/3">SELinux labels support</a></p></li><li><p><a href="https://github.com/evrignaud/fim/issues/4">Better Mac OS X support</a></p></li><li><p><a href="https://github.com/evrignaud/fim/issues/5">Better behavior when <code>.fim</code> is read-only</a></p></li><li><p><a href="https://github.com/evrignaud/fim/issues/6">Improved history display</a></p></li><li><p><a href="https://github.com/VRad49/fim/pull/1">New Fim icon</a></p></li></ul></div>
 <div class="paragraph"><p><em>Do not hesitate to open issues with your ideas on GitHub</em></p></div></section>
-<section id="fim_alternatives"><h2>Fim alternatives</h2><div class="ulist"><ul><li><p><strong><a href="https://git-lfs.github.com/">git-lfs</a></strong> - Git Large File Storage (LFS) replaces large files such as audio samples, videos, datasets, and graphics with text pointers inside Git</p></li><li><p><strong><a href="https://git-annex.branchable.com/">git-annex</a></strong> - Managing files with git, without checking the file contents into git</p></li><li><p><strong><a href="https://github.com/mildred/doc">doc</a></strong> - Manage your files and documents</p></li><li><p><strong><a href="https://github.com/maxim2266/DIRT">DIRT (DIRectory Tracker)</a></strong> - Another little Linux command line utility to track changed files in a directory tree.</p></li><li><p><strong><a href="http://md5deep.sourceforge.net/">hashdeep</a></strong> - <a href="https://linhost.info/2010/05/using-hashdeep-to-ensure-data-integrity/">Using Hashdeep To Ensure Data Integrity</a></p></li><li><p><strong><a href="http://www.md5summer.org/">MD5 Summer</a></strong> - Application for Windows 9x, NT, ME, 2000 and XP which generates and verifies md5 checksums</p></li><li><p><strong><a href="https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc">btrfs-scrub</a></strong> - Reads all data from the disk and verifies checksums</p></li></ul></div>
+<section id="fim_alternatives"><h2>Fim alternatives</h2><div class="ulist"><ul><li><p><strong><a href="https://git-lfs.github.com/">git-lfs</a></strong> - Git Large File Storage (LFS) replaces large files such as audio samples, videos, datasets, and graphics with text pointers inside Git</p></li><li><p><strong><a href="https://git-annex.branchable.com/">git-annex</a></strong> - Managing files with git, without checking the file contents into git</p></li><li><p><strong><a href="https://github.com/mildred/doc">doc</a></strong> - Manage your files and documents</p></li><li><p><strong><a href="https://github.com/maxim2266/DIRT">DIRT (DIRectory Tracker)</a></strong> - Another little Linux command line utility to track changed files in a directory tree.</p></li><li><p><strong><a href="https://md5deep.sourceforge.net/">hashdeep</a></strong> - <a href="https://linhost.info/2010/05/using-hashdeep-to-ensure-data-integrity/">Using Hashdeep To Ensure Data Integrity</a></p></li><li><p><strong><a href="https://www.md5summer.org/">MD5 Summer</a></strong> - Application for Windows 9x, NT, ME, 2000 and XP which generates and verifies md5 checksums</p></li><li><p><strong><a href="https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc">btrfs-scrub</a></strong> - Reads all data from the disk and verifies checksums</p></li></ul></div>
 <div class="paragraph"><p><strong>They don&#8217;t have super-fast mode for status or commit</strong></p></div></section>
 <section id="discovery_of_the_github_project_and_the_tools_used"><h2>Discovery of the GitHub project and&#160;the&#160;tools used</h2><div class="imageblock" style=""><img src="images/octocat.png" alt="octocat" /></div>
-<div class="ulist"><ul><li><p><a href="https://github.com/">GitHub</a> - Web hosted Git server - <a href="https://github.com/evrignaud/fim">Fim Projet</a></p></li><li><p><a href="https://travis-ci.org/">Travis CI</a> - CI for Linux and Mac OS X - <a href="https://goo.gl/QfQTE8"><span class="image"><img src="https://travis-ci.org/evrignaud/fim.svg" alt="fim" /></span></a></p></li><li><p><a href="https://www.appveyor.com/">AppVeyor</a> - CI for Windows - <a href="https://goo.gl/foWAWQ"><span class="image"><img src="https://ci.appveyor.com/api/projects/status/txadqci1hrr3lkko?svg=true" alt="txadqci1hrr3lkko?svg=true" /></span></a></p></li><li><p><a href="https://coveralls.io/">Coveralls</a> - Code Coverage - <a href="https://goo.gl/hJGXqj"><span class="image"><img src="https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&amp;service=github" alt="badge" /></span></a></p></li><li><p><a href="https://scan.coverity.com/">Coverity</a> - Static code analysis - <a href="https://goo.gl/lbM77o"><span class="image"><img src="https://scan.coverity.com/projects/8749/badge.svg" alt="badge" /></span></a></p></li></ul></div>
-<div class="paragraph"><p><a href="http://asciidoctor.org/">Asciidoctor</a> - Ruby implementation of <a href="http://asciidoc.org/">AsciiDoc</a> to generate<br />
-the <a href="http://evrignaud.github.io/fim/">Fim documentation</a> and this presentation slides</p></div></section>
-<section id="questions"><h2>Questions</h2><div class="imageblock" style=""><img src="images/question.png" alt="question" /></div></section></div></div><script src="reveal.js-3.3.0/lib/js/head.min.js"></script><script src="reveal.js-3.3.0/js/reveal.js"></script><script>// See https://github.com/hakimel/reveal.js#configuration for a full list of configuration options
+<div class="ulist"><ul><li><p><a href="https://github.com/">GitHub</a> - Web hosted Git server - <a href="https://github.com/evrignaud/fim">Fim Projet</a></p></li><li><p><a href="https://travis-ci.org/">Travis CI</a> - CI for Linux and Mac OS X - <a href="https://travis-ci.org/evrignaud/fim"><span class="image"><img src="https://travis-ci.org/evrignaud/fim.svg" alt="fim" /></span></a></p></li><li><p><a href="https://www.appveyor.com/">AppVeyor</a> - CI for Windows - <a href="https://ci.appveyor.com/project/evrignaud/fim"><span class="image"><img src="https://ci.appveyor.com/api/projects/status/txadqci1hrr3lkko?svg=true" alt="txadqci1hrr3lkko?svg=true" /></span></a></p></li><li><p><a href="https://coveralls.io/">Coveralls</a> - Code Coverage - <a href="https://coveralls.io/github/evrignaud/fim?branch=master"><span class="image"><img src="https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&amp;service=github" alt="badge" /></span></a></p></li><li><p><a href="https://scan.coverity.com/">Coverity</a> - Static code analysis - <a href="https://scan.coverity.com/projects/evrignaud-fim"><span class="image"><img src="https://scan.coverity.com/projects/8749/badge.svg" alt="badge" /></span></a></p></li></ul></div>
+<div class="paragraph"><p><a href="https://asciidoctor.org/">Asciidoctor</a> - Ruby implementation of <a href="https://asciidoc.org/">AsciiDoc</a> to generate<br />
+the <a href="https://evrignaud.github.io/fim/">Fim documentation</a> and this presentation slides</p></div></section>
+<section id="questions"><h2>Questions</h2><div class="imageblock" style=""><img src="images/question.png" alt="question" /></div></section></div></div><script src="reveal.js-3.5.0/lib/js/head.min.js"></script><script src="reveal.js-3.5.0/js/reveal.js"></script><script>// See https://github.com/hakimel/reveal.js#configuration for a full list of configuration options
 Reveal.initialize({
   // Display controls in the bottom right corner
   controls: true,
@@ -456,11 +456,11 @@ Reveal.initialize({
 
   // Optional libraries used to extend on reveal.js
   dependencies: [
-      { src: 'reveal.js-3.3.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-      { src: 'reveal.js-3.3.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-      { src: 'reveal.js-3.3.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'reveal.js-3.5.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: 'reveal.js-3.5.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'reveal.js-3.5.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
       
-      { src: 'reveal.js-3.3.0/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-      { src: 'reveal.js-3.3.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+      { src: 'reveal.js-3.5.0/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: 'reveal.js-3.5.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
   ]
 });</script></body></html>

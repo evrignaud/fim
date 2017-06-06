@@ -89,6 +89,10 @@ img.logo.big {
     background: white;
 }
 
+.reveal section {
+    font-size: 34px;
+}
+
 .reveal section img {
     background: transparent;
     border: 0;
