@@ -105,8 +105,8 @@ Details in <<file-permissions-management.adoc#_file_permissions_management,File 
 * Fix https://github.com/evrignaud/fim/issues/4[issue #4] - Fix `fim` shell script for Mac OS X
 * Add the ability to ignore files or directory using a `.fimignore` file.
 Details in <<faq.adoc#_ignoring_files_or_directories,Ignoring files or directories>>
-* Add automatic build and testing of Fim using Travis CI for https://goo.gl/QfQTE8[Linux] and Appveyor CI for https://goo.gl/foWAWQ[Windows]
-* Add Unit test coverage using https://goo.gl/hJGXqj[Coveralls]
+* Add automatic build and testing of Fim using Travis CI for https://travis-ci.org/evrignaud/fim[Linux] and Appveyor CI for https://ci.appveyor.com/project/evrignaud/fim[Windows]
+* Add Unit test coverage using https://coveralls.io/github/evrignaud/fim?branch=master[Coveralls]
 * Moved the documentation to AsciiDoc using the https://asciidoctor.org/docs/asciidoctor-maven-plugin/[asciidoctor-maven-plugin]
 
 == Version 1.0.2

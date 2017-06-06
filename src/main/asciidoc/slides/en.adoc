@@ -521,7 +521,7 @@ https://microbadger.com/images/evrignaud/fim[image:https://images.microbadger.co
 
 [source,bash]
 ----
-curl goo.gl/XwERDY -L -o fim-docker && chmod a+rx fim-docker
+curl https://raw.githubusercontent.com/evrignaud/fim/master/fim-docker -L -o fim-docker && chmod a+rx fim-docker
 ----
 
 &bull; *Launch Fim*
@@ -668,20 +668,20 @@ https://www.spinics.net/lists/linux-btrfs/msg50990.html[https://www.spinics.net/
 
 Articles that I have written to promote Fim on https://linuxfr.org/[LinuxFr.org]:
 
-* *1.2.0* - https://goo.gl/UrZK7J[Focus on performance with Fim 1.2.0] +
+* *1.2.0* - https://linuxfr.org/news/focus-sur-les-performances-avec-fim-1-2-0[Focus on performance with Fim 1.2.0] +
 Support of repositories with at least 1 million of files
-* *1.1.0* - https://goo.gl/LAuKqp[Fim 1.1.0] +
+* *1.1.0* - https://linuxfr.org/news/fim-1-1-0[Fim 1.1.0] +
 Hash algorithm rewrite to hash a block at the beginning, +
 one in the middle and one at the end
-* *1.0.2* - https://goo.gl/yjMH4U[Fim release 1.0.2, that verifies the integrity of your file] +
+* *1.0.2* - https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers[Fim release 1.0.2, that verifies the integrity of your file] +
 First public version of Fim
 
 == They talked about it
 
-* *Korben* - https://goo.gl/1gwX1g[Vérifier l’intégrité de très nombreux fichiers] +
+* *Korben* - https://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html[Vérifier l’intégrité de très nombreux fichiers] +
 Fim est un outil vraiment excellent qui permet de gérer l'intégrité de nombreux fichiers ...
 
-* *01net.com* - https://goo.gl/OYKGxe[Pour Linux] - https://goo.gl/Bn2CMH[Pour Windows] +
+* *01net.com* - http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html[Pour Linux] - http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html[Pour Windows] +
 \... permet de vérifier l'intégrité de tous vos fichiers après les avoir manipulés en lots ...
 
 * *Pirate Informatique n°26* page 41 - https://pdf.websafe.fr/pirate-informatique/PI27_52p.pdf[Vérifiez l’intégrité de vos fichiers] +
@@ -738,10 +738,10 @@ _Do not hesitate to open issues with your ideas on GitHub_
 image::octocat.png[]
 
 * https://github.com/[GitHub] - Web hosted Git server - https://github.com/evrignaud/fim[Fim Projet]
-* https://travis-ci.org/[Travis CI] - CI for Linux and Mac OS X - https://goo.gl/QfQTE8[image:https://travis-ci.org/evrignaud/fim.svg[]]
-* https://www.appveyor.com/[AppVeyor] - CI for Windows - https://goo.gl/foWAWQ[image:https://ci.appveyor.com/api/projects/status/txadqci1hrr3lkko?svg=true[]]
-* https://coveralls.io/[Coveralls] - Code Coverage - https://goo.gl/hJGXqj[image:https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github[]]
-* https://scan.coverity.com/[Coverity] - Static code analysis - https://goo.gl/lbM77o[image:https://scan.coverity.com/projects/8749/badge.svg[]]
+* https://travis-ci.org/[Travis CI] - CI for Linux and Mac OS X - https://travis-ci.org/evrignaud/fim[image:https://travis-ci.org/evrignaud/fim.svg[]]
+* https://www.appveyor.com/[AppVeyor] - CI for Windows - https://ci.appveyor.com/project/evrignaud/fim[image:https://ci.appveyor.com/api/projects/status/txadqci1hrr3lkko?svg=true[]]
+* https://coveralls.io/[Coveralls] - Code Coverage - https://coveralls.io/github/evrignaud/fim?branch=master[image:https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github[]]
+* https://scan.coverity.com/[Coverity] - Static code analysis - https://scan.coverity.com/projects/evrignaud-fim[image:https://scan.coverity.com/projects/8749/badge.svg[]]
 
 https://asciidoctor.org/[Asciidoctor] - Ruby implementation of https://asciidoc.org/[AsciiDoc] to generate +
 the https://evrignaud.github.io/fim/[Fim documentation] and this presentation slides

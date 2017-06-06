@@ -8,7 +8,7 @@ Fim manages the integrity of a complete file tree
 
 # Build
 
-#### Linux & Mac OS X: [![Build Status](https://travis-ci.org/evrignaud/fim.svg)](https://goo.gl/QfQTE8) &nbsp; Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/txadqci1hrr3lkko?svg=true)](https://goo.gl/foWAWQ) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Coverage Status](https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github)](https://goo.gl/hJGXqj) &nbsp;&nbsp; [![Coverity Scan Build Status](https://scan.coverity.com/projects/8749/badge.svg)](https://goo.gl/lbM77o)
+#### Linux & Mac OS X: [![Build Status](https://travis-ci.org/evrignaud/fim.svg)](https://travis-ci.org/evrignaud/fim) &nbsp; Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/txadqci1hrr3lkko?svg=true)](https://ci.appveyor.com/project/evrignaud/fim) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Coverage Status](https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github)](https://coveralls.io/github/evrignaud/fim?branch=master) &nbsp;&nbsp; [![Coverity Scan Build Status](https://scan.coverity.com/projects/8749/badge.svg)](https://scan.coverity.com/projects/evrignaud-fim)
 [![Latest tag](https://img.shields.io/github/tag/evrignaud/fim.svg)](https://github.com/evrignaud/fim/releases/latest) [![License](https://img.shields.io/github/license/evrignaud/fim.svg)](https://evrignaud.github.io/fim/LICENSE.html)
 
 ## Slides
@@ -47,7 +47,7 @@ You can download Fim binary distributions from [here](https://github.com/evrigna
 
 This tool is written in Java.
 
-Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from [here](https://goo.gl/p8iYjm).<br/>
+Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from [here](https://www.oracle.com/technetwork/java/javase/downloads/index.html).<br/>
 You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.
 
 ## Supported OS
@@ -56,38 +56,38 @@ Fim can be used on Linux, Mac OS X and Windows
 
 ## They talked about it
 
-### &bull; ![Korben.info](https://evrignaud.github.io/fim/images/icons/korben.info.png) &nbsp;&nbsp; [Vérifier l’intégrité de très nombreux fichiers](https://goo.gl/1gwX1g)
+### &bull; ![Korben.info](https://evrignaud.github.io/fim/images/icons/korben.info.png) &nbsp;&nbsp; [Vérifier l’intégrité de très nombreux fichiers](https://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html)
 
 > **Fim (File Integrity Manager)** est un outil vraiment excellent qui permet de gérer l'intégrité de nombreux fichiers.<br/>
-> [+ Lire la suite](https://goo.gl/1gwX1g)
+> [+ Lire la suite](https://korben.info/verifier-lintegrite-de-tres-nombreux-fichiers.html)
 >
->> ![English version](https://evrignaud.github.io/fim/images/icons/english.png) &nbsp; [Check integrity of many files](https://goo.gl/jBE2XY)<br/>
+>> ![English version](https://evrignaud.github.io/fim/images/icons/english.png) &nbsp; [Verify the integrity of many files](https://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html)<br/>
 >> **Fim (File Integrity Manager)** is a really great tool for managing the integrity of many files.<br/>
->> [+ Read more](https://goo.gl/jBE2XY)
+>> [+ Read more](https://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fkorben.info%2Fverifier-lintegrite-de-tres-nombreux-fichiers.html)
 
-### &bull; ![01net.com](https://evrignaud.github.io/fim/images/icons/01net.com.png) &nbsp;&nbsp; [Fim (File Integrity Manager)](https://goo.gl/OYKGxe)
+### &bull; ![01net.com](https://evrignaud.github.io/fim/images/icons/01net.com.png) &nbsp;&nbsp; [Fim (File Integrity Manager)](http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html)
 
 > **Fim (File Integrity Manager)** est un outil open source qui vous permet de vérifier l'intégrité de tous vos fichiers après les avoir manipulés en lots.<br/>
-> [+ Lire la suite pour ![Linux](https://evrignaud.github.io/fim/images/icons/linux.png)](https://goo.gl/OYKGxe) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [+ Lire la suite pour ![Windows](https://evrignaud.github.io/fim/images/icons/windows.png)](https://goo.gl/Bn2CMH)<br/>
+> [+ Lire la suite pour ![Linux](https://evrignaud.github.io/fim/images/icons/linux.png)](http://www.01net.com/telecharger/linux/Utilitaires/fiches/132315.html) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [+ Lire la suite pour ![Windows](https://evrignaud.github.io/fim/images/icons/windows.png)](http://www.01net.com/telecharger/windows/Utilitaire/manipulation_de_fichier/fiches/132314.html)<br/>
 >
 >> ![English version](https://evrignaud.github.io/fim/images/icons/english.png) &nbsp; **Fim (File Integrity Manager)** is an open source tool which allows you to check the integrity of all your files after have handled them bulk.<br/>
->> [+ Read more for ![Linux](https://evrignaud.github.io/fim/images/icons/linux.png)](https://goo.gl/nhzJxH) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [+ Read more for ![Windows](https://evrignaud.github.io/fim/images/icons/windows.png)](https://goo.gl/JwfoPA)
+>> [+ Read more for ![Linux](https://evrignaud.github.io/fim/images/icons/linux.png)](https://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Flinux%2FUtilitaires%2Ffiches%2F132315.html) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [+ Read more for ![Windows](https://evrignaud.github.io/fim/images/icons/windows.png)](https://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fwww.01net.com%2Ftelecharger%2Fwindows%2FUtilitaire%2Fmanipulation_de_fichier%2Ffiches%2F132314.html)
 
 ### &bull; ![linuxfr.org](https://evrignaud.github.io/fim/images/icons/linuxfr.org.png) &nbsp;&nbsp; LinuxFr.org
 
-> &mdash; [Focus sur les performances avec Fim 1.2.0](https://goo.gl/UrZK7J)
->> [![English version](https://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Focus on performance with Fim 1.2.0](https://goo.gl/cZsQLN)
+> &mdash; [Focus sur les performances avec Fim 1.2.0](https://linuxfr.org/news/focus-sur-les-performances-avec-fim-1-2-0)
+>> [![English version](https://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Focus on performance with Fim 1.2.0](https://translate.google.com/translate?hl=en&sl=fr&tl=en&u=https%3A%2F%2Flinuxfr.org%2Fnews%2Ffocus-sur-les-performances-avec-fim-1-2-0&sandbox=1)
 
-> &mdash; [Fim 1.1.0](https://goo.gl/LAuKqp)
->> [![English version](https://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Fim 1.1.0](https://goo.gl/KaO0Hm)
+> &mdash; [Fim 1.1.0](https://linuxfr.org/news/fim-1-1-0)
+>> [![English version](https://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Fim 1.1.0](https://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Ffim-1-1-0)
 
-> &mdash; [Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers](https://goo.gl/yjMH4U)
->> [![English version](https://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Fim release 1.0.2, that verifies the integrity of your files](https://goo.gl/HToiWd)
+> &mdash; [Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers](https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers)
+>> [![English version](https://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Fim 1.0.2, which checks the integrity of your files](https://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Fsortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers)
 
 
 ## About
 
-Created by Etienne Vrignaud &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Twitter icon](https://evrignaud.github.io/fim/images/icons/twitter.png) Follow @evrignaud](https://goo.gl/5jFdRK)
+Created by Etienne Vrignaud &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Twitter icon](https://evrignaud.github.io/fim/images/icons/twitter.png) Follow @evrignaud](https://twitter.com/evrignaud)
 
 
 ![Analytics](https://ga-beacon.appspot.com/UA-65759837-1/fim/README.md?pixel)

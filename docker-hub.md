@@ -35,7 +35,7 @@ A complete documentation of Fim is available [here](https://evrignaud.github.io/
 
 ### Retrieve the `fim-docker` script:
 
-    $ curl goo.gl/XwERDY -L -o fim-docker && chmod a+rx fim-docker
+    $ curl https://raw.githubusercontent.com/evrignaud/fim/master/fim-docker -L -o fim-docker && chmod a+rx fim-docker
 
 ### Run it:
 If you don't have the Fim docker image locally it will pull the image first.

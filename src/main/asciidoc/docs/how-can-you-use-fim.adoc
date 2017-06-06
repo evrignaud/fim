@@ -33,7 +33,7 @@ You can use them like this.
 
 [source, bash]
 ----
-$ curl goo.gl/XwERDY -L -o fim-docker && chmod a+rx fim-docker
+$ curl https://raw.githubusercontent.com/evrignaud/fim/master/fim-docker -L -o fim-docker && chmod a+rx fim-docker
 ----
 
 ==== Run it:
