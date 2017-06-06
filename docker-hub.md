@@ -2,7 +2,8 @@
 
 # Supported tags and respective Dockerfile links
 
-* `latest`, `1.2.2` ([Dockerfile](https://github.com/evrignaud/fim/blob/1.2.2/Dockerfile))
+* `latest`, `1.2.3` ([Dockerfile](https://github.com/evrignaud/fim/blob/1.2.3/Dockerfile))
+* `1.2.2` ([Dockerfile](https://github.com/evrignaud/fim/blob/1.2.2/Dockerfile))
 * `1.2.1` ([Dockerfile](https://github.com/evrignaud/fim/blob/1.2.1/Dockerfile))
 * `1.2.0` ([Dockerfile](https://github.com/evrignaud/fim/blob/1.2.0/Dockerfile))
 
