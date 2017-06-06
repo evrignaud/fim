@@ -49,7 +49,7 @@ ifndef::imagesdir[:imagesdir: images]
     <p class="text-centered">
         <a href="https://github.com/evrignaud/fim"><span class="image"><img src="images/fimbox.png" alt="fimbox"></span></a>
         <br/>
-        * <small>New Icon proposed by <a href="https://github.com/VRad49/fim/pull/1">VRad49</a></small>
+        * <small>New Icon proposed by <a href="https://github.com/VRad49/fim/pull/1">Raiden</a></small>
     </p>
 </div>
 <br/>
