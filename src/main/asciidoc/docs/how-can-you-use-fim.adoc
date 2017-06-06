@@ -104,7 +104,7 @@ Here are some tips on how you can build Fim easily.
 
 ==== Getting Maven
 
-If you don't have Maven, you can either download it from http://maven.apache.org/index.html[the Apache website] or use a packages manager.
+If you don't have Maven, you can either download it from https://maven.apache.org/index.html[the Apache website] or use a packages manager.
 
 ===== For Linux
 
@@ -115,7 +115,7 @@ $ sudo apt-get install maven
 
 ===== For Mac OS X
 
-First install http://brew.sh[Homebrew] if you don't have it.
+First install https://brew.sh[Homebrew] if you don't have it.
 
 [source, bash]
 ----

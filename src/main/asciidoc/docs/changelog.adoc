@@ -16,7 +16,7 @@ https://github.com/evrignaud/fim/releases/tag/1.2.2[image:icons/package.png[Pack
 === General
 * Dynamically allocate hash threads depending on the disk throughput. +
 It allows using automatically more threads with an SSD and less with a classical HDD
-* Add http://evrignaud.github.io/fim/slides/en.html[English slides]
+* Add https://evrignaud.github.io/fim/slides/en.html[English slides]
 * On Linux and Mac OS X, display the hash progress depending on terminal width
 * The '-c' option is deprecated in favor of the '-m' one to provide a comment. The rdup command now use the '-M' option
 * When purging states, the file name of the last State is not modified and the State number is kept
@@ -41,7 +41,7 @@ https://github.com/evrignaud/fim/releases/tag/1.2.1[image:icons/package.png[Pack
 The 'log' command displays now the same output as the 'status' command. It works completely with States generated with this version of Fim
 * Thanks to https://twitter.com/nch3v[@nch3v], clarified the 'find-duplicates' command output and sort duplicate sets by wasted space to display the biggest first
 * Fim is now able to *remove duplicates* that are in the repository. See more in <<dealing-with-duplicates.adoc#_remove_duplicates,Remove duplicates>>
-* Add http://evrignaud.github.io/fim/slides/fr.html[French slides]
+* Add https://evrignaud.github.io/fim/slides/fr.html[French slides]
 
 === Bug fix
 * Update memory maximum sizes to more accurate values
@@ -107,7 +107,7 @@ Details in <<file-permissions-management.adoc#_file_permissions_management,File 
 Details in <<faq.adoc#_ignoring_files_or_directories,Ignoring files or directories>>
 * Add automatic build and testing of Fim using Travis CI for https://goo.gl/QfQTE8[Linux] and Appveyor CI for https://goo.gl/foWAWQ[Windows]
 * Add Unit test coverage using https://goo.gl/hJGXqj[Coveralls]
-* Moved the documentation to AsciiDoc using the http://asciidoctor.org/docs/asciidoctor-maven-plugin/[asciidoctor-maven-plugin]
+* Moved the documentation to AsciiDoc using the https://asciidoctor.org/docs/asciidoctor-maven-plugin/[asciidoctor-maven-plugin]
 
 == Version 1.0.2
 *(Released 2015-09-04)*

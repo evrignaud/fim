@@ -1,4 +1,4 @@
-[![Fim](http://evrignaud.github.io/fim/images/icons/fim-96.png)](https://github.com/evrignaud/fim)
+[![Fim](https://evrignaud.github.io/fim/images/icons/fim-96.png)](https://github.com/evrignaud/fim)
 
 # Supported tags and respective Dockerfile links
 
@@ -29,7 +29,7 @@ Using Fim you can also easily detect duplicates and remove them.
 
 # Documentation
 
-A complete documentation of Fim is available [here](http://evrignaud.github.io/fim)
+A complete documentation of Fim is available [here](https://evrignaud.github.io/fim)
 
 # How to use this image
 

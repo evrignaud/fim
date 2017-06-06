@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fim.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
 package org.fim.internal.hash;
 
@@ -210,8 +210,8 @@ public class FileHasher implements Runnable {
 
     /**
      * Use reflection to avoid problems with non-SUN virtual machines.
-     * As mentioned in: http://stackoverflow.com/questions/2972986/how-to-unmap-a-file-from-memory-mapped-using-filechannel-in-java/19447758#19447758
-     * Original implementation comes from: http://stackoverflow.com/questions/8553158/prevent-outofmemory-when-using-java-nio-mappedbytebuffer
+     * As mentioned in: https://stackoverflow.com/questions/2972986/how-to-unmap-a-file-from-memory-mapped-using-filechannel-in-java/19447758#19447758
+     * Original implementation comes from: https://stackoverflow.com/questions/8553158/prevent-outofmemory-when-using-java-nio-mappedbytebuffer
      */
     private void unmap(MappedByteBuffer bb) {
         if (!cleanInitialized) {

@@ -121,7 +121,7 @@ One can thus put Fim in the category of the *UVCS* (UnVersioned System Control)
 
 {empty} +
 
-http://evrignaud.github.io/fim/#_how_does_it_work[Details]
+https://evrignaud.github.io/fim/#_how_does_it_work[Details]
 
 == Fim workflow
 
@@ -159,7 +159,7 @@ fim log
 
 {empty} +
 
-http://evrignaud.github.io/fim/#_fim_workflow[Details]
+https://evrignaud.github.io/fim/#_fim_workflow[Details]
 
 == Several hash modes
 
@@ -190,7 +190,7 @@ fim st -n
 
 {empty} +
 
-http://evrignaud.github.io/fim/#_real_life_example[Details]
+https://evrignaud.github.io/fim/#_real_life_example[Details]
 
 == !
 
@@ -272,7 +272,7 @@ fim ci -s -y -m "Commit very quickly using super-fast commit"
 {empty} +
 {empty} +
 
-http://evrignaud.github.io/fim/#_super_fast_commit[Details]
+https://evrignaud.github.io/fim/#_super_fast_commit[Details]
 
 == Case 1 - Run the Fim commands from{nbsp}a{nbsp}sub-directory
 
@@ -291,7 +291,7 @@ All other commands are working, but not quicker
 
 {empty} +
 
-http://evrignaud.github.io/fim/#_run_fim_commands_from_a_sub_directory[Details]
+https://evrignaud.github.io/fim/#_run_fim_commands_from_a_sub_directory[Details]
 
 == case 1 - Ignore files or directories
 
@@ -311,7 +311,7 @@ For example, to ignore all the mp3 even those who are in sub directories:
 
 {empty} +
 
-http://evrignaud.github.io/fim/#_ignoring_files_or_directories[Details]
+https://evrignaud.github.io/fim/#_ignoring_files_or_directories[Details]
 
 == Case 1 - Ignore some modifications
 
@@ -341,7 +341,7 @@ fim st -i all
 
 {empty} +
 
-http://evrignaud.github.io/fim/#_ignore_some_difference_during_state_comparison[Details]
+https://evrignaud.github.io/fim/#_ignore_some_difference_during_state_comparison[Details]
 
 == Case 1 - Permissions management
 
@@ -363,7 +363,7 @@ You can restore the permissions using the `rfa`{nbsp}(`reset-file-attrs`) comman
 fim rfa
 ----
 
-http://evrignaud.github.io/fim/#_file_permissions_management[Details]
+https://evrignaud.github.io/fim/#_file_permissions_management[Details]
 
 == Case 2 - Detect duplicates inside a workspace
 
@@ -389,7 +389,7 @@ fim fdup -l
 {empty} +
 {empty} +
 
-http://evrignaud.github.io/fim/#_search_for_duplicate_files[Details]
+https://evrignaud.github.io/fim/#_search_for_duplicate_files[Details]
 
 == Case 2 - Remove duplicates inside a{nbsp}workspace
 
@@ -440,7 +440,7 @@ and specify it as parameter of the `-m` option of the `rdup` command
 
 {empty} +
 
-http://evrignaud.github.io/fim/#_duplicates_that_are_outside[Details]
+https://evrignaud.github.io/fim/#_duplicates_that_are_outside[Details]
 
 == Case 4 - Backup integrity
 
@@ -476,7 +476,7 @@ fim dcor
 
 > image:important.png[] *Fim can produce false positives* if the content has changed and the dates have been reset. For example with the `rfa` command
 
-http://evrignaud.github.io/fim/#_hardware_corruption_detection[Details]
+https://evrignaud.github.io/fim/#_hardware_corruption_detection[Details]
 
 == Other Commands
 
@@ -498,7 +498,7 @@ Purge old states. Keeps only the last
 * You can download a Fim distribution +
 https://github.com/evrignaud/fim/releases/latest[image:download.png[Download] Last release]
 
-* or build a version from the master (http://evrignaud.github.io/fim/#_build_fim[Details])
+* or build a version from the master (https://evrignaud.github.io/fim/#_build_fim[Details])
 
 {empty} +
 
@@ -547,9 +547,9 @@ image::hands-on-little.png[]
 
 +++<u>Ideas to try it yourself:</u>+++
 
-* http://evrignaud.github.io/fim/#_simple_example[simple-example]
+* https://evrignaud.github.io/fim/#_simple_example[simple-example]
 
-* http://evrignaud.github.io/fim/#_duplicates_that_are_outside[remove-duplicates-example]
+* https://evrignaud.github.io/fim/#_duplicates_that_are_outside[remove-duplicates-example]
 
 == `.fim` content
 
@@ -567,7 +567,7 @@ Fim don't allow to use a modified state
 
 * The content of the State is standardized and can be used on the different supported OS
 
-* http://evrignaud.github.io/fim/#_state_file_content[Preview of a State content]
+* https://evrignaud.github.io/fim/#_state_file_content[Preview of a State content]
 
 == Changing The default hash mode
 
@@ -596,7 +596,7 @@ After the `status` command works by default with the 'fast' level.
 fim st    # Runs using '-f'
 ----
 
-http://evrignaud.github.io/fim/#_changing_default_hash_mode[Details]
+https://evrignaud.github.io/fim/#_changing_default_hash_mode[Details]
 
 == The hash algorithm used
 
@@ -625,7 +625,7 @@ image::performance.png[]
 
 * By default, the number of thread is dynamic and depends on the disk throughput
 
-* `-t` option to change the number of threads used (http://evrignaud.github.io/fim/#_hash_files_in_multi_thread[Details])
+* `-t` option to change the number of threads used (https://evrignaud.github.io/fim/#_hash_files_in_multi_thread[Details])
 
 == Hashing process
 
@@ -650,7 +650,7 @@ image::hash-blocks-en.png[]
 {empty} +
 
 *Purposely using btrfs RAID1 in degraded mode ?*
-http://www.spinics.net/lists/linux-btrfs/msg50990.html[http://www.spinics.net/lists/linux-btrfs/msg50990.html] +
+https://www.spinics.net/lists/linux-btrfs/msg50990.html[https://www.spinics.net/lists/linux-btrfs/msg50990.html] +
 
 > For offline long term backups I also used to work with hashdeep to
 > perform and store a hash of all the files and recently started playing
@@ -662,7 +662,7 @@ http://www.spinics.net/lists/linux-btrfs/msg50990.html[http://www.spinics.net/li
 
 {empty} +
 
-.> http://evrignaud.github.io/fim/#_fim_changelog[Fim changelog] <
+.> https://evrignaud.github.io/fim/#_fim_changelog[Fim changelog] <
 
 {empty} +
 
@@ -678,20 +678,20 @@ First public version of Fim
 
 == They talked about it
 
-* *Korben* - http://goo.gl/1gwX1g[Vérifier l’intégrité de très nombreux fichiers] +
+* *Korben* - https://goo.gl/1gwX1g[Vérifier l’intégrité de très nombreux fichiers] +
 Fim est un outil vraiment excellent qui permet de gérer l'intégrité de nombreux fichiers ...
 
-* *01net.com* - http://goo.gl/OYKGxe[Pour Linux] - http://goo.gl/Bn2CMH[Pour Windows] +
+* *01net.com* - https://goo.gl/OYKGxe[Pour Linux] - https://goo.gl/Bn2CMH[Pour Windows] +
 \... permet de vérifier l'intégrité de tous vos fichiers après les avoir manipulés en lots ...
 
 * *Pirate Informatique n°26* page 41 - https://pdf.websafe.fr/pirate-informatique/PI27_52p.pdf[Vérifiez l’intégrité de vos fichiers] +
 Si vous avez un paquet de fichiers à transférer, vous aimeriez sans doute être absolument
 sûr que les données n’ont pas été endommagées{nbsp}...
 
-* *linux-btrfs* - http://www.spinics.net/lists/linux-btrfs/msg50990.html[Purposely using btrfs RAID1 in degraded mode ?] or https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg50185.html[here] +
+* *linux-btrfs* - https://www.spinics.net/lists/linux-btrfs/msg50990.html[Purposely using btrfs RAID1 in degraded mode ?] or https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg50185.html[here] +
 \... Don't get fooled by fim being a java application. It easily outperformed hashdeep on large datasets.
 
-* *Stack Overflow* - http://stackoverflow.com/questions/38041543/signing-every-file-created-in-a-folder[Signing every file created in a folder]
+* *Stack Overflow* - https://stackoverflow.com/questions/38041543/signing-every-file-created-in-a-folder[Signing every file created in a folder]
 
 == OpenSource
 
@@ -725,9 +725,9 @@ _Do not hesitate to open issues with your ideas on GitHub_
 
 * *https://github.com/maxim2266/DIRT[DIRT (DIRectory Tracker)]* - Another little Linux command line utility to track changed files in a directory tree.
 
-* *http://md5deep.sourceforge.net/[hashdeep]* - https://linhost.info/2010/05/using-hashdeep-to-ensure-data-integrity/[Using Hashdeep To Ensure Data Integrity]
+* *https://md5deep.sourceforge.net/[hashdeep]* - https://linhost.info/2010/05/using-hashdeep-to-ensure-data-integrity/[Using Hashdeep To Ensure Data Integrity]
 
-* *http://www.md5summer.org/[MD5 Summer]* - Application for Windows 9x, NT, ME, 2000 and XP which generates and verifies md5 checksums
+* *https://www.md5summer.org/[MD5 Summer]* - Application for Windows 9x, NT, ME, 2000 and XP which generates and verifies md5 checksums
 
 * *https://github.com/kdave/btrfs-progs/blob/devel/Documentation/btrfs-scrub.asciidoc[btrfs-scrub]* - Reads all data from the disk and verifies checksums
 
@@ -743,8 +743,8 @@ image::octocat.png[]
 * https://coveralls.io/[Coveralls] - Code Coverage - https://goo.gl/hJGXqj[image:https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github[]]
 * https://scan.coverity.com/[Coverity] - Static code analysis - https://goo.gl/lbM77o[image:https://scan.coverity.com/projects/8749/badge.svg[]]
 
-http://asciidoctor.org/[Asciidoctor] - Ruby implementation of http://asciidoc.org/[AsciiDoc] to generate +
-the http://evrignaud.github.io/fim/[Fim documentation] and this presentation slides
+https://asciidoctor.org/[Asciidoctor] - Ruby implementation of https://asciidoc.org/[AsciiDoc] to generate +
+the https://evrignaud.github.io/fim/[Fim documentation] and this presentation slides
 
 == Questions
 

@@ -68,7 +68,7 @@
             </snapshots>
             <id>bintray-bds-tools</id>
             <name>bintray</name>
-            <url>http://dl.bintray.com/bds/tools</url>
+            <url>https://dl.bintray.com/bds/tools</url>
         </repository>
     </repositories>
 
@@ -83,7 +83,7 @@
     <licenses>
         <license>
             <name>GNU General Public License (GPL)</name>
-            <url>http://www.gnu.org/licenses/</url>
+            <url>https://www.gnu.org/licenses/</url>
         </license>
     </licenses>
 

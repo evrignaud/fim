@@ -14,7 +14,7 @@
 @rem GNU General Public License for more details.
 @rem
 @rem You should have received a copy of the GNU General Public License
-@rem along with Fim.  If not, see <http://www.gnu.org/licenses/>.
+@rem along with Fim.  If not, see <https://www.gnu.org/licenses/>.
 @rem -------------------------------------------------------------------------------------------------------------------
 
 @echo off

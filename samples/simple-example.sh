@@ -15,11 +15,11 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Fim.  If not, see <http://www.gnu.org/licenses/>.
+# along with Fim.  If not, see <https://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------------------------------------------------
 
 # You can see this script in action here:
-#	http://evrignaud.github.io/fim/#_simple_example
+#	https://evrignaud.github.io/fim/#_simple_example
 
 rm -rf simple-example || exit $?
 mkdir simple-example || exit $?

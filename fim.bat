@@ -14,7 +14,7 @@
 @rem GNU General Public License for more details.
 @rem
 @rem You should have received a copy of the GNU General Public License
-@rem along with Fim.  If not, see <http://www.gnu.org/licenses/>.
+@rem along with Fim.  If not, see <https://www.gnu.org/licenses/>.
 @rem -------------------------------------------------------------------------------------------------------------------
 
 @echo off
@@ -25,7 +25,7 @@ set JAVA_OPTIONS=-Xmx2g -XX:MaxMetaspaceSize=128m
 @rem -----------------------------------------------
 @rem Search the complete name of target\fim-*.jar
 @rem     Useful info found here
-@rem     http://superuser.com/questions/489240/how-to-get-filename-only-without-path-in-windows-command-line
+@rem     https://superuser.com/questions/489240/how-to-get-filename-only-without-path-in-windows-command-line
 @rem -----------------------------------------------
 for %%f in ("%baseDir%target\fim-*.jar") do (
     set JAR_FILE=%%~nxf

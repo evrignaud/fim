@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 62 62" width="62" height="62" version="1.1">
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "https://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 62 62" width="62" height="62" version="1.1">
     <defs>
         <linearGradient id="fieldGradient" gradientUnits="userSpaceOnUse" x1="42.9863" y1="7.01270" x2="22.0144"
                         y2="51.9871">
