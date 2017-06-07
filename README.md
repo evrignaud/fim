@@ -75,8 +75,8 @@ Fim can be used on Linux, Mac OS X and Windows
 
 ### &bull; ![linuxfr.org](https://evrignaud.github.io/fim/images/icons/linuxfr.org.png) &nbsp;&nbsp; LinuxFr.org
 
-> &mdash; [Effacement des doublons et historique complet pour Fim 1.2.2](http://linuxfr.org/news/effacement-des-doublons-et-historique-complet-pour-fim-1-2-2)
->> [![English version](https://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Removing duplicates and full history for Fim 1.2.2](https://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Feffacement-des-doublons-et-historique-complet-pour-fim-1-2-2&sandbox=1)
+> &mdash; [Effacement des doublons et historique complet pour Fim 1.2.2](https://linuxfr.org/news/effacement-des-doublons-et-historique-complet-pour-fim-1-2-2)
+>> [![English version](https://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Removing duplicates and full history for Fim 1.2.2](https://translate.google.com/translate?hl=en&sl=fr&tl=en&u=https%3A%2F%2Flinuxfr.org%2Fnews%2Feffacement-des-doublons-et-historique-complet-pour-fim-1-2-2&sandbox=1)
 
 > &mdash; [Focus sur les performances avec Fim 1.2.0](https://linuxfr.org/news/focus-sur-les-performances-avec-fim-1-2-0)
 >> [![English version](https://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Focus on performance with Fim 1.2.0](https://translate.google.com/translate?hl=en&sl=fr&tl=en&u=https%3A%2F%2Flinuxfr.org%2Fnews%2Ffocus-sur-les-performances-avec-fim-1-2-0&sandbox=1)

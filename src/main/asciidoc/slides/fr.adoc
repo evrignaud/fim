@@ -669,7 +669,7 @@ https://www.spinics.net/lists/linux-btrfs/msg50990.html[https://www.spinics.net/
 
 Articles que j'ai écrit sur https://linuxfr.org/[LinuxFr.org] pour promouvoir Fim :
 
-* *1.2.2* - http://linuxfr.org/news/effacement-des-doublons-et-historique-complet-pour-fim-1-2-2[Effacement des doublons et historique complet pour Fim 1.2.2] +
+* *1.2.2* - https://linuxfr.org/news/effacement-des-doublons-et-historique-complet-pour-fim-1-2-2[Effacement des doublons et historique complet pour Fim 1.2.2] +
 * *1.2.0* - https://linuxfr.org/news/focus-sur-les-performances-avec-fim-1-2-0[Focus sur les performances avec Fim 1.2.0] +
 Support des repository avec au moins 1 million de fichiers
 * *1.1.0* - https://linuxfr.org/news/fim-1-1-0[Fim 1.1.0] +
