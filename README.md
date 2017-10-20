@@ -90,7 +90,7 @@ Fim can be used on Linux, Mac OS X and Windows
 
 ## About
 
-Created by Etienne Vrignaud &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Twitter icon](https://evrignaud.github.io/fim/images/icons/twitter.png) Follow @evrignaud](https://twitter.com/evrignaud)
+Created by Etienne Vrignaud &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [My blog](https://evrignaud.github.io/blog/) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Twitter icon](https://evrignaud.github.io/fim/images/icons/twitter.png) Follow @evrignaud](https://twitter.com/evrignaud)
 
 
 ![Analytics](https://ga-beacon.appspot.com/UA-65759837-1/fim/README.md?pixel)
