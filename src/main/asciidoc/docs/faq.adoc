@@ -43,6 +43,8 @@ Use wildcards in order to match many of them. For example `\*.mp3` will match al
 A leading `*\*` followed by a slash means match in all directories. +
 For example, `**/foo` matches a file or a directory named `foo` anywhere, starting from where the `.fimignore` contain this pattern.
 
+NOTE: On Windows, to create a `.fimignore` file, just create a file named `.fimignore.` (Yes add a trailing `.`)
+
 == Changing default hash mode
 
 If you never want to hash the complete content of your files you can set a global hash mode that will indicate the maximum hash mode you want to use for this repository.
