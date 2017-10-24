@@ -37,10 +37,10 @@ public class StateAssert {
         return new BuildableContext();
     }
 
-    public static List<FileState> createFileStates(int count) {
+    public static List<FileState> createFileStates(String fileNameStart, int fileLength, int count) {
         List<FileState> fileStates = new ArrayList<>();
         for (int index = 0; index < count; index++) {
-            FileState fileState = new FileState("file_" + index, 256, new FileTime(512, 512), new FileHash("A", "A", "A"), new ArrayList<>());
+            FileState fileState = new FileState(fileNameStart + index, fileLength, new FileTime(512, 512), new FileHash("A", "A", "A"), new ArrayList<>());
             fileStates.add(fileState);
         }
         return fileStates;

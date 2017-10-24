@@ -48,6 +48,8 @@ public class Context {
     private boolean removeDuplicates;
     private boolean calledFromTest;
     private boolean dynamicScaling;
+    private boolean sortAscending;
+    private SortMethod sortMethod;
 
     public Context() {
         setInvokedFromSubDirectory(false);
@@ -66,6 +68,8 @@ public class Context {
         setIgnored(new Ignored());
         setRemoveDuplicates(false);
         setCalledFromTest(false);
+        setSortAscending(false);
+        setSortMethod(SortMethod.wasted);
     }
 
     public boolean isInvokedFromSubDirectory() {
@@ -222,6 +226,22 @@ public class Context {
 
     public void setCalledFromTest(boolean calledFromTest) {
         this.calledFromTest = calledFromTest;
+    }
+
+    public boolean isSortAscending() {
+        return sortAscending;
+    }
+
+    public void setSortAscending(boolean sortAscending) {
+        this.sortAscending = sortAscending;
+    }
+
+    public SortMethod getSortMethod() {
+        return sortMethod;
+    }
+
+    public void setSortMethod(SortMethod sortMethod) {
+        this.sortMethod = sortMethod;
     }
 
     @Override

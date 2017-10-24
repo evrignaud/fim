@@ -31,8 +31,6 @@ import static org.fim.util.FileUtil.byteCountToDisplaySize;
 import static org.fim.util.FileUtil.removeFile;
 
 public class DuplicateResult {
-    private static final Comparator<DuplicateSet> wastedSpaceDescendingComparator = new WastedSpaceDescendingComparator();
-
     private final Context context;
     private final List<DuplicateSet> duplicateSets;
     private long duplicatedFilesCount;
@@ -63,7 +61,21 @@ public class DuplicateResult {
     }
 
     public void sortDuplicateSets() {
-        Collections.sort(duplicateSets, wastedSpaceDescendingComparator);
+        Comparator<DuplicateSet> duplicateSetComparator = createDuplicateSetComparator();
+        Collections.sort(duplicateSets, duplicateSetComparator);
+    }
+
+    private Comparator<DuplicateSet> createDuplicateSetComparator() {
+        switch (context.getSortMethod()) {
+            case wasted:
+                return new WastedSpaceComparator();
+            case number:
+                return new NumberOfFileComparator();
+            case size:
+                return new FileSizeComparator();
+            default:
+                return null;
+        }
     }
 
     public DuplicateResult displayAndRemoveDuplicates() {
@@ -217,10 +229,36 @@ public class DuplicateResult {
         return plural(word, count > 1 ? 2 : 1);
     }
 
-    public static class WastedSpaceDescendingComparator implements Comparator<DuplicateSet> {
+    public class WastedSpaceComparator implements Comparator<DuplicateSet> {
         @Override
         public int compare(DuplicateSet ds1, DuplicateSet ds2) {
-            return Long.compare(ds2.getWastedSpace(), ds1.getWastedSpace());
+            if (context.isSortAscending()) {
+                return Long.compare(ds1.getWastedSpace(), ds2.getWastedSpace());
+            } else {
+                return Long.compare(ds2.getWastedSpace(), ds1.getWastedSpace());
+            }
+        }
+    }
+
+    public class NumberOfFileComparator implements Comparator<DuplicateSet> {
+        @Override
+        public int compare(DuplicateSet ds1, DuplicateSet ds2) {
+            if (context.isSortAscending()) {
+                return Integer.compare(ds1.getDuplicatedFilesCount(), ds2.getDuplicatedFilesCount());
+            } else {
+                return Integer.compare(ds2.getDuplicatedFilesCount(), ds1.getDuplicatedFilesCount());
+            }
+        }
+    }
+
+    public class FileSizeComparator implements Comparator<DuplicateSet> {
+        @Override
+        public int compare(DuplicateSet ds1, DuplicateSet ds2) {
+            if (context.isSortAscending()) {
+                return Long.compare(ds1.getDuplicatedFileSize(), ds2.getDuplicatedFileSize());
+            } else {
+                return Long.compare(ds2.getDuplicatedFileSize(), ds1.getDuplicatedFileSize());
+            }
         }
     }
 }

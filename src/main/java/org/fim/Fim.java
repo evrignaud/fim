@@ -47,6 +47,7 @@ import org.fim.internal.SettingsManager;
 import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
 import org.fim.model.Context;
+import org.fim.model.SortMethod;
 import org.fim.model.Ignored;
 import org.fim.util.Logger;
 
@@ -133,6 +134,12 @@ public class Fim {
             "By default, this number is dynamic and depends on the disk throughput").hasArg().build());
         opts.addOption(buildOption("v", "version", "Prints the Fim version").build());
         opts.addOption(buildOption("y", "always-yes", "Always yes to every questions").build());
+        opts.addOption(buildOption(null, "sort", "How to sort duplicate results.\n" +
+            "You can sort on (default value is 'wasted'):\n" +
+            "- wasted: wasted size\n" +
+            "- number: number of files in the duplicated set\n" +
+            "- size: size of duplicated file").hasArg().build());
+        opts.addOption(buildOption(null, "order", "Sort order of duplicate results. Default is 'desc'. Can be 'asc' or 'desc'").hasArg().build());
         return opts;
     }
 
@@ -206,6 +213,31 @@ public class Fim {
                 context.setHashMode(hashMediumBlock);
             } else {
                 context.setHashMode(hashAll);
+            }
+
+            if (commandLine.hasOption("sort")) {
+                String value = commandLine.getOptionValue("sort");
+                try {
+                    context.setSortMethod(SortMethod.valueOf(value));
+                } catch (IllegalArgumentException ex) {
+                    Logger.error(String.format("Unsupported sort method '%s'", value));
+                    throw new BadFimUsageException();
+                }
+            }
+
+            if (commandLine.hasOption("order")) {
+                String value = commandLine.getOptionValue("order");
+                switch (value) {
+                    case "asc":
+                        context.setSortAscending(true);
+                        break;
+                    case "desc":
+                        context.setSortAscending(false);
+                        break;
+                    default:
+                        Logger.error(String.format("Unsupported sort order '%s'", value));
+                        throw new BadFimUsageException();
+                }
             }
 
             if (commandLine.hasOption('h')) {

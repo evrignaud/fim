@@ -37,7 +37,7 @@ import static org.fim.tooling.StateAssert.createFileStates;
 public class ModificationCountsTest {
     @Test
     public void canSelectFilesToRemove() {
-        List<FileState> fileStates = createFileStates(9 * 3);
+        List<FileState> fileStates = createFileStates("file_", 256, 9 * 3);
 
         for (int i = 0; i < 3; i++) {
             int index = i * 9;

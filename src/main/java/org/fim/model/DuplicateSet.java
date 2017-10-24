@@ -42,6 +42,14 @@ public class DuplicateSet {
         return wastedSpace;
     }
 
+    public int getDuplicatedFilesCount() {
+        return duplicatedFiles.size();
+    }
+
+    public long getDuplicatedFileSize() {
+        return duplicatedFiles.get(0).getFileLength();
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {

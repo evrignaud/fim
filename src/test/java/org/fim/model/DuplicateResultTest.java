@@ -30,7 +30,9 @@ import static org.fim.tooling.StateAssert.createFileStates;
 public class DuplicateResultTest {
     private DuplicateResult cut;
     private Context context;
+    private List<FileState> little_duplicatedFiles;
     private List<FileState> duplicatedFiles;
+    private List<FileState> big_duplicatedFiles;
 
     @Before
     public void setUp() {
@@ -38,7 +40,13 @@ public class DuplicateResultTest {
         context.setAlwaysYes(true);
         cut = new DuplicateResult(context);
 
-        duplicatedFiles = createFileStates(10);
+        little_duplicatedFiles = createFileStates("little_file_", 32, 20);
+        duplicatedFiles = createFileStates("file_", 256, 10);
+        big_duplicatedFiles = createFileStates("big_file_", 512, 2);
+
+        cut.addDuplicatedFiles(little_duplicatedFiles);
+        cut.addDuplicatedFiles(duplicatedFiles);
+        cut.addDuplicatedFiles(big_duplicatedFiles);
     }
 
     @Test
@@ -91,6 +99,35 @@ public class DuplicateResultTest {
 
         gotCorrectAnswer = cut.manageAnswers(duplicatedFiles, " 12 24 0");
         assertThat(gotCorrectAnswer).isFalse();
+    }
+
+    @Test
+    public void canBeSortedOnWasted() {
+        checkSort(SortMethod.wasted, true, "big_file_0");
+        checkSort(SortMethod.wasted, false, "file_0");
+    }
+
+    @Test
+    public void canBeSortedOnNumber() {
+        checkSort(SortMethod.number, true, "big_file_0");
+        checkSort(SortMethod.number, false, "little_file_0");
+    }
+
+    @Test
+    public void canBeSortedOnSize() {
+        checkSort(SortMethod.size, true, "little_file_0");
+        checkSort(SortMethod.size, false, "big_file_0");
+    }
+
+    private void checkSort(SortMethod sortMethod, boolean sortAscending, String firstFileName) {
+        context.setSortMethod(sortMethod);
+        context.setSortAscending(sortAscending);
+        cut.sortDuplicateSets();
+        assertThat(getFirstDuplicatedFileState().getFileName()).isEqualTo(firstFileName);
+    }
+
+    private FileState getFirstDuplicatedFileState() {
+        return cut.getDuplicateSets().get(0).getDuplicatedFiles().get(0);
     }
 
     private void assertIsToRemove(int start, int end, boolean toRemove) {
