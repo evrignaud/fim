@@ -54,7 +54,9 @@
         <asciidoctorj.version>1.5.6</asciidoctorj.version>
         <jruby.version>9.1.13.0</jruby.version>
         <revealjs.version>3.5.0</revealjs.version>
-        <asciidoctor-revealjs.version>master</asciidoctor-revealjs.version>
+
+        <!-- Use 'master' as version and remove the 'v' prefixing the download url to use the current snapshot version  -->
+        <asciidoctor-revealjs.version>1.0.4</asciidoctor-revealjs.version>
 
         <serviceName>Local</serviceName>
         <serviceJobId>0</serviceJobId>
@@ -358,7 +360,7 @@
                         </goals>
                         <configuration>
                             <url>
-                                https://github.com/asciidoctor/asciidoctor-reveal.js/archive/${asciidoctor-revealjs.version}.zip
+                                https://github.com/asciidoctor/asciidoctor-reveal.js/archive/v${asciidoctor-revealjs.version}.zip
                             </url>
                             <unpack>true</unpack>
                             <outputFileName>asciidoctor-reveal.js-${asciidoctor-revealjs.version}.zip</outputFileName>
