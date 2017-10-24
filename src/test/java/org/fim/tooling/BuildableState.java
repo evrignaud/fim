@@ -125,6 +125,13 @@ public class BuildableState extends State {
         return newState;
     }
 
+    public BuildableState forceDifferentFileLength(String fileName, long fileLength) {
+        BuildableState newState = clone();
+        FileState fileState = findFileState(newState, fileName, true);
+        fileState.setFileLength(fileLength);
+        return newState;
+    }
+
     private FileHash createHash(String content) {
         String smallBlockHash = "small_block_" + content;
         String mediumBlockHash = "medium_block_" + content;

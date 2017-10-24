@@ -98,6 +98,16 @@ public class DuplicateFinderTest extends DuplicateAssert {
     }
 
     @Test
+    public void filesWithDifferentLengthAreNeverDuplicated() throws IOException {
+        s = s.copy("file_01", "file_10");
+        Files.copy(rootDir.resolve("file_01"), rootDir.resolve("file_10"));
+        s = s.forceDifferentFileLength("file_10", 15);
+
+        DuplicateResult result = cut.findDuplicates(s);
+        assertThat(result.getDuplicateSets().size()).isEqualTo(0);
+    }
+
+    @Test
     public void emptyFilesAreNeverSeenAsDuplicates() throws IOException {
         s = s.addEmptyFiles("empty_file_01", "empty_file_02", "empty_file_03", "empty_file_04");
         rootDir.resolve("empty_file_01").toFile().createNewFile();
