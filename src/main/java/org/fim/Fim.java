@@ -48,8 +48,9 @@ import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
 import org.fim.model.Context;
 import org.fim.model.FilePattern;
-import org.fim.model.SortMethod;
 import org.fim.model.Ignored;
+import org.fim.model.OutputType;
+import org.fim.model.SortMethod;
 import org.fim.util.Logger;
 
 import java.io.PrintWriter;
@@ -136,13 +137,17 @@ public class Fim {
         opts.addOption(buildOption("v", "version", "Prints the Fim version").build());
         opts.addOption(buildOption("y", "always-yes", "Always yes to every questions").build());
         opts.addOption(buildOption(null, "sort", "How to sort duplicate results.\n" +
-            "You can sort on (default value is 'wasted'):\n" +
-            "- wasted: wasted size\n" +
+            "You can sort on:\n" +
+            "- wasted: wasted size (default)\n" +
             "- number: number of files in the duplicated set\n" +
             "- size: size of duplicated file").hasArg().build());
         opts.addOption(buildOption(null, "order", "Sort order of duplicate results. Default is 'desc'. Can be 'asc' or 'desc'").hasArg().build());
         opts.addOption(buildOption(null, "include", "Include some directories/filetype while searching for duplicates. Separated by ':'").hasArg().build());
         opts.addOption(buildOption(null, "exclude", "Exclude some directories/filetype while searching for duplicates. Separated by ':'").hasArg().build());
+        opts.addOption(buildOption(null, "output-type", "Output type used by 'fdup' to display duplicates. Supported types are:\n" +
+            "- human: display duplicates in human readable messages (default)\n" +
+            "- csv: display duplicates in CSV format\n" +
+            "- json: display duplicates in JSON format").hasArg().build());
         return opts;
     }
 
@@ -221,7 +226,7 @@ public class Fim {
             if (commandLine.hasOption("sort")) {
                 String sort = commandLine.getOptionValue("sort");
                 try {
-                    context.setSortMethod(SortMethod.valueOf(sort));
+                    context.setSortMethod(SortMethod.valueOf(sort.toLowerCase()));
                 } catch (IllegalArgumentException ex) {
                     Logger.error(String.format("Unsupported sort method '%s'", sort));
                     throw new BadFimUsageException();
@@ -230,7 +235,7 @@ public class Fim {
 
             if (commandLine.hasOption("order")) {
                 String order = commandLine.getOptionValue("order");
-                switch (order) {
+                switch (order.toLowerCase()) {
                     case "asc":
                         context.setSortAscending(true);
                         break;
@@ -259,6 +264,20 @@ public class Fim {
                     excludePatterns.add(new FilePattern(exclude));
                 }
                 context.setExcludePatterns(excludePatterns);
+            }
+
+            if (commandLine.hasOption("output-type")) {
+                String outputType = commandLine.getOptionValue("output-type");
+                try {
+                    context.setOutputType(OutputType.valueOf(outputType.toLowerCase()));
+                } catch (IllegalArgumentException ex) {
+                    Logger.error(String.format("Unsupported output type '%s'", outputType));
+                    throw new BadFimUsageException();
+                }
+                if (context.getOutputType() != OutputType.human) {
+                    context.setVerbose(false);
+                    Logger.level = Logger.Level.warning.ordinal();
+                }
             }
 
             if (commandLine.hasOption('h')) {

@@ -25,6 +25,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Logger {
+    public enum Level {
+        error,
+        alert,
+        warning,
+        info
+    }
+
+    public static int level = Level.info.ordinal();
     public static PrintStream out = System.out;
     public static boolean debugEnabled = checkDebugEnabled();
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -40,36 +48,48 @@ public class Logger {
     }
 
     public static void info(String message) {
-        writeLogMessage(getCurrentDate() + " - Info  - " + message);
+        if (level >= Level.info.ordinal()) {
+            writeLogMessage(getCurrentDate() + " - Info  - " + message);
+        }
     }
 
     public static void warning(String message) {
-        writeLogMessage(getCurrentDate() + " - Warn  - " + message);
+        if (level >= Level.warning.ordinal()) {
+            writeLogMessage(getCurrentDate() + " - Warn  - " + message);
+        }
     }
 
     public static void alert(String message) {
-        writeLogMessage(getCurrentDate() + " - Alert - " + message);
+        if (level >= Level.alert.ordinal()) {
+            writeLogMessage(getCurrentDate() + " - Alert - " + message);
+        }
     }
 
     public static void error(String message, Exception ex, boolean displayStackTrace) {
-        StringBuilder builder = new StringBuilder().append(message);
-        if (displayStackTrace) {
-            builder.append("\n").append(exceptionStackTraceToString(ex));
-        } else {
-            builder.append(": ").append(ex.getClass().getSimpleName());
-            if (ex.getMessage() != null) {
-                builder.append(": ").append(ex.getMessage());
+        if (level >= Level.error.ordinal()) {
+            StringBuilder builder = new StringBuilder().append(message);
+            if (displayStackTrace) {
+                builder.append("\n").append(exceptionStackTraceToString(ex));
+            } else {
+                builder.append(": ").append(ex.getClass().getSimpleName());
+                if (ex.getMessage() != null) {
+                    builder.append(": ").append(ex.getMessage());
+                }
             }
+            error(builder.toString());
         }
-        error(builder.toString());
     }
 
     public static void error(String message) {
-        writeLogMessage(getCurrentDate() + " - Error - " + message);
+        if (level >= Level.error.ordinal()) {
+            writeLogMessage(getCurrentDate() + " - Error - " + message);
+        }
     }
 
     public static void newLine() {
-        out.println("");
+        if (level >= Level.info.ordinal()) {
+            out.println("");
+        }
     }
 
     private static String exceptionStackTraceToString(Exception ex) {

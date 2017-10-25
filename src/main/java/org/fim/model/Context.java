@@ -53,6 +53,7 @@ public class Context {
     private SortMethod sortMethod;
     private ArrayList<FilePattern> includePatterns;
     private ArrayList<FilePattern> excludePatterns;
+    private OutputType outputType;
 
     public Context() {
         setInvokedFromSubDirectory(false);
@@ -73,6 +74,7 @@ public class Context {
         setCalledFromTest(false);
         setSortAscending(false);
         setSortMethod(SortMethod.wasted);
+        setOutputType(OutputType.human);
     }
 
     public boolean isInvokedFromSubDirectory() {
@@ -261,6 +263,14 @@ public class Context {
 
     public ArrayList<FilePattern> getExcludePatterns() {
         return excludePatterns;
+    }
+
+    public void setOutputType(OutputType outputType) {
+        this.outputType = outputType;
+    }
+
+    public OutputType getOutputType() {
+        return outputType;
     }
 
     @Override

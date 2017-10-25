@@ -19,9 +19,13 @@
 package org.fim.model;
 
 import org.fim.tooling.BuildableContext;
+import org.fim.util.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -119,11 +123,41 @@ public class DuplicateResultTest {
         checkSort(SortMethod.size, false, "big_file_0");
     }
 
+    @Test
+    public void canBeDisplayedInCSV() throws IOException {
+        checkOutput(OutputType.csv, "SetIndex,FileIndex,WastedSpace,FilePath,FileName,FileLength,FileType\n" +
+            "1,1,608,,little_file_0,32,");
+    }
+
+    @Test
+    public void canBeDisplayedInJSON() throws IOException {
+        checkOutput(OutputType.json, "\"fileList\": [\n" +
+            "      {\n" +
+            "        \"path\": \"\",\n" +
+            "        \"name\": \"little_file_0\",\n" +
+            "        \"length\": 32,\n" +
+            "        \"type\": \"\"\n" +
+            "      }");
+    }
+
     private void checkSort(SortMethod sortMethod, boolean sortAscending, String firstFileName) {
         context.setSortMethod(sortMethod);
         context.setSortAscending(sortAscending);
         cut.sortDuplicateSets();
         assertThat(getFirstDuplicatedFileState().getFileName()).isEqualTo(firstFileName);
+    }
+
+    private void checkOutput(OutputType outputType, String contentPart) throws IOException {
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+        Logger.out = new PrintStream(arrayOutputStream);
+        context.setOutputType(outputType);
+
+        cut.displayAndRemoveDuplicates();
+
+        arrayOutputStream.flush();
+        String result = arrayOutputStream.toString();
+        result = result.replace("\r", "");
+        assertThat(result).contains(contentPart);
     }
 
     private FileState getFirstDuplicatedFileState() {

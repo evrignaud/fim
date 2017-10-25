@@ -18,6 +18,7 @@
  */
 package org.fim.model;
 
+import org.fim.internal.DuplicateOutputGenerator;
 import org.fim.util.Logger;
 
 import java.util.ArrayList;
@@ -79,6 +80,12 @@ public class DuplicateResult {
     }
 
     public DuplicateResult displayAndRemoveDuplicates() {
+        if (context.getOutputType() != OutputType.human) {
+            DuplicateOutputGenerator generator = new DuplicateOutputGenerator(context);
+            generator.generate(this);
+            return this;
+        }
+
         if (context.isVerbose() || context.isRemoveDuplicates()) {
             for (DuplicateSet duplicateSet : duplicateSets) {
                 manageDuplicateSet(duplicateSet);

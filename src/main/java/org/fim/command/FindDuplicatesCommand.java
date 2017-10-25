@@ -18,12 +18,14 @@
  */
 package org.fim.command;
 
+import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.DontWantToContinueException;
 import org.fim.internal.DuplicateFinder;
 import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
 import org.fim.model.Context;
 import org.fim.model.DuplicateResult;
+import org.fim.model.OutputType;
 import org.fim.model.State;
 import org.fim.util.Logger;
 
@@ -48,6 +50,11 @@ public class FindDuplicatesCommand extends AbstractCommand {
         checkHashMode(context, Option.ALLOW_COMPATIBLE);
 
         fileContentHashingMandatory(context);
+
+        if (context.getOutputType() != OutputType.human && context.isRemoveDuplicates()) {
+            Logger.error("You cannot display duplicates in a non human format and remove them");
+            throw new BadFimUsageException();
+        }
 
         if (context.isRemoveDuplicates() && context.isAlwaysYes() && !context.isCalledFromTest()) {
             explicitlyConfirmAutomaticRemoval(context);

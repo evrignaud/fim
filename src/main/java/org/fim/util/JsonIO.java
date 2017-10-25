@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -36,6 +37,7 @@ public class JsonIO {
         // All field names will be intern()ed
         jsonFactory.enable(JsonFactory.Feature.CANONICALIZE_FIELD_NAMES);
         jsonFactory.enable(JsonFactory.Feature.INTERN_FIELD_NAMES);
+        jsonFactory.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
         objectMapper = new ObjectMapper(jsonFactory);
 
         // Use setters and getters to be able use String.intern(). This reduces the amount of memory needed to load a State file.
