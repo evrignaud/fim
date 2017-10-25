@@ -22,6 +22,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.fim.internal.hash.FileHasher;
 import org.fim.internal.hash.HashProgress;
 import org.fim.model.Context;
+import org.fim.model.FilePattern;
 import org.fim.model.FileState;
 import org.fim.model.FimIgnore;
 import org.fim.model.State;
@@ -243,7 +244,10 @@ public class StateGenerator {
                     fimIgnoreManager.ignoreThisFiles(file, attributes);
                 } else {
                     if (attributes.isRegularFile()) {
-                        enqueueFile(filesToHashQueue, file);
+                        if (FilePattern.matchPatterns(fileName, context.getIncludePatterns(), true) &&
+                            !FilePattern.matchPatterns(fileName, context.getExcludePatterns(), false)) {
+                            enqueueFile(filesToHashQueue, file);
+                        }
                     } else if (attributes.isDirectory()) {
                         scanFileTree(filesToHashQueue, file, fimIgnore);
                     }

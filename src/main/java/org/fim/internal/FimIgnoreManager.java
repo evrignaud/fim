@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
 
 public class FimIgnoreManager {
     public static final String DOT_FIM_IGNORE = ".fimignore";
@@ -130,12 +129,7 @@ public class FimIgnoreManager {
 
     private boolean isIgnored(String fileName, Set<FilePattern> filesToIgnore) {
         for (FilePattern filePattern : filesToIgnore) {
-            if (filePattern.getCompiled() != null) {
-                Matcher matcher = filePattern.getCompiled().matcher(fileName);
-                if (matcher.find()) {
-                    return true;
-                }
-            } else if (filePattern.getFileName().equals(fileName)) {
+            if (filePattern.match(fileName)) {
                 return true;
             }
         }

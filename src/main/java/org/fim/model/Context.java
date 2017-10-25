@@ -22,6 +22,7 @@ import com.rits.cloning.Cloner;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import static org.fim.model.HashMode.hashAll;
 
@@ -50,6 +51,8 @@ public class Context {
     private boolean dynamicScaling;
     private boolean sortAscending;
     private SortMethod sortMethod;
+    private ArrayList<FilePattern> includePatterns;
+    private ArrayList<FilePattern> excludePatterns;
 
     public Context() {
         setInvokedFromSubDirectory(false);
@@ -242,6 +245,22 @@ public class Context {
 
     public void setSortMethod(SortMethod sortMethod) {
         this.sortMethod = sortMethod;
+    }
+
+    public void setIncludePatterns(ArrayList<FilePattern> includePatterns) {
+        this.includePatterns = includePatterns;
+    }
+
+    public ArrayList<FilePattern> getIncludePatterns() {
+        return includePatterns;
+    }
+
+    public void setExcludePatterns(ArrayList<FilePattern> excludePatterns) {
+        this.excludePatterns = excludePatterns;
+    }
+
+    public ArrayList<FilePattern> getExcludePatterns() {
+        return excludePatterns;
     }
 
     @Override

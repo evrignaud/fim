@@ -20,7 +20,9 @@ package org.fim.model;
 
 import com.google.common.base.MoreObjects;
 
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -70,6 +72,18 @@ public class FilePattern {
         return compiled;
     }
 
+    public boolean match(String fileNameToMatch) {
+        if (compiled != null) {
+            Matcher matcher = compiled.matcher(fileNameToMatch);
+            if (matcher.find()) {
+                return true;
+            }
+        } else if (fileName.equals(fileNameToMatch)) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -94,5 +108,17 @@ public class FilePattern {
             .add("fileName", fileName)
             .add("compiled", compiled)
             .toString();
+    }
+
+    public static boolean matchPatterns(String fileName, ArrayList<FilePattern> patterns, boolean defaultValue) {
+        if (patterns != null) {
+            for (FilePattern filePattern : patterns) {
+                if (filePattern.match(fileName)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return defaultValue;
     }
 }

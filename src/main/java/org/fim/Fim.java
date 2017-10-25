@@ -47,6 +47,7 @@ import org.fim.internal.SettingsManager;
 import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
 import org.fim.model.Context;
+import org.fim.model.FilePattern;
 import org.fim.model.SortMethod;
 import org.fim.model.Ignored;
 import org.fim.util.Logger;
@@ -140,6 +141,8 @@ public class Fim {
             "- number: number of files in the duplicated set\n" +
             "- size: size of duplicated file").hasArg().build());
         opts.addOption(buildOption(null, "order", "Sort order of duplicate results. Default is 'desc'. Can be 'asc' or 'desc'").hasArg().build());
+        opts.addOption(buildOption(null, "include", "Include some directories/filetype while searching for duplicates. Separated by ':'").hasArg().build());
+        opts.addOption(buildOption(null, "exclude", "Exclude some directories/filetype while searching for duplicates. Separated by ':'").hasArg().build());
         return opts;
     }
 
@@ -216,18 +219,18 @@ public class Fim {
             }
 
             if (commandLine.hasOption("sort")) {
-                String value = commandLine.getOptionValue("sort");
+                String sort = commandLine.getOptionValue("sort");
                 try {
-                    context.setSortMethod(SortMethod.valueOf(value));
+                    context.setSortMethod(SortMethod.valueOf(sort));
                 } catch (IllegalArgumentException ex) {
-                    Logger.error(String.format("Unsupported sort method '%s'", value));
+                    Logger.error(String.format("Unsupported sort method '%s'", sort));
                     throw new BadFimUsageException();
                 }
             }
 
             if (commandLine.hasOption("order")) {
-                String value = commandLine.getOptionValue("order");
-                switch (value) {
+                String order = commandLine.getOptionValue("order");
+                switch (order) {
                     case "asc":
                         context.setSortAscending(true);
                         break;
@@ -235,9 +238,27 @@ public class Fim {
                         context.setSortAscending(false);
                         break;
                     default:
-                        Logger.error(String.format("Unsupported sort order '%s'", value));
+                        Logger.error(String.format("Unsupported sort order '%s'", order));
                         throw new BadFimUsageException();
                 }
+            }
+
+            if (commandLine.hasOption("include")) {
+                String[] includes = commandLine.getOptionValue("include").split(":");
+                ArrayList<FilePattern> includePatterns = new ArrayList<>();
+                for (String include : includes) {
+                    includePatterns.add(new FilePattern(include));
+                }
+                context.setIncludePatterns(includePatterns);
+            }
+
+            if (commandLine.hasOption("exclude")) {
+                String[] excludes = commandLine.getOptionValue("exclude").split(":");
+                ArrayList<FilePattern> excludePatterns = new ArrayList<>();
+                for (String exclude : excludes) {
+                    excludePatterns.add(new FilePattern(exclude));
+                }
+                context.setExcludePatterns(excludePatterns);
             }
 
             if (commandLine.hasOption('h')) {

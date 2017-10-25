@@ -22,6 +22,7 @@ import org.fim.model.Constants;
 import org.fim.model.Context;
 import org.fim.model.DuplicateResult;
 import org.fim.model.FileHash;
+import org.fim.model.FilePattern;
 import org.fim.model.FileState;
 import org.fim.model.State;
 
@@ -57,6 +58,11 @@ public class DuplicateFinder {
 
             Path file = context.getRepositoryRootDir().resolve(fileState.getFileName());
             if (!Files.exists(file)) {
+                continue;
+            }
+            String fileName = file.getFileName().toString();
+            if (!FilePattern.matchPatterns(fileName, context.getIncludePatterns(), true) ||
+                FilePattern.matchPatterns(fileName, context.getExcludePatterns(), false)) {
                 continue;
             }
 
