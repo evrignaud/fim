@@ -22,17 +22,17 @@ import org.fim.tooling.ObjectAssert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FileToIgnoreTest {
-    private FileToIgnore a1;
-    private FileToIgnore a2;
-    private FileToIgnore b;
+public class FilePatternTest {
+    private FilePattern a1;
+    private FilePattern a2;
+    private FilePattern b;
 
     @Before
     public void setUp() {
-        a1 = new FileToIgnore("*.mp3");
-        a2 = new FileToIgnore("*.mp3");
+        a1 = new FilePattern("*.mp3");
+        a2 = new FilePattern("*.mp3");
 
-        b = new FileToIgnore("foo");
+        b = new FilePattern("foo");
     }
 
     @Test

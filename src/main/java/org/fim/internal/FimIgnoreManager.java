@@ -19,7 +19,7 @@
 package org.fim.internal;
 
 import org.fim.model.Context;
-import org.fim.model.FileToIgnore;
+import org.fim.model.FilePattern;
 import org.fim.model.FimIgnore;
 import org.fim.util.FileUtil;
 import org.fim.util.Logger;
@@ -95,11 +95,11 @@ public class FimIgnoreManager {
                 for (String line : allLines) {
                     if (line.startsWith(ALL_DIRECTORIES_PATTERN)) {
                         String fileNamePattern = line.substring(ALL_DIRECTORIES_PATTERN.length());
-                        FileToIgnore fileToIgnore = new FileToIgnore(fileNamePattern);
-                        fimIgnore.getFilesToIgnoreInAllDirectories().add(fileToIgnore);
+                        FilePattern filePattern = new FilePattern(fileNamePattern);
+                        fimIgnore.getFilesToIgnoreInAllDirectories().add(filePattern);
                     } else {
-                        FileToIgnore fileToIgnore = new FileToIgnore(line);
-                        fimIgnore.getFilesToIgnoreLocally().add(fileToIgnore);
+                        FilePattern filePattern = new FilePattern(line);
+                        fimIgnore.getFilesToIgnoreLocally().add(filePattern);
                     }
                 }
             } catch (IOException e) {
@@ -128,14 +128,14 @@ public class FimIgnoreManager {
         return false;
     }
 
-    private boolean isIgnored(String fileName, Set<FileToIgnore> filesToIgnore) {
-        for (FileToIgnore fileToIgnore : filesToIgnore) {
-            if (fileToIgnore.getCompiledPattern() != null) {
-                Matcher matcher = fileToIgnore.getCompiledPattern().matcher(fileName);
+    private boolean isIgnored(String fileName, Set<FilePattern> filesToIgnore) {
+        for (FilePattern filePattern : filesToIgnore) {
+            if (filePattern.getCompiled() != null) {
+                Matcher matcher = filePattern.getCompiled().matcher(fileName);
                 if (matcher.find()) {
                     return true;
                 }
-            } else if (fileToIgnore.getFileNamePattern().equals(fileName)) {
+            } else if (filePattern.getFileName().equals(fileName)) {
                 return true;
             }
         }

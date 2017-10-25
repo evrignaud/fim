@@ -18,7 +18,7 @@
  */
 package org.fim.internal;
 
-import org.fim.model.FileToIgnore;
+import org.fim.model.FilePattern;
 import org.fim.model.FimIgnore;
 import org.fim.tooling.RepositoryTool;
 import org.fim.tooling.StateAssert;
@@ -102,13 +102,13 @@ public class FimIgnoreManagerTest extends StateAssert {
 
         fimIgnore = cut.loadFimIgnore(rootDir);
         assertThat(fimIgnore.getFilesToIgnoreLocally().toString()).isEqualTo(
-            "[FileToIgnore{fileNamePattern=foo, compiledPattern=^foo$}," +
-                " FileToIgnore{fileNamePattern=*.mp4, compiledPattern=^.*\\.mp4$}]");
+            "[FilePattern{fileName=foo, compiled=^foo$}," +
+                " FilePattern{fileName=*.mp4, compiled=^.*\\.mp4$}]");
 
         assertThat(fimIgnore.getFilesToIgnoreInAllDirectories().toString()).isEqualTo(
-            "[FileToIgnore{fileNamePattern=bar, compiledPattern=^bar$}," +
-                " FileToIgnore{fileNamePattern=.git, compiledPattern=^\\.git$}," +
-                " FileToIgnore{fileNamePattern=*.mp3, compiledPattern=^.*\\.mp3$}]");
+            "[FilePattern{fileName=bar, compiled=^bar$}," +
+                " FilePattern{fileName=.git, compiled=^\\.git$}," +
+                " FilePattern{fileName=*.mp3, compiled=^.*\\.mp3$}]");
     }
 
     private void assertFileIgnored(String fileName, FimIgnore fimIgnore) {
@@ -120,8 +120,8 @@ public class FimIgnoreManagerTest extends StateAssert {
     }
 
     private void ignoreFile(FimIgnore fimIgnore, String fileNamePattern) {
-        FileToIgnore fileToIgnore;
-        fileToIgnore = new FileToIgnore(fileNamePattern);
-        fimIgnore.getFilesToIgnoreLocally().add(fileToIgnore);
+        FilePattern filePattern;
+        filePattern = new FilePattern(fileNamePattern);
+        fimIgnore.getFilesToIgnoreLocally().add(filePattern);
     }
 }

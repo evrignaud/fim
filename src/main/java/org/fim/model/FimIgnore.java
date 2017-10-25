@@ -22,19 +22,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class FimIgnore {
-    private Set<FileToIgnore> filesToIgnoreLocally;
-    private Set<FileToIgnore> filesToIgnoreInAllDirectories;
+    private Set<FilePattern> filesToIgnoreLocally;
+    private Set<FilePattern> filesToIgnoreInAllDirectories;
 
     public FimIgnore() {
         filesToIgnoreLocally = new HashSet<>();
         filesToIgnoreInAllDirectories = new HashSet<>();
     }
 
-    public Set<FileToIgnore> getFilesToIgnoreLocally() {
+    public Set<FilePattern> getFilesToIgnoreLocally() {
         return filesToIgnoreLocally;
     }
 
-    public Set<FileToIgnore> getFilesToIgnoreInAllDirectories() {
+    public Set<FilePattern> getFilesToIgnoreInAllDirectories() {
         return filesToIgnoreInAllDirectories;
     }
 }

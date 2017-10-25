@@ -24,14 +24,14 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-public class FileToIgnore {
-    private String fileNamePattern;
-    private Pattern compiledPattern;
+public class FilePattern {
+    private String fileName;
+    private Pattern compiled;
 
-    public FileToIgnore(String fileNamePattern) {
-        this.fileNamePattern = fileNamePattern.trim();
+    public FilePattern(String fileNamePattern) {
+        this.fileName = fileNamePattern.trim();
         try {
-            String pattern = this.fileNamePattern;
+            String pattern = this.fileName;
 
             // Only * is allowed in the fileName. So escape the other regexp special chars
             pattern = escapeChars(pattern, '\\', '^', '$', '{', '}', '[', ']', '(', ')', '.', '|', '?');
@@ -47,9 +47,9 @@ public class FileToIgnore {
             // Add start and end line anchors
             pattern = "^" + pattern + "$";
 
-            this.compiledPattern = Pattern.compile(pattern);
+            this.compiled = Pattern.compile(pattern);
         } catch (PatternSyntaxException ex) {
-            this.compiledPattern = null;
+            this.compiled = null;
         }
     }
 
@@ -62,12 +62,12 @@ public class FileToIgnore {
         return result;
     }
 
-    public String getFileNamePattern() {
-        return fileNamePattern;
+    public String getFileName() {
+        return fileName;
     }
 
-    public Pattern getCompiledPattern() {
-        return compiledPattern;
+    public Pattern getCompiled() {
+        return compiled;
     }
 
     @Override
@@ -78,21 +78,21 @@ public class FileToIgnore {
         if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        FileToIgnore that = (FileToIgnore) other;
-        return Objects.equals(fileNamePattern, that.fileNamePattern) &&
-            Objects.equals(compiledPattern.toString(), that.compiledPattern.toString());
+        FilePattern that = (FilePattern) other;
+        return Objects.equals(fileName, that.fileName) &&
+            Objects.equals(compiled.toString(), that.compiled.toString());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fileNamePattern, compiledPattern.toString());
+        return Objects.hash(fileName, compiled.toString());
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("fileNamePattern", fileNamePattern)
-            .add("compiledPattern", compiledPattern)
+            .add("fileName", fileName)
+            .add("compiled", compiled)
             .toString();
     }
 }
