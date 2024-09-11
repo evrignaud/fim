@@ -22,18 +22,9 @@ set "baseDir=%~dp0%"
 
 set JAVA_OPTIONS=-Xmx2g -XX:MaxMetaspaceSize=128m
 
-@rem -----------------------------------------------
-@rem Search the complete name of target\fim-*.jar
-@rem     Useful info found here
-@rem     https://superuser.com/questions/489240/how-to-get-filename-only-without-path-in-windows-command-line
-@rem -----------------------------------------------
-for %%f in ("%baseDir%target\fim-*.jar") do (
-    set JAR_FILE=%%~nxf
-)
-
 @rem In case it's the source jar that is found, remove the '-sources'
 set JAR_FILE=%JAR_FILE:-sources=%
 
-java %JAVA_OPTIONS% -jar "%baseDir%target\%JAR_FILE%" %1 %2 %3 %4 %5 %6 %7 %8 %9 %10
+java %JAVA_OPTIONS% -jar "%baseDir%build\libs\fim-fat.jar" %1 %2 %3 %4 %5 %6 %7 %8 %9 %10
 
 @rem -------------------------------------------------------------------------------------------------------------------

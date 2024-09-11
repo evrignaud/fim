@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import org.fim.tooling.ObjectAssert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
@@ -31,7 +32,7 @@ public class DuplicatedFilesTest {
     private DuplicatedFiles a2;
     private DuplicatedFiles b;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         a1 = new DuplicatedFiles(Arrays.asList("file_1", "file_2"));
         a2 = new DuplicatedFiles(Arrays.asList("file_1", "file_2"));

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import com.google.common.base.MoreObjects;
@@ -27,8 +28,8 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class Range implements Comparable<Range> {
-    private long from;
-    private long to;
+    private final long from;
+    private final long to;
 
     /**
      * @param from the initial index of the range, inclusive
@@ -94,14 +95,12 @@ public class Range implements Comparable<Range> {
             return true;
         }
 
-        if (other == null || !(other instanceof Range)) {
+        if (!(other instanceof Range range)) {
             return false;
         }
 
-        Range range = (Range) other;
-
         return Objects.equals(this.from, range.from)
-            && Objects.equals(this.to, range.to);
+               && Objects.equals(this.to, range.to);
     }
 
     @Override
@@ -112,10 +111,10 @@ public class Range implements Comparable<Range> {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("from", from)
-            .add("to", to)
-            .add("length", to - from)
-            .toString();
+                .add("from", from)
+                .add("to", to)
+                .add("length", to - from)
+                .toString();
     }
 
     @Override

@@ -16,14 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal;
 
 import org.fim.model.FilePattern;
 import org.fim.model.FimIgnore;
 import org.fim.tooling.RepositoryTool;
 import org.fim.tooling.StateAssert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.mockito.Mockito;
 
 import java.io.IOException;
@@ -38,12 +40,11 @@ public class FimIgnoreManagerTest extends StateAssert {
     private FimIgnoreManager cut;
 
     private BasicFileAttributes fileAttributes;
-    private RepositoryTool tool;
     private Path rootDir;
 
-    @Before
-    public void setUp() throws IOException {
-        tool = new RepositoryTool(this.getClass());
+    @BeforeEach
+    public void setUp(TestInfo testInfo) throws IOException {
+        RepositoryTool tool = new RepositoryTool(testInfo);
         rootDir = tool.getRootDir();
 
         cut = new FimIgnoreManager(tool.getContext());
@@ -93,20 +94,21 @@ public class FimIgnoreManagerTest extends StateAssert {
         assertThat(fimIgnore.getFilesToIgnoreLocally().size()).isEqualTo(0);
         assertThat(fimIgnore.getFilesToIgnoreInAllDirectories().size()).isEqualTo(0);
 
-        String fileContent = "**/*.mp3\n" +
-            "*.mp4\n" +
-            "**/.git\n" +
-            "foo\n" +
-            "**/bar";
+        String fileContent = """
+                **/*.mp3
+                *.mp4
+                **/.git
+                foo
+                **/bar""";
         Files.write(rootDir.resolve(".fimignore"), fileContent.getBytes(), CREATE);
 
         fimIgnore = cut.loadFimIgnore(rootDir);
         assertThat(fimIgnore.getFilesToIgnoreLocally().toString()).isEqualTo(
-            "[FilePattern{fileName=foo, compiled=^foo$}," +
+                "[FilePattern{fileName=foo, compiled=^foo$}," +
                 " FilePattern{fileName=*.mp4, compiled=^.*\\.mp4$}]");
 
         assertThat(fimIgnore.getFilesToIgnoreInAllDirectories().toString()).isEqualTo(
-            "[FilePattern{fileName=bar, compiled=^bar$}," +
+                "[FilePattern{fileName=bar, compiled=^bar$}," +
                 " FilePattern{fileName=.git, compiled=^\\.git$}," +
                 " FilePattern{fileName=*.mp3, compiled=^.*\\.mp3$}]");
     }

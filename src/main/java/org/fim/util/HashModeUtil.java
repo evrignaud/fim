@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.util;
 
 import org.fim.model.HashMode;
@@ -26,38 +27,20 @@ import static org.fim.model.HashMode.hashMediumBlock;
 
 public class HashModeUtil {
     public static String hashModeToString(HashMode hashMode) {
-        switch (hashMode) {
-            case dontHash:
-                return "do not hash";
-
-            case hashSmallBlock:
-                return "super-fast";
-
-            case hashMediumBlock:
-                return "fast";
-
-            case hashAll:
-                return "full";
-        }
-
-        throw new IllegalArgumentException("Invalid hash mode " + hashMode);
+        return switch (hashMode) {
+            case dontHash -> "do not hash";
+            case hashSmallBlock -> "super-fast";
+            case hashMediumBlock -> "fast";
+            case hashAll -> "full";
+        };
     }
 
     public static boolean isCompatible(HashMode hashMode, HashMode toCheck) {
-        switch (hashMode) {
-            case hashAll:
-                return true;
-
-            case hashMediumBlock:
-                return toCheck != hashAll;
-
-            case hashSmallBlock:
-                return toCheck != hashAll && toCheck != hashMediumBlock;
-
-            case dontHash:
-                return toCheck == dontHash;
-        }
-
-        return false;
+        return switch (hashMode) {
+            case hashAll -> true;
+            case hashMediumBlock -> toCheck != hashAll;
+            case hashSmallBlock -> toCheck != hashAll && toCheck != hashMediumBlock;
+            case dontHash -> toCheck == dontHash;
+        };
     }
 }

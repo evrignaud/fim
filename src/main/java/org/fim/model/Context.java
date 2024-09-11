@@ -16,20 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.fim.model;
 
-import com.rits.cloning.Cloner;
+package org.fim.model;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.fim.model.HashMode.hashAll;
 
 public class Context {
     public static final String DOT_FIM_DIR = ".fim";
-
-    private static final Cloner CLONER = new Cloner();
 
     private boolean invokedFromSubDirectory;
     private Path currentDirectory;
@@ -51,8 +49,8 @@ public class Context {
     private boolean dynamicScaling;
     private boolean sortAscending;
     private SortMethod sortMethod;
-    private ArrayList<FilePattern> includePatterns;
-    private ArrayList<FilePattern> excludePatterns;
+    private List<FilePattern> includePatterns;
+    private List<FilePattern> excludePatterns;
     private OutputType outputType;
 
     public Context() {
@@ -249,19 +247,19 @@ public class Context {
         this.sortMethod = sortMethod;
     }
 
-    public void setIncludePatterns(ArrayList<FilePattern> includePatterns) {
+    public void setIncludePatterns(List<FilePattern> includePatterns) {
         this.includePatterns = includePatterns;
     }
 
-    public ArrayList<FilePattern> getIncludePatterns() {
+    public List<FilePattern> getIncludePatterns() {
         return includePatterns;
     }
 
-    public void setExcludePatterns(ArrayList<FilePattern> excludePatterns) {
+    public void setExcludePatterns(List<FilePattern> excludePatterns) {
         this.excludePatterns = excludePatterns;
     }
 
-    public ArrayList<FilePattern> getExcludePatterns() {
+    public List<FilePattern> getExcludePatterns() {
         return excludePatterns;
     }
 
@@ -275,6 +273,45 @@ public class Context {
 
     @Override
     public Context clone() {
-        return CLONER.deepClone(this);
+        Context cloned = new Context();
+        cloned.invokedFromSubDirectory = this.invokedFromSubDirectory;
+        cloned.currentDirectory = this.currentDirectory;
+        cloned.repositoryRootDir = this.repositoryRootDir;
+        cloned.verbose = this.verbose;
+        cloned.hashMode = this.hashMode;
+        cloned.comment = this.comment;
+        cloned.useLastState = this.useLastState;
+        cloned.threadCount = this.threadCount;
+        cloned.threadCountSpecified = this.threadCountSpecified;
+        cloned.masterFimRepositoryDir = this.masterFimRepositoryDir;
+        cloned.alwaysYes = this.alwaysYes;
+        cloned.displayStackTrace = this.displayStackTrace;
+        cloned.truncateOutput = this.truncateOutput;
+        cloned.purgeStates = this.purgeStates;
+        cloned.ignored = this.ignored.clone();
+        cloned.removeDuplicates = this.removeDuplicates;
+        cloned.calledFromTest = this.calledFromTest;
+        cloned.dynamicScaling = this.dynamicScaling;
+        cloned.sortAscending = this.sortAscending;
+        cloned.sortMethod = this.sortMethod;
+
+        cloned.includePatterns = null;
+        if (this.includePatterns != null) {
+            cloned.includePatterns = new ArrayList<>();
+            for (FilePattern pattern : this.includePatterns) {
+                cloned.includePatterns.add(pattern.clone());
+            }
+        }
+
+        cloned.excludePatterns = null;
+        if (this.excludePatterns != null) {
+            cloned.excludePatterns = new ArrayList<>();
+            for (FilePattern pattern : this.excludePatterns) {
+                cloned.excludePatterns.add(pattern.clone());
+            }
+        }
+
+        cloned.outputType = this.outputType;
+        return cloned;
     }
 }

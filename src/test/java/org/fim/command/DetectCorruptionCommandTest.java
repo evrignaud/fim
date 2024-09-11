@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.fim.command.exception.BadFimUsageException;
@@ -24,8 +25,10 @@ import org.fim.model.Context;
 import org.fim.model.FileState;
 import org.fim.model.State;
 import org.fim.tooling.RepositoryTool;
-import org.junit.Before;
-import org.junit.Test;
+import org.fim.util.TimeUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,6 +42,7 @@ import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
 import static org.fim.model.HashMode.hashMediumBlock;
 import static org.fim.model.HashMode.hashSmallBlock;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DetectCorruptionCommandTest {
     private InitCommand initCommand;
@@ -47,31 +51,37 @@ public class DetectCorruptionCommandTest {
 
     private RepositoryTool tool;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    public void setUp(TestInfo testInfo) throws IOException {
         initCommand = new InitCommand();
         statusCommand = new StatusCommand();
         detectCorruptionCommand = new DetectCorruptionCommand();
 
-        tool = new RepositoryTool(this.getClass());
+        tool = new RepositoryTool(testInfo);
     }
 
-    @Test(expected = BadFimUsageException.class)
+    @Test
     public void dontHash_NotAllowed() throws Exception {
         Context context = tool.createContext(dontHash, false);
-        detectCorruptionCommand.execute(context);
+        assertThrows(BadFimUsageException.class, () -> {
+            detectCorruptionCommand.execute(context);
+        });
     }
 
-    @Test(expected = BadFimUsageException.class)
+    @Test
     public void hashSmallBlock_NotAllowed() throws Exception {
         Context context = tool.createContext(hashSmallBlock, false);
-        detectCorruptionCommand.execute(context);
+        assertThrows(BadFimUsageException.class, () -> {
+            detectCorruptionCommand.execute(context);
+        });
     }
 
-    @Test(expected = BadFimUsageException.class)
+    @Test
     public void hashMediumBlock_NotAllowed() throws Exception {
         Context context = tool.createContext(hashMediumBlock, false);
-        detectCorruptionCommand.execute(context);
+        assertThrows(BadFimUsageException.class, () -> {
+            detectCorruptionCommand.execute(context);
+        });
     }
 
     @Test
@@ -93,12 +103,12 @@ public class DetectCorruptionCommandTest {
 
         compareResult = (CompareResult) detectCorruptionCommand.execute(context);
         assertThat(compareResult.getCorrupted().size()).isEqualTo(1);
-        FileState fileState = compareResult.getCorrupted().get(0).getFileState();
+        FileState fileState = compareResult.getCorrupted().getFirst().getFileState();
         assertThat(fileState.getFileName()).isEqualTo("file03");
     }
 
     private void doSomeModifications() throws IOException {
-        tool.sleepSafely(1_000); // Ensure to increase lastModified at least of 1 second
+        TimeUtil.sleepSafely(1_000); // Ensure to increase lastModified at least of 1 second
 
         tool.touchLastModified("file01");
 
@@ -122,6 +132,7 @@ public class DetectCorruptionCommandTest {
         Files.write(file, bytes, CREATE);
 
         // Restore the original timestamps
-        Files.getFileAttributeView(file, BasicFileAttributeView.class).setTimes(attributes.lastModifiedTime(), attributes.lastAccessTime(), attributes.creationTime());
+        Files.getFileAttributeView(file, BasicFileAttributeView.class)
+                .setTimes(attributes.lastModifiedTime(), attributes.lastAccessTime(), attributes.creationTime());
     }
 }

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.fim.command.exception.DontWantToContinueException;
@@ -88,7 +89,8 @@ public class InitCommand extends AbstractCommand {
         try {
             Files.createDirectories(context.getRepositoryStatesDir());
         } catch (IOException ex) {
-            Logger.error(String.format("Not able to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()), ex, context.isDisplayStackTrace());
+            Logger.error(String.format("Not able to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()), ex,
+                    context.isDisplayStackTrace());
             throw new RepositoryException();
         }
 

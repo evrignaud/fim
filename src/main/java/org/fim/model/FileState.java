@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,7 +26,6 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
-import com.rits.cloning.Cloner;
 
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
@@ -35,8 +35,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class FileState implements Hashable {
-    private static final Cloner CLONER = new Cloner();
-
     private String fileName;
     private long fileLength;
     private FileTime fileTime;
@@ -170,17 +168,15 @@ public class FileState implements Hashable {
             return true;
         }
 
-        if (other == null || !(other instanceof FileState)) {
+        if (!(other instanceof FileState otherFileState)) {
             return false;
         }
 
-        FileState otherFileState = (FileState) other;
-
         return Objects.equals(this.fileName, otherFileState.fileName)
-            && Objects.equals(this.fileLength, otherFileState.fileLength)
-            && Objects.equals(this.fileTime, otherFileState.fileTime)
-            && Objects.equals(this.fileHash, otherFileState.fileHash)
-            && Objects.equals(this.fileAttributes, otherFileState.fileAttributes);
+               && Objects.equals(this.fileLength, otherFileState.fileLength)
+               && Objects.equals(this.fileTime, otherFileState.fileTime)
+               && Objects.equals(this.fileHash, otherFileState.fileHash)
+               && Objects.equals(this.fileAttributes, otherFileState.fileAttributes);
     }
 
     /**
@@ -199,7 +195,7 @@ public class FileState implements Hashable {
      */
     public long longHashCode() {
         HashFunction hashFunction = Hashing.sha512();
-        Hasher hasher = hashFunction.newHasher(Constants._4_KB);
+        Hasher hasher = hashFunction.newHasher(Constants.SIZE_4_KB);
         hashObject(hasher, true);
         HashCode hash = hasher.hash();
         return hash.asLong();
@@ -208,13 +204,17 @@ public class FileState implements Hashable {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("fileName", fileName)
-            .add("fileLength", fileLength)
-            .add("fileTime", fileTime)
-            .add("fileHash", fileHash)
-            .add("fileAttributes", fileAttributes)
-            .add("newFileHash", newFileHash)
-            .toString();
+                .add("fileName", fileName)
+                .add("fileLength", fileLength)
+                .add("fileTime", fileTime)
+                .add("modification", modification)
+                .add("fileHash", fileHash)
+                .add("fileAttributes", fileAttributes)
+                .add("previousFileState", previousFileState)
+                .add("newFileHash", newFileHash)
+                .add("originalFileHash", originalFileHash)
+                .add("toRemove", toRemove)
+                .toString();
     }
 
     @Override
@@ -224,11 +224,11 @@ public class FileState implements Hashable {
 
     public void hashObject(Hasher hasher, boolean millisecondsRemoved) {
         hasher
-            .putString("FileState", Charsets.UTF_8)
-            .putChar(HASH_FIELD_SEPARATOR)
-            .putString(fileName, Charsets.UTF_8)
-            .putChar(HASH_FIELD_SEPARATOR)
-            .putLong(fileLength);
+                .putString("FileState", Charsets.UTF_8)
+                .putChar(HASH_FIELD_SEPARATOR)
+                .putString(fileName, Charsets.UTF_8)
+                .putChar(HASH_FIELD_SEPARATOR)
+                .putLong(fileLength);
 
         hasher.putChar(HASH_OBJECT_SEPARATOR);
         fileTime.hashObject(hasher, millisecondsRemoved);
@@ -240,10 +240,10 @@ public class FileState implements Hashable {
         if (fileAttributes != null) {
             for (Map.Entry<String, String> entry : fileAttributes.entrySet()) {
                 hasher
-                    .putString(entry.getKey(), Charsets.UTF_8)
-                    .putChar(':')
-                    .putChar(':')
-                    .putString(entry.getValue(), Charsets.UTF_8);
+                        .putString(entry.getKey(), Charsets.UTF_8)
+                        .putChar(':')
+                        .putChar(':')
+                        .putString(entry.getValue(), Charsets.UTF_8);
                 hasher.putChar(HASH_OBJECT_SEPARATOR);
             }
         }
@@ -251,7 +251,20 @@ public class FileState implements Hashable {
 
     @Override
     public FileState clone() {
-        return CLONER.deepClone(this);
+        FileState cloned = new FileState();
+        cloned.fileName = this.fileName;
+        cloned.fileLength = this.fileLength;
+        cloned.fileTime = this.fileTime.clone();
+        cloned.modification = this.modification;
+        cloned.fileHash = this.fileHash.clone();
+        cloned.fileAttributes = internAttributes(fileAttributes);
+        cloned.previousFileState = this.previousFileState != null ? this.previousFileState.clone() : null;
+
+        cloned.newFileHash = this.newFileHash != null ? this.newFileHash.clone() : null;
+        cloned.originalFileHash = this.originalFileHash != null ? this.originalFileHash.clone() : null;
+        cloned.toRemove = this.toRemove;
+
+        return cloned;
     }
 
     private Map<String, String> toMap(List<Attribute> attrs) {

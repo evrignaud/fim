@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.fim.command.exception.BadFimUsageException;
@@ -55,8 +56,9 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Remove duplicates found by the 'fdup' command.\n" +
-            "                                If you specify the '-M' option it removes duplicates based on a master repository";
+        return """
+                Remove duplicates found by the 'fdup' command.
+                                                If you specify the '-M' option it removes duplicates based on a master repository""";
     }
 
     @Override
@@ -124,7 +126,7 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
             if (masterFileState != null) {
                 duplicatedFilesCount++;
                 Logger.out.printf("'%s' is a duplicate of '%s/%s'%n", localFileState.getFileName(),
-                    context.getMasterFimRepositoryDir(), masterFileState.getFileName());
+                        context.getMasterFimRepositoryDir(), masterFileState.getFileName());
                 if (confirmAction(context, "remove it")) {
                     if (removeFile(context, normalizedCurrentDir, localFileState)) {
                         Logger.out.printf("  '%s' removed%n", localFileState.getFileName());
@@ -143,8 +145,8 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
         } else {
             Logger.newLine();
             Logger.out.printf("%d duplicate %s found. %d duplicate %s removed%n",
-                duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount),
-                totalFilesRemoved, pluralForLong("file", totalFilesRemoved));
+                    duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount),
+                    totalFilesRemoved, pluralForLong("file", totalFilesRemoved));
         }
         return totalFilesRemoved;
     }

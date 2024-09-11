@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import com.google.common.base.MoreObjects;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class DuplicatedFiles {
-    private List<String> duplicates;
+    private final List<String> duplicates;
 
     public DuplicatedFiles(List<String> duplicates) {
         this.duplicates = duplicates;
@@ -40,11 +41,9 @@ public class DuplicatedFiles {
             return true;
         }
 
-        if (other == null || !(other instanceof DuplicatedFiles)) {
+        if (!(other instanceof DuplicatedFiles duplicatedFiles)) {
             return false;
         }
-
-        DuplicatedFiles duplicatedFiles = (DuplicatedFiles) other;
 
         return Objects.equals(this.duplicates, duplicatedFiles.duplicates);
 
@@ -58,8 +57,8 @@ public class DuplicatedFiles {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("duplicates", duplicates)
-            .toString();
+                .add("duplicates", duplicates)
+                .toString();
     }
 
 }

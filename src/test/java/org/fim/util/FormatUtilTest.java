@@ -16,14 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.util;
 
 import org.fim.model.Attribute;
 import org.fim.model.FileHash;
 import org.fim.model.FileState;
 import org.fim.model.FileTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -35,7 +36,7 @@ public class FormatUtilTest {
     Calendar calendar;
     FileState fileState;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         int year = 115;
         int month = 11;

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal.hash;
 
 import org.fim.model.Constants;
@@ -23,9 +24,10 @@ import org.fim.model.Context;
 import org.fim.model.FileHash;
 import org.fim.tooling.RepositoryTool;
 import org.fim.tooling.StateAssert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,37 +42,34 @@ import static java.nio.file.StandardOpenOption.CREATE;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.hashSmallBlock;
-import static org.fim.tooling.TestConstants._1_KB;
+import static org.fim.tooling.TestConstants.SIZE_1_KB;
 import static org.fim.util.FileUtil.byteCountToDisplaySize;
 import static org.mockito.Mockito.mock;
 
-@Ignore // Don't run it during unit tests
+@Disabled // Don't run it during unit tests
 public class FileHasherPerformanceTest extends StateAssert {
     public static final int TOTAL_FILE_CONT = 2000;
-    private static byte contentBytes[];
+    private static final byte[] CONTENT_BYTES;
 
     static {
         StringBuilder builder = new StringBuilder();
         for (char c = 33; c < 126; c++) {
             builder.append(c);
         }
-        contentBytes = builder.toString().getBytes();
+        CONTENT_BYTES = builder.toString().getBytes();
     }
 
     private long globalSequenceCount = 0;
-    private HashProgress hashProgress;
     private Context context;
     private FileHasher cut;
-    private RepositoryTool tool;
-    private Path rootDir;
 
-    @Before
-    public void setUp() throws NoSuchAlgorithmException, IOException {
-        tool = new RepositoryTool(this.getClass(), hashSmallBlock);
-        rootDir = tool.getRootDir();
+    @BeforeEach
+    public void setUp(TestInfo testInfo) throws NoSuchAlgorithmException, IOException {
+        RepositoryTool tool = new RepositoryTool(testInfo, hashSmallBlock);
+        Path rootDir = tool.getRootDir();
         context = tool.getContext();
 
-        hashProgress = mock(HashProgress.class);
+        HashProgress hashProgress = mock(HashProgress.class);
 
         cut = new FileHasher(context, null, hashProgress, null, rootDir.toString());
     }
@@ -80,7 +79,7 @@ public class FileHasherPerformanceTest extends StateAssert {
         long start = System.currentTimeMillis();
 
         for (int fileCount = 0; fileCount < TOTAL_FILE_CONT; fileCount++) {
-            createFileWithSize(fileCount, (5 * Constants._1_MB) + 291);
+            createFileWithSize(fileCount, (5 * Constants.SIZE_1_MB) + 291);
         }
 
         long duration = System.currentTimeMillis() - start;
@@ -91,12 +90,13 @@ public class FileHasherPerformanceTest extends StateAssert {
     public void hashFiles() throws IOException {
         long start = System.currentTimeMillis();
 
-        List<FileHash> allHash = new ArrayList();
+        List<FileHash> allHash = new ArrayList<>();
         for (int fileCount = 0; fileCount < TOTAL_FILE_CONT; fileCount++) {
             Path fileToHash = context.getRepositoryRootDir().resolve("file_" + fileCount);
             allHash.add(cut.hashFile(fileToHash, Files.size(fileToHash)));
         }
 
+        assertThat(allHash.size()).isEqualTo(TOTAL_FILE_CONT);
         long duration = System.currentTimeMillis() - start;
         System.out.println("Took: " + formatDuration(duration, "HH:mm:ss"));
         System.out.println("Total bytes hash=" + byteCountToDisplaySize(cut.getTotalBytesHashed()));
@@ -114,7 +114,7 @@ public class FileHasherPerformanceTest extends StateAssert {
         }
 
         try (ByteArrayOutputStream out = new ByteArrayOutputStream(fileSize)) {
-            int contentSize = _1_KB / 4;
+            int contentSize = SIZE_1_KB / 4;
             int remaining = fileSize;
             for (; remaining > 0; globalSequenceCount++) {
                 int size = min(contentSize, remaining);
@@ -143,11 +143,11 @@ public class FileHasherPerformanceTest extends StateAssert {
     }
 
     private byte getContentByte(long sequenceCount, boolean fromTheEnd) {
-        int index = (int) (sequenceCount % contentBytes.length);
+        int index = (int) (sequenceCount % CONTENT_BYTES.length);
         if (fromTheEnd) {
-            index = contentBytes.length - 1 - index;
+            index = CONTENT_BYTES.length - 1 - index;
         }
-        return contentBytes[index];
+        return CONTENT_BYTES[index];
     }
 
 }

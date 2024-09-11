@@ -16,18 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import org.fim.tooling.ObjectAssert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FilePatternTest {
     private FilePattern a1;
     private FilePattern a2;
     private FilePattern b;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         a1 = new FilePattern("*.mp3");
         a2 = new FilePattern("*.mp3");

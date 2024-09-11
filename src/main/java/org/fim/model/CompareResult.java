@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import org.fim.util.Logger;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -37,20 +37,20 @@ import static org.fim.util.FormatUtil.formatLastModified;
 public class CompareResult {
     public static final String NOTHING = "[nothing]";
 
-    private static final Comparator<Difference> fileNameComparator = new Difference.FileNameComparator();
+    private static final Comparator<Difference> FILE_NAME_COMPARATOR = new Difference.FileNameComparator();
 
-    private List<Difference> added;
-    private List<Difference> copied;
-    private List<Difference> duplicated;
-    private List<Difference> dateModified;
-    private List<Difference> contentModified;
-    private List<Difference> attributesModified;
-    private List<Difference> renamed;
-    private List<Difference> deleted;
-    private List<Difference> corrupted;
+    private final List<Difference> added;
+    private final List<Difference> copied;
+    private final List<Difference> duplicated;
+    private final List<Difference> dateModified;
+    private final List<Difference> contentModified;
+    private final List<Difference> attributesModified;
+    private final List<Difference> renamed;
+    private final List<Difference> deleted;
+    private final List<Difference> corrupted;
 
-    private Context context;
-    private State lastState;
+    private final Context context;
+    private final State lastState;
 
     public CompareResult(Context context, State lastState) {
         this(context, lastState, null);
@@ -75,9 +75,9 @@ public class CompareResult {
         List<Difference> differences;
         if (state != null) {
             differences = state.getFileStates().stream()
-                .filter(fileState -> fileState.getModification() == modification)
-                .map(Difference::new)
-                .collect(Collectors.toList());
+                    .filter(fileState -> fileState.getModification() == modification)
+                    .map(Difference::new)
+                    .collect(Collectors.toList());
         } else {
             differences = new ArrayList<>();
         }
@@ -97,7 +97,7 @@ public class CompareResult {
     }
 
     private void sortDifferences(List<Difference> differences) {
-        Collections.sort(differences, fileNameComparator);
+        differences.sort(FILE_NAME_COMPARATOR);
     }
 
     public CompareResult displayChanges() {
@@ -107,7 +107,7 @@ public class CompareResult {
     public CompareResult displayChanges(String notModifiedMessage) {
         if (lastState != null) {
             Logger.out.printf("Comparing with the last committed state from %s%n", formatDate(lastState.getTimestamp()));
-            if (lastState.getComment().length() > 0) {
+            if (!lastState.getComment().isEmpty()) {
                 Logger.out.println("Comment: " + lastState.getComment());
             }
             Logger.newLine();
@@ -118,41 +118,44 @@ public class CompareResult {
 
             final String addedStr = String.format(stateFormat, "Added:");
             displayDifferences(context, addedStr, added,
-                diff -> Logger.out.printf(addedStr + "%s%n", diff.getFileState().getFileName()));
+                    diff -> Logger.out.printf(addedStr + "%s%n", diff.getFileState().getFileName()));
 
             final String copiedStr = String.format(stateFormat, "Copied:");
             displayDifferences(context, copiedStr, copied,
-                diff -> Logger.out.printf(copiedStr + "%s \t(was %s)%n", diff.getFileState().getFileName(), getPreviousFileName(diff)));
+                    diff -> Logger.out.printf(copiedStr + "%s \t(was %s)%n", diff.getFileState().getFileName(), getPreviousFileName(diff)));
 
             final String duplicatedStr = String.format(stateFormat, "Duplicated:");
             displayDifferences(context, duplicatedStr, duplicated,
-                diff -> Logger.out.printf(duplicatedStr + "%s = %s%s%n", diff.getFileState().getFileName(), getPreviousFileName(diff),
-                    formatModifiedAttributesWithoutTimeChange(diff, true)));
+                    diff -> Logger.out.printf(duplicatedStr + "%s = %s%s%n", diff.getFileState().getFileName(), getPreviousFileName(diff),
+                            formatModifiedAttributesWithoutTimeChange(diff, true)));
 
             final String dateModifiedStr = String.format(stateFormat, "Date modified:");
             displayDifferences(context, dateModifiedStr, dateModified,
-                diff -> Logger.out.printf(dateModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
+                    diff -> Logger.out.printf(dateModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(),
+                            formatModifiedAttributes(diff, false)));
 
             final String contentModifiedStr = String.format(stateFormat, "Content modified:");
             displayDifferences(context, contentModifiedStr, contentModified,
-                diff -> Logger.out.printf(contentModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
+                    diff -> Logger.out.printf(contentModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(),
+                            formatModifiedAttributes(diff, false)));
 
             final String attrsModifiedStr = String.format(stateFormat, "Attrs. modified:");
             displayDifferences(context, attrsModifiedStr, attributesModified,
-                diff -> Logger.out.printf(attrsModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
+                    diff -> Logger.out.printf(attrsModifiedStr + "%s \t%s%n", diff.getFileState().getFileName(),
+                            formatModifiedAttributes(diff, false)));
 
             final String renamedStr = String.format(stateFormat, "Renamed:");
             displayDifferences(context, renamedStr, renamed,
-                diff -> Logger.out.printf(renamedStr + "%s -> %s%s%n", getPreviousFileName(diff), diff.getFileState().getFileName(),
-                    formatModifiedAttributesWithoutTimeChange(diff, true)));
+                    diff -> Logger.out.printf(renamedStr + "%s -> %s%s%n", getPreviousFileName(diff), diff.getFileState().getFileName(),
+                            formatModifiedAttributesWithoutTimeChange(diff, true)));
 
             final String deletedStr = String.format(stateFormat, "Deleted:");
             displayDifferences(context, deletedStr, deleted,
-                diff -> Logger.out.printf(deletedStr + "%s%n", diff.getFileState().getFileName()));
+                    diff -> Logger.out.printf(deletedStr + "%s%n", diff.getFileState().getFileName()));
 
             final String corruptedStr = String.format(stateFormat, "Corrupted?:");
             displayDifferences(context, corruptedStr, corrupted,
-                diff -> Logger.out.printf(corruptedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
+                    diff -> Logger.out.printf(corruptedStr + "%s \t%s%n", diff.getFileState().getFileName(), formatModifiedAttributes(diff, false)));
 
             Logger.newLine();
         }
@@ -170,7 +173,7 @@ public class CompareResult {
     }
 
     static void displayDifferences(Context context, String actionStr,
-                                   List<Difference> differences, Consumer<Difference> displayOneDifference) {
+            List<Difference> differences, Consumer<Difference> displayOneDifference) {
         int truncateOutput = context.getTruncateOutput();
         if (truncateOutput < 1) {
             return;
@@ -217,7 +220,7 @@ public class CompareResult {
             String previousValue = getValue(previousFileAttributes, key);
             String currentValue = getValue(currentFileAttributes, key);
 
-            if (false == Objects.equals(previousValue, currentValue)) {
+            if (!Objects.equals(previousValue, currentValue)) {
                 modifCount++;
                 addSeparator(diff, modification);
                 modification.append(key).append(": ").append(previousValue).append(" -> ").append(currentValue);
@@ -247,39 +250,46 @@ public class CompareResult {
             fileTime.getCreationTime() == fileTime.getLastModified() && previousFileTime.getCreationTime() == previousFileTime.getLastModified()) {
             modifCount++;
             addSeparator(diff, modification);
-            modification.append("last modified: ").append(formatLastModified(diff.getPreviousFileState())).append(" -> ").append(formatLastModified(diff.getFileState()));
+            modification.append("last modified: ")
+                    .append(formatLastModified(diff.getPreviousFileState()))
+                    .append(" -> ")
+                    .append(formatLastModified(diff.getFileState()));
         } else {
             if (creationTimeChanged) {
                 modifCount++;
                 addSeparator(diff, modification);
-                modification.append("creation time: ").append(formatCreationTime(diff.getPreviousFileState())).append(" -> ").append(formatCreationTime(diff.getFileState()));
+                modification.append("creation time: ")
+                        .append(formatCreationTime(diff.getPreviousFileState()))
+                        .append(" -> ")
+                        .append(formatCreationTime(diff.getFileState()));
             }
 
             if (lastModifiedChanged) {
                 modifCount++;
                 addSeparator(diff, modification);
-                modification.append("last modified: ").append(formatLastModified(diff.getPreviousFileState())).append(" -> ").append(formatLastModified(diff.getFileState()));
+                modification.append("last modified: ")
+                        .append(formatLastModified(diff.getPreviousFileState()))
+                        .append(" -> ")
+                        .append(formatLastModified(diff.getFileState()));
             }
         }
         return modifCount;
     }
 
     static void addSeparator(Difference diff, StringBuilder modification) {
-        if (modification.length() == 0) {
+        if (modification.isEmpty()) {
             return;
         }
 
         modification.append("\n");
         int len = 17 + 1 + diff.getFileState().getFileName().length() + 1;
-        for (int index = 0; index < len; index++) {
-            modification.append(' ');
-        }
+        modification.append(" ".repeat(Math.max(0, len)));
         modification.append('\t');
     }
 
     static String getValue(Map<String, String> attributes, String key) {
         String value = attributes != null ? attributes.get(key) : null;
-        if (value == null || value.length() == 0) {
+        if (value == null || value.isEmpty()) {
             value = NOTHING;
         }
         return value;
@@ -362,7 +372,7 @@ public class CompareResult {
 
     public int modifiedCount() {
         return added.size() + copied.size() + duplicated.size() + dateModified.size() + contentModified.size() +
-            attributesModified.size() + renamed.size() + deleted.size() + corrupted.size();
+               attributesModified.size() + renamed.size() + deleted.size() + corrupted.size();
     }
 
     public ModificationCounts getModificationCounts() {

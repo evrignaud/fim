@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.fim.internal.StateManager;
@@ -74,7 +75,7 @@ public class PurgeStatesCommand extends AbstractCommand {
             Logger.info("No State to purge");
         } else {
             Logger.out.printf("You are going to delete the %d previous State %s, keeping only the last one%n",
-                statesPurgedCount, plural("file", statesPurgedCount));
+                    statesPurgedCount, plural("file", statesPurgedCount));
             if (confirmAction(context, "remove them")) {
                 for (Path stateToDelete : statesToPurge) {
                     Files.delete(stateToDelete);

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal;
 
 import org.fim.model.Context;
@@ -23,8 +24,9 @@ import org.fim.model.DuplicateResult;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.DuplicateAssert;
 import org.fim.tooling.RepositoryTool;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,17 +35,15 @@ import java.nio.file.Path;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DuplicateFinderTest extends DuplicateAssert {
-    private RepositoryTool tool;
-    private Context context;
     private DuplicateFinder cut;
     private BuildableState s;
     private Path rootDir;
 
-    @Before
-    public void setUp() throws IOException {
-        tool = new RepositoryTool(this.getClass());
+    @BeforeEach
+    public void setUp(TestInfo testInfo) throws IOException {
+        RepositoryTool tool = new RepositoryTool(testInfo);
         rootDir = tool.getRootDir();
-        context = tool.getContext();
+        Context context = tool.getContext();
 
         cut = new DuplicateFinder(context);
         s = new BuildableState(context).addFiles("file_01", "file_02_", "file_03", "file_04");
@@ -69,7 +69,7 @@ public class DuplicateFinderTest extends DuplicateAssert {
         DuplicateResult result = cut.findDuplicates(s);
         int totalWastedSpace = "file_10".length();
         assertThat(result.getDuplicateSets().size()).isEqualTo(1);
-        assertThat(result.getDuplicateSets().get(0).getWastedSpace()).isEqualTo(totalWastedSpace);
+        assertThat(result.getDuplicateSets().getFirst().getWastedSpace()).isEqualTo(totalWastedSpace);
         assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10"));
         assertThat(result.getTotalWastedSpace()).isEqualTo(totalWastedSpace);
 
@@ -79,7 +79,7 @@ public class DuplicateFinderTest extends DuplicateAssert {
         result = cut.findDuplicates(s);
         totalWastedSpace = ("file_10" + "file_11").length();
         assertThat(result.getDuplicateSets().size()).isEqualTo(1);
-        assertThat(result.getDuplicateSets().get(0).getWastedSpace()).isEqualTo(totalWastedSpace);
+        assertThat(result.getDuplicateSets().getFirst().getWastedSpace()).isEqualTo(totalWastedSpace);
         assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10", "file_11"));
         assertThat(result.getTotalWastedSpace()).isEqualTo(totalWastedSpace);
 

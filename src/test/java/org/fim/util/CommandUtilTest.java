@@ -16,22 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.util;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CommandUtilTest {
     private List<String> cmdArray;
     private List<String> badArgumentCmdArray;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         if (IS_OS_WINDOWS) {
             cmdArray = Arrays.asList("cmd", "/c", "dir /AH");
@@ -48,9 +50,11 @@ public class CommandUtilTest {
         Assertions.assertThat(output.length()).isGreaterThan(10);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void executingACommandWithWrongArgumentsThrowAnException() throws Exception {
-        CommandUtil.executeCommand(badArgumentCmdArray);
+        assertThrows(IllegalArgumentException.class, () -> {
+            CommandUtil.executeCommand(badArgumentCmdArray);
+        });
     }
 
     @Test
@@ -59,8 +63,10 @@ public class CommandUtilTest {
         Assertions.assertThat(lines.size()).isGreaterThan(5);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void executingACommandAndGetLinesWithWrongArgumentsThrowAnException() throws Exception {
-        CommandUtil.executeCommandAndGetLines(badArgumentCmdArray);
+        assertThrows(IllegalArgumentException.class, () -> {
+            CommandUtil.executeCommandAndGetLines(badArgumentCmdArray);
+        });
     }
 }

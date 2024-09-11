@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal;
 
 import org.fim.model.Constants;
@@ -29,12 +30,11 @@ import org.fim.model.State;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class DuplicateFinder {
-    private static final Comparator<FileState> hashComparator = new FileState.HashComparator();
+    private static final Comparator<FileState> HASH_COMPARATOR = new FileState.HashComparator();
 
     private final Context context;
 
@@ -46,7 +46,7 @@ public class DuplicateFinder {
         DuplicateResult result = new DuplicateResult(context);
 
         List<FileState> fileStates = new ArrayList<>(state.getFileStates());
-        Collections.sort(fileStates, hashComparator);
+        fileStates.sort(HASH_COMPARATOR);
 
         List<FileState> duplicatedFiles = new ArrayList<>();
         long previousFileLength = 0;

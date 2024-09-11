@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.tooling;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -24,8 +25,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.fim.model.Difference;
 
 public class FileNameDiff {
-    private String before;
-    private String after;
+    private final String before;
+    private final String after;
 
     public FileNameDiff(String before, String after) {
         this.before = before;

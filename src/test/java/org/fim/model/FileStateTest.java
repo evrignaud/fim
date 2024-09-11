@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import org.fim.tooling.ObjectAssert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
@@ -31,12 +32,15 @@ public class FileStateTest {
     private FileState a2;
     private FileState b;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        a1 = new FileState("file_1", 1L, new FileTime(1_000L), new FileHash("1", "11", "111"), Arrays.asList(new Attribute("n1", "v1"), new Attribute("n2", "v2"), new Attribute("n3", "v3")));
-        a2 = new FileState("file_1", 1L, new FileTime(1_000L), new FileHash("1", "11", "111"), Arrays.asList(new Attribute("n3", "v3"), new Attribute("n2", "v2"), new Attribute("n1", "v1")));
+        a1 = new FileState("file_1", 1L, new FileTime(1_000L), new FileHash("1", "11", "111"),
+                Arrays.asList(new Attribute("n1", "v1"), new Attribute("n2", "v2"), new Attribute("n3", "v3")));
+        a2 = new FileState("file_1", 1L, new FileTime(1_000L), new FileHash("1", "11", "111"),
+                Arrays.asList(new Attribute("n3", "v3"), new Attribute("n2", "v2"), new Attribute("n1", "v1")));
 
-        b = new FileState("file_2", 2L, new FileTime(2_000L), new FileHash("2", "22", "222"), Arrays.asList(new Attribute("n1", "v1"), new Attribute("n2", "v2"), new Attribute("n3", "v3")));
+        b = new FileState("file_2", 2L, new FileTime(2_000L), new FileHash("2", "22", "222"),
+                Arrays.asList(new Attribute("n1", "v1"), new Attribute("n2", "v2"), new Attribute("n3", "v3")));
     }
 
     @Test
@@ -87,12 +91,12 @@ public class FileStateTest {
         a2.getFileTime().setCreationTime(10_001L);
         assertThat(a1).isEqualTo(a2);
         assertThat(a1.longHashCode()).isEqualTo(a2.longHashCode());
-        assertThat(a1.hashCode()).isNotEqualTo(a2.hashCode());
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
 
         a2.getFileTime().setCreationTime(10_000L);
         a2.getFileTime().setLastModified(20_001L);
         assertThat(a1).isEqualTo(a2);
         assertThat(a1.longHashCode()).isEqualTo(a2.longHashCode());
-        assertThat(a1.hashCode()).isNotEqualTo(a2.hashCode());
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
     }
 }

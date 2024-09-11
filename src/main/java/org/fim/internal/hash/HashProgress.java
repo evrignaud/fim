@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal.hash;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -33,20 +34,20 @@ import static org.fim.util.FileUtil.byteCountToDisplaySize;
 public class HashProgress {
     public static final int PROGRESS_DISPLAY_FILE_COUNT = 10;
 
-    private static final List<Pair<Character, Integer>> progressChars = Arrays.asList(
-        Pair.of('.', 0),
-        Pair.of('o', 20_000_000),
-        Pair.of('8', 50_000_000),
-        Pair.of('O', 100_000_000),
-        Pair.of('@', 200_000_000),
-        Pair.of('#', 1000_000_000)
+    private static final List<Pair<Character, Integer>> PROGRESS_CHARS = Arrays.asList(
+            Pair.of('.', 0),
+            Pair.of('o', 20_000_000),
+            Pair.of('8', 50_000_000),
+            Pair.of('O', 100_000_000),
+            Pair.of('@', 200_000_000),
+            Pair.of('#', 1000_000_000)
     );
 
     private final Context context;
     private long summedFileLength;
     private int fileCount;
-    private int hashProgressWidth;
-    private CountDownLatch hashIndicator;
+    private final int hashProgressWidth;
+    private final CountDownLatch hashIndicator;
 
     public HashProgress(Context context) {
         this.context = context;
@@ -100,8 +101,8 @@ public class HashProgress {
 
     public String hashLegend() {
         StringBuilder sb = new StringBuilder();
-        for (int progressIndex = progressChars.size() - 1; progressIndex >= 0; progressIndex--) {
-            Pair<Character, Integer> progressPair = progressChars.get(progressIndex);
+        for (int progressIndex = PROGRESS_CHARS.size() - 1; progressIndex >= 0; progressIndex--) {
+            Pair<Character, Integer> progressPair = PROGRESS_CHARS.get(progressIndex);
             char marker = progressPair.getLeft();
             sb.append(marker);
 
@@ -120,8 +121,8 @@ public class HashProgress {
 
     char getProgressChar(long fileLength) {
         int progressIndex;
-        for (progressIndex = progressChars.size() - 1; progressIndex >= 0; progressIndex--) {
-            Pair<Character, Integer> progressPair = progressChars.get(progressIndex);
+        for (progressIndex = PROGRESS_CHARS.size() - 1; progressIndex >= 0; progressIndex--) {
+            Pair<Character, Integer> progressPair = PROGRESS_CHARS.get(progressIndex);
             if (fileLength >= progressPair.getRight()) {
                 return progressPair.getLeft();
             }

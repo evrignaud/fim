@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.fim.model.CompareResult;
@@ -23,11 +24,11 @@ import org.fim.model.Context;
 import org.fim.model.LogResult;
 import org.fim.model.State;
 import org.fim.tooling.RepositoryTool;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,13 +39,11 @@ public class PurgeStatesCommandTest {
     private PurgeStatesCommand purgeStatesCommand;
 
     private RepositoryTool tool;
-    private Path rootDir;
     private Context context;
 
-    @Before
-    public void setUp() throws IOException {
-        tool = new RepositoryTool(this.getClass());
-        rootDir = tool.getRootDir();
+    @BeforeEach
+    public void setUp(TestInfo testInfo) throws IOException {
+        tool = new RepositoryTool(testInfo);
         context = tool.getContext();
 
         initCommand = new InitCommand();

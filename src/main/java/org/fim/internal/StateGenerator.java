@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -37,7 +38,6 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
@@ -56,7 +56,7 @@ import static org.fim.util.HashModeUtil.hashModeToString;
 public class StateGenerator {
     private static final int FILES_QUEUE_CAPACITY = 500;
 
-    private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
+    private static final Comparator<FileState> FILE_NAME_COMPARATOR = new FileState.FileNameComparator();
 
     protected final Context context;
     final HashProgress hashProgress;
@@ -87,9 +87,10 @@ public class StateGenerator {
             usingThreads = String.format("%d %s", context.getThreadCount(), plural("thread", context.getThreadCount()));
         }
         Logger.info(String.format("Scanning recursively local files, using '%s' mode and %s",
-            hashModeToString(context.getHashMode()), usingThreads));
+                hashModeToString(context.getHashMode()), usingThreads));
         if (hashProgress.isProgressDisplayed()) {
-            Logger.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT, hashProgress.hashLegend());
+            Logger.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT,
+                    hashProgress.hashLegend());
         }
 
         State state = new State();
@@ -124,7 +125,7 @@ public class StateGenerator {
             overallTotalBytesHashed += fileHasher.getTotalBytesHashed();
         }
 
-        Collections.sort(state.getFileStates(), fileNameComparator);
+        state.getFileStates().sort(FILE_NAME_COMPARATOR);
 
         state.setIgnoredFiles(fimIgnoreManager.getIgnoredFiles());
 
@@ -222,10 +223,10 @@ public class StateGenerator {
 
         if (context.getHashMode() == dontHash) {
             Logger.info(String.format("Scanned %d %s (%s)%s, during %s%n",
-                fileCount, plural("file", fileCount), totalFileContentLengthStr, usingThreads, durationStr));
+                    fileCount, plural("file", fileCount), totalFileContentLengthStr, usingThreads, durationStr));
         } else {
             Logger.info(String.format("Scanned %d %s (%s)%s, hashed %s (avg %s/s), during %s%n",
-                fileCount, plural("file", fileCount), totalFileContentLengthStr, usingThreads, totalBytesHashedStr, throughputStr, durationStr));
+                    fileCount, plural("file", fileCount), totalFileContentLengthStr, usingThreads, totalBytesHashedStr, throughputStr, durationStr));
         }
     }
 

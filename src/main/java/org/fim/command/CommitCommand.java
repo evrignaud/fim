@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.fim.command.exception.BadFimUsageException;
@@ -92,7 +93,8 @@ public class CommitCommand extends AbstractCommand {
         }
 
         manager = new StateManager(context);
-        State currentState = new StateGenerator(context).generateState(context.getComment(), context.getRepositoryRootDir(), context.getCurrentDirectory());
+        State currentState = new StateGenerator(context).generateState(context.getComment(), context.getRepositoryRootDir(),
+                context.getCurrentDirectory());
         State lastState = manager.loadLastState();
         State lastStateToCompare = lastState;
 

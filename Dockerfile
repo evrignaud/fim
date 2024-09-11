@@ -17,15 +17,15 @@
 # along with Fim.  If not, see <https://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------------------------------------------------
 
-FROM java:8-jre-alpine
+FROM alpine/java:21-jdk
 
 MAINTAINER Etienne Vrignaud "evrignaud@gmail.com"
 
-ADD target/dist /fim
+ADD build/distributions /fim
 
 # install Fim
 RUN cd /fim && \
-    tar zxvf fim-*-distribution.tar.gz && \
+    tar zxvf fim-shadow*.tar && \
     ls -la
 
 ENV PATH $PATH:/fim

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.fim.command.exception.BadFimUsageException;
@@ -42,8 +43,9 @@ public class DetectCorruptionCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Find changes most likely caused by a hardware corruption or a filesystem bug.\n" +
-            "                                Change in content, but not in creation time and last modified time";
+        return """
+                Find changes most likely caused by a hardware corruption or a filesystem bug.
+                                                Change in content, but not in creation time and last modified time""";
     }
 
     @Override

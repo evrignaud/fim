@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal;
 
 import org.apache.commons.csv.CSVFormat;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DuplicateOutputGenerator {
-    private Context context;
+    private final Context context;
 
     public DuplicateOutputGenerator(Context context) {
         this.context = context;
@@ -43,14 +44,14 @@ public class DuplicateOutputGenerator {
     public void generate(DuplicateResult duplicateResult) {
         List<DuplicatedFiles> duplicates = generateDuplicatedFiles(duplicateResult);
         switch (context.getOutputType()) {
-            case csv:
-                generateCSV(duplicates);
-                break;
-
-            case json:
-                generateJson(duplicates);
-                break;
+            case csv -> generateCSV(duplicates);
+            case json -> generateJson(duplicates);
+            case human -> generateHuman(duplicates);
         }
+    }
+
+    private void generateHuman(List<DuplicatedFiles> duplicates) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     private List<DuplicatedFiles> generateDuplicatedFiles(DuplicateResult duplicateResult) {
@@ -88,7 +89,9 @@ public class DuplicateOutputGenerator {
     }
 
     private void generateCSV(List<DuplicatedFiles> duplicates) {
-        CSVFormat format = CSVFormat.DEFAULT.withHeader("SetIndex", "FileIndex", "WastedSpace", "FilePath", "FileName", "FileLength", "FileType");
+        CSVFormat format = CSVFormat.DEFAULT.builder()
+                .setHeader("SetIndex", "FileIndex", "WastedSpace", "FilePath", "FileName", "FileLength", "FileType")
+                .build();
         try (CSVPrinter csvPrinter = new CSVPrinter(Logger.out, format)) {
             int setIndex = 0;
             for (DuplicatedFiles files : duplicates) {
@@ -96,7 +99,8 @@ public class DuplicateOutputGenerator {
                 int fileIndex = 0;
                 for (DuplicatedFile file : files.getFileList()) {
                     fileIndex++;
-                    csvPrinter.printRecord(setIndex, fileIndex, files.getWastedSpace(), file.getPath(), file.getName(), file.getLength(), file.getType());
+                    csvPrinter.printRecord(setIndex, fileIndex, files.getWastedSpace(), file.getPath(), file.getName(), file.getLength(),
+                            file.getType());
                 }
             }
             csvPrinter.flush();
@@ -109,7 +113,7 @@ public class DuplicateOutputGenerator {
         JsonIO jsonIO = new JsonIO();
         try {
             jsonIO.getObjectWriter().writeValue(Logger.out, duplicates);
-            Logger.out.println("");
+            Logger.out.println();
         } catch (IOException ex) {
             Logger.error("Error displaying duplicates in JSON format", ex, context.isDisplayStackTrace());
         }

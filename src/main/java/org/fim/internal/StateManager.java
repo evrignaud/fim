@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal;
 
 import org.fim.model.Context;
@@ -62,7 +63,8 @@ public class StateManager {
     public State loadState(int stateNumber, boolean loadFullState) throws IOException {
         Path stateFile = getStateFile(stateNumber);
         if (!Files.exists(stateFile)) {
-            throw new IllegalStateException(String.format("Unable to load State file %d from directory %s", stateNumber, context.getRepositoryStatesDir()));
+            throw new IllegalStateException(
+                    String.format("Unable to load State file %d from directory %s", stateNumber, context.getRepositoryStatesDir()));
         }
 
         try {
@@ -82,32 +84,29 @@ public class StateManager {
         // Replace by 'no_hash' accurately to be able to compare the FileState entry
         // Keep the original hash before changing by 'no_hash' in order to fill correctly the previousFileState
         switch (context.getHashMode()) {
-            case dontHash:
+            case dontHash -> {
                 for (FileState fileState : state.getFileStates()) {
                     fileState.storeOriginalHash();
                     fileState.setFileHash(new FileHash(NO_HASH, NO_HASH, NO_HASH));
                 }
-                break;
-
-            case hashSmallBlock:
+            }
+            case hashSmallBlock -> {
                 for (FileState fileState : state.getFileStates()) {
                     fileState.storeOriginalHash();
                     FileHash fileHash = fileState.getFileHash();
                     fileState.setFileHash(new FileHash(fileHash.getSmallBlockHash(), NO_HASH, NO_HASH));
                 }
-                break;
-
-            case hashMediumBlock:
+            }
+            case hashMediumBlock -> {
                 for (FileState fileState : state.getFileStates()) {
                     fileState.storeOriginalHash();
                     FileHash fileHash = fileState.getFileHash();
                     fileState.setFileHash(new FileHash(fileHash.getSmallBlockHash(), fileHash.getMediumBlockHash(), NO_HASH));
                 }
-                break;
-
-            case hashAll:
+            }
+            case hashAll -> {
                 // Nothing to do
-                break;
+            }
         }
     }
 

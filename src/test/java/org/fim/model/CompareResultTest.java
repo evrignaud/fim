@@ -16,14 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import org.fim.tooling.BuildableContext;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.StateAssert;
 import org.fim.util.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -41,17 +42,12 @@ import static org.fim.model.CompareResult.formatModifiedAttributes;
 import static org.fim.model.CompareResult.getValue;
 
 public class CompareResultTest extends StateAssert {
-    private GregorianCalendar calendar;
-    private long time;
 
     private BuildableContext context;
 
-    private FileState fileState1;
-    private FileState fileState2;
-
     private Difference difference;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         context = defaultContext();
 
@@ -61,17 +57,17 @@ public class CompareResultTest extends StateAssert {
         int hrs = 13;
         int min = 12;
         int seconds = 10;
-        calendar = new GregorianCalendar(year + 1900, month - 1, day, hrs, min, seconds);
-        time = calendar.getTimeInMillis();
+        GregorianCalendar calendar = new GregorianCalendar(year + 1900, month - 1, day, hrs, min, seconds);
+        long time = calendar.getTimeInMillis();
 
         BuildableState s1 = new BuildableState(context).addFiles("file_01");
         BuildableState s2 = s1.clone();
 
-        fileState1 = s1.getFileStates().get(0);
+        FileState fileState1 = s1.getFileStates().getFirst();
         fileState1.getFileTime().setCreationTime(time + 1_000);
         fileState1.getFileTime().setLastModified(time + 2_000);
 
-        fileState2 = s2.getFileStates().get(0);
+        FileState fileState2 = s2.getFileStates().getFirst();
         fileState2.getFileTime().setCreationTime(time + 1_000);
         fileState2.getFileTime().setLastModified(time + 3_000);
 
@@ -95,11 +91,13 @@ public class CompareResultTest extends StateAssert {
     public void addSeparatorTest() {
         StringBuilder modification;
 
-        addSeparator(difference, (modification = new StringBuilder("")));
+        addSeparator(difference, (modification = new StringBuilder()));
         assertThat(modification.toString()).isEqualTo("");
 
         addSeparator(difference, (modification = new StringBuilder("content")));
-        assertThat(modification.toString()).isEqualTo("content\n                          \t");
+        assertThat(modification.toString()).isEqualTo("""
+                content
+                                          \t""");
     }
 
     @Test
@@ -151,7 +149,8 @@ public class CompareResultTest extends StateAssert {
             context.setTruncateOutput(2);
             displayDifferences(context, actionStr, differences, differenceConsumer);
             assertThat(called.get()).isEqualTo(true);
-            assertThat(outputStream.toString()).isEqualTo("  [Too many lines. Truncating the output] ..." + lineSeparator() + "action: 1 file more" + lineSeparator());
+            assertThat(outputStream.toString()).isEqualTo(
+                    "  [Too many lines. Truncating the output] ..." + lineSeparator() + "action: 1 file more" + lineSeparator());
         } finally {
             Logger.out = oldOut;
         }

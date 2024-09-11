@@ -16,15 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal.hash;
 
 import org.fim.tooling.StateAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class HashProgressTest extends StateAssert {
-    private HashProgress cut = new HashProgress(defaultContext());
+    private final HashProgress cut = new HashProgress(defaultContext());
 
     @Test
     public void canGetProgressChar() {

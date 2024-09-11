@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.util;
 
 import org.fim.model.Context;
 import org.fim.tooling.RepositoryTool;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.mockito.Mockito;
 
 import java.io.IOException;
@@ -38,9 +40,9 @@ public class DosFilePermissionsTest {
     private Context context;
     private RepositoryTool tool;
 
-    @Before
-    public void setUp() throws IOException {
-        tool = new RepositoryTool(this.getClass());
+    @BeforeEach
+    public void setUp(TestInfo testInfo) throws IOException {
+        tool = new RepositoryTool(testInfo);
 
         context = mock(Context.class);
     }

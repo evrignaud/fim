@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.util;
 
 import java.io.ByteArrayOutputStream;
@@ -35,10 +36,10 @@ public class Logger {
     public static int level = Level.info.ordinal();
     public static PrintStream out = System.out;
     public static boolean debugEnabled = checkDebugEnabled();
-    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public static String getCurrentDate() {
-        return dateFormat.format(new Date());
+        return DATE_FORMAT.format(new Date());
     }
 
     public static void rawDebug(String message) {
@@ -88,7 +89,7 @@ public class Logger {
 
     public static void newLine() {
         if (level >= Level.info.ordinal()) {
-            out.println("");
+            out.println();
         }
     }
 

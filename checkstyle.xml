@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC
+          "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+          "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<!-- This is a checkstyle configuration file.
+  -
+  - Checkstyle configuration: http://checkstyle.sourceforge.net/config.html
+  - List of standard checks: https://checkstyle.sourceforge.io/checks.html
+  -->
+<module name="Checker">
+
+    <!-- Checks that there are no tab characters in the file. -->
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true" />
+    </module>
+
+    <!-- Checks whether files end with a line separator. -->
+    <module name="NewlineAtEndOfFile" />
+
+    <!-- Checks that a specified pattern matches a single line in any file type. -->
+    <module name="RegexpSingleline">
+        <!-- \s matches whitespace character, $ matches end of line. -->
+        <property name="format" value="\s+$" />
+        <property name="message" value="Line has trailing spaces." />
+    </module>
+
+    <module name="FileLength">
+        <property name="max" value="2000" />
+    </module>
+
+    <!-- All Java AST specific tests live under TreeWalker module. -->
+    <module name="TreeWalker">
+
+        <!-- ==== IMPORT CHECKS ==== -->
+
+        <!-- Checks that there are no import statements that use the * notation. -->
+        <module name="AvoidStarImport">
+            <property name="allowStaticMemberImports" value="true" />
+        </module>
+
+        <!-- Checks for redundant import statements. -->
+        <module name="RedundantImport" />
+
+        <!-- Checks for unused import statements. -->
+        <module name="UnusedImports">
+            <property name="processJavadoc" value="true" />
+        </module>
+
+        <!-- Checks for imports from a set of illegal packages. -->
+        <module name="IllegalImport">
+            <property name="illegalPkgs" value="junit.framework" />
+        </module>
+
+        <!-- ==== NAMING CHECKS ==== -->
+
+        <module name="PackageName" />
+
+        <module name="TypeName" />
+
+        <module name="ConstantName" />
+
+        <module name="StaticVariableName" />
+
+        <module name="MemberName" />
+
+        <module name="MethodName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*(_[a-zA-Z0-9]+)*$" />
+        </module>
+
+        <module name="ParameterName" />
+
+        <module name="LocalFinalVariableName" />
+
+        <module name="LocalVariableName" />
+
+        <!-- ==== CODING CHECKS ==== -->
+
+        <!-- Checks for the placement of left curly braces ('{') for code blocks. -->
+        <module name="LeftCurly">
+            <!-- The brace must always be on the end of the line. -->
+            <property name="option" value="eol" />
+        </module>
+
+        <!-- Checks the placement of right curly braces ('}') for code blocks. -->
+        <module name="RightCurly">
+            <!-- brace should be on the same line as the next part of a multi-block statement. -->
+            <property name="option" value="same" />
+        </module>
+
+        <module name="EmptyLineSeparator">
+            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+        </module>
+
+        <module name="EmptyBlock" />
+
+        <module name="EmptyCatchBlock" />
+
+        <!-- Checks for braces around code blocks. -->
+        <module name="NeedBraces" />
+
+        <!-- Checks that long constants are defined with an upper ell. -->
+        <module name="UpperEll" />
+
+        <!-- Checks for fall-through in switch statements. -->
+        <module name="FallThrough" />
+
+        <!-- ==== MODIFIERS CHECKS ==== -->
+
+        <!-- Checks that the order of modifiers conforms to the suggestions in the Java Language specification -->
+        <module name="ModifierOrder" />
+
+        <!-- Checks for redundant modifiers. -->
+        <module name="RedundantModifier" />
+
+        <!-- ==== WHITESPACE CHECKS ==== -->
+
+        <!-- Checks that a token is surrounded by whitespace. -->
+        <module name="WhitespaceAround" />
+
+        <!-- Checks that a token is followed by whitespace -->
+        <module name="WhitespaceAfter" />
+
+        <!-- Checks that there is no whitespace before a token. -->
+        <module name="NoWhitespaceBefore" />
+
+        <!-- Checks the policy on the padding of parentheses. -->
+        <module name="ParenPad" />
+
+        <!-- Checks correct indentation of Java code. -->
+        <module name="Indentation">
+            <property name="basicOffset" value="4" />
+            <property name="braceAdjustment" value="0" />
+            <property name="caseIndent" value="4" />
+            <property name="throwsIndent" value="4" />
+            <property name="lineWrappingIndentation" value="4" />
+            <property name="arrayInitIndent" value="8" />
+        </module>
+
+        <!-- ==== DESIGN CHECKS ==== -->
+
+        <module name="MissingOverride" />
+
+        <module name="MutableException" />
+
+        <module name="MethodLength">
+            <property name="max" value="150" />
+        </module>
+
+        <module name="ParameterNumber">
+            <property name="max" value="9" />
+            <property name="tokens" value="METHOD_DEF" />
+        </module>
+
+        <module name="CyclomaticComplexity">
+            <property name="max" value="15" />
+        </module>
+
+    </module>
+</module>

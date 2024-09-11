@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal;
 
 import com.google.gson.Gson;
@@ -38,7 +39,7 @@ import java.nio.file.Path;
 public class SettingsManager {
     public static final String SETTINGS_FILE = "settings.json";
 
-    private Path settingsFile;
+    private final Path settingsFile;
     private Settings settings;
 
     public SettingsManager(Context context) {

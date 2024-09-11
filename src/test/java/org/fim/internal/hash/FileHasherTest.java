@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal.hash;
 
 import com.blackducksoftware.tools.commonframework.core.encoding.Ascii85Encoder;
@@ -28,197 +29,217 @@ import org.fim.model.HashMode;
 import org.fim.model.Range;
 import org.fim.tooling.RepositoryTool;
 import org.fim.tooling.StateAssert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.fim.util.TestAllHashModes;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestInfo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.Collection;
 
 import static java.lang.Math.min;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.dontHash;
-import static org.fim.model.HashMode.hashAll;
-import static org.fim.model.HashMode.hashMediumBlock;
 import static org.fim.model.HashMode.hashSmallBlock;
 import static org.fim.tooling.TestConstants.NO_HASH;
-import static org.fim.tooling.TestConstants._100_MB;
-import static org.fim.tooling.TestConstants._10_KB;
-import static org.fim.tooling.TestConstants._12_KB;
-import static org.fim.tooling.TestConstants._1_KB;
-import static org.fim.tooling.TestConstants._1_MB;
-import static org.fim.tooling.TestConstants._24_KB;
-import static org.fim.tooling.TestConstants._2_KB;
-import static org.fim.tooling.TestConstants._2_MB;
-import static org.fim.tooling.TestConstants._30_KB;
-import static org.fim.tooling.TestConstants._30_MB;
-import static org.fim.tooling.TestConstants._3_MB;
-import static org.fim.tooling.TestConstants._4_KB;
-import static org.fim.tooling.TestConstants._512_KB;
-import static org.fim.tooling.TestConstants._60_MB;
-import static org.fim.tooling.TestConstants._6_KB;
-import static org.fim.tooling.TestConstants._8_KB;
-import static org.fim.util.FileUtil.byteCountToDisplaySize;
+import static org.fim.tooling.TestConstants.SIZE_100_MB;
+import static org.fim.tooling.TestConstants.SIZE_10_KB;
+import static org.fim.tooling.TestConstants.SIZE_12_KB;
+import static org.fim.tooling.TestConstants.SIZE_1_KB;
+import static org.fim.tooling.TestConstants.SIZE_1_MB;
+import static org.fim.tooling.TestConstants.SIZE_24_KB;
+import static org.fim.tooling.TestConstants.SIZE_2_KB;
+import static org.fim.tooling.TestConstants.SIZE_2_MB;
+import static org.fim.tooling.TestConstants.SIZE_30_KB;
+import static org.fim.tooling.TestConstants.SIZE_30_MB;
+import static org.fim.tooling.TestConstants.SIZE_3_MB;
+import static org.fim.tooling.TestConstants.SIZE_4_KB;
+import static org.fim.tooling.TestConstants.SIZE_512_KB;
+import static org.fim.tooling.TestConstants.SIZE_60_MB;
+import static org.fim.tooling.TestConstants.SIZE_6_KB;
+import static org.fim.tooling.TestConstants.SIZE_8_KB;
 import static org.mockito.Mockito.mock;
 
-@RunWith(Parameterized.class)
 public class FileHasherTest extends StateAssert {
-    public static final Charset UTF8 = Charset.forName("UTF-8");
-    private static byte contentBytes[];
+    public static final Charset UTF8 = StandardCharsets.UTF_8;
+    private static final byte[] CONTENT_BYTES;
 
     static {
         StringBuilder builder = new StringBuilder();
         for (char c = 33; c < 126; c++) {
             builder.append(c);
         }
-        contentBytes = builder.toString().getBytes();
+        CONTENT_BYTES = builder.toString().getBytes();
     }
 
     private long globalSequenceCount = 0;
-    private HashProgress hashProgress;
-    private HashMode hashMode;
     private Context context;
     private FileHasher cut;
-    private RepositoryTool tool;
-    private Path rootDir;
 
-    public FileHasherTest(final HashMode hashMode) {
-        this.hashMode = hashMode;
+    private TestInfo testInfo;
+
+    @BeforeEach
+    void init(TestInfo testInfo) {
+        this.testInfo = testInfo;
     }
 
-    @Parameterized.Parameters(name = "Hash mode: {0}")
-    public static Collection<Object[]> parameters() {
-        return Arrays.asList(new Object[][]{
-            {dontHash},
-            {hashSmallBlock},
-            {hashMediumBlock},
-            {hashAll}
-        });
+    public void setUp(HashMode hashMode) {
+        try {
+            RepositoryTool tool = new RepositoryTool(testInfo, hashMode);
+            Path rootDir = tool.getRootDir();
+            context = tool.getContext();
+
+            HashProgress hashProgress = mock(HashProgress.class);
+
+            cut = new FileHasher(context, null, hashProgress, null, rootDir.toString());
+        } catch (IOException | NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Before
-    public void setUp() throws NoSuchAlgorithmException, IOException {
-        tool = new RepositoryTool(this.getClass(), hashMode);
-        rootDir = tool.getRootDir();
-        context = tool.getContext();
+    @TestAllHashModes
+    public void hashAn_Empty_File(HashMode hashMode) throws IOException {
+        setUp(hashMode);
 
-        hashProgress = mock(HashProgress.class);
-
-        cut = new FileHasher(context, null, hashProgress, null, rootDir.toString());
+        checkFileHash(hashMode, 0,
+                new Range[] { new Range(0, 0) },
+                new Range[] { new Range(0, 0) });
     }
 
-    @Test
-    public void hashAn_Empty_File() throws IOException {
-        checkFileHash(0,
-            new Range[]{new Range(0, 0)},
-            new Range[]{new Range(0, 0)});
+    @TestAllHashModes
+    public void hashA_2KB_File(HashMode hashMode) throws IOException {
+        setUp(hashMode);
+
+        checkFileHash(hashMode, SIZE_2_KB + 157,
+                new Range[] { new Range(0, SIZE_2_KB + 157) },
+                new Range[] { new Range(0, SIZE_2_KB + 157) });
     }
 
-    @Test
-    public void hashA_2KB_File() throws IOException {
-        checkFileHash(_2_KB + 157,
-            new Range[]{new Range(0, _2_KB + 157)},
-            new Range[]{new Range(0, _2_KB + 157)});
+    @TestAllHashModes
+    public void hashA_4KB_File(HashMode hashMode) throws IOException {
+        setUp(hashMode);
+
+        checkFileHash(hashMode, SIZE_4_KB + 201,
+                new Range[] { new Range(0, SIZE_4_KB) },
+                new Range[] { new Range(0, SIZE_4_KB + 201) });
     }
 
-    @Test
-    public void hashA_4KB_File() throws IOException {
-        checkFileHash(_4_KB + 201,
-            new Range[]{new Range(0, _4_KB)},
-            new Range[]{new Range(0, _4_KB + 201)});
+    @TestAllHashModes
+    public void hashA_6KB_File(HashMode hashMode) throws IOException {
+        setUp(hashMode);
+
+        checkFileHash(hashMode, SIZE_6_KB + 323,
+                new Range[] { new Range(0, SIZE_4_KB) },
+                new Range[] { new Range(0, SIZE_6_KB + 323) });
     }
 
-    @Test
-    public void hashA_6KB_File() throws IOException {
-        checkFileHash(_6_KB + 323,
-            new Range[]{new Range(0, _4_KB)},
-            new Range[]{new Range(0, _6_KB + 323)});
+    @TestAllHashModes
+    public void hashA_8KB_File(HashMode hashMode) throws IOException {
+        setUp(hashMode);
+
+        checkFileHash(hashMode, SIZE_8_KB + 723,
+                new Range[] { new Range(SIZE_4_KB, SIZE_8_KB) },
+                new Range[] { new Range(0, SIZE_8_KB + 723) });
     }
 
-    @Test
-    public void hashA_8KB_File() throws IOException {
-        checkFileHash(_8_KB + 723,
-            new Range[]{new Range(_4_KB, _8_KB)},
-            new Range[]{new Range(0, _8_KB + 723)});
+    @TestAllHashModes
+    public void hashA_10KB_File(HashMode hashMode) throws IOException {
+        setUp(hashMode);
+
+        checkFileHash(hashMode, SIZE_10_KB + 671,
+                new Range[] { new Range(SIZE_4_KB, SIZE_8_KB) },
+                new Range[] { new Range(0, SIZE_10_KB + 671) });
     }
 
-    @Test
-    public void hashA_10KB_File() throws IOException {
-        checkFileHash(_10_KB + 671,
-            new Range[]{new Range(_4_KB, _8_KB)},
-            new Range[]{new Range(0, _10_KB + 671)});
+    @TestAllHashModes
+    public void hashA_30KB_File(HashMode hashMode) throws IOException {
+        setUp(hashMode);
+
+        checkFileHash(hashMode, SIZE_30_KB + 257,
+                new Range[] { new Range(SIZE_4_KB, SIZE_8_KB), new Range(SIZE_12_KB, SIZE_12_KB + SIZE_4_KB),
+                        new Range(SIZE_24_KB, SIZE_24_KB + SIZE_4_KB) },
+                new Range[] { new Range(0, SIZE_30_KB + 257) });
     }
 
-    @Test
-    public void hashA_30KB_File() throws IOException {
-        checkFileHash(_30_KB + 257,
-            new Range[]{new Range(_4_KB, _8_KB), new Range(_12_KB, _12_KB + _4_KB), new Range(_24_KB, _24_KB + _4_KB)},
-            new Range[]{new Range(0, _30_KB + 257)});
+    @TestAllHashModes
+    public void hashA_1MB_File(HashMode hashMode) throws IOException {
+        setUp(hashMode);
+
+        checkFileHash(hashMode, SIZE_1_MB + 91,
+                new Range[] { new Range(SIZE_4_KB, SIZE_8_KB), new Range(SIZE_512_KB, SIZE_512_KB + SIZE_4_KB), new Range(SIZE_1_MB - SIZE_4_KB,
+                        SIZE_1_MB) },
+                new Range[] { new Range(0, SIZE_1_MB) });
     }
 
-    @Test
-    public void hashA_1MB_File() throws IOException {
-        checkFileHash(_1_MB + 91,
-            new Range[]{new Range(_4_KB, _8_KB), new Range(_512_KB, _512_KB + _4_KB), new Range(_1_MB - _4_KB, _1_MB)},
-            new Range[]{new Range(0, _1_MB)});
+    @TestAllHashModes
+    public void hashA_2MB_File(HashMode hashMode) throws IOException {
+        setUp(hashMode);
+
+        checkFileHash(hashMode, SIZE_2_MB + 51,
+                new Range[] { new Range(SIZE_4_KB, SIZE_8_KB), new Range(SIZE_1_MB, SIZE_1_MB + SIZE_4_KB), new Range(SIZE_2_MB - SIZE_4_KB,
+                        SIZE_2_MB) },
+                new Range[] { new Range(SIZE_1_MB, SIZE_2_MB) });
     }
 
-    @Test
-    public void hashA_2MB_File() throws IOException {
-        checkFileHash(_2_MB + 51,
-            new Range[]{new Range(_4_KB, _8_KB), new Range(_1_MB, _1_MB + _4_KB), new Range(_2_MB - _4_KB, _2_MB)},
-            new Range[]{new Range(_1_MB, _2_MB)});
+    @TestAllHashModes
+    public void hashA_3MB_File(HashMode hashMode) throws IOException {
+        setUp(hashMode);
+
+        checkFileHash(hashMode, SIZE_3_MB + 101,
+                new Range[] { new Range(SIZE_4_KB, SIZE_8_KB), new Range(SIZE_1_MB + SIZE_512_KB, SIZE_1_MB + SIZE_512_KB + SIZE_4_KB), new Range(
+                        SIZE_3_MB - SIZE_4_KB, SIZE_3_MB) },
+                new Range[] { new Range(SIZE_1_MB, SIZE_2_MB), new Range(SIZE_2_MB, SIZE_3_MB) });
     }
 
-    @Test
-    public void hashA_3MB_File() throws IOException {
-        checkFileHash(_3_MB + 101,
-            new Range[]{new Range(_4_KB, _8_KB), new Range(_1_MB + _512_KB, _1_MB + _512_KB + _4_KB), new Range(_3_MB - _4_KB, _3_MB)},
-            new Range[]{new Range(_1_MB, _2_MB), new Range(_2_MB, _3_MB)});
+    @TestAllHashModes
+    public void hashA_4MB_File(HashMode hashMode) throws IOException {
+        setUp(hashMode);
+
+        checkFileHash(hashMode, (4 * SIZE_1_MB) + (6 * SIZE_1_KB) + 594,
+                new Range[] { new Range(SIZE_4_KB, SIZE_8_KB), new Range(SIZE_2_MB, SIZE_2_MB + SIZE_4_KB),
+                        new Range(4 * SIZE_1_MB, (4 * SIZE_1_MB) + SIZE_4_KB) },
+                new Range[] { new Range(SIZE_1_MB, SIZE_2_MB), new Range(SIZE_2_MB, SIZE_3_MB), new Range(SIZE_3_MB, 4 * SIZE_1_MB) });
     }
 
-    @Test
-    public void hashA_4MB_File() throws IOException {
-        checkFileHash((4 * _1_MB) + (6 * _1_KB) + 594,
-            new Range[]{new Range(_4_KB, _8_KB), new Range(_2_MB, _2_MB + _4_KB), new Range(4 * _1_MB, (4 * _1_MB) + _4_KB)},
-            new Range[]{new Range(_1_MB, _2_MB), new Range(_2_MB, _3_MB), new Range(_3_MB, 4 * _1_MB)});
+    @TestAllHashModes
+    public void hashA_60MB_File(HashMode hashMode) throws IOException {
+        setUp(hashMode);
+
+        checkFileHash(hashMode, SIZE_60_MB + 291,
+                new Range[] { new Range(SIZE_4_KB, SIZE_8_KB), new Range(SIZE_30_MB, SIZE_30_MB + SIZE_4_KB), new Range(SIZE_60_MB - SIZE_4_KB,
+                        SIZE_60_MB) },
+                new Range[] { new Range(SIZE_1_MB, SIZE_2_MB), new Range(SIZE_30_MB, SIZE_30_MB + SIZE_1_MB), new Range(SIZE_60_MB - SIZE_1_MB,
+                        SIZE_60_MB) });
     }
 
-    @Test
-    public void hashA_60MB_File() throws IOException {
-        checkFileHash(_60_MB + 291,
-            new Range[]{new Range(_4_KB, _8_KB), new Range(_30_MB, _30_MB + _4_KB), new Range(_60_MB - _4_KB, _60_MB)},
-            new Range[]{new Range(_1_MB, _2_MB), new Range(_30_MB, _30_MB + _1_MB), new Range(_60_MB - _1_MB, _60_MB)});
-    }
+    // This is a heavy test that takes several hours to run and cannot be run every time.
+    @TestAllHashModes
+    @Disabled
+    public void checkHashIsCompleteInEveryCases(HashMode hashMode) throws IOException {
+        setUp(hashMode);
 
-    // This is an heavy test that takes several hours to run and cannot be run every time.
-    @Test
-    @Ignore
-    public void checkHashIsCompleteInEveryCases() throws IOException {
         if (hashMode != dontHash) {
             int initialSize = 4190000;
             Path file = createFileWithSize(initialSize - 1);
-            for (int fileSize = initialSize; fileSize < (10 * _1_MB); fileSize++) {
+            for (int fileSize = initialSize; fileSize < (10 * SIZE_1_MB); fileSize++) {
                 byte contentByte = getContentByte(globalSequenceCount, false);
                 globalSequenceCount++;
-                Files.write(file, new byte[]{contentByte}, CREATE, APPEND);
+                Files.write(file, new byte[] { contentByte }, CREATE, APPEND);
 
                 cut.hashFile(file, Files.size(file));
             }
         }
     }
 
-    private void checkFileHash(long fileSize, Range[] smallRanges, Range[] mediumRanges) throws IOException {
+    private void checkFileHash(HashMode hashMode, long fileSize, Range[] smallRanges, Range[] mediumRanges) throws IOException {
         Path fileToHash = createFileWithSize((int) fileSize);
 
         // Compute the expectedHash using a very simple algorithm and Guava Sha512 impl
@@ -226,22 +247,24 @@ public class FileHasherTest extends StateAssert {
 
         FileHash fileHash = cut.hashFile(fileToHash, Files.size(fileToHash));
 
-        assertRangesEqualsTo(smallRanges, mediumRanges);
+        assertRangesEqualsTo(hashMode, smallRanges, mediumRanges);
 
         // displayFileHash(fileSize, fileHash);
 
-        assertFileHashEqualsTo(fileSize, expectedHash, fileHash);
+        assertFileHashEqualsTo(hashMode, fileSize, expectedHash, fileHash);
     }
 
+    /*
     private void displayFileHash(long fileSize, FileHash fileHash) {
         System.out.println("File " + byteCountToDisplaySize(fileSize));
         System.out.println("\tsmallBlockHash=" + fileHash.getSmallBlockHash());
         System.out.println("\tmediumBlockHash=" + fileHash.getMediumBlockHash());
         System.out.println("\tfullHash=" + fileHash.getFullHash());
-        System.out.println("");
+        System.out.println();
     }
+    */
 
-    private void assertRangesEqualsTo(Range[] smallRanges, Range[] mediumRanges) {
+    private void assertRangesEqualsTo(HashMode hashMode, Range[] smallRanges, Range[] mediumRanges) {
         if (hashMode != dontHash) {
             BlockHasher smallBlockHasher = (BlockHasher) cut.getFrontHasher().getSmallBlockHasher();
             assertThat(smallBlockHasher.getRanges()).isEqualTo(smallRanges);
@@ -253,9 +276,9 @@ public class FileHasherTest extends StateAssert {
         }
     }
 
-    private void assertFileHashEqualsTo(long fileSize, FileHash expectedFileHash, FileHash fileHash) {
-        long expectedSmallSizeToHash = getExpectedSizeToHash(fileSize, _4_KB);
-        long expectedMediumSizeToHash = getExpectedSizeToHash(fileSize, _1_MB);
+    private void assertFileHashEqualsTo(HashMode hashMode, long fileSize, FileHash expectedFileHash, FileHash fileHash) {
+        long expectedSmallSizeToHash = getExpectedSizeToHash(fileSize, SIZE_4_KB);
+        long expectedMediumSizeToHash = getExpectedSizeToHash(fileSize, SIZE_1_MB);
         switch (hashMode) {
             case dontHash:
                 assertThat(fileHash.getSmallBlockHash()).isEqualTo(NO_HASH);
@@ -305,10 +328,10 @@ public class FileHasherTest extends StateAssert {
 
     private long getExpectedSizeToHash(long fileSize, int blockSize) {
         long sizeToHash;
-        if (fileSize > 4 * blockSize) {
-            sizeToHash = 3 * blockSize;
-        } else if (fileSize > 3 * blockSize) {
-            sizeToHash = 2 * blockSize;
+        if (fileSize > 4L * blockSize) {
+            sizeToHash = 3L * blockSize;
+        } else if (fileSize > 3L * blockSize) {
+            sizeToHash = 2L * blockSize;
         } else {
             sizeToHash = blockSize;
         }
@@ -352,7 +375,7 @@ public class FileHasherTest extends StateAssert {
         }
 
         try (ByteArrayOutputStream out = new ByteArrayOutputStream(fileSize)) {
-            int contentSize = _1_KB / 4;
+            int contentSize = SIZE_1_KB / 4;
             int remaining = fileSize;
             for (; remaining > 0; globalSequenceCount++) {
                 int size = min(contentSize, remaining);
@@ -381,11 +404,11 @@ public class FileHasherTest extends StateAssert {
     }
 
     private byte getContentByte(long sequenceCount, boolean fromTheEnd) {
-        int index = (int) (sequenceCount % contentBytes.length);
+        int index = (int) (sequenceCount % CONTENT_BYTES.length);
         if (fromTheEnd) {
-            index = contentBytes.length - 1 - index;
+            index = CONTENT_BYTES.length - 1 - index;
         }
-        return contentBytes[index];
+        return CONTENT_BYTES[index];
     }
 
     private FileHash computeExpectedHash(Path fileToHash, Range[] smallRanges, Range[] mediumRanges) throws IOException {
@@ -399,7 +422,7 @@ public class FileHasherTest extends StateAssert {
 
     private String generateBlockHash(byte[] fullContent, Range[] ranges) {
         HashFunction hashFunction = Hashing.sha512();
-        com.google.common.hash.Hasher hasher = hashFunction.newHasher(_100_MB);
+        com.google.common.hash.Hasher hasher = hashFunction.newHasher(SIZE_100_MB);
 
         for (Range range : ranges) {
             byte[] content = extractBlock(fullContent, range);
@@ -420,7 +443,7 @@ public class FileHasherTest extends StateAssert {
 
     private String hashContent(byte[] content) {
         HashFunction hashFunction = Hashing.sha512();
-        com.google.common.hash.Hasher hasher = hashFunction.newHasher(_100_MB);
+        com.google.common.hash.Hasher hasher = hashFunction.newHasher(SIZE_100_MB);
         hasher.putBytes(content);
         HashCode hash = hasher.hash();
         return ascii85Encode(hash.asBytes());

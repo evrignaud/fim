@@ -16,20 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 public class Constants {
-    public static final int _1_KB = 1_024;
-    public static final int _4_KB = 4 * _1_KB;
+    public static final int SIZE_1_KB = 1_024;
+    public static final int SIZE_4_KB = 4 * SIZE_1_KB;
 
-    public static final int _1_MB = 1_024 * _1_KB;
-    public static final int _10_MB = 10 * _1_MB;
-    public static final int _20_MB = 20 * _1_MB;
-    public static final int _50_MB = 50 * _1_MB;
-    public static final int _100_MB = 100 * _1_MB;
-    public static final int _200_MB = 200 * _1_MB;
+    public static final int SIZE_1_MB = 1_024 * SIZE_1_KB;
+    public static final int SIZE_10_MB = 10 * SIZE_1_MB;
+    public static final int SIZE_20_MB = 20 * SIZE_1_MB;
+    public static final int SIZE_50_MB = 50 * SIZE_1_MB;
+    public static final int SIZE_100_MB = 100 * SIZE_1_MB;
+    public static final int SIZE_200_MB = 200 * SIZE_1_MB;
 
-    public static final int _1_GB = 1_024 * _1_MB;
+    public static final int SIZE_1_GB = 1_024 * SIZE_1_MB;
 
     public static final String NO_HASH = "no_hash";
 }

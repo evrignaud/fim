@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 public class Attribute {
-    private String name;
-    private String value;
+    private final String name;
+    private final String value;
 
     public Attribute(String name, String value) {
         this.name = name;

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim;
 
 import org.apache.commons.cli.CommandLine;
@@ -68,86 +69,114 @@ import static org.fim.model.HashMode.hashMediumBlock;
 import static org.fim.model.HashMode.hashSmallBlock;
 
 public class Fim {
-    private List<AbstractCommand> commands = buildCommands();
-    private Options options = buildOptions();
+    private static boolean calledFromTest = false;
+    private static int exitStatus = 0;
+
+    private final List<AbstractCommand> commands = buildCommands();
+    private final Options options = buildOptions();
 
     public static void main(String[] args) throws Exception {
         try {
             Fim fim = new Fim();
             Context context = new Context();
             fim.run(args, context);
+            exitWithStatus(0);
         } catch (DontWantToContinueException ex) {
-            System.exit(0);
+            exitWithStatus(0);
         } catch (BadFimUsageException ex) {
-            System.exit(-1);
+            exitWithStatus(-1);
         } catch (RepositoryException ex) {
-            System.exit(-2);
+            exitWithStatus(-2);
         }
+    }
 
-        System.exit(0);
+    public static void setCalledFromTest(boolean calledFromTest) {
+        Fim.calledFromTest = calledFromTest;
+    }
+
+    public static void exitWithStatus(int exitStatus) {
+        Fim.exitStatus = exitStatus;
+        if (!calledFromTest) {
+            System.exit(exitStatus);
+        }
+    }
+
+    public static int getExitStatus() {
+        return Fim.exitStatus;
     }
 
     private List<AbstractCommand> buildCommands() {
         return Arrays.asList(
-            new InitCommand(),
-            new CommitCommand(),
-            new StatusCommand(),
-            new DiffCommand(),
-            new ResetFileAttributesCommand(),
-            new DetectCorruptionCommand(),
-            new FindDuplicatesCommand(),
-            new RemoveDuplicatesCommand(),
-            new LogCommand(),
-            new DisplayIgnoredFilesCommand(),
-            new RollbackCommand(),
-            new PurgeStatesCommand(),
-            new HelpCommand(this),
-            new VersionCommand());
+                new InitCommand(),
+                new CommitCommand(),
+                new StatusCommand(),
+                new DiffCommand(),
+                new ResetFileAttributesCommand(),
+                new DetectCorruptionCommand(),
+                new FindDuplicatesCommand(),
+                new RemoveDuplicatesCommand(),
+                new LogCommand(),
+                new DisplayIgnoredFilesCommand(),
+                new RollbackCommand(),
+                new PurgeStatesCommand(),
+                new HelpCommand(this),
+                new VersionCommand());
     }
 
     private Options buildOptions() {
         Options opts = new Options();
         opts.addOption(buildOption("d", "directory", "Run Fim into the specified directory").hasArg().build());
         opts.addOption(buildOption("e", "errors", "Display execution error details").build());
-        opts.addOption(buildOption("M", "master-fim-repository", "Fim repository directory that you want to use as remote master.\n" +
-            "Only for the 'remove-duplicates' command").hasArg().build());
+        opts.addOption(buildOption("M", "master-fim-repository", """
+                Fim repository directory that you want to use as remote master.
+                Only for the 'remove-duplicates' command""").hasArg().build());
         opts.addOption(buildOption("n", "do-not-hash", "Do not hash file content. Uses only file names and modification dates").build());
-        opts.addOption(buildOption("s", "super-fast-mode", "Use super-fast mode. Hash only 3 small blocks.\n" +
-            "One at the beginning, one in the middle and one at the end").build());
-        opts.addOption(buildOption("f", "fast-mode", "Use fast mode. Hash only 3 medium blocks.\n" +
-            "One at the beginning, one in the middle and one at the end").build());
+        opts.addOption(buildOption("s", "super-fast-mode", """
+                Use super-fast mode. Hash only 3 small blocks.
+                One at the beginning, one in the middle and one at the end""").build());
+        opts.addOption(buildOption("f", "fast-mode", """
+                Use fast mode. Hash only 3 medium blocks.
+                One at the beginning, one in the middle and one at the end""").build());
         opts.addOption(buildOption("h", "help", "Prints the Fim help").build());
-        opts.addOption(buildOption("i", "ignore", "Ignore some difference during State comparison. You can ignore:\n" +
-            "- attrs: File attributes\n" +
-            "- dates: Modification and creation dates\n" +
-            "- renamed: Renamed files\n" +
-            "- all: All of the above\n" +
-            "You can specify multiple kind of difference to ignore separated by a comma.\n" +
-            "For example: -i attrs,dates,renamed").hasArg().valueSeparator(',').build());
-        opts.addOption(buildOption("l", "use-last-state", "Use the last committed State.\n" +
-            "Both for the 'find-duplicates' and 'remove-duplicates' commands").build());
+        opts.addOption(buildOption("i", "ignore", """
+                Ignore some difference during State comparison. You can ignore:
+                - attrs: File attributes
+                - dates: Modification and creation dates
+                - renamed: Renamed files
+                - all: All of the above
+                You can specify multiple kind of difference to ignore separated by a comma.
+                For example: -i attrs,dates,renamed""").hasArg().valueSeparator(',').build());
+        opts.addOption(buildOption("l", "use-last-state", """
+                Use the last committed State.
+                Both for the 'find-duplicates' and 'remove-duplicates' commands""").build());
         opts.addOption(buildOption("m", "comment", "Comment to set during init and commit").hasArg().build());
         opts.addOption(buildOption("c", "", "Deprecated option used to set the init or commit comment. Use '-m' instead").hasArg().build());
-        opts.addOption(buildOption("o", "output-max-lines", "Change the maximum number lines displayed for the same kind of modification.\n" +
-            "Default value is 200 lines").hasArg().build());
+        opts.addOption(buildOption("o", "output-max-lines", """
+                Change the maximum number lines displayed for the same kind of modification.
+                Default value is 200 lines""").hasArg().build());
         opts.addOption(buildOption("p", "purge-states", "Purge previous States if the commit succeed").build());
         opts.addOption(buildOption("q", "quiet", "Do not display details").build());
-        opts.addOption(buildOption("t", "thread-count", "Number of thread used to hash file contents in parallel.\n" +
-            "By default, this number is dynamic and depends on the disk throughput").hasArg().build());
+        opts.addOption(buildOption("t", "thread-count", """
+                Number of thread used to hash file contents in parallel.
+                By default, this number is dynamic and depends on the disk throughput""").hasArg().build());
         opts.addOption(buildOption("v", "version", "Prints the Fim version").build());
         opts.addOption(buildOption("y", "always-yes", "Always yes to every questions").build());
-        opts.addOption(buildOption(null, "sort", "How to sort duplicate results.\n" +
-            "You can sort on:\n" +
-            "- wasted: wasted size (default)\n" +
-            "- number: number of files in the duplicated set\n" +
-            "- size: size of duplicated file").hasArg().build());
+        opts.addOption(buildOption(null, "sort", """
+                How to sort duplicate results.
+                You can sort on:
+                - wasted: wasted size (default)
+                - number: number of files in the duplicated set
+                - size: size of duplicated file""").hasArg().build());
         opts.addOption(buildOption(null, "order", "Sort order of duplicate results. Default is 'desc'. Can be 'asc' or 'desc'").hasArg().build());
-        opts.addOption(buildOption(null, "include", "Include some directories/filetype while searching for duplicates. Separated by ':'").hasArg().build());
-        opts.addOption(buildOption(null, "exclude", "Exclude some directories/filetype while searching for duplicates. Separated by ':'").hasArg().build());
-        opts.addOption(buildOption(null, "output-type", "Output type used by 'fdup' to display duplicates. Supported types are:\n" +
-            "- human: display duplicates in human readable messages (default)\n" +
-            "- csv: display duplicates in CSV format\n" +
-            "- json: display duplicates in JSON format").hasArg().build());
+        opts.addOption(
+                buildOption(null, "include", "Include some directories/filetype while searching for duplicates. Separated by ':'").hasArg().build());
+        opts.addOption(
+                buildOption(null, "exclude", "Exclude some directories/filetype while searching for duplicates. Separated by ':'").hasArg().build());
+        opts.addOption(buildOption(null, "output-type", """
+                Output type used by 'fdup' to display duplicates. Supported types are:
+                - human: display duplicates in human readable messages (default)
+                - csv: display duplicates in CSV format
+                - json: display duplicates in JSON format""").hasArg().build());
         return opts;
     }
 
@@ -156,6 +185,8 @@ public class Fim {
         if (filteredArgs.length < 1) {
             youMustSpecifyACommandToRun(null);
         }
+
+        context.setCalledFromTest(Fim.calledFromTest);
 
         Command command = null;
         String[] optionArgs = filteredArgs;
@@ -169,128 +200,7 @@ public class Fim {
 
         CommandLineParser cmdLineGnuParser = new DefaultParser();
 
-        try {
-            CommandLine commandLine = cmdLineGnuParser.parse(options, optionArgs);
-
-            String ignoredKinds = commandLine.getOptionValue('i');
-            if (ignoredKinds != null) {
-                parseIgnored(context, ignoredKinds);
-            }
-            if (commandLine.hasOption('c')) {
-                Logger.out.println("The '-c' option is deprecated and will be removed in the future. use '-m' instead\n");
-                context.setComment(commandLine.getOptionValue('c', context.getComment()));
-            }
-
-            context.setVerbose(!commandLine.hasOption('q'));
-            context.setComment(commandLine.getOptionValue('m', context.getComment()));
-            context.setUseLastState(commandLine.hasOption('l'));
-            context.setPurgeStates(commandLine.hasOption('p'));
-            context.setAlwaysYes(commandLine.hasOption('y'));
-            context.setDisplayStackTrace(commandLine.hasOption('e'));
-
-            if (commandLine.hasOption('M')) {
-                String masterFimRepositoryDir = commandLine.getOptionValue('M');
-                if (!Files.exists(Paths.get(masterFimRepositoryDir))) {
-                    Logger.error(String.format("Master Fim repository directory '%s' does not exist", masterFimRepositoryDir));
-                    throw new BadFimUsageException();
-                }
-                context.setMasterFimRepositoryDir(masterFimRepositoryDir);
-            }
-
-            if (commandLine.hasOption('d')) {
-                context.setCurrentDirectory(Paths.get(commandLine.getOptionValue('d')));
-            }
-
-            if (commandLine.hasOption('t')) {
-                context.setThreadCount(Integer.parseInt(commandLine.getOptionValue('t', "-1")));
-                context.setThreadCountSpecified(true);
-            }
-
-            context.setDynamicScaling(context.getThreadCount() <= 0);
-
-            context.setTruncateOutput(Integer.parseInt(commandLine.getOptionValue('o', "200")));
-            if (context.getTruncateOutput() < 0) {
-                context.setTruncateOutput(0);
-            }
-
-            if (commandLine.hasOption('n')) {
-                context.setHashMode(dontHash);
-            } else if (commandLine.hasOption('s')) {
-                context.setHashMode(hashSmallBlock);
-            } else if (commandLine.hasOption('f')) {
-                context.setHashMode(hashMediumBlock);
-            } else {
-                context.setHashMode(hashAll);
-            }
-
-            if (commandLine.hasOption("sort")) {
-                String sort = commandLine.getOptionValue("sort");
-                try {
-                    context.setSortMethod(SortMethod.valueOf(sort.toLowerCase()));
-                } catch (IllegalArgumentException ex) {
-                    Logger.error(String.format("Unsupported sort method '%s'", sort));
-                    throw new BadFimUsageException();
-                }
-            }
-
-            if (commandLine.hasOption("order")) {
-                String order = commandLine.getOptionValue("order");
-                switch (order.toLowerCase()) {
-                    case "asc":
-                        context.setSortAscending(true);
-                        break;
-                    case "desc":
-                        context.setSortAscending(false);
-                        break;
-                    default:
-                        Logger.error(String.format("Unsupported sort order '%s'", order));
-                        throw new BadFimUsageException();
-                }
-            }
-
-            if (commandLine.hasOption("include")) {
-                String[] includes = commandLine.getOptionValue("include").split(":");
-                ArrayList<FilePattern> includePatterns = new ArrayList<>();
-                for (String include : includes) {
-                    includePatterns.add(new FilePattern(include));
-                }
-                context.setIncludePatterns(includePatterns);
-            }
-
-            if (commandLine.hasOption("exclude")) {
-                String[] excludes = commandLine.getOptionValue("exclude").split(":");
-                ArrayList<FilePattern> excludePatterns = new ArrayList<>();
-                for (String exclude : excludes) {
-                    excludePatterns.add(new FilePattern(exclude));
-                }
-                context.setExcludePatterns(excludePatterns);
-            }
-
-            if (commandLine.hasOption("output-type")) {
-                String outputType = commandLine.getOptionValue("output-type");
-                try {
-                    context.setOutputType(OutputType.valueOf(outputType.toLowerCase()));
-                } catch (IllegalArgumentException ex) {
-                    Logger.error(String.format("Unsupported output type '%s'", outputType));
-                    throw new BadFimUsageException();
-                }
-                if (context.getOutputType() != OutputType.human) {
-                    context.setVerbose(false);
-                    Logger.level = Logger.Level.warning.ordinal();
-                }
-            }
-
-            if (commandLine.hasOption('h')) {
-                command = new HelpCommand(this);
-            } else if (commandLine.hasOption('v')) {
-                command = new VersionCommand();
-            }
-
-        } catch (Exception ex) {
-            Logger.error("Exception parsing command line", ex, context.isDisplayStackTrace());
-            throw new BadFimUsageException();
-        }
-
+        command = buildCommand(context, cmdLineGnuParser, optionArgs, command);
         if (command == null) {
             youMustSpecifyACommandToRun(firstArg);
         }
@@ -305,7 +215,8 @@ public class Fim {
             }
 
             if (!Files.isWritable(context.getRepositoryRootDir())) {
-                Logger.error(String.format("Not allowed to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()));
+                Logger.error(
+                        String.format("Not allowed to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()));
                 throw new RepositoryException();
             }
         } else if (constraint == FimReposConstraint.MUST_EXIST) {
@@ -330,29 +241,169 @@ public class Fim {
         command.execute(context.clone());
     }
 
+    private Command buildCommand(Context context, CommandLineParser cmdLineGnuParser, String[] optionArgs, Command command) {
+        try {
+            CommandLine cmd = cmdLineGnuParser.parse(options, optionArgs);
+
+            String ignoredKinds = cmd.getOptionValue('i');
+            if (ignoredKinds != null) {
+                parseIgnored(context, ignoredKinds);
+            }
+            if (cmd.hasOption('c')) {
+                Logger.out.println("The '-c' option is deprecated and will be removed in the future. use '-m' instead\n");
+                context.setComment(cmd.getOptionValue('c', context.getComment()));
+            }
+
+            context.setVerbose(!cmd.hasOption('q'));
+            context.setComment(cmd.getOptionValue('m', context.getComment()));
+            context.setUseLastState(cmd.hasOption('l'));
+            context.setPurgeStates(cmd.hasOption('p'));
+            context.setAlwaysYes(cmd.hasOption('y'));
+            context.setDisplayStackTrace(cmd.hasOption('e'));
+
+            manageMasterFimOption(context, cmd);
+
+            if (cmd.hasOption('d')) {
+                context.setCurrentDirectory(Paths.get(cmd.getOptionValue('d')));
+            }
+
+            if (cmd.hasOption('t')) {
+                context.setThreadCount(Integer.parseInt(cmd.getOptionValue('t', "-1")));
+                context.setThreadCountSpecified(true);
+            }
+
+            context.setDynamicScaling(context.getThreadCount() <= 0);
+
+            context.setTruncateOutput(Integer.parseInt(cmd.getOptionValue('o', "200")));
+            if (context.getTruncateOutput() < 0) {
+                context.setTruncateOutput(0);
+            }
+
+            manageHashMode(context, cmd);
+
+            manageSortOption(context, cmd);
+
+            manageOrderOption(context, cmd);
+
+            if (cmd.hasOption("include")) {
+                context.setIncludePatterns(parseFilePatterns(cmd.getOptionValue("include")));
+            }
+
+            if (cmd.hasOption("exclude")) {
+                context.setExcludePatterns(parseFilePatterns(cmd.getOptionValue("exclude")));
+            }
+
+            manageOutputTypeOption(context, cmd);
+
+            if (cmd.hasOption('h')) {
+                command = new HelpCommand(this);
+            } else if (cmd.hasOption('v')) {
+                command = new VersionCommand();
+            }
+
+        } catch (Exception ex) {
+            Logger.error("Exception parsing command line", ex, context.isDisplayStackTrace());
+            throw new BadFimUsageException();
+        }
+        return command;
+    }
+
+    private static void manageOutputTypeOption(Context context, CommandLine cmd) {
+        if (cmd.hasOption("output-type")) {
+            String outputType = cmd.getOptionValue("output-type");
+            try {
+                context.setOutputType(OutputType.valueOf(outputType.toLowerCase()));
+            } catch (IllegalArgumentException ex) {
+                Logger.error(String.format("Unsupported output type '%s'", outputType));
+                throw new BadFimUsageException();
+            }
+            if (context.getOutputType() != OutputType.human) {
+                context.setVerbose(false);
+                Logger.level = Logger.Level.warning.ordinal();
+            }
+        }
+    }
+
+    private static void manageOrderOption(Context context, CommandLine cmd) {
+        if (cmd.hasOption("order")) {
+            String order = cmd.getOptionValue("order");
+            switch (order.toLowerCase()) {
+                case "asc" -> context.setSortAscending(true);
+                case "desc" -> context.setSortAscending(false);
+                default -> {
+                    Logger.error(String.format("Unsupported sort order '%s'", order));
+                    throw new BadFimUsageException();
+                }
+            }
+        }
+    }
+
+    private static void manageSortOption(Context context, CommandLine cmd) {
+        if (cmd.hasOption("sort")) {
+            String sort = cmd.getOptionValue("sort");
+            try {
+                context.setSortMethod(SortMethod.valueOf(sort.toLowerCase()));
+            } catch (IllegalArgumentException ex) {
+                Logger.error(String.format("Unsupported sort method '%s'", sort));
+                throw new BadFimUsageException();
+            }
+        }
+    }
+
+    private static void manageHashMode(Context context, CommandLine cmd) {
+        if (cmd.hasOption('n')) {
+            context.setHashMode(dontHash);
+        } else if (cmd.hasOption('s')) {
+            context.setHashMode(hashSmallBlock);
+        } else if (cmd.hasOption('f')) {
+            context.setHashMode(hashMediumBlock);
+        } else {
+            context.setHashMode(hashAll);
+        }
+    }
+
+    private static void manageMasterFimOption(Context context, CommandLine cmd) {
+        if (cmd.hasOption('M')) {
+            String masterFimRepositoryDir = cmd.getOptionValue('M');
+            if (!Files.exists(Paths.get(masterFimRepositoryDir))) {
+                Logger.error(String.format("Master Fim repository directory '%s' does not exist", masterFimRepositoryDir));
+                throw new BadFimUsageException();
+            }
+            context.setMasterFimRepositoryDir(masterFimRepositoryDir);
+        }
+    }
+
+    private List<FilePattern> parseFilePatterns(String patterns) {
+        List<FilePattern> filePatterns = new ArrayList<>();
+        for (String pattern : patterns.split(":")) {
+            filePatterns.add(new FilePattern(pattern));
+        }
+        return filePatterns;
+    }
+
     private void parseIgnored(Context context, String ignoredKinds) {
         Ignored ignored = context.getIgnored();
         try (Scanner scanner = new Scanner(ignoredKinds)) {
             scanner.useDelimiter(",");
             while (scanner.hasNext()) {
                 String token = scanner.next();
-                if (token.length() == 0) {
+                if (token.isEmpty()) {
                     continue;
                 }
 
-                if ("attrs".equals(token)) {
-                    ignored.setAttributesIgnored(true);
-                } else if ("dates".equals(token)) {
-                    ignored.setDatesIgnored(true);
-                } else if ("renamed".equals(token)) {
-                    ignored.setRenamedIgnored(true);
-                } else if ("all".equals(token)) {
-                    ignored.setAttributesIgnored(true);
-                    ignored.setDatesIgnored(true);
-                    ignored.setRenamedIgnored(true);
-                } else {
-                    Logger.error(String.format("'%s' unknown as difference kind to ignore.", token));
-                    throw new BadFimUsageException();
+                switch (token) {
+                    case "attrs" -> ignored.setAttributesIgnored(true);
+                    case "dates" -> ignored.setDatesIgnored(true);
+                    case "renamed" -> ignored.setRenamedIgnored(true);
+                    case "all" -> {
+                        ignored.setAttributesIgnored(true);
+                        ignored.setDatesIgnored(true);
+                        ignored.setRenamedIgnored(true);
+                    }
+                    default -> {
+                        Logger.error(String.format("'%s' unknown as difference kind to ignore.", token));
+                        throw new BadFimUsageException();
+                    }
                 }
             }
         }
@@ -384,7 +435,7 @@ public class Fim {
                 return command;
             }
 
-            if (command.getShortCmdName().length() > 0 && command.getShortCmdName().equals(cmdName)) {
+            if (!command.getShortCmdName().isEmpty() && command.getShortCmdName().equals(cmdName)) {
                 return command;
             }
         }
@@ -401,7 +452,7 @@ public class Fim {
     protected String[] filterEmptyArgs(String[] args) {
         List<String> filteredArgs = new ArrayList<>();
         for (String arg : args) {
-            if (arg.length() > 0) {
+            if (!arg.isEmpty()) {
                 filteredArgs.add(arg);
             }
         }
@@ -425,7 +476,7 @@ public class Fim {
         usage.append("Available commands:\n");
         for (final Command command : commands) {
             String cmdName;
-            if (command.getShortCmdName() != null && command.getShortCmdName().length() > 0) {
+            if (command.getShortCmdName() != null && !command.getShortCmdName().isEmpty()) {
                 cmdName = command.getShortCmdName() + " / " + command.getCmdName();
             } else {
                 cmdName = command.getCmdName();

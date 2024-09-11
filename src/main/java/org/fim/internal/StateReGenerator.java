@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal;
 
 import org.fim.command.exception.FimInternalError;
@@ -46,7 +47,7 @@ public class StateReGenerator extends StateGenerator {
     public void reHashFiles(List<FileState> toReHash) throws NoSuchAlgorithmException {
         int threadCount = context.getThreadCount();
         Logger.info(String.format("Retrieving the missing hash for all the modified files, using '%s' mode and %d %s",
-            hashModeToString(context.getHashMode()), threadCount, plural("thread", threadCount)));
+                hashModeToString(context.getHashMode()), threadCount, plural("thread", threadCount)));
 
         rootDir = context.getRepositoryRootDir();
 

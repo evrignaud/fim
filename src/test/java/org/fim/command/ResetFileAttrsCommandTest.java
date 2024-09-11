@@ -16,17 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.State;
 import org.fim.tooling.RepositoryTool;
-import org.junit.Before;
-import org.junit.Test;
+import org.fim.util.TimeUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,13 +39,11 @@ public class ResetFileAttrsCommandTest {
     private ResetFileAttributesCommand resetFileAttributesCommand;
 
     private RepositoryTool tool;
-    private Path rootDir;
     private Context context;
 
-    @Before
-    public void setUp() throws IOException {
-        tool = new RepositoryTool(this.getClass());
-        rootDir = tool.getRootDir();
+    @BeforeEach
+    public void setUp(TestInfo testInfo) throws IOException {
+        tool = new RepositoryTool(testInfo);
         context = tool.getContext();
 
         initCommand = new InitCommand();
@@ -76,7 +76,7 @@ public class ResetFileAttrsCommandTest {
     }
 
     private void doSomeModifications() throws IOException {
-        tool.sleepSafely(1_000); // Ensure to increase lastModified at least of 1 second
+        TimeUtil.sleepSafely(1_000); // Ensure to increase lastModified at least of 1 second
 
         tool.touchCreationTime("file01");
         tool.setPermissions("file01", "rwx------", "AHRS");

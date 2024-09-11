@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import org.fim.tooling.ObjectAssert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FileTimeTest {
     private FileTime a1;
@@ -28,7 +29,7 @@ public class FileTimeTest {
     private FileTime b;
     private FileTime c;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         a1 = new FileTime(1_000L, 2_000L);
         a2 = new FileTime(1_000L, 2_000L);

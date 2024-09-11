@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+
 package org.fim.command;
 
 import org.fim.model.Context;
 import org.fim.tooling.BuildableContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Scanner;
 
@@ -29,9 +31,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractCommandTest {
     private BuildableContext context;
-    private MyCommand cut = new MyCommand();
+    private final MyCommand cut = new MyCommand();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         context = new BuildableContext();
     }
@@ -59,7 +61,7 @@ public class AbstractCommandTest {
         return cut.callConfirmAction(context, new Scanner(input + "\n"), "action");
     }
 
-    private class MyCommand extends AbstractCommand {
+    private static class MyCommand extends AbstractCommand {
         @Override
         public String getCmdName() {
             return null;

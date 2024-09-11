@@ -18,14 +18,14 @@
 # along with Fim.  If not, see <https://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------------------------------------------------
 
-if [ ! -d target ]; then
-	mkdir target
+if [ ! -d build ]; then
+	mkdir build
 fi
 
-allJavaLines=target/all_java_lines
-trimmedLines=target/all_java_lines_trimed
-meaningfulLines=target/all_java_lines_meaningful
-uniqDuplicatedLines=target/uniq_duplicated_lines
+allJavaLines=build/all_java_lines
+trimmedLines=build/all_java_lines_trimed
+meaningfulLines=build/all_java_lines_meaningful
+uniqDuplicatedLines=build/uniq_duplicated_lines
 
 find . -name "*.java" -exec cat {}  \; > ${allJavaLines}
 

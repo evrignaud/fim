@@ -16,39 +16,41 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.model.Context;
 import org.fim.model.OutputType;
 import org.fim.tooling.RepositoryTool;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import java.io.IOException;
-import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FindDuplicatesCommandTest {
-    private RepositoryTool tool;
-    private Path rootDir;
     private Context context;
 
     private FindDuplicatesCommand findDuplicatesCommand;
 
-    @Before
-    public void setUp() throws IOException {
-        tool = new RepositoryTool(this.getClass());
-        rootDir = tool.getRootDir();
+    @BeforeEach
+    public void setUp(TestInfo testInfo) throws IOException {
+        RepositoryTool tool = new RepositoryTool(testInfo);
         context = tool.getContext();
 
         findDuplicatesCommand = new FindDuplicatesCommand();
     }
 
-    @Test(expected = BadFimUsageException.class)
+    @Test
     public void cannotRemoveAndDisplayInCsv() throws Exception {
         context.setRemoveDuplicates(true);
         context.setOutputType(OutputType.csv);
 
-        findDuplicatesCommand.execute(context);
+        assertThrows(BadFimUsageException.class, () -> {
+            findDuplicatesCommand.execute(context);
+        });
     }
 }

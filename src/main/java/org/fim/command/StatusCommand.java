@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.fim.internal.StateComparator;
@@ -38,8 +39,9 @@ public class StatusCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Display the difference between the current directory State with the previous one.\n" +
-            "                                You can get a quick result by using the -f or -s or -n options";
+        return """
+                Display the difference between the current directory State with the previous one.
+                                                You can get a quick result by using the -f or -s or -n options""";
     }
 
     @Override

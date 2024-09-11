@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import com.google.common.base.MoreObjects;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,6 +30,10 @@ import java.util.regex.PatternSyntaxException;
 public class FilePattern {
     private String fileName;
     private Pattern compiled;
+
+    private FilePattern() {
+        // Empty constructor to speed up cloning
+    }
 
     public FilePattern(String fileNamePattern) {
         this.fileName = fileNamePattern.trim();
@@ -75,13 +80,10 @@ public class FilePattern {
     public boolean match(String fileNameToMatch) {
         if (compiled != null) {
             Matcher matcher = compiled.matcher(fileNameToMatch);
-            if (matcher.find()) {
-                return true;
-            }
-        } else if (fileName.equals(fileNameToMatch)) {
-            return true;
+            return matcher.find();
+        } else {
+            return fileName.equals(fileNameToMatch);
         }
-        return false;
     }
 
     @Override
@@ -94,7 +96,7 @@ public class FilePattern {
         }
         FilePattern that = (FilePattern) other;
         return Objects.equals(fileName, that.fileName) &&
-            Objects.equals(compiled.toString(), that.compiled.toString());
+               Objects.equals(compiled.toString(), that.compiled.toString());
     }
 
     @Override
@@ -105,12 +107,12 @@ public class FilePattern {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("fileName", fileName)
-            .add("compiled", compiled)
-            .toString();
+                .add("fileName", fileName)
+                .add("compiled", compiled)
+                .toString();
     }
 
-    public static boolean matchPatterns(String fileName, ArrayList<FilePattern> patterns, boolean defaultValue) {
+    public static boolean matchPatterns(String fileName, List<FilePattern> patterns, boolean defaultValue) {
         if (patterns != null) {
             for (FilePattern filePattern : patterns) {
                 if (filePattern.match(fileName)) {
@@ -120,5 +122,13 @@ public class FilePattern {
             return false;
         }
         return defaultValue;
+    }
+
+    @Override
+    public FilePattern clone() {
+        FilePattern cloned = new FilePattern();
+        cloned.fileName = this.fileName;
+        cloned.compiled = this.compiled;
+        return cloned;
     }
 }

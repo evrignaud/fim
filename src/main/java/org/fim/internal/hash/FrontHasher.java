@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal.hash;
 
 import org.fim.command.exception.FimInternalError;
@@ -128,24 +129,24 @@ public class FrontHasher implements Hasher {
     @Override
     public long getBytesHashed() {
         long bytesHashed =
-            max(smallBlockHasher.getBytesHashed(),
-                max(mediumBlockHasher.getBytesHashed(), fullHasher.getBytesHashed()));
+                max(smallBlockHasher.getBytesHashed(),
+                        max(mediumBlockHasher.getBytesHashed(), fullHasher.getBytesHashed()));
         return bytesHashed;
     }
 
     @Override
     public long getTotalBytesHashed() {
         long totalBytesHashed =
-            max(smallBlockHasher.getTotalBytesHashed(),
-                max(mediumBlockHasher.getTotalBytesHashed(), fullHasher.getTotalBytesHashed()));
+                max(smallBlockHasher.getTotalBytesHashed(),
+                        max(mediumBlockHasher.getTotalBytesHashed(), fullHasher.getTotalBytesHashed()));
         return totalBytesHashed;
     }
 
     @Override
     public long getInstantThroughput() {
         long instantThroughput =
-            max(smallBlockHasher.getInstantThroughput(),
-                max(mediumBlockHasher.getInstantThroughput(), fullHasher.getInstantThroughput()));
+                max(smallBlockHasher.getInstantThroughput(),
+                        max(mediumBlockHasher.getInstantThroughput(), fullHasher.getInstantThroughput()));
         return instantThroughput;
     }
 

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal;
 
 import org.fim.model.Attribute;
@@ -26,23 +27,22 @@ import org.fim.model.FileState;
 import org.fim.model.FileTime;
 import org.fim.model.State;
 import org.fim.util.TimeElapsed;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore // Don't run it during unit tests
+@Disabled // Don't run it during unit tests
 public class StateComparatorPerformanceTest {
-    private static Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
-    private static final String characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    private static SecureRandom random = new SecureRandom();
+    private static final Comparator<FileState> FILE_NAME_COMPARATOR = new FileState.FileNameComparator();
+    private static final String CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     @Test
     public void canCompareQuicklyTwoBigStates() {
@@ -69,18 +69,18 @@ public class StateComparatorPerformanceTest {
             }
 
             String fileName = randomString(50);
-            long fileLength = random.nextInt(10 * 1024 * 1024) + 120;
+            long fileLength = RANDOM.nextInt(10 * 1024 * 1024) + 120;
             long now = System.currentTimeMillis();
-            FileTime fileTime = new FileTime(random.nextInt((int) now), random.nextInt((int) now));
+            FileTime fileTime = new FileTime(RANDOM.nextInt((int) now), RANDOM.nextInt((int) now));
             FileHash fileHash = new FileHash(UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString());
             List<Attribute> attributeList = new ArrayList<>();
             FileState fileState = new FileState(fileName, fileLength, fileTime, fileHash, attributeList);
 
             state.getFileStates().add(fileState);
         }
-        Collections.sort(state.getFileStates(), fileNameComparator);
+        state.getFileStates().sort(FILE_NAME_COMPARATOR);
 
-        System.out.println("");
+        System.out.println();
 
         return state;
     }
@@ -88,7 +88,7 @@ public class StateComparatorPerformanceTest {
     private static String randomString(int len) {
         StringBuilder sb = new StringBuilder(len);
         for (int index = 0; index < len; index++) {
-            sb.append(characters.charAt(random.nextInt(characters.length())));
+            sb.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
         }
         return sb.toString();
     }

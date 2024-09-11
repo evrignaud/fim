@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -54,7 +55,7 @@ public class StateComparator {
     private final Context context;
 
     private State lastState;
-    private State currentState;
+    private final State currentState;
 
     private ListMultimap<FileHash, FileState> previousFileStates;
     private List<FileState> notFoundInCurrentFileState;
@@ -77,10 +78,10 @@ public class StateComparator {
      * Remove modification, previousFileState and deleted entries
      */
     public static void resetFileStates(List<FileState> fileStates) {
-        for (Iterator<FileState> iter = fileStates.iterator(); iter.hasNext(); ) {
-            FileState fileState = iter.next();
+        for (Iterator<FileState> iterator = fileStates.iterator(); iterator.hasNext(); ) {
+            FileState fileState = iterator.next();
             if (fileState.getModification() == deleted) {
-                iter.remove();
+                iterator.remove();
             } else {
                 fileState.setModification(null);
                 fileState.setPreviousFileState(null);
@@ -138,15 +139,15 @@ public class StateComparator {
     private void filterOut(State state, String unsupportedFileAttr) {
         final AtomicBoolean attrRemoved = new AtomicBoolean(false);
         state.getFileStates().stream()
-            .filter(fileState -> fileState.getFileAttributes() != null)
-            .forEach(fileState -> {
-                if (fileState.getFileAttributes().remove(unsupportedFileAttr) != null) {
-                    attrRemoved.set(true);
-                }
-                if (fileState.getFileAttributes().isEmpty()) {
-                    fileState.setFileAttributes(null);
-                }
-            });
+                .filter(fileState -> fileState.getFileAttributes() != null)
+                .forEach(fileState -> {
+                    if (fileState.getFileAttributes().remove(unsupportedFileAttr) != null) {
+                        attrRemoved.set(true);
+                    }
+                    if (fileState.getFileAttributes().isEmpty()) {
+                        fileState.setFileAttributes(null);
+                    }
+                });
 
         if (attrRemoved.get()) {
             Logger.warning(String.format("Last State contain %s file attributes that are not supported. They are ignored", unsupportedFileAttr));
@@ -176,14 +177,14 @@ public class StateComparator {
     private void searchForAddedOrModified() {
         if (lastState != null) {
             logDebug("---------------------------------------------------------------------",
-                "lastState", lastState.getFileStates(), "currentState", currentState.getFileStates());
+                    "lastState", lastState.getFileStates(), "currentState", currentState.getFileStates());
 
             for (FileState fileState : lastState.getFileStates()) {
                 previousFileStates.put(fileState.getFileHash(), fileState);
             }
         } else {
             logDebug("---------------------------------------------------------------------",
-                "currentState", currentState.getFileStates());
+                    "currentState", currentState.getFileStates());
         }
 
         resetNewHash(previousFileStates.values());
@@ -192,8 +193,7 @@ public class StateComparator {
 
         notModifiedCount = 0;
         List<FileState> fileStates = currentState.getFileStates();
-        for (int index = 0, fileStatesSize = fileStates.size(); index < fileStatesSize; index++) {
-            FileState fileState = fileStates.get(index);
+        for (FileState fileState : fileStates) {
             if (previousFileStatesHashCodeMap.remove(fileState.longHashCode()) != null) {
                 notModifiedCount++;
             } else {
@@ -217,7 +217,8 @@ public class StateComparator {
                 notFoundInCurrentFileStateNamesMap.remove(previousFileState.getFileName());
 
                 if (hardwareCorruptionDetection) {
-                    if (!previousFileState.getFileHash().equals(fileState.getFileHash()) && previousFileState.getFileTime().equals(fileState.getFileTime())) {
+                    if (!previousFileState.getFileHash().equals(fileState.getFileHash()) &&
+                        previousFileState.getFileTime().equals(fileState.getFileTime())) {
                         result.getCorrupted().add(new Difference(previousFileState, fileState));
                         fileState.setModification(Modification.corrupted);
                         managed = true;
@@ -267,8 +268,8 @@ public class StateComparator {
         for (FileState fileState : addedOrModified) {
             if ((fileState.getFileLength() > 0) &&
                 (context.getHashMode() != dontHash) &&
-                ((samePreviousHashes = findFilesWithSameHash(fileState, previousFileStates)).size() > 0)) {
-                FileState originalFileState = samePreviousHashes.get(0);
+                (!(samePreviousHashes = findFilesWithSameHash(fileState, previousFileStates)).isEmpty())) {
+                FileState originalFileState = samePreviousHashes.getFirst();
                 FileHash originalFileHash = originalFileState.getFileHash();
                 if (notFoundInCurrentFileStateList.containsKey(originalFileHash) ||
                     foundInPreviousState.containsKey(originalFileHash)) {
@@ -288,7 +289,7 @@ public class StateComparator {
                     }
                 }
                 List<FileState> removed = notFoundInCurrentFileStateList.removeAll(originalFileHash);
-                if (removed != null && removed.size() > 0) {
+                if (removed != null && !removed.isEmpty()) {
                     // Used to check other duplicate files that have been renamed
                     foundInPreviousState.put(originalFileHash, originalFileState);
                 }
@@ -302,25 +303,25 @@ public class StateComparator {
     }
 
     private void checkAllFilesManagedCorrectly() {
-        if (addedOrModified.size() != 0) {
+        if (!addedOrModified.isEmpty()) {
             throw new IllegalStateException(String.format("Comparison algorithm error: addedOrModified size=%d", addedOrModified.size()));
         }
 
         if (notModifiedCount + result.modifiedCount() != currentState.getFileCount()) {
             throw new IllegalStateException(String.format("Comparison algorithm error: notModifiedCount=%d modifiedCount=%d currentStateFileCount=%d",
-                notModifiedCount, result.modifiedCount(), currentState.getFileCount()));
+                    notModifiedCount, result.modifiedCount(), currentState.getFileCount()));
         }
     }
 
     private void searchForDeleted() {
         // Add as 'deleted' all the remaining entries that are not ignored
         notFoundInCurrentFileState.stream()
-            .filter(fileState -> !isFileIgnored(fileState))
-            .forEach(fileState -> {
-                fileState.setModification(deleted);
-                fileState.restoreOriginalHash();
-                result.getDeleted().add(new Difference(null, fileState));
-            });
+                .filter(fileState -> !isFileIgnored(fileState))
+                .forEach(fileState -> {
+                    fileState.setModification(deleted);
+                    fileState.restoreOriginalHash();
+                    result.getDeleted().add(new Difference(null, fileState));
+                });
     }
 
     private boolean isFileIgnored(FileState fileState) {
@@ -348,10 +349,10 @@ public class StateComparator {
         Logger.rawDebug(fileStatesToString(desc, fileStates));
     }
 
-    private void logDebug(String message, String desc_1, List<FileState> fileStates_1, String desc_2, List<FileState> fileStates_2) {
+    private void logDebug(String message, String desc1, List<FileState> fileStates1, String desc2, List<FileState> fileStates2) {
         Logger.rawDebug("\n-- " + message);
-        Logger.rawDebug(fileStatesToString(desc_1, fileStates_1));
-        Logger.rawDebug(fileStatesToString(desc_2, fileStates_2));
+        Logger.rawDebug(fileStatesToString(desc1, fileStates1));
+        Logger.rawDebug(fileStatesToString(desc2, fileStates2));
     }
 
     protected String fileStatesToString(String message, List<FileState> fileStates) {

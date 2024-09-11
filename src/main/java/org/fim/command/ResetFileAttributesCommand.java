@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -68,7 +69,8 @@ public class ResetFileAttributesCommand extends AbstractCommand {
         State lastState = manager.loadLastState();
         int fileResetCount = 0;
 
-        Logger.out.printf(String.format("You are going to reset files attributes based on the last committed State done %s%n", formatDate(lastState.getTimestamp())));
+        Logger.out.printf(String.format("You are going to reset files attributes based on the last committed State done %s%n",
+                formatDate(lastState.getTimestamp())));
         if (confirmAction(context, "continue")) {
             if (lastState.getComment().length() > 0) {
                 Logger.out.println("Comment: " + lastState.getComment());
@@ -151,7 +153,8 @@ public class ResetFileAttributesCommand extends AbstractCommand {
         long previousCreationTime = fileState.getFileTime().getCreationTime();
         if (creationTime != previousCreationTime) {
             setCreationTime(file, FileTime.fromMillis(previousCreationTime));
-            Logger.out.printf("Set creation Time: %s \t%s -> %s%n", fileState.getFileName(), formatDate(creationTime), formatDate(previousCreationTime));
+            Logger.out.printf("Set creation Time: %s \t%s -> %s%n", fileState.getFileName(), formatDate(creationTime),
+                    formatDate(previousCreationTime));
             return true;
         }
         return false;
@@ -162,7 +165,8 @@ public class ResetFileAttributesCommand extends AbstractCommand {
         long previousLastModified = fileState.getFileTime().getLastModified();
         if (lastModified != previousLastModified) {
             Files.setLastModifiedTime(file, FileTime.fromMillis(previousLastModified));
-            Logger.out.printf("Set last modified: %s \t%s -> %s%n", fileState.getFileName(), formatDate(lastModified), formatDate(previousLastModified));
+            Logger.out.printf("Set last modified: %s \t%s -> %s%n", fileState.getFileName(), formatDate(lastModified),
+                    formatDate(previousLastModified));
             return true;
         }
         return false;

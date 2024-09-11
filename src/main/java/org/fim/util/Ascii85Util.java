@@ -16,14 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.util;
 
 import com.blackducksoftware.tools.commonframework.core.encoding.Ascii85Encoder;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class Ascii85Util {
-    public static final Charset UTF8 = Charset.forName("UTF-8");
+    public static final Charset UTF8 = StandardCharsets.UTF_8;
 
     public static String encode(byte[] bytesToBeEncoded) {
         return new String(Ascii85Encoder.encode(bytesToBeEncoded), UTF8);

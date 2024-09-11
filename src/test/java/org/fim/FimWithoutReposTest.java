@@ -16,35 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim;
 
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.RepositoryException;
 import org.fim.model.Context;
 import org.fim.tooling.RepositoryTool;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FimWithoutReposTest {
-    @Rule
-    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
-
     private Fim cut;
     private RepositoryTool tool;
     private Context context;
     private Path rootDir;
 
-    @Before
-    public void setUp() throws IOException {
-        tool = new RepositoryTool(this.getClass());
+    @BeforeEach
+    public void setUp(TestInfo testInfo) throws IOException {
+        tool = new RepositoryTool(testInfo);
         rootDir = tool.getRootDir();
         context = tool.getContext();
 
@@ -53,69 +51,83 @@ public class FimWithoutReposTest {
 
     @Test
     public void canFilterCorrectlyEmptyArgs() {
-        String[] filteredArgs = cut.filterEmptyArgs(new String[]{"", "init", "", "-y", ""});
-        assertThat(filteredArgs).isEqualTo(new String[]{"init", "-y"});
+        String[] filteredArgs = cut.filterEmptyArgs(new String[] { "", "init", "", "-y", "" });
+        assertThat(filteredArgs).isEqualTo(new String[] { "init", "-y" });
     }
 
-    @Test(expected = RepositoryException.class)
+    @Test
     public void fimRepositoryNotWritable() throws Exception {
         if (IS_OS_WINDOWS) {
             // Ignore this test for Windows
-            throw new RepositoryException();
+            return;
         }
 
         tool.setReadOnly(rootDir);
         try {
-            cut.run(new String[]{"init", "-y"}, context);
+            assertThrows(RepositoryException.class, () -> {
+                cut.run(new String[] { "init", "-y" }, context);
+            });
         } finally {
             tool.setReadWrite(rootDir);
         }
     }
 
-    @Test(expected = BadFimUsageException.class)
+    @Test
     public void fimDoesNotExist() throws Exception {
-        cut.run(new String[]{"status"}, context);
+        assertThrows(BadFimUsageException.class, () -> {
+            cut.run(new String[] { "status" }, context);
+        });
     }
 
     @Test
     public void canPrintUsage() throws Exception {
-        exit.expectSystemExitWithStatus(0);
-        Fim.main(new String[]{"help"});
+        Fim.setCalledFromTest(true);
+        Fim.main(new String[] { "help" });
+        assertThat(Fim.getExitStatus()).isEqualTo(0);
     }
 
     @Test
     public void invalidOptionIsDetected() throws Exception {
-        exit.expectSystemExitWithStatus(-1);
-        Fim.main(new String[]{"-9"});
+        Fim.setCalledFromTest(true);
+        Fim.main(new String[] { "-9" });
+        assertThat(Fim.getExitStatus()).isEqualTo(-1);
     }
 
-    @Test(expected = BadFimUsageException.class)
-    public void InvalidThreadCountIsDetected() throws Exception {
-        cut.run(new String[]{"ci", "-y", "-t", "dummy"}, context);
+    @Test
+    public void invalidThreadCountIsDetected() throws Exception {
+        assertThrows(BadFimUsageException.class, () -> {
+            cut.run(new String[] { "ci", "-y", "-t", "dummy" }, context);
+        });
     }
 
-    @Test(expected = BadFimUsageException.class)
+    @Test
     public void masterFimRepositoryDirectoryMustExist() throws Exception {
-        cut.run(new String[]{"rdup", "-M", "dummy_directory"}, context);
+        assertThrows(BadFimUsageException.class, () -> {
+            cut.run(new String[] { "rdup", "-M", "dummy_directory" }, context);
+        });
     }
 
     @Test
     public void canRunVersionCommand() throws Exception {
-        cut.run(new String[]{"-v"}, context);
+        cut.run(new String[] { "-v" }, context);
     }
 
     @Test
     public void canRunHelpCommand() throws Exception {
-        cut.run(new String[]{"-h"}, context);
+        cut.run(new String[] { "-h" }, context);
     }
 
-    @Test(expected = BadFimUsageException.class)
+    @Test
     public void noArgumentSpecified() throws Exception {
-        cut.run(new String[]{""}, context);
+        assertThrows(BadFimUsageException.class, () -> {
+            cut.run(new String[] { "" }, context);
+        });
     }
 
-    @Test(expected = BadFimUsageException.class)
+    @Test
     public void noCommandSpecified() throws Exception {
-        cut.run(new String[]{"-s"}, context);
+        assertThrows(BadFimUsageException.class, () -> {
+            cut.run(new String[] { "-s" }, context);
+        });
     }
 }

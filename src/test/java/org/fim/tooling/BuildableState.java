@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.tooling;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -26,16 +27,17 @@ import org.fim.model.FileState;
 import org.fim.model.FileTime;
 import org.fim.model.State;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 
 import static java.lang.Math.min;
 
 public class BuildableState extends State {
-    private static final Comparator<FileState> fileNameComparator = new FileState.FileNameComparator();
+    private static final Comparator<FileState> FILE_NAME_COMPARATOR = new FileState.FileNameComparator();
 
-    private transient final Context context;
+    private final transient Context context;
 
     public BuildableState(Context context) {
         this.context = context;
@@ -73,7 +75,8 @@ public class BuildableState extends State {
         }
 
         FileState sourceFileState = findFileState(newState, sourceFileName, true);
-        FileState targetFileState = new FileState(targetFileName, sourceFileState.getFileLength(), new FileTime(sourceFileState.getFileTime()), new FileHash(sourceFileState.getFileHash()), null);
+        FileState targetFileState = new FileState(targetFileName, sourceFileState.getFileLength(), new FileTime(sourceFileState.getFileTime()),
+                new FileHash(sourceFileState.getFileHash()), null);
         newState.getFileStates().add(targetFileState);
         sortFileStates(newState);
         return newState;
@@ -172,7 +175,7 @@ public class BuildableState extends State {
     }
 
     private void sortFileStates(BuildableState state) {
-        Collections.sort(state.getFileStates(), fileNameComparator);
+        state.getFileStates().sort(FILE_NAME_COMPARATOR);
         state.updateFileCount();
         state.updateFilesContentLength();
     }
@@ -197,6 +200,27 @@ public class BuildableState extends State {
 
     @Override
     public BuildableState clone() {
-        return (BuildableState) super.clone();
+        BuildableState cloned = new BuildableState(this.context);
+
+        cloned.setComment(this.getComment());
+        cloned.setTimestamp(this.getTimestamp());
+        cloned.setHashMode(this.getHashMode());
+        cloned.setIgnoredFiles(new HashSet<>(this.getIgnoredFiles()));
+        cloned.setModificationCounts(this.getModificationCounts().clone());
+        cloned.setCommitDetails(this.getCommitDetails().clone());
+        cloned.setStateHash(this.getStateHash());
+
+        cloned.setFileStates(null);
+        if (this.getFileStates() != null) {
+            ArrayList<FileState> clonedFileStates = new ArrayList<>();
+            for (FileState fileState : this.getFileStates()) {
+                clonedFileStates.add(fileState.clone());
+            }
+            cloned.setFileStates(clonedFileStates);
+        }
+
+        sortFileStates(cloned);
+
+        return cloned;
     }
 }

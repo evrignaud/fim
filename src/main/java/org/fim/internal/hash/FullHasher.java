@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal.hash;
 
 import org.fim.model.Context;
@@ -27,11 +28,11 @@ import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
 import static java.lang.Math.min;
-import static org.fim.model.Constants._1_MB;
+import static org.fim.model.Constants.SIZE_1_MB;
 import static org.fim.model.HashMode.hashAll;
 
 public class FullHasher extends AbstractHasher {
-    public static final int BLOCK_SIZE = 30 * _1_MB;
+    public static final int BLOCK_SIZE = 30 * SIZE_1_MB;
 
     private long fileSize;
 

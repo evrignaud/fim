@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import com.google.common.base.Charsets;
@@ -76,15 +77,13 @@ public class FileHash implements Comparable<FileHash>, Hashable {
             return true;
         }
 
-        if (other == null || !(other instanceof FileHash)) {
+        if (!(other instanceof FileHash otherFileHash)) {
             return false;
         }
 
-        FileHash otherFileHash = (FileHash) other;
-
         return Objects.equals(this.smallBlockHash, otherFileHash.smallBlockHash)
-            && Objects.equals(this.mediumBlockHash, otherFileHash.mediumBlockHash)
-            && Objects.equals(this.fullHash, otherFileHash.fullHash);
+               && Objects.equals(this.mediumBlockHash, otherFileHash.mediumBlockHash)
+               && Objects.equals(this.fullHash, otherFileHash.fullHash);
     }
 
     @Override
@@ -95,10 +94,10 @@ public class FileHash implements Comparable<FileHash>, Hashable {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("smallBlockHash", smallBlockHash)
-            .add("mediumBlockHash", mediumBlockHash)
-            .add("fullHash", fullHash)
-            .toString();
+                .add("smallBlockHash", smallBlockHash)
+                .add("mediumBlockHash", mediumBlockHash)
+                .add("fullHash", fullHash)
+                .toString();
     }
 
     @Override
@@ -119,12 +118,17 @@ public class FileHash implements Comparable<FileHash>, Hashable {
     @Override
     public void hashObject(Hasher hasher) {
         hasher
-            .putString("FileHash", Charsets.UTF_8)
-            .putChar(HASH_FIELD_SEPARATOR)
-            .putString(smallBlockHash, Charsets.UTF_8)
-            .putChar(HASH_FIELD_SEPARATOR)
-            .putString(mediumBlockHash, Charsets.UTF_8)
-            .putChar(HASH_FIELD_SEPARATOR)
-            .putString(fullHash, Charsets.UTF_8);
+                .putString("FileHash", Charsets.UTF_8)
+                .putChar(HASH_FIELD_SEPARATOR)
+                .putString(smallBlockHash, Charsets.UTF_8)
+                .putChar(HASH_FIELD_SEPARATOR)
+                .putString(mediumBlockHash, Charsets.UTF_8)
+                .putChar(HASH_FIELD_SEPARATOR)
+                .putString(fullHash, Charsets.UTF_8);
+    }
+
+    @Override
+    public FileHash clone() {
+        return new FileHash(smallBlockHash, mediumBlockHash, fullHash);
     }
 }

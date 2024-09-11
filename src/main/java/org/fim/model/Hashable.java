@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import com.google.common.hash.Hasher;
 
 public interface Hashable {
     char HASH_OBJECT_SEPARATOR = '|';
+
     char HASH_FIELD_SEPARATOR = '_';
 
     void hashObject(Hasher hasher);

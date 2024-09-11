@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.tooling;
 
 import org.fim.model.CompareResult;
@@ -40,7 +41,8 @@ public class StateAssert {
     public static List<FileState> createFileStates(String fileNameStart, int fileLength, int count) {
         List<FileState> fileStates = new ArrayList<>();
         for (int index = 0; index < count; index++) {
-            FileState fileState = new FileState(fileNameStart + index, fileLength, new FileTime(512, 512), new FileHash("A", "A", "A"), new ArrayList<>());
+            FileState fileState = new FileState(fileNameStart + index, fileLength, new FileTime(512, 512), new FileHash("A", "A", "A"),
+                    new ArrayList<>());
             fileStates.add(fileState);
         }
         return fileStates;
@@ -90,7 +92,7 @@ public class StateAssert {
 
         for (Modification modification : Modification.values()) {
             List<Difference> differences = getDifferences(result, modification);
-            if (modificationsList.contains(modification) == false) {
+            if (!modificationsList.contains(modification)) {
                 assertThat(differences.isEmpty()).isTrue();
             } else {
                 assertThat(differences.isEmpty()).isFalse();
@@ -121,40 +123,21 @@ public class StateAssert {
     }
 
     private List<Difference> getDifferences(CompareResult result, Modification modification) {
-        switch (modification) {
-            case added:
-                return result.getAdded();
+        return switch (modification) {
+            case added -> result.getAdded();
+            case copied -> result.getCopied();
+            case duplicated -> result.getDuplicated();
+            case dateModified -> result.getDateModified();
+            case contentModified -> result.getContentModified();
+            case attributesModified -> result.getAttributesModified();
+            case renamed -> result.getRenamed();
+            case deleted -> result.getDeleted();
+            case corrupted -> result.getCorrupted();
+        };
 
-            case copied:
-                return result.getCopied();
-
-            case duplicated:
-                return result.getDuplicated();
-
-            case dateModified:
-                return result.getDateModified();
-
-            case contentModified:
-                return result.getContentModified();
-
-            case attributesModified:
-                return result.getAttributesModified();
-
-            case renamed:
-                return result.getRenamed();
-
-            case deleted:
-                return result.getDeleted();
-
-            case corrupted:
-                return result.getCorrupted();
-        }
-
-        throw new IllegalArgumentException("Invalid Modification " + modification);
     }
 
     protected List<String> toFileNames(List<FileState> fileStates) {
-        List<String> fileNames = fileStates.stream().map(FileState::getFileName).collect(Collectors.toList());
-        return fileNames;
+        return fileStates.stream().map(FileState::getFileName).collect(Collectors.toList());
     }
 }

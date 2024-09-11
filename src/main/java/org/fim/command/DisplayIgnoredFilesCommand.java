@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.fim.internal.StateManager;
@@ -61,8 +62,8 @@ public class DisplayIgnoredFilesCommand extends AbstractCommand {
         if (Files.exists(statFile)) {
             State state = manager.loadState(lastStateNumber);
             Logger.out.printf("Files or directories ignored in State #%d: %s (%d %s - %s)%n", lastStateNumber, formatDate(state.getTimestamp()),
-                state.getFileCount(), plural("file", state.getFileCount()),
-                byteCountToDisplaySize(state.getFilesContentLength()));
+                    state.getFileCount(), plural("file", state.getFileCount()),
+                    byteCountToDisplaySize(state.getFilesContentLength()));
             if (state.getComment().length() > 0) {
                 Logger.out.printf("\tComment: %s%n", state.getComment());
             }

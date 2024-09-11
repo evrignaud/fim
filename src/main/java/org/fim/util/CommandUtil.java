@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.util;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class CommandUtil {
         Process process = builder.start();
 
         try (InputStream is = process.getInputStream();
-             Scanner scanner = new Scanner(is).useDelimiter("$")) {
+                Scanner scanner = new Scanner(is).useDelimiter("$")) {
             String output = scanner.hasNext() ? scanner.next() : "";
 
             process.waitFor();
@@ -56,7 +57,7 @@ public class CommandUtil {
         Process process = builder.start();
 
         try (InputStream is = process.getInputStream();
-             Scanner scanner = new Scanner(is).useDelimiter("\n")) {
+                Scanner scanner = new Scanner(is).useDelimiter("\n")) {
             List<String> lines = new ArrayList<>();
             while (scanner.hasNext()) {
                 lines.add(scanner.next());
@@ -65,7 +66,9 @@ public class CommandUtil {
             process.waitFor();
             int exitValue = process.exitValue();
             if (exitValue != 0) {
-                throw new IllegalArgumentException(String.format("Command execution failed with status: %d\n%s", exitValue, lines));
+                throw new IllegalArgumentException(String.format("""
+                        Command execution failed with status: %d
+                        %s""", exitValue, lines));
             }
 
             return lines;

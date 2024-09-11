@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal;
 
 import org.fim.internal.hash.FileHasher;
@@ -31,12 +32,12 @@ public class DynamicScaling implements Runnable {
     private final StateGenerator stateGenerator;
     private final Context context;
 
-    private AtomicBoolean stopRequested;
+    private final AtomicBoolean stopRequested;
     private long lastGoodThroughput;
     private long currentThroughput;
     private int resourceLimitReached;
     private int scaleLevel;
-    private int maxScaleLevel;
+    private final int maxScaleLevel;
 
     public DynamicScaling(StateGenerator stateGenerator) {
         this.stateGenerator = stateGenerator;
@@ -54,10 +55,7 @@ public class DynamicScaling implements Runnable {
         try {
             Thread.sleep(200L);
 
-            while (true) {
-                if (stopRequested.get() || scaleLevel >= maxScaleLevel || resourceLimitReached > 20) {
-                    break;
-                }
+            while (!stopRequested.get() && scaleLevel < maxScaleLevel && resourceLimitReached <= 20) {
 
                 checkThroughput();
 

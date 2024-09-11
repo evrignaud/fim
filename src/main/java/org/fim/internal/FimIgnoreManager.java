@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal;
 
 import org.fim.model.Context;
@@ -38,12 +39,12 @@ public class FimIgnoreManager {
     public static final String DOT_FIM_IGNORE = ".fimignore";
     public static final String ALL_DIRECTORIES_PATTERN = "**/";
 
-    public static final Set IGNORED_DIRECTORIES = new HashSet<>(Arrays.asList(Context.DOT_FIM_DIR, ".git", ".svn", ".cvs"));
+    public static final Set<String> IGNORED_DIRECTORIES = new HashSet<>(Arrays.asList(Context.DOT_FIM_DIR, ".git", ".svn", ".cvs"));
 
     private final Context context;
 
-    private String repositoryRootDirString;
-    private Set<String> ignoredFiles;
+    private final String repositoryRootDirString;
+    private final Set<String> ignoredFiles;
 
     public FimIgnoreManager(Context context) {
         this.context = context;
@@ -68,7 +69,7 @@ public class FimIgnoreManager {
      */
     private void addParentFimIgnore(FimIgnore initialFimIgnore) {
         Path directory = context.getAbsoluteCurrentDirectory();
-        while (false == directory.equals(context.getRepositoryRootDir())) {
+        while (!directory.equals(context.getRepositoryRootDir())) {
             directory = directory.getParent();
             if (directory == null) {
                 break;
@@ -120,11 +121,7 @@ public class FimIgnoreManager {
             return true;
         }
 
-        if (isIgnored(fileName, fimIgnore.getFilesToIgnoreLocally())) {
-            return true;
-        }
-
-        return false;
+        return isIgnored(fileName, fimIgnore.getFilesToIgnoreLocally());
     }
 
     private boolean isIgnored(String fileName, Set<FilePattern> filesToIgnore) {

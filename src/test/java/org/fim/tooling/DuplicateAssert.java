@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.tooling;
 
 import org.fim.model.DuplicateResult;
@@ -44,7 +45,7 @@ public class DuplicateAssert {
             assertThat(duplicatedFiles.size()).isEqualTo(expectedDuplicates.size());
 
             for (FileState fileState : duplicatedFiles) {
-                assertThat(expectedDuplicates.contains(fileState.getFileName()));
+                assertThat(expectedDuplicates).contains(fileState.getFileName());
             }
 
             for (String fileName : expectedDuplicates) {

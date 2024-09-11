@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.apache.commons.io.FileUtils;
@@ -23,21 +24,21 @@ import org.fim.command.exception.BadFimUsageException;
 import org.fim.model.Context;
 import org.fim.model.State;
 import org.fim.tooling.RepositoryTool;
-import org.junit.Before;
-import org.junit.Test;
+import org.fim.tooling.TestConstants;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static java.nio.file.Files.copy;
-import static java.nio.file.Files.createDirectories;
-import static java.nio.file.Files.createFile;
-import static java.nio.file.Files.write;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.Command.FimReposConstraint.DONT_CARE;
 import static org.fim.model.HashMode.hashSmallBlock;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RemoveDuplicatesCommandTest {
     private InitCommand initCommand;
@@ -48,15 +49,18 @@ public class RemoveDuplicatesCommandTest {
     private Path rootDir;
     private Path rootDirCopy;
 
-    @Before
-    public void setUp() throws IOException {
-        tool = new RepositoryTool(this.getClass());
+    @BeforeEach
+    public void setUp(TestInfo testInfo) throws IOException {
+        tool = new RepositoryTool(testInfo);
         rootDir = tool.getRootDir();
         context = tool.getContext();
 
-        rootDirCopy = Paths.get("target/" + RemoveDuplicatesCommandTest.class.getSimpleName() + "-copy");
+        String testClassName = testInfo.getTestClass().get().getSimpleName();
+        String testName = testInfo.getTestMethod().get().getName();
+        String dirName = TestConstants.BUILD_TEST_OUTPUTS + "/" + testClassName + "-" + testName + "-copy";
+        rootDirCopy = Paths.get(dirName);
         FileUtils.deleteDirectory(rootDirCopy.toFile());
-        createDirectories(rootDirCopy);
+        Files.createDirectories(rootDirCopy);
 
         initCommand = new InitCommand();
         removeDuplicatesCommand = new RemoveDuplicatesCommand();
@@ -67,7 +71,7 @@ public class RemoveDuplicatesCommandTest {
     public void canRemoveDuplicates() throws Exception {
         tool.createASetOfFiles(5);
         // Create an empty file that wont be seen as duplicate
-        createFile(rootDir.resolve("empty_file_01"));
+        Files.createFile(rootDir.resolve("empty_file_01"));
 
         State state = (State) initCommand.execute(context);
         assertThat(state.getModificationCounts().getAdded()).isEqualTo(6);
@@ -78,54 +82,64 @@ public class RemoveDuplicatesCommandTest {
         long totalFilesRemoved = (long) removeDuplicatesCommand.execute(context);
         assertThat(totalFilesRemoved).isEqualTo(0);
 
-        copy(rootDir.resolve("file01"), rootDirCopy.resolve("dup_file01"));
-        copy(rootDir.resolve("file02"), rootDirCopy.resolve("dup_file02"));
-        copy(rootDir.resolve("file03"), rootDirCopy.resolve("dup_file03"));
-        copy(rootDir.resolve("file04"), rootDirCopy.resolve("dup_file04"));
-        copy(rootDir.resolve("file05"), rootDirCopy.resolve("dup_file05"));
-        copy(rootDir.resolve("empty_file_01"), rootDirCopy.resolve("dup_empty_file_01"));
+        Files.copy(rootDir.resolve("file01"), rootDirCopy.resolve("dup_file01"));
+        Files.copy(rootDir.resolve("file02"), rootDirCopy.resolve("dup_file02"));
+        Files.copy(rootDir.resolve("file03"), rootDirCopy.resolve("dup_file03"));
+        Files.copy(rootDir.resolve("file04"), rootDirCopy.resolve("dup_file04"));
+        Files.copy(rootDir.resolve("file05"), rootDirCopy.resolve("dup_file05"));
+        Files.copy(rootDir.resolve("empty_file_01"), rootDirCopy.resolve("dup_empty_file_01"));
 
         // Modify file03
-        write(rootDirCopy.resolve("dup_file03"), "appended content".getBytes(), APPEND);
+        Files.write(rootDirCopy.resolve("dup_file03"), "appended content".getBytes(), APPEND);
 
         totalFilesRemoved = (long) removeDuplicatesCommand.execute(context);
         // Only 4 files are duplicated
         assertThat(totalFilesRemoved).isEqualTo(4);
     }
 
-    @Test(expected = BadFimUsageException.class)
+    @Test
     public void masterDirectoryMustExist() throws Exception {
         context.setMasterFimRepositoryDir("dummy");
-        removeDuplicatesCommand.execute(context);
+        assertThrows(BadFimUsageException.class, () -> {
+            removeDuplicatesCommand.execute(context);
+        });
     }
 
-    @Test(expected = BadFimUsageException.class)
+    @Test
     public void weMustRunAFullHash() throws Exception {
         context.setHashMode(hashSmallBlock);
         context.setMasterFimRepositoryDir("dummy");
-        removeDuplicatesCommand.execute(context);
+        assertThrows(BadFimUsageException.class, () -> {
+            removeDuplicatesCommand.execute(context);
+        });
     }
 
-    @Test(expected = BadFimUsageException.class)
-    public void CannotRemoveDuplicatesIntoTheMasterDirectory() throws Exception {
+    @Test
+    public void cannotRemoveDuplicatesIntoTheMasterDirectory() throws Exception {
         context.setCurrentDirectory(rootDir);
         context.setMasterFimRepositoryDir(rootDir.toString());
-        removeDuplicatesCommand.execute(context);
+        assertThrows(BadFimUsageException.class, () -> {
+            removeDuplicatesCommand.execute(context);
+        });
     }
 
-    @Test(expected = BadFimUsageException.class)
-    public void CannotRemoveDuplicatesIntoASubDirOfTheMasterDirectory() throws Exception {
+    @Test
+    public void cannotRemoveDuplicatesIntoASubDirOfTheMasterDirectory() throws Exception {
         Path subDir = rootDir.resolve("subDir");
-        createDirectories(subDir);
+        Files.createDirectories(subDir);
         context.setCurrentDirectory(subDir);
         context.setMasterFimRepositoryDir(rootDir.toString());
-        removeDuplicatesCommand.execute(context);
+        assertThrows(BadFimUsageException.class, () -> {
+            removeDuplicatesCommand.execute(context);
+        });
     }
 
-    @Test(expected = BadFimUsageException.class)
+    @Test
     public void masterDirectoryMustBeAFimRepository() throws Exception {
         context.setCurrentDirectory(rootDirCopy);
         context.setMasterFimRepositoryDir(rootDir.toString());
-        removeDuplicatesCommand.execute(context);
+        assertThrows(BadFimUsageException.class, () -> {
+            removeDuplicatesCommand.execute(context);
+        });
     }
 }

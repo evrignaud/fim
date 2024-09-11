@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal.hash;
 
 import org.fim.model.Context;
@@ -24,7 +25,7 @@ import org.fim.util.HashModeUtil;
 
 import java.security.NoSuchAlgorithmException;
 
-import static org.fim.model.Constants._4_KB;
+import static org.fim.model.Constants.SIZE_4_KB;
 import static org.fim.model.HashMode.hashSmallBlock;
 
 public class SmallBlockHasher extends BlockHasher {
@@ -34,7 +35,7 @@ public class SmallBlockHasher extends BlockHasher {
 
     @Override
     protected int getBlockSize() {
-        return _4_KB;
+        return SIZE_4_KB;
     }
 
     @Override

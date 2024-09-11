@@ -16,14 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import org.fim.command.exception.FimInternalError;
 import org.fim.tooling.ObjectAssert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RangeTest {
     private Range a1;
@@ -31,7 +33,7 @@ public class RangeTest {
     private Range b;
     private Range c;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         a1 = new Range(1, 2);
         a2 = new Range(1, 2);
@@ -41,9 +43,11 @@ public class RangeTest {
         c = new Range(4, 5);
     }
 
-    @Test(expected = FimInternalError.class)
+    @Test
     public void toMustBeGreaterThanFrom() {
-        new Range(4, 3);
+        assertThrows(FimInternalError.class, () -> {
+            new Range(4, 3);
+        });
     }
 
     @Test
@@ -78,11 +82,13 @@ public class RangeTest {
         assertThat(range1.adjustToRange(range2)).isEqualTo(new Range(4, 9));
     }
 
-    @Test(expected = FimInternalError.class)
+    @Test
     public void otherRangeCannotStartBefore() {
         Range range1 = new Range(4, 10);
         Range range2 = new Range(3, 15);
-        range1.adjustToRange(range2);
+        assertThrows(FimInternalError.class, () -> {
+            range1.adjustToRange(range2);
+        });
     }
 
     @Test

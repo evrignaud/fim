@@ -16,35 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal.hash;
 
 import org.fim.model.HashMode;
 import org.fim.model.Range;
 import org.fim.tooling.BuildableContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.tooling.TestConstants._12_KB;
-import static org.fim.tooling.TestConstants._16_KB;
-import static org.fim.tooling.TestConstants._1_KB;
-import static org.fim.tooling.TestConstants._20_KB;
-import static org.fim.tooling.TestConstants._4_KB;
-import static org.fim.tooling.TestConstants._5_KB;
-import static org.fim.tooling.TestConstants._8_KB;
+import static org.fim.tooling.TestConstants.SIZE_12_KB;
+import static org.fim.tooling.TestConstants.SIZE_16_KB;
+import static org.fim.tooling.TestConstants.SIZE_1_KB;
+import static org.fim.tooling.TestConstants.SIZE_20_KB;
+import static org.fim.tooling.TestConstants.SIZE_4_KB;
+import static org.fim.tooling.TestConstants.SIZE_5_KB;
+import static org.fim.tooling.TestConstants.SIZE_8_KB;
 
 public class BlockHasherTest {
     private BlockHasher cut;
 
-    @Before
+    @BeforeEach
     public void setUp() throws NoSuchAlgorithmException {
         BuildableContext context = new BuildableContext().hashSmallBlock();
         cut = new BlockHasher(context) {
             @Override
             protected int getBlockSize() {
-                return _4_KB;
+                return SIZE_4_KB;
             }
 
             @Override
@@ -59,21 +60,21 @@ public class BlockHasherTest {
         cut.reset(31);
         assertThat(cut.getMiddleBlockIndex()).isEqualTo(0);
 
-        cut.reset(_4_KB + 109);
+        cut.reset(SIZE_4_KB + 109);
         assertThat(cut.getMiddleBlockIndex()).isEqualTo(0);
 
-        cut.reset(_8_KB + 205);
+        cut.reset(SIZE_8_KB + 205);
         assertThat(cut.getMiddleBlockIndex()).isEqualTo(1);
 
-        cut.reset(_12_KB + 301);
+        cut.reset(SIZE_12_KB + 301);
         assertThat(cut.getMiddleBlockIndex()).isEqualTo(1);
         assertThat(cut.getEndBlockIndex()).isEqualTo(2);
 
-        cut.reset(_16_KB + 407);
+        cut.reset(SIZE_16_KB + 407);
         assertThat(cut.getMiddleBlockIndex()).isEqualTo(2);
         assertThat(cut.getEndBlockIndex()).isEqualTo(3);
 
-        cut.reset(_20_KB + 509);
+        cut.reset(SIZE_20_KB + 509);
         assertThat(cut.getMiddleBlockIndex()).isEqualTo(2);
         assertThat(cut.getEndBlockIndex()).isEqualTo(4);
     }
@@ -81,39 +82,41 @@ public class BlockHasherTest {
     @Test
     public void rangesAreCalculatedCorrectly() {
         cut.reset(31);
-        assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(0, 31)});
+        assertThat(cut.getRanges()).isEqualTo(new Range[] { new Range(0, 31) });
 
-        cut.reset(_4_KB + 109);
-        assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(0, _4_KB)});
+        cut.reset(SIZE_4_KB + 109);
+        assertThat(cut.getRanges()).isEqualTo(new Range[] { new Range(0, SIZE_4_KB) });
 
-        cut.reset(_8_KB + 205);
-        assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB)});
+        cut.reset(SIZE_8_KB + 205);
+        assertThat(cut.getRanges()).isEqualTo(new Range[] { new Range(SIZE_4_KB, SIZE_8_KB) });
 
-        cut.reset(_12_KB + 301);
-        assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB), new Range(_8_KB, _12_KB)});
+        cut.reset(SIZE_12_KB + 301);
+        assertThat(cut.getRanges()).isEqualTo(new Range[] { new Range(SIZE_4_KB, SIZE_8_KB), new Range(SIZE_8_KB, SIZE_12_KB) });
 
-        cut.reset(_16_KB + 407);
-        assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB), new Range(_8_KB, _12_KB), new Range(_12_KB, _16_KB)});
+        cut.reset(SIZE_16_KB + 407);
+        assertThat(cut.getRanges()).isEqualTo(new Range[] { new Range(SIZE_4_KB, SIZE_8_KB), new Range(SIZE_8_KB, SIZE_12_KB), new Range(SIZE_12_KB,
+                SIZE_16_KB) });
 
-        cut.reset(_20_KB + 509);
-        assertThat(cut.getRanges()).isEqualTo(new Range[]{new Range(_4_KB, _8_KB), new Range(_8_KB, _12_KB), new Range(_16_KB, _20_KB)});
+        cut.reset(SIZE_20_KB + 509);
+        assertThat(cut.getRanges()).isEqualTo(new Range[] { new Range(SIZE_4_KB, SIZE_8_KB), new Range(SIZE_8_KB, SIZE_12_KB), new Range(SIZE_16_KB,
+                SIZE_20_KB) });
     }
 
     @Test
     public void canRetrieveTheNextRange() {
-        cut.reset(_20_KB + 509);
-        assertThat(cut.getNextRange(0)).isEqualTo(new Range(_4_KB, _8_KB));
+        cut.reset(SIZE_20_KB + 509);
+        assertThat(cut.getNextRange(0)).isEqualTo(new Range(SIZE_4_KB, SIZE_8_KB));
 
-        assertThat(cut.getNextRange(_1_KB)).isEqualTo(new Range(_4_KB, _8_KB));
+        assertThat(cut.getNextRange(SIZE_1_KB)).isEqualTo(new Range(SIZE_4_KB, SIZE_8_KB));
 
-        assertThat(cut.getNextRange(_4_KB)).isEqualTo(new Range(_4_KB, _8_KB));
+        assertThat(cut.getNextRange(SIZE_4_KB)).isEqualTo(new Range(SIZE_4_KB, SIZE_8_KB));
 
-        assertThat(cut.getNextRange(_4_KB + 1)).isEqualTo(new Range(_8_KB, _12_KB));
+        assertThat(cut.getNextRange(SIZE_4_KB + 1)).isEqualTo(new Range(SIZE_8_KB, SIZE_12_KB));
 
-        assertThat(cut.getNextRange(_5_KB)).isEqualTo(new Range(_8_KB, _12_KB));
+        assertThat(cut.getNextRange(SIZE_5_KB)).isEqualTo(new Range(SIZE_8_KB, SIZE_12_KB));
 
-        assertThat(cut.getNextRange(_12_KB)).isEqualTo(new Range(_16_KB, _20_KB));
+        assertThat(cut.getNextRange(SIZE_12_KB)).isEqualTo(new Range(SIZE_16_KB, SIZE_20_KB));
 
-        assertThat(cut.getNextRange(_20_KB)).isEqualTo(null);
+        assertThat(cut.getNextRange(SIZE_20_KB)).isEqualTo(null);
     }
 }

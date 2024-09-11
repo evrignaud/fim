@@ -16,12 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import org.fim.tooling.BuildableContext;
 import org.fim.util.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,23 +35,21 @@ import static org.fim.tooling.StateAssert.createFileStates;
 public class DuplicateResultTest {
     private DuplicateResult cut;
     private Context context;
-    private List<FileState> little_duplicatedFiles;
     private List<FileState> duplicatedFiles;
-    private List<FileState> big_duplicatedFiles;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         context = new BuildableContext();
         context.setAlwaysYes(true);
         cut = new DuplicateResult(context);
 
-        little_duplicatedFiles = createFileStates("little_file_", 32, 20);
+        List<FileState> littleDuplicatedFiles = createFileStates("little_file_", 32, 20);
         duplicatedFiles = createFileStates("file_", 256, 10);
-        big_duplicatedFiles = createFileStates("big_file_", 512, 2);
+        List<FileState> bigDuplicatedFiles = createFileStates("big_file_", 512, 2);
 
-        cut.addDuplicatedFiles(little_duplicatedFiles);
+        cut.addDuplicatedFiles(littleDuplicatedFiles);
         cut.addDuplicatedFiles(duplicatedFiles);
-        cut.addDuplicatedFiles(big_duplicatedFiles);
+        cut.addDuplicatedFiles(bigDuplicatedFiles);
     }
 
     @Test
@@ -126,18 +125,19 @@ public class DuplicateResultTest {
     @Test
     public void canBeDisplayedInCSV() throws IOException {
         checkOutput(OutputType.csv, "SetIndex,FileIndex,WastedSpace,FilePath,FileName,FileLength,FileType\n" +
-            "1,1,608,,little_file_0,32,");
+                                    "1,1,608,,little_file_0,32,");
     }
 
     @Test
     public void canBeDisplayedInJSON() throws IOException {
-        checkOutput(OutputType.json, "\"fileList\": [\n" +
-            "      {\n" +
-            "        \"path\": \"\",\n" +
-            "        \"name\": \"little_file_0\",\n" +
-            "        \"length\": 32,\n" +
-            "        \"type\": \"\"\n" +
-            "      }");
+        checkOutput(OutputType.json, """
+                "fileList": [
+                      {
+                        "path": "",
+                        "name": "little_file_0",
+                        "length": 32,
+                        "type": ""
+                      }""");
     }
 
     private void checkSort(SortMethod sortMethod, boolean sortAscending, String firstFileName) {
@@ -161,7 +161,7 @@ public class DuplicateResultTest {
     }
 
     private FileState getFirstDuplicatedFileState() {
-        return cut.getDuplicateSets().get(0).getDuplicatedFiles().get(0);
+        return cut.getDuplicateSets().getFirst().getDuplicatedFiles().getFirst();
     }
 
     private void assertIsToRemove(int start, int end, boolean toRemove) {

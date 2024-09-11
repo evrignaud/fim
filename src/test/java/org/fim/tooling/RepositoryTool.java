@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.tooling;
 
 import org.apache.commons.io.FileUtils;
@@ -23,6 +24,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.fim.model.Context;
 import org.fim.model.HashMode;
 import org.fim.util.DosFilePermissions;
+import org.junit.jupiter.api.TestInfo;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -44,17 +46,19 @@ import static org.fim.model.HashMode.hashAll;
 public class RepositoryTool {
     public static final int FILE_SIZE = 10 * 1_024 * 1_024;
 
-    private Path rootDir;
+    private final Path rootDir;
     private int fileCount;
-    private Context context;
+    private final Context context;
 
-    public RepositoryTool(Class testClass) throws IOException {
-        this(testClass, hashAll);
+    public RepositoryTool(TestInfo testInfo) throws IOException {
+        this(testInfo, hashAll);
     }
 
-    public RepositoryTool(Class testClass, HashMode hashMode) throws IOException {
-        String fileName = String.format("target/%s-%s", testClass.getSimpleName(), hashMode);
-        rootDir = Paths.get(fileName);
+    public RepositoryTool(TestInfo testInfo, HashMode hashMode) throws IOException {
+        String testClassName = testInfo.getTestClass().get().getSimpleName();
+        String testName = testInfo.getTestMethod().get().getName();
+        String dirName = TestConstants.BUILD_TEST_OUTPUTS + "/" + testClassName + "-" + testName + "-" + hashMode;
+        rootDir = Paths.get(dirName);
         FileUtils.deleteDirectory(rootDir.toFile());
         Files.createDirectories(rootDir);
 
@@ -190,14 +194,6 @@ public class RepositoryTool {
         } else {
             Set<PosixFilePermission> permissionSet = PosixFilePermissions.fromString(posixPermissions);
             Files.getFileAttributeView(file, PosixFileAttributeView.class).setPermissions(permissionSet);
-        }
-    }
-
-    public void sleepSafely(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            // Never mind
         }
     }
 

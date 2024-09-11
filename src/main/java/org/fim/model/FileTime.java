@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import com.google.common.base.Charsets;
@@ -77,27 +78,25 @@ public class FileTime implements Comparable<FileTime>, Hashable {
             return true;
         }
 
-        if (other == null || !(other instanceof FileTime)) {
+        if (!(other instanceof FileTime otherFileTime)) {
             return false;
         }
 
-        FileTime otherFileTime = (FileTime) other;
-
         return Objects.equals(this.creationTime / 1000, otherFileTime.creationTime / 1000)
-            && Objects.equals(this.lastModified / 1000, otherFileTime.lastModified / 1000);
+               && Objects.equals(this.lastModified / 1000, otherFileTime.lastModified / 1000);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(creationTime, lastModified);
+        return Objects.hash(creationTime / 1000, lastModified / 1000);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("creationTime", creationTime)
-            .add("lastModified", lastModified)
-            .toString();
+                .add("creationTime", creationTime)
+                .add("lastModified", lastModified)
+                .toString();
     }
 
     @Override
@@ -118,10 +117,15 @@ public class FileTime implements Comparable<FileTime>, Hashable {
 
     public void hashObject(Hasher hasher, boolean millisecondsRemoved) {
         hasher
-            .putString("FileTime", Charsets.UTF_8)
-            .putChar(HASH_FIELD_SEPARATOR)
-            .putLong(millisecondsRemoved ? creationTime / 1000 : creationTime)
-            .putChar(HASH_FIELD_SEPARATOR)
-            .putLong(millisecondsRemoved ? lastModified / 1000 : lastModified);
+                .putString("FileTime", Charsets.UTF_8)
+                .putChar(HASH_FIELD_SEPARATOR)
+                .putLong(millisecondsRemoved ? creationTime / 1000 : creationTime)
+                .putChar(HASH_FIELD_SEPARATOR)
+                .putLong(millisecondsRemoved ? lastModified / 1000 : lastModified);
+    }
+
+    @Override
+    public FileTime clone() {
+        return new FileTime(creationTime, lastModified);
     }
 }

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 public class Ignored {
@@ -49,5 +50,14 @@ public class Ignored {
 
     public boolean somethingIgnored() {
         return attributesIgnored || datesIgnored || renamedIgnored;
+    }
+
+    @Override
+    public Ignored clone() {
+        Ignored clonedIgnored = new Ignored();
+        clonedIgnored.attributesIgnored = this.attributesIgnored;
+        clonedIgnored.datesIgnored = this.datesIgnored;
+        clonedIgnored.renamedIgnored = this.renamedIgnored;
+        return clonedIgnored;
     }
 }

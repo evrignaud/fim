@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import org.fim.util.Logger;
@@ -112,10 +113,10 @@ public class LogEntry {
 
     public void displayEntryHeader() {
         Logger.out.printf("- State #%d: %s (%d %s - %s - generated%s using hash mode %s)%n", getStateNumber(), formatDate(getTimestamp()),
-            getFileCount(), plural("file", getFileCount()), byteCountToDisplaySize(getFilesContentLength()),
-            commitDetails.getFromSubDirectory() != null ? " from " + commitDetails.getFromSubDirectory() : "",
-            commitDetails.getHashModeUsedToGetTheStatus());
-        if (getComment().length() > 0) {
+                getFileCount(), plural("file", getFileCount()), byteCountToDisplaySize(getFilesContentLength()),
+                commitDetails.getFromSubDirectory() != null ? " from " + commitDetails.getFromSubDirectory() : "",
+                commitDetails.getHashModeUsedToGetTheStatus());
+        if (!getComment().isEmpty()) {
             Logger.out.printf("\tComment: %s%n", getComment());
         }
     }

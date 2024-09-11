@@ -16,8 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.util;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.fim.model.Context;
 import org.fim.model.FileState;
 
@@ -28,7 +30,8 @@ import java.nio.file.Path;
 import java.text.DecimalFormat;
 
 public class FileUtil {
-    static DecimalFormat decimalFormat = new DecimalFormat("0.#");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.#");
+    private static final Object DELETE_LOCK = new Object();
 
     public static String getNormalizedFileName(Path file) {
         String normalizedFileName = file.toAbsolutePath().normalize().toString();
@@ -51,6 +54,37 @@ public class FileUtil {
     }
 
     public static boolean removeFile(Context context, Path rootDir, FileState fileState) {
+        // Files.delete() not ThreadSafe on Windows and macOS.
+        // Based on https://github.com/apache/flink/blob/master/flink-core/src/main/java/org/apache/flink/util/FileUtils.java#L395
+        if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_MAC_OSX) {
+            synchronized (DELETE_LOCK) {
+                for (int attempt = 1; attempt <= 10; attempt++) {
+                    if (removeFileInternal(context, rootDir, fileState)) {
+                        return true;
+                    }
+
+                    // Got sometimes java.nio.file.AccessDeniedException during file delete.
+                    // Windows has some unusual file locking behaviors.
+                    // Deleting files shortly after using them is rarely possible to do quickly or expediently using Java on Windows,
+                    // as the file locking will get in your way.
+
+                    // briefly wait and fall through the loop
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        // restore the interruption flag and error out of the method
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException("operation interrupted");
+                    }
+                }
+                return false;
+            }
+        }
+
+        return removeFileInternal(context, rootDir, fileState);
+    }
+
+    private static boolean removeFileInternal(Context context, Path rootDir, FileState fileState) {
         try {
             Path file = rootDir.resolve(fileState.getFileName());
             Files.delete(file);
@@ -89,6 +123,6 @@ public class FileUtil {
             return bytes + " bytes";
         }
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        return decimalFormat.format(bytes / Math.pow(unit, exp)) + " " + "KMGTPE".charAt(exp - 1) + (si ? "B" : "bit");
+        return DECIMAL_FORMAT.format(bytes / Math.pow(unit, exp)) + " " + "KMGTPE".charAt(exp - 1) + (si ? "B" : "bit");
     }
 }

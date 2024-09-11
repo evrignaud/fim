@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim;
 
 import org.fim.command.CommitCommand;
@@ -28,26 +29,19 @@ import org.fim.model.HashMode;
 import org.fim.model.ModificationCounts;
 import org.fim.model.State;
 import org.fim.tooling.RepositoryTool;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.fim.util.TestAllHashModes;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashAll;
 import static org.fim.model.HashMode.hashMediumBlock;
 import static org.fim.model.HashMode.hashSmallBlock;
 
-@RunWith(Parameterized.class)
 public class FileGrowingTest {
-    private HashMode hashMode;
-
     private InitCommand initCommand;
     private StatusCommand statusCommand;
     private CommitCommand commitCommand;
@@ -56,23 +50,15 @@ public class FileGrowingTest {
     private RepositoryTool tool;
     private Path rootDir;
 
-    public FileGrowingTest(final HashMode hashMode) {
-        this.hashMode = hashMode;
+    private TestInfo testInfo;
+
+    @BeforeEach
+    void init(TestInfo testInfo) {
+        this.testInfo = testInfo;
     }
 
-    @Parameterized.Parameters(name = "Hash mode: {0}")
-    public static Collection<Object[]> parameters() {
-        return Arrays.asList(new Object[][]{
-            {dontHash},
-            {hashSmallBlock},
-            {hashMediumBlock},
-            {hashAll}
-        });
-    }
-
-    @Before
-    public void setUp() throws IOException {
-        tool = new RepositoryTool(this.getClass(), hashMode);
+    public void setUp(HashMode hashMode) throws IOException {
+        tool = new RepositoryTool(testInfo, hashMode);
         tool.useFixedThreadCount();
         rootDir = tool.getRootDir();
 
@@ -82,8 +68,10 @@ public class FileGrowingTest {
         rollbackCommand = new RollbackCommand();
     }
 
-    @Test
-    public void canDetectAGrowingFile() throws Exception {
+    @TestAllHashModes
+    public void canDetectAGrowingFile(HashMode hashMode) throws Exception {
+        setUp(hashMode);
+
         Context context = tool.getContext();
 
         Path file01 = rootDir.resolve("file01");

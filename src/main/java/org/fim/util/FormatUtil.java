@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.util;
 
 import org.fim.model.FileState;
@@ -24,7 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class FormatUtil {
-    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public static String formatCreationTime(FileState fileState) {
         return formatDate(fileState.getFileTime().getCreationTime());
@@ -35,6 +36,6 @@ public class FormatUtil {
     }
 
     public static String formatDate(long timestamp) {
-        return dateFormat.format(new Date(timestamp));
+        return DATE_FORMAT.format(new Date(timestamp));
     }
 }

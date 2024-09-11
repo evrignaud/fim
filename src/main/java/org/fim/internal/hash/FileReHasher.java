@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal.hash;
 
 import org.fim.model.Context;
@@ -33,7 +34,8 @@ public class FileReHasher extends FileHasher {
     private final BlockingDeque<FileState> toRehashQueue;
     private final Path rootDir;
 
-    public FileReHasher(Context context, HashProgress hashProgress, BlockingDeque<FileState> toRehashQueue, Path rootDir) throws NoSuchAlgorithmException {
+    public FileReHasher(Context context, HashProgress hashProgress, BlockingDeque<FileState> toRehashQueue, Path rootDir)
+            throws NoSuchAlgorithmException {
         super(context, null, hashProgress, null, FileUtil.getNormalizedFileName(rootDir));
         this.toRehashQueue = toRehashQueue;
         this.rootDir = rootDir;

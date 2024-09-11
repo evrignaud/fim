@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import com.google.common.base.MoreObjects;
@@ -26,12 +27,12 @@ import java.util.List;
 import java.util.Objects;
 
 public class DuplicateSet {
-    private List<FileState> duplicatedFiles;
-    private long wastedSpace;
+    private final List<FileState> duplicatedFiles;
+    private final long wastedSpace;
 
     public DuplicateSet(List<FileState> duplicatedFiles) {
         this.duplicatedFiles = new ArrayList<>(duplicatedFiles);
-        wastedSpace = (this.duplicatedFiles.size() - 1) * this.duplicatedFiles.get(0).getFileLength();
+        wastedSpace = (this.duplicatedFiles.size() - 1) * this.duplicatedFiles.getFirst().getFileLength();
     }
 
     public List<FileState> getDuplicatedFiles() {
@@ -47,7 +48,7 @@ public class DuplicateSet {
     }
 
     public long getDuplicatedFileSize() {
-        return duplicatedFiles.get(0).getFileLength();
+        return duplicatedFiles.getFirst().getFileLength();
     }
 
     @Override
@@ -56,11 +57,9 @@ public class DuplicateSet {
             return true;
         }
 
-        if (other == null || !(other instanceof DuplicateSet)) {
+        if (!(other instanceof DuplicateSet duplicateSet)) {
             return false;
         }
-
-        DuplicateSet duplicateSet = (DuplicateSet) other;
 
         return Objects.equals(this.duplicatedFiles, duplicateSet.duplicatedFiles);
 
@@ -74,7 +73,7 @@ public class DuplicateSet {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("duplicatedFiles", duplicatedFiles)
-            .toString();
+                .add("duplicatedFiles", duplicatedFiles)
+                .toString();
     }
 }

@@ -16,13 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.ObjectAssert;
 import org.fim.tooling.StateAssert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.text.ParseException;
@@ -38,7 +39,7 @@ public class StateTest extends StateAssert {
     private BuildableState a2;
     private BuildableState b;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         a1 = new BuildableState(defaultContext()).addFiles("file_1", "file_2");
         a2 = a1.clone();
@@ -67,9 +68,9 @@ public class StateTest extends StateAssert {
     public void canHashAState() throws ParseException {
         fixTimeStamps(a1);
 
-        String a1_hash = a1.hashState();
-        assertThat(a1_hash.length()).isEqualTo(80);
-        assertThat(a1_hash).isEqualTo("[#CZ-RQZX;TDnGiB^jK(`Q+n3h\\enrMKKsX-C!4:Ll8$c\"hEK+rRmW)DjDh?prX;6Hn0UL8LV=S*;0L!");
+        String a1Hash = a1.hashState();
+        assertThat(a1Hash.length()).isEqualTo(80);
+        assertThat(a1Hash).isEqualTo("[#CZ-RQZX;TDnGiB^jK(`Q+n3h\\enrMKKsX-C!4:Ll8$c\"hEK+rRmW)DjDh?prX;6Hn0UL8LV=S*;0L!");
     }
 
     @Test
@@ -78,13 +79,13 @@ public class StateTest extends StateAssert {
         fixTimeStamps(a2);
         fixTimeStamps(b);
 
-        String a1_hash = a1.hashState();
-        String a2_hash = a2.hashState();
-        String b_hash = b.hashState();
+        String a1Hash = a1.hashState();
+        String a2Hash = a2.hashState();
+        String bHash = b.hashState();
 
-        assertThat(a1_hash).isEqualTo(a2_hash);
+        assertThat(a1Hash).isEqualTo(a2Hash);
 
-        assertThat(a1_hash).isNotEqualTo(b_hash);
+        assertThat(a1Hash).isNotEqualTo(bHash);
     }
 
     @Test

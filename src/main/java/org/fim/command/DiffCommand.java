@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.fim.model.Context;
@@ -39,7 +40,9 @@ public class DiffCommand extends StatusCommand {
 
     @Override
     public Object execute(Context context) throws Exception {
-        Logger.out.println("The 'diff' command is deprecated and will be removed in the future: use 'status' instead\n");
+        Logger.out.println("""
+                The 'diff' command is deprecated and will be removed in the future: use 'status' instead
+                """);
 
         return super.execute(context);
     }

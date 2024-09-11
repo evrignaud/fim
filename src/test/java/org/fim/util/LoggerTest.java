@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LoggerTest {
     @Test

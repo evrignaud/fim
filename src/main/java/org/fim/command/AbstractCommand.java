@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.command;
 
 import org.fim.command.exception.BadFimUsageException;
@@ -52,14 +53,18 @@ public abstract class AbstractCommand implements Command {
         if (settingsManager.getGlobalHashMode() != hashAll) {
             if (HashModeUtil.isCompatible(settingsManager.getGlobalHashMode(), context.getHashMode())) {
                 if (optionList.contains(Option.ALLOW_COMPATIBLE)) {
-                    Logger.info(String.format("Using global hash mode '%s' that is compatible with the current one", hashModeToString(settingsManager.getGlobalHashMode())));
+                    Logger.info(String.format("Using global hash mode '%s' that is compatible with the current one",
+                            hashModeToString(settingsManager.getGlobalHashMode())));
                 } else {
-                    Logger.warning(String.format("Using global hash mode '%s' that is compatible with the current one, but is not allowed by this command. Hash mode forced",
-                        hashModeToString(settingsManager.getGlobalHashMode())));
+                    Logger.warning(String.format(
+                            "Using global hash mode '%s' that is compatible with the current one, but is not allowed by this command. Hash mode " +
+                            "forced",
+                            hashModeToString(settingsManager.getGlobalHashMode())));
                     context.setHashMode(settingsManager.getGlobalHashMode());
                 }
             } else {
-                Logger.warning(String.format("Using global hash mode '%s' that is not compatible with the current one. Hash mode forced", hashModeToString(settingsManager.getGlobalHashMode())));
+                Logger.warning(String.format("Using global hash mode '%s' that is not compatible with the current one. Hash mode forced",
+                        hashModeToString(settingsManager.getGlobalHashMode())));
                 context.setHashMode(settingsManager.getGlobalHashMode());
             }
         } else if (context.getHashMode() != hashAll) {

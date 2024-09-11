@@ -16,13 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal.hash;
 
 import static java.lang.Math.max;
-import static org.fim.model.Constants._1_MB;
+import static org.fim.model.Constants.SIZE_1_MB;
 
 public class ThroughputKeeper {
-    public static final int BLOCK_SIZE = 500 * _1_MB;
+    public static final int BLOCK_SIZE = 500 * SIZE_1_MB;
     public static final int HALF_BLOCK_SIZE = BLOCK_SIZE / 2;
 
     // Maintain a sliding window to compute throughput
@@ -68,9 +69,9 @@ public class ThroughputKeeper {
 
     private static class Position {
         private long size;
-        private long time;
+        private final long time;
 
-        public Position(long size) {
+        Position(long size) {
             this.size = size;
             this.time = System.currentTimeMillis();
         }

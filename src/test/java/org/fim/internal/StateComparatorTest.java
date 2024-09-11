@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal;
 
 import org.fim.model.CompareResult;
@@ -25,20 +26,10 @@ import org.fim.tooling.BuildableState;
 import org.fim.tooling.FileNameDiff;
 import org.fim.tooling.StateAssert;
 import org.fim.util.Logger;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-
-import java.util.Arrays;
-import java.util.Collection;
+import org.fim.util.TestAllHashModes;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fim.model.HashMode.dontHash;
-import static org.fim.model.HashMode.hashAll;
-import static org.fim.model.HashMode.hashMediumBlock;
-import static org.fim.model.HashMode.hashSmallBlock;
 import static org.fim.model.Modification.added;
 import static org.fim.model.Modification.contentModified;
 import static org.fim.model.Modification.copied;
@@ -48,74 +39,69 @@ import static org.fim.model.Modification.deleted;
 import static org.fim.model.Modification.duplicated;
 import static org.fim.model.Modification.renamed;
 
-@RunWith(Parameterized.class)
 public class StateComparatorTest extends StateAssert {
-    private HashMode hashMode;
     private BuildableContext context;
     private BuildableState s1;
     private BuildableState s2;
     private CompareResult result;
 
-    public StateComparatorTest(final HashMode hashMode) {
-        this.hashMode = hashMode;
-    }
-
-    @Parameters(name = "Hash mode: {0}")
-    public static Collection<Object[]> parameters() {
-        return Arrays.asList(new Object[][]{
-            {dontHash},
-            {hashSmallBlock},
-            {hashMediumBlock},
-            {hashAll}
-        });
-    }
-
-    @Before
-    public void setUp() {
+    public void setUp(HashMode hashMode) {
         context = defaultContext();
         context.setHashMode(hashMode);
         s1 = new BuildableState(context).addFiles("file_01", "file_02", "file_03", "file_04");
     }
 
-    @Test
-    public void canManageSameContent() {
+    @TestAllHashModes
+    public void canManageSameContent(HashMode hashMode) {
+        setUp(hashMode);
+
         // Set the same file content
         s2 = s1.setContent("file_01", "file_01");
         result = new StateComparator(context, s1, s2).compare();
         assertNothingModified(result);
     }
 
-    @Test
-    public void canManageFileAdded() {
+    @TestAllHashModes
+    public void canManageFileAdded(HashMode hashMode) {
+        setUp(hashMode);
+
         s2 = s1.addFiles("file_05");
         result = new StateComparator(context, s1, s2).compare();
         assertOnlyFilesAdded(result, "file_05");
     }
 
-    @Test
-    public void canManageDateModified() {
+    @TestAllHashModes
+    public void canManageDateModified(HashMode hashMode) {
+        setUp(hashMode);
+
         s2 = s1.touch("file_01");
         result = new StateComparator(context, s1, s2).compare();
         assertOnlyDatesModified(result, "file_01");
     }
 
-    @Test
-    public void noChangeDetectedWhenDatesIgnoredIsSet() {
+    @TestAllHashModes
+    public void noChangeDetectedWhenDatesIgnoredIsSet(HashMode hashMode) {
+        setUp(hashMode);
+
         context.getIgnored().setDatesIgnored(true);
         s2 = s1.touch("file_01");
         result = new StateComparator(context, s1, s2).compare();
         assertNothingModified(result);
     }
 
-    @Test
-    public void canManageContentModified() {
+    @TestAllHashModes
+    public void canManageContentModified(HashMode hashMode) {
+        setUp(hashMode);
+
         s2 = s1.appendContent("file_01", "append_01");
         result = new StateComparator(context, s1, s2).compare();
         assertOnlyContentModified(result, "file_01");
     }
 
-    @Test
-    public void canManageFileRename() {
+    @TestAllHashModes
+    public void canManageFileRename(HashMode hashMode) {
+        setUp(hashMode);
+
         s2 = s1.rename("file_01", "file_06");
         result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
@@ -127,8 +113,10 @@ public class StateComparatorTest extends StateAssert {
         }
     }
 
-    @Test
-    public void noChangeDetectedWhenRenamedIgnoredIsSet() {
+    @TestAllHashModes
+    public void noChangeDetectedWhenRenamedIgnoredIsSet(HashMode hashMode) {
+        setUp(hashMode);
+
         context.getIgnored().setRenamedIgnored(true);
         s2 = s1.rename("file_01", "file_06");
         result = new StateComparator(context, s1, s2).compare();
@@ -137,8 +125,10 @@ public class StateComparatorTest extends StateAssert {
         }
     }
 
-    @Test
-    public void canManageFileCopy() {
+    @TestAllHashModes
+    public void canManageFileCopy(HashMode hashMode) {
+        setUp(hashMode);
+
         s2 = s1.copy("file_01", "file_06");
         result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
@@ -148,18 +138,22 @@ public class StateComparatorTest extends StateAssert {
         }
     }
 
-    @Test
-    public void canManageFileDelete() {
+    @TestAllHashModes
+    public void canManageFileDelete(HashMode hashMode) {
+        setUp(hashMode);
+
         s2 = s1.delete("file_01");
         result = new StateComparator(context, s1, s2).compare();
         assertOnlyFileDeleted(result, "file_01");
     }
 
-    @Test
-    public void canCopyAFileAndChangeDate() {
+    @TestAllHashModes
+    public void canCopyAFileAndChangeDate(HashMode hashMode) {
+        setUp(hashMode);
+
         s2 = s1.copy("file_01", "file_00")
-            .copy("file_01", "file_06")
-            .touch("file_01");
+                .copy("file_01", "file_06")
+                .touch("file_01");
         result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
             assertGotOnlyModifications(result, added, dateModified);
@@ -171,11 +165,13 @@ public class StateComparatorTest extends StateAssert {
         assertFilesModified(result, dateModified, "file_01");
     }
 
-    @Test
-    public void canCopyAFileAndChangeContent() {
+    @TestAllHashModes
+    public void canCopyAFileAndChangeContent(HashMode hashMode) {
+        setUp(hashMode);
+
         s2 = s1.copy("file_01", "file_00")
-            .copy("file_01", "file_06")
-            .appendContent("file_01", "append_01");
+                .copy("file_01", "file_06")
+                .appendContent("file_01", "append_01");
         result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
             assertGotOnlyModifications(result, contentModified, added);
@@ -188,24 +184,28 @@ public class StateComparatorTest extends StateAssert {
         }
     }
 
-    @Test
-    public void canCorrectlyDetectRenamedFiles() {
+    @TestAllHashModes
+    public void canCorrectlyDetectRenamedFiles(HashMode hashMode) {
+        setUp(hashMode);
+
         s1 = s1.copy("file_01", "dup_file_01");
         s2 = s1.rename("file_01", "new_file_01")
-            .rename("dup_file_01", "new_dup_file_01");
+                .rename("dup_file_01", "new_dup_file_01");
 
-        detectAndAssertRenamedFiles();
+        detectAndAssertRenamedFiles(hashMode);
     }
 
-    @Test
-    public void canCorrectlyDetectRenamedFilesThatHaveDateChanged() {
+    @TestAllHashModes
+    public void canCorrectlyDetectRenamedFilesThatHaveDateChanged(HashMode hashMode) {
+        setUp(hashMode);
+
         s1 = s1.copy("file_01", "dup_file_01");
         s2 = s1.rename("file_01", "new_file_01").touch("new_file_01")
-            .rename("dup_file_01", "new_dup_file_01").touch("new_dup_file_01");
-        detectAndAssertRenamedFiles();
+                .rename("dup_file_01", "new_dup_file_01").touch("new_dup_file_01");
+        detectAndAssertRenamedFiles(hashMode);
     }
 
-    private void detectAndAssertRenamedFiles() {
+    private void detectAndAssertRenamedFiles(HashMode hashMode) {
         result = new StateComparator(context, s1, s2).compare();
         if (hashMode == dontHash) {
             assertGotOnlyModifications(result, added, deleted);
@@ -217,8 +217,10 @@ public class StateComparatorTest extends StateAssert {
         }
     }
 
-    @Test
-    public void emptyFilesAreNeverSeenAsDuplicates() {
+    @TestAllHashModes
+    public void emptyFilesAreNeverSeenAsDuplicates(HashMode hashMode) {
+        setUp(hashMode);
+
         s1 = s1.addEmptyFiles("empty_file_01");
         s2 = s1.addEmptyFiles("empty_file_02");
         result = new StateComparator(context, s1, s2).compare();
@@ -226,8 +228,10 @@ public class StateComparatorTest extends StateAssert {
         assertFilesModified(result, added, "empty_file_02");
     }
 
-    @Test
-    public void canDetectHardwareCorruption() {
+    @TestAllHashModes
+    public void canDetectHardwareCorruption(HashMode hashMode) {
+        setUp(hashMode);
+
         if (hashMode == dontHash) {
             return;
         }
@@ -248,8 +252,10 @@ public class StateComparatorTest extends StateAssert {
         assertFilesModified(result, corrupted, "file_01");
     }
 
-    @Test
-    public void withLogDebugWeHaveAResult() {
+    @TestAllHashModes
+    public void withLogDebugWeHaveAResult(HashMode hashMode) {
+        setUp(hashMode);
+
         boolean debugEnabled = Logger.debugEnabled;
         try {
             Logger.debugEnabled = true;
@@ -261,8 +267,10 @@ public class StateComparatorTest extends StateAssert {
         }
     }
 
-    @Test
-    public void withoutLogDebugWeHaveNothing() {
+    @TestAllHashModes
+    public void withoutLogDebugWeHaveNothing(HashMode hashMode) {
+        setUp(hashMode);
+
         boolean debugEnabled = Logger.debugEnabled;
         try {
             Logger.debugEnabled = false;

@@ -16,14 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class FimIgnore {
-    private Set<FilePattern> filesToIgnoreLocally;
-    private Set<FilePattern> filesToIgnoreInAllDirectories;
+    private final Set<FilePattern> filesToIgnoreLocally;
+    private final Set<FilePattern> filesToIgnoreInAllDirectories;
 
     public FimIgnore() {
         filesToIgnoreLocally = new HashSet<>();

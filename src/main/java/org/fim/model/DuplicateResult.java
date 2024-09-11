@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
 
 import org.fim.internal.DuplicateOutputGenerator;
 import org.fim.util.Logger;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
@@ -53,8 +53,8 @@ public class DuplicateResult {
             duplicatedFilesCount += duplicatedFiles.size() - 1;
 
             duplicatedFiles.stream()
-                .filter(fileState -> duplicatedFiles.indexOf(fileState) > 0)
-                .forEach(fileState -> totalWastedSpace += fileState.getFileLength());
+                    .filter(fileState -> duplicatedFiles.indexOf(fileState) > 0)
+                    .forEach(fileState -> totalWastedSpace += fileState.getFileLength());
 
             DuplicateSet duplicateSet = new DuplicateSet(duplicatedFiles);
             duplicateSets.add(duplicateSet);
@@ -63,20 +63,16 @@ public class DuplicateResult {
 
     public void sortDuplicateSets() {
         Comparator<DuplicateSet> duplicateSetComparator = createDuplicateSetComparator();
-        Collections.sort(duplicateSets, duplicateSetComparator);
+        duplicateSets.sort(duplicateSetComparator);
     }
 
     private Comparator<DuplicateSet> createDuplicateSetComparator() {
-        switch (context.getSortMethod()) {
-            case wasted:
-                return new WastedSpaceComparator();
-            case number:
-                return new NumberOfFileComparator();
-            case size:
-                return new FileSizeComparator();
-            default:
-                return null;
-        }
+        return switch (context.getSortMethod()) {
+            case wasted -> new WastedSpaceComparator();
+            case number -> new NumberOfFileComparator();
+            case size -> new FileSizeComparator();
+            default -> null;
+        };
     }
 
     public DuplicateResult displayAndRemoveDuplicates() {
@@ -95,7 +91,7 @@ public class DuplicateResult {
         if (filesRemoved == 0) {
             if (duplicatedFilesCount > 0) {
                 Logger.out.printf("%d duplicate %s, %s of total wasted space%n",
-                    duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount), byteCountToDisplaySize(totalWastedSpace));
+                        duplicatedFilesCount, pluralForLong("file", duplicatedFilesCount), byteCountToDisplaySize(totalWastedSpace));
             } else {
                 Logger.out.println("No duplicate file found");
             }
@@ -105,7 +101,7 @@ public class DuplicateResult {
             long remainingWastedSpace = totalWastedSpace - spaceFreed;
             if (remainingDuplicates > 0) {
                 Logger.out.printf("Still have %d duplicate %s, %s of total wasted space%n",
-                    remainingDuplicates, pluralForLong("file", remainingDuplicates), byteCountToDisplaySize(remainingWastedSpace));
+                        remainingDuplicates, pluralForLong("file", remainingDuplicates), byteCountToDisplaySize(remainingWastedSpace));
             } else {
                 Logger.out.println("No duplicate file remains");
             }
@@ -116,12 +112,12 @@ public class DuplicateResult {
     private void manageDuplicateSet(DuplicateSet duplicateSet) {
         int index = duplicateSets.indexOf(duplicateSet) + 1;
         List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
-        long fileLength = duplicatedFiles.get(0).getFileLength();
+        long fileLength = duplicatedFiles.getFirst().getFileLength();
         int duplicateTime = duplicatedFiles.size() - 1;
         long wastedSpace = duplicateSet.getWastedSpace();
         Logger.out.printf("- Duplicate set #%d: duplicated %d %s, %s each, %s of wasted space%n",
-            index, duplicateTime, plural("time", duplicateTime),
-            byteCountToDisplaySize(fileLength), byteCountToDisplaySize(wastedSpace));
+                index, duplicateTime, plural("time", duplicateTime),
+                byteCountToDisplaySize(fileLength), byteCountToDisplaySize(wastedSpace));
 
         if (context.isRemoveDuplicates()) {
             selectFilesToRemove(duplicatedFiles);
@@ -184,7 +180,7 @@ public class DuplicateResult {
 
                     // Add the additional file that we will remove. It was not counted in the initial wasted space.
                     duplicatedFilesCount++;
-                    totalWastedSpace += duplicatedFiles.get(0).getFileLength();
+                    totalWastedSpace += duplicatedFiles.getFirst().getFileLength();
                     break;
                 }
 
@@ -200,8 +196,9 @@ public class DuplicateResult {
     }
 
     private String readInputLine() {
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
+        try (Scanner scanner = new Scanner(System.in)) {
+            return scanner.nextLine();
+        }
     }
 
     private int safeParseInt(String answer) {

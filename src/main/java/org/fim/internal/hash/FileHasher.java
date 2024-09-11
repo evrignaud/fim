@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.internal.hash;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -65,7 +66,8 @@ public class FileHasher implements Runnable {
     private Method clean = null;
     private boolean cleanInitialized = false;
 
-    public FileHasher(Context context, AtomicBoolean scanInProgress, HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir) throws NoSuchAlgorithmException {
+    public FileHasher(Context context, AtomicBoolean scanInProgress, HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir)
+            throws NoSuchAlgorithmException {
         this.context = context;
         this.scanInProgress = scanInProgress;
         this.hashProgress = hashProgress;
@@ -119,7 +121,8 @@ public class FileHasher implements Runnable {
                     attributes = dosFileAttributes;
                 } else {
                     PosixFileAttributes posixFileAttributes = Files.readAttributes(file, PosixFileAttributes.class);
-                    fileAttributes = addAttribute(fileAttributes, FileAttribute.PosixFilePermissions, PosixFilePermissions.toString(posixFileAttributes.permissions()));
+                    fileAttributes = addAttribute(fileAttributes, FileAttribute.PosixFilePermissions,
+                            PosixFilePermissions.toString(posixFileAttributes.permissions()));
                     if (SELinux.ENABLED) {
                         fileAttributes = addAttribute(fileAttributes, FileAttribute.SELinuxLabel, SELinux.getLabel(context, file));
                     }
@@ -172,7 +175,7 @@ public class FileHasher implements Runnable {
         long blockSize;
         int bufferSize;
 
-        try (final FileChannel channel = FileChannel.open(file)) {
+        try (FileChannel channel = FileChannel.open(file)) {
             while (filePosition < fileSize) {
                 Range nextRange = frontHasher.getNextRange(filePosition);
                 if (nextRange == null) {
@@ -186,9 +189,11 @@ public class FileHasher implements Runnable {
             }
         }
 
-        if (false == frontHasher.hashComplete()) {
-            throw new FimInternalError(String.format("Fim is not working correctly for file '%s' (size=%d). Some Hasher have not completed: small=%s, medium=%s, full=%s",
-                file, fileSize, frontHasher.getSmallBlockHasher().hashComplete(), frontHasher.getMediumBlockHasher().hashComplete(), frontHasher.getFullHasher().hashComplete()));
+        if (!frontHasher.hashComplete()) {
+            throw new FimInternalError(String.format(
+                    "Fim is not working correctly for file '%s' (size=%d). Some Hasher have not completed: small=%s, medium=%s, full=%s",
+                    file, fileSize, frontHasher.getSmallBlockHasher().hashComplete(), frontHasher.getMediumBlockHasher().hashComplete(),
+                    frontHasher.getFullHasher().hashComplete()));
         }
 
         return frontHasher.getFileHash();

@@ -16,7 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Fim.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.fim.model;
+
+import com.google.common.base.MoreObjects;
 
 import java.util.List;
 
@@ -37,49 +40,23 @@ public class ModificationCounts {
 
     public ModificationCounts(List<FileState> fileStates) {
         fileStates.stream()
-            .filter(fileState -> fileState.getModification() != null)
-            .forEach(fileState -> {
-                switch (fileState.getModification()) {
-                    case added:
-                        added++;
-                        break;
-
-                    case copied:
-                        copied++;
-                        break;
-
-                    case duplicated:
-                        duplicated++;
-                        break;
-
-                    case dateModified:
-                        dateModified++;
-                        break;
-
-                    case contentModified:
-                        contentModified++;
-                        break;
-
-                    case attributesModified:
-                        attributesModified++;
-                        break;
-
-                    case renamed:
-                        renamed++;
-                        break;
-
-                    case deleted:
-                        deleted++;
-                        break;
-
-                    case corrupted:
-                        corrupted++;
-                        break;
-
-                    default:
-                        break;
-                }
-            });
+                .filter(fileState -> fileState.getModification() != null)
+                .forEach(fileState -> {
+                    switch (fileState.getModification()) {
+                        case added -> added++;
+                        case copied -> copied++;
+                        case duplicated -> duplicated++;
+                        case dateModified -> dateModified++;
+                        case contentModified -> contentModified++;
+                        case attributesModified -> attributesModified++;
+                        case renamed -> renamed++;
+                        case deleted -> deleted++;
+                        case corrupted -> corrupted++;
+                        default -> {
+                            // Nothing to do
+                        }
+                    }
+                });
     }
 
     public int getAdded() {
@@ -152,5 +129,35 @@ public class ModificationCounts {
 
     public void setCorrupted(int corrupted) {
         this.corrupted = corrupted;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("added", added)
+                .add("copied", copied)
+                .add("duplicated", duplicated)
+                .add("dateModified", dateModified)
+                .add("contentModified", contentModified)
+                .add("attributesModified", attributesModified)
+                .add("renamed", renamed)
+                .add("deleted", deleted)
+                .add("corrupted", corrupted)
+                .toString();
+    }
+
+    @Override
+    public ModificationCounts clone() {
+        ModificationCounts cloned = new ModificationCounts();
+        cloned.added = this.added;
+        cloned.copied = this.copied;
+        cloned.duplicated = this.duplicated;
+        cloned.dateModified = this.dateModified;
+        cloned.contentModified = this.contentModified;
+        cloned.attributesModified = this.attributesModified;
+        cloned.renamed = this.renamed;
+        cloned.deleted = this.deleted;
+        cloned.corrupted = this.corrupted;
+        return cloned;
     }
 }
