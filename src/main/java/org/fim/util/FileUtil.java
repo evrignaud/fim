@@ -30,6 +30,10 @@ import java.nio.file.Path;
 import java.text.DecimalFormat;
 
 public class FileUtil {
+    private FileUtil() {
+        // Utility class, no instantiation
+    }
+
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.#");
     private static final Object DELETE_LOCK = new Object();
 
@@ -74,7 +78,7 @@ public class FileUtil {
                     } catch (InterruptedException e) {
                         // restore the interruption flag and error out of the method
                         Thread.currentThread().interrupt();
-                        throw new RuntimeException("operation interrupted");
+                        throw new FileOperationInterruptedException("File deletion operation interrupted");
                     }
                 }
                 return false;

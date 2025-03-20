@@ -26,6 +26,10 @@ import java.util.List;
 import java.util.Scanner;
 
 public class CommandUtil {
+    private CommandUtil() {
+        // Utility class, no instantiation
+    }
+
     /**
      * Execute a command and return all the output.
      */

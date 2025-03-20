@@ -61,6 +61,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 import static org.fim.model.HashMode.dontHash;
@@ -184,66 +185,105 @@ public class Fim {
         String[] filteredArgs = filterEmptyArgs(args);
         if (filteredArgs.length < 1) {
             youMustSpecifyACommandToRun(null);
+            return;
         }
 
         context.setCalledFromTest(Fim.calledFromTest);
 
-        Command command = null;
-        String[] optionArgs = filteredArgs;
-        String firstArg = filteredArgs[0];
-        if (firstArg.startsWith("-")) {
-            firstArg = null;
-        } else {
-            optionArgs = Arrays.copyOfRange(filteredArgs, 1, filteredArgs.length);
-            command = findCommand(firstArg);
-        }
+        CommandDetails cmdDetails = parseCommandDetails(filteredArgs);
+        Command command = buildCommand(context, new DefaultParser(), cmdDetails.optionArgs(), cmdDetails.command());
 
-        CommandLineParser cmdLineGnuParser = new DefaultParser();
-
-        command = buildCommand(context, cmdLineGnuParser, optionArgs, command);
         if (command == null) {
-            youMustSpecifyACommandToRun(firstArg);
+            youMustSpecifyACommandToRun(cmdDetails.firstArg());
+            return;
         }
 
-        FimReposConstraint constraint = command.getFimReposConstraint();
-        if (constraint == FimReposConstraint.MUST_NOT_EXIST) {
-            setRepositoryRootDir(context, context.getAbsoluteCurrentDirectory(), false);
-
-            if (Files.exists(context.getRepositoryDotFimDir()) || Files.exists(context.getRepositoryStatesDir())) {
-                Logger.error("Fim repository already exist");
-                throw new BadFimUsageException();
-            }
-
-            if (!Files.isWritable(context.getRepositoryRootDir())) {
-                Logger.error(
-                        String.format("Not allowed to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()));
-                throw new RepositoryException();
-            }
-        } else if (constraint == FimReposConstraint.MUST_EXIST) {
-            findRepositoryRootDir(context);
-
-            if (!Files.exists(context.getRepositoryStatesDir())) {
-                Logger.error("Fim repository does not exist. Please run 'fim init' before.");
-                throw new BadFimUsageException();
-            }
-
-            if (!Files.isWritable(context.getRepositoryStatesDir())) {
-                Logger.error(String.format("Not allowed to modify States into the '%s' directory", context.getRepositoryStatesDir()));
-                throw new RepositoryException();
-            }
-            SettingsManager settingsManager = new SettingsManager(context);
-            if (!Files.isWritable(settingsManager.getSettingsFile())) {
-                Logger.error(String.format("Not allowed to save settings into the '%s' directory", context.getRepositoryDotFimDir()));
-                throw new RepositoryException();
-            }
-        }
-
+        validateAndSetupRepository(context, command);
         command.execute(context.clone());
     }
 
-    private Command buildCommand(Context context, CommandLineParser cmdLineGnuParser, String[] optionArgs, Command command) {
+    private record CommandDetails(String firstArg, String[] optionArgs, Command command) {
+        @Override public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            CommandDetails that = (CommandDetails) o;
+            return Objects.equals(firstArg, that.firstArg) && Arrays.equals(optionArgs, that.optionArgs) && Objects.equals(command, that.command);
+        }
+
+        @Override public int hashCode() {
+            return Objects.hash(firstArg, Arrays.hashCode(optionArgs), command);
+        }
+
+        @Override public String toString() {
+            return "CommandDetails[firstArg=" + firstArg + ", optionArgs=" + Arrays.toString(optionArgs) + ", command=" + command + "]";
+        }
+    }
+
+    private CommandDetails parseCommandDetails(String[] filteredArgs) {
+        String firstArg = filteredArgs[0];
+        String[] optionArgs = filteredArgs;
+        Command command = null;
+
+        if (!firstArg.startsWith("-")) {
+            optionArgs = Arrays.copyOfRange(filteredArgs, 1, filteredArgs.length);
+            command = findCommand(firstArg);
+        } else {
+            firstArg = null;
+        }
+
+        return new CommandDetails(firstArg, optionArgs, command);
+    }
+
+    private void validateAndSetupRepository(Context context, Command command) {
+        FimReposConstraint constraint = command.getFimReposConstraint();
+        if (constraint == FimReposConstraint.MUST_NOT_EXIST) {
+            validateNewRepository(context);
+        } else if (constraint == FimReposConstraint.MUST_EXIST) {
+            validateExistingRepository(context);
+        }
+    }
+
+    private void validateNewRepository(Context context) {
+        setRepositoryRootDir(context, context.getAbsoluteCurrentDirectory(), false);
+
+        if (Files.exists(context.getRepositoryDotFimDir()) || Files.exists(context.getRepositoryStatesDir())) {
+            Logger.error("Fim repository already exist");
+            throw new BadFimUsageException();
+        }
+
+        if (!Files.isWritable(context.getRepositoryRootDir())) {
+            Logger.error(String.format("Not allowed to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()));
+            throw new RepositoryException();
+        }
+    }
+
+    private void validateExistingRepository(Context context) {
+        findRepositoryRootDir(context);
+
+        if (!Files.exists(context.getRepositoryStatesDir())) {
+            Logger.error("Fim repository does not exist. Please run 'fim init' before.");
+            throw new BadFimUsageException();
+        }
+
+        if (!Files.isWritable(context.getRepositoryStatesDir())) {
+            Logger.error(String.format("Not allowed to modify States into the '%s' directory", context.getRepositoryStatesDir()));
+            throw new RepositoryException();
+        }
+
+        SettingsManager settingsManager = new SettingsManager(context);
+        if (!Files.isWritable(settingsManager.getSettingsFile())) {
+            Logger.error(String.format("Not allowed to save settings into the '%s' directory", context.getRepositoryDotFimDir()));
+            throw new RepositoryException();
+        }
+    }
+
+    private Command buildCommand(Context context, CommandLineParser commandLineParser, String[] optionArgs, Command command) {
         try {
-            CommandLine cmd = cmdLineGnuParser.parse(options, optionArgs);
+            CommandLine cmd = commandLineParser.parse(options, optionArgs);
 
             String ignoredKinds = cmd.getOptionValue('i');
             if (ignoredKinds != null) {

@@ -25,6 +25,10 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class Ascii85Util {
+    private Ascii85Util() {
+        // Utility class, no instantiation
+    }
+
     public static final Charset UTF8 = StandardCharsets.UTF_8;
 
     public static String encode(byte[] bytesToBeEncoded) {

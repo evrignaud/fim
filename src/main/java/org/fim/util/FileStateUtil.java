@@ -29,6 +29,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FileStateUtil {
+    private FileStateUtil() {
+        // Utility class, no instantiation
+    }
+
     public static Map<String, FileState> buildFileNamesMap(Collection<FileState> fileStates) {
         Map<String, FileState> fileNamesMap = new HashMap<>();
         for (FileState fileState : fileStates) {

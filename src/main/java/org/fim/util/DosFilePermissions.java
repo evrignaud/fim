@@ -28,6 +28,10 @@ import java.nio.file.attribute.DosFileAttributeView;
 import java.nio.file.attribute.DosFileAttributes;
 
 public class DosFilePermissions {
+    private DosFilePermissions() {
+        // Utility class, no instantiation
+    }
+
     public static String toString(DosFileAttributes dosFileAttributes) {
         StringBuilder builder = new StringBuilder();
         if (dosFileAttributes.isArchive()) {
