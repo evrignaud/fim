@@ -68,26 +68,26 @@ public class StateGenerator {
     private BlockingDeque<Path> filesToHashQueue;
     private AtomicBoolean scanInProgress;
     List<FileHasher> fileHashers;
-    private DynamicScaling dynamicScaling;
 
     public StateGenerator(Context context) {
         this.context = context;
         this.hashProgress = new HashProgress(context);
         this.fimIgnoreManager = new FimIgnoreManager(context);
-        this.dynamicScaling = null;
     }
 
     public State generateState(String comment, Path rootDir, Path dirToScan) throws NoSuchAlgorithmException {
         this.rootDir = rootDir;
 
         String usingThreads;
-        if (context.isDynamicScaling()) {
+        if (context.isUseDynamicScaling()) {
             usingThreads = "automatic scaling";
         } else {
             usingThreads = String.format("%d %s", context.getThreadCount(), plural("thread", context.getThreadCount()));
         }
         Logger.info(String.format("Scanning recursively local files, using '%s' mode and %s",
                 hashModeToString(context.getHashMode()), usingThreads));
+        context.initializeDynamicScaling();
+
         if (hashProgress.isProgressDisplayed()) {
             Logger.out.printf("(Hash progress legend for files grouped %d by %d: %s)%n", PROGRESS_DISPLAY_FILE_COUNT, PROGRESS_DISPLAY_FILE_COUNT,
                     hashProgress.hashLegend());
@@ -140,8 +140,8 @@ public class StateGenerator {
         fileHashers = new ArrayList<>();
 
         int maxThreads = context.getThreadCount();
-        if (context.isDynamicScaling()) {
-            maxThreads = Runtime.getRuntime().availableProcessors();
+        if (context.isUseDynamicScaling()) {
+            maxThreads = context.getDynamicScaling().getMaxThreads();
         }
         executorService = Executors.newFixedThreadPool(maxThreads);
     }
@@ -150,12 +150,8 @@ public class StateGenerator {
         if (!hashProgress.isHashStarted()) {
             hashProgress.hashStarted();
             String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
-            if (context.isDynamicScaling()) {
+            if (context.isUseDynamicScaling()) {
                 startFileHasher(normalizedRootDir);
-
-                dynamicScaling = new DynamicScaling(this);
-                Thread thread = new Thread(dynamicScaling, "dynamic-scaling");
-                thread.start();
             } else {
                 for (int index = 0; index < context.getThreadCount(); index++) {
                     startFileHasher(normalizedRootDir);
@@ -164,17 +160,12 @@ public class StateGenerator {
         }
     }
 
-    public FileHasher startFileHasher() throws NoSuchAlgorithmException {
-        String normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
-        return startFileHasher(normalizedRootDir);
-    }
-
     public FileHasher startFileHasher(String normalizedRootDir) throws NoSuchAlgorithmException {
         FileHasher hasher = new FileHasher(context, scanInProgress, hashProgress, filesToHashQueue, normalizedRootDir);
         executorService.submit(hasher);
         fileHashers.add(hasher);
 
-        if (context.isDynamicScaling()) {
+        if (context.isUseDynamicScaling()) {
             context.setThreadCount(fileHashers.size());
         }
         return hasher;
@@ -191,10 +182,6 @@ public class StateGenerator {
     protected void waitAllFilesToBeHashed() {
         try {
             hashProgress.waitAllFilesToBeHashed();
-
-            if (dynamicScaling != null) {
-                dynamicScaling.requestStop();
-            }
 
             executorService.shutdown();
             executorService.awaitTermination(3, TimeUnit.DAYS);
@@ -217,7 +204,7 @@ public class StateGenerator {
         String throughputStr = byteCountToDisplaySize(globalThroughput);
 
         String usingThreads = "";
-        if (context.isDynamicScaling()) {
+        if (context.isUseDynamicScaling()) {
             usingThreads = String.format(", using %d %s", context.getThreadCount(), plural("thread", context.getThreadCount()));
         }
 

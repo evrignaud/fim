@@ -1,7 +1,7 @@
 /*
  * This file is part of Fim - File Integrity Manager
  *
- * Copyright (C) 2017  Etienne Vrignaud
+ * Copyright (C) 2017 Etienne Vrignaud
  *
  * Fim is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,101 +19,120 @@
 
 package org.fim.internal;
 
-import org.fim.internal.hash.FileHasher;
 import org.fim.model.Context;
 import org.fim.util.Logger;
 
-import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
-import static org.fim.util.FileUtil.byteCountToDisplaySize;
-
-public class DynamicScaling implements Runnable {
-    private final StateGenerator stateGenerator;
+/**
+ * DynamicScaling adjusts the number of threads used for file processing based on observed throughput.
+ * It increases the thread count as long as throughput continues to improve and stabilizes.
+ */
+public class DynamicScaling {
     private final Context context;
+    private final int minThreads;
+    private final int maxThreads;
+    private final AtomicInteger currentThreads;
+    private final AtomicLong volumeProcessed;
+    private final AtomicLong lastMeasurementTime;
+    private volatile double lastThroughput; // files per second
+    private static final int MEASUREMENT_INTERVAL_MS = 100; // 100 milliseconds
+    private static final double THROUGHPUT_THRESHOLD_UP = 0.02; // 2% improvement required to scale up
 
-    private final AtomicBoolean stopRequested;
-    private long lastGoodThroughput;
-    private long currentThroughput;
-    private int resourceLimitReached;
-    private int scaleLevel;
-    private final int maxScaleLevel;
+    public DynamicScaling(Context context) {
+        this.context = context;
+        this.minThreads = 1;
+        this.maxThreads = Math.max(Runtime.getRuntime().availableProcessors() * 2, 4); // At least 4, up to CPU cores x 2
+        this.currentThreads = new AtomicInteger(context.getThreadCount() > 0 ? context.getThreadCount() : minThreads);
+        this.volumeProcessed = new AtomicLong(0);
+        this.lastMeasurementTime = new AtomicLong(System.currentTimeMillis());
+        this.lastThroughput = 0.0;
 
-    public DynamicScaling(StateGenerator stateGenerator) {
-        this.stateGenerator = stateGenerator;
-        this.context = stateGenerator.getContext();
-        this.stopRequested = new AtomicBoolean(false);
-        this.lastGoodThroughput = 0;
-        this.currentThroughput = 0;
-        this.resourceLimitReached = 0;
-        this.scaleLevel = 1;
-        this.maxScaleLevel = Runtime.getRuntime().availableProcessors();
+        if (!context.isUseDynamicScaling()) {
+            Logger.rawDebug("Dynamic scaling is disabled. Using fixed thread count: " + currentThreads.get());
+        }
     }
 
-    @Override
-    public void run() {
-        try {
-            Thread.sleep(200L);
+    /**
+     * Record that a file has been processed and adjust thread count if necessary.
+     */
+    public void fileProcessed(long fileSize) {
+        if (!context.isUseDynamicScaling()) {
+            return; // No scaling if disabled
+        }
 
-            while (!stopRequested.get() && scaleLevel < maxScaleLevel && resourceLimitReached <= 20) {
+        if (context.getThreadCount() == maxThreads) {
+            return; // No scaling if thread count is already at max
+        }
 
-                checkThroughput();
+        long currentVolume = volumeProcessed.addAndGet(fileSize);
+        long currentTime = System.currentTimeMillis();
+        long elapsedTime = currentTime - lastMeasurementTime.get();
 
-                waitBeforeCheckingThroughput();
+        if (elapsedTime >= MEASUREMENT_INTERVAL_MS) {
+            synchronized (this) {
+                // Recheck under lock to avoid race conditions
+                elapsedTime = currentTime - lastMeasurementTime.get();
+                if (elapsedTime >= MEASUREMENT_INTERVAL_MS) {
+                    double currentThroughput = (double) currentVolume / (elapsedTime / 1000.0); // bytes per second
+                    adjustThreadCount(currentThroughput);
+                    lastThroughput = currentThroughput;
+                    lastMeasurementTime.set(currentTime);
+                    volumeProcessed.set(0); // Reset counter
+                }
             }
-        } catch (Exception ex) {
-            Logger.error("Got exception", ex, context.isDisplayStackTrace());
-        } finally {
-            Logger.rawDebug("\n - Dynamic scaling finished. scaleLevel = " + scaleLevel);
         }
     }
 
-    private void scaleUp() throws NoSuchAlgorithmException {
-        stateGenerator.startFileHasher();
-        scaleLevel = context.getThreadCount();
-        Logger.rawDebug("\n - Scaling Up. scaleLevel = " + scaleLevel);
-    }
+    /**
+     * Adjust the thread count based on throughput changes.
+     */
+    private void adjustThreadCount(double currentThroughput) {
+        int currentThreadCount = currentThreads.get();
 
-    private void checkThroughput() throws NoSuchAlgorithmException {
-        currentThroughput = getTotalInstantThroughput();
-        if (lastGoodThroughput == 0) {
-            lastGoodThroughput = currentThroughput;
+        if (lastThroughput == 0.0) {
+            // Initial measurement, no adjustment yet
+            Logger.rawDebug(String.format("Initial throughput: %.2f bytes/sec with %d threads", currentThroughput, currentThreadCount));
+            return;
         }
-        Logger.rawDebug("\n - Current throughput = " + byteCountToDisplaySize(currentThroughput) + ", scaleLevel = " + scaleLevel);
 
-        long difference = currentThroughput - lastGoodThroughput;
-        Logger.rawDebug("\n - Throughput difference = " + byteCountToDisplaySize(difference));
-        difference = difference / 1_024 / 1_024;
+        double throughputChange = (currentThroughput - lastThroughput) / lastThroughput;
 
-        if (difference > 10) {
-            if (scaleLevel < maxScaleLevel) {
-                scaleUp();
-                resourceLimitReached = 0;
-            }
-            lastGoodThroughput = currentThroughput;
-        } else {
-            resourceLimitReached++;
+        if (throughputChange > THROUGHPUT_THRESHOLD_UP && currentThreadCount < maxThreads) {
+            // Throughput increased significantly, scale up
+            int newThreadCount = Math.min(currentThreadCount + 1, maxThreads);
+            currentThreads.set(newThreadCount);
+            context.setThreadCount(newThreadCount);
+            Logger.rawDebug(String.format("Scaling up to %d threads. Throughput change %.2f", newThreadCount, throughputChange));
         }
     }
 
-    private void waitBeforeCheckingThroughput() throws InterruptedException {
-        for (int i = 0; i < scaleLevel * 5; i++) {
-            if (stopRequested.get()) {
-                return;
-            }
-            Thread.sleep(200L);
-        }
+    /**
+     * Get the current number of threads.
+     */
+    public int getCurrentThreadCount() {
+        return currentThreads.get();
     }
 
-    private long getTotalInstantThroughput() {
-        long totalInstantThroughput = 0;
-        for (FileHasher fileHasher : stateGenerator.getFileHashers()) {
-            totalInstantThroughput += fileHasher.getInstantThroughput();
-        }
-        return totalInstantThroughput;
+    /**
+     * Get the maximum allowed threads.
+     */
+    public int getMaxThreads() {
+        return maxThreads;
     }
 
-    public void requestStop() {
-        stopRequested.set(true);
+    /**
+     * Get the minimum allowed threads.
+     */
+    public int getMinThreads() {
+        return minThreads;
+    }
+
+    /**
+     * Get the last measured throughput (files per second).
+     */
+    public double getLastThroughput() {
+        return lastThroughput;
     }
 }

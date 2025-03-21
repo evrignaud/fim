@@ -312,7 +312,7 @@ public class Fim {
                 context.setThreadCountSpecified(true);
             }
 
-            context.setDynamicScaling(context.getThreadCount() <= 0);
+            context.setUseDynamicScaling(context.getThreadCount() <= 0);
 
             context.setTruncateOutput(Integer.parseInt(cmd.getOptionValue('o', "200")));
             if (context.getTruncateOutput() < 0) {

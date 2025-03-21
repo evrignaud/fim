@@ -73,7 +73,7 @@ public class RepositoryTool {
         } else {
             context.setThreadCount(Runtime.getRuntime().availableProcessors() / 2);
         }
-        context.setDynamicScaling(false);
+        context.setUseDynamicScaling(false);
     }
 
     public Path getRootDir() {

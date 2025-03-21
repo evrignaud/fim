@@ -45,7 +45,7 @@ public abstract class AbstractHasher implements Hasher {
         this.active = isCompatible(context.getHashMode());
         this.totalBytesHashed = 0;
 
-        if (context.isDynamicScaling()) {
+        if (context.isUseDynamicScaling()) {
             this.throughputKeeper = new ThroughputKeeper();
         }
 
@@ -110,7 +110,7 @@ public abstract class AbstractHasher implements Hasher {
                 bytesHashed += remaining;
                 totalBytesHashed += remaining;
 
-                if (context.isDynamicScaling()) {
+                if (context.isUseDynamicScaling()) {
                     throughputKeeper.update(remaining);
                 }
             }

@@ -130,6 +130,7 @@ public class FileHasher implements Runnable {
                 }
 
                 hashProgress.updateOutput(attributes.size());
+                context.getDynamicScaling().fileProcessed(attributes.size());
 
                 FileHash fileHash = hashFile(file, attributes.size());
                 String normalizedFileName = FileUtil.getNormalizedFileName(file);

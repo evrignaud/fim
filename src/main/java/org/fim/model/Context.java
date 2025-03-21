@@ -19,6 +19,8 @@
 
 package org.fim.model;
 
+import org.fim.internal.DynamicScaling;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -46,12 +48,14 @@ public class Context {
     private Ignored ignored;
     private boolean removeDuplicates;
     private boolean calledFromTest;
-    private boolean dynamicScaling;
+    private boolean useDynamicScaling;
     private boolean sortAscending;
     private SortMethod sortMethod;
     private List<FilePattern> includePatterns;
     private List<FilePattern> excludePatterns;
     private OutputType outputType;
+
+    private DynamicScaling dynamicScaling;
 
     public Context() {
         setInvokedFromSubDirectory(false);
@@ -63,7 +67,7 @@ public class Context {
         setUseLastState(false);
         setThreadCount(-1);
         setThreadCountSpecified(false);
-        setDynamicScaling(true);
+        setUseDynamicScaling(true);
         setMasterFimRepositoryDir(null);
         setAlwaysYes(false);
         setTruncateOutput(200);
@@ -73,6 +77,14 @@ public class Context {
         setSortAscending(false);
         setSortMethod(SortMethod.wasted);
         setOutputType(OutputType.human);
+    }
+
+    public void initializeDynamicScaling() {
+        this.dynamicScaling = new DynamicScaling(this);
+    }
+
+    public DynamicScaling getDynamicScaling() {
+        return dynamicScaling;
     }
 
     public boolean isInvokedFromSubDirectory() {
@@ -183,12 +195,12 @@ public class Context {
         this.threadCountSpecified = threadCountSpecified;
     }
 
-    public void setDynamicScaling(boolean dynamicScaling) {
-        this.dynamicScaling = dynamicScaling;
+    public void setUseDynamicScaling(boolean useDynamicScaling) {
+        this.useDynamicScaling = useDynamicScaling;
     }
 
-    public boolean isDynamicScaling() {
-        return dynamicScaling;
+    public boolean isUseDynamicScaling() {
+        return useDynamicScaling;
     }
 
     public void setTruncateOutput(int truncateOutput) {
@@ -291,7 +303,7 @@ public class Context {
         cloned.ignored = this.ignored.clone();
         cloned.removeDuplicates = this.removeDuplicates;
         cloned.calledFromTest = this.calledFromTest;
-        cloned.dynamicScaling = this.dynamicScaling;
+        cloned.useDynamicScaling = this.useDynamicScaling;
         cloned.sortAscending = this.sortAscending;
         cloned.sortMethod = this.sortMethod;
 
