@@ -1,7 +1,7 @@
 @rem -------------------------------------------------------------------------------------------------------------------
 @rem This file is part of Fim - File Integrity Manager
 @rem
-@rem Copyright (C) 2017  Etienne Vrignaud
+@rem Copyright (C) 2025 Etienne Vrignaud
 @rem
 @rem Fim is free software: you can redistribute it and/or modify
 @rem it under the terms of the GNU General Public License as published by
