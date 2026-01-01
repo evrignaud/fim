@@ -4,4 +4,4 @@ public class FileOperationInterruptedException extends RuntimeException {
     public FileOperationInterruptedException(String message) {
         super(message);
     }
-} 
+}

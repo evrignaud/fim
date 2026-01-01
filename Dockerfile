@@ -21,14 +21,19 @@ FROM alpine/java:21-jdk
 
 MAINTAINER Etienne Vrignaud "evrignaud@gmail.com"
 
-ADD build/distributions /fim
+ADD build/distributions /build/distributions
 
 # install Fim
-RUN cd /fim && \
-    tar zxvf fim-shadow*.tar && \
-    ls -la
+RUN \
+    cd /build/distributions     && \
+    tar xvf fim-shadow*.tar     && \
+    mkdir /fim                  && \
+    mv fim-shadow*/* /fim       && \
+    ls -la /fim                 && \
+    ls -la /fim/bin
 
-ENV PATH $PATH:/fim
+
+ENV PATH $PATH:/fim/bin
 
 # mount this folder with the Fim repository root folder
 VOLUME /fim_repository

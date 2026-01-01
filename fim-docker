@@ -18,6 +18,9 @@
 # along with Fim.  If not, see <https://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------------------------------------------------
 
+# Use an alias 
+# alias fim="/<Path/to/fim-script>/fim-docker"
+
 CURRENT_DIRECTORY="$PWD"
 REPOSITORY_ROOT="${CURRENT_DIRECTORY}"
 DOCKER_IMAGE=evrignaud/fim:latest

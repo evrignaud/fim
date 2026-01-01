@@ -18,6 +18,10 @@
 # along with Fim.  If not, see <https://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------------------------------------------------
 
+# compile java :
+docker run --rm -v "$(pwd):/home/gradle/src" -w /home/gradle/src gradle:8.4.0-jdk21 gradle build -x test -x checkstyleMain
+
+# build image
 docker build -t evrignaud/fim .
 
 #-----------------------------------------------------------------------------------------------------------------------
