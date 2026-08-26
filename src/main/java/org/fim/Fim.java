@@ -52,6 +52,7 @@ import org.fim.model.FilePattern;
 import org.fim.model.Ignored;
 import org.fim.model.OutputType;
 import org.fim.model.SortMethod;
+import org.fim.util.FileUtil;
 import org.fim.util.Logger;
 
 import java.io.PrintWriter;
@@ -255,7 +256,7 @@ public class Fim {
             throw new BadFimUsageException();
         }
 
-        if (!Files.isWritable(context.getRepositoryRootDir())) {
+        if (!FileUtil.isWritableDirectory(context.getRepositoryRootDir())) {
             Logger.error(String.format("Not allowed to create the '%s' directory that holds the Fim repository", context.getRepositoryDotFimDir()));
             throw new RepositoryException();
         }
@@ -269,13 +270,13 @@ public class Fim {
             throw new BadFimUsageException();
         }
 
-        if (!Files.isWritable(context.getRepositoryStatesDir())) {
+        if (!FileUtil.isWritableDirectory(context.getRepositoryStatesDir())) {
             Logger.error(String.format("Not allowed to modify States into the '%s' directory", context.getRepositoryStatesDir()));
             throw new RepositoryException();
         }
 
         SettingsManager settingsManager = new SettingsManager(context);
-        if (!Files.isWritable(settingsManager.getSettingsFile())) {
+        if (!FileUtil.isWritableFile(settingsManager.getSettingsFile())) {
             Logger.error(String.format("Not allowed to save settings into the '%s' directory", context.getRepositoryDotFimDir()));
             throw new RepositoryException();
         }

@@ -106,6 +106,92 @@ public class FileUtilTest {
         assertThat(result).isFalse();
     }
 
+    /**
+     * Tests for the writability checks behind
+     * <a href="https://github.com/evrignaud/fim/issues/25">issue #25</a>, where creating a repository on
+     * a CIFS share failed because the reported permissions did not match the access the server granted.
+     */
+    @Test
+    public void writableDirectoryIsReportedAsWritable() throws IOException {
+        Path dir = freshDir("writableDirectory");
+
+        assertThat(FileUtil.isWritableDirectory(dir)).isTrue();
+    }
+
+    @Test
+    public void writeProbeLeavesNoFileBehind() throws IOException {
+        Path dir = freshDir("writeProbeCleanup");
+
+        assertThat(FileUtil.isWritableDirectory(dir)).isTrue();
+
+        try (var entries = Files.list(dir)) {
+            assertThat(entries.toList()).isEmpty();
+        }
+    }
+
+    @Test
+    public void missingDirectoryIsNotWritable() throws IOException {
+        Path dir = freshDir("missingDirectory").resolve("does-not-exist");
+
+        assertThat(FileUtil.isWritableDirectory(dir)).isFalse();
+    }
+
+    @Test
+    public void existingWritableFileIsReportedAsWritable() throws IOException {
+        Path file = freshDir("writableFile").resolve("settings.json");
+        Files.writeString(file, "{}");
+
+        assertThat(FileUtil.isWritableFile(file)).isTrue();
+        assertThat(Files.readString(file)).isEqualTo("{}");
+    }
+
+    /**
+     * A file that has not been created yet is writable when its directory is, which is what matters for
+     * the settings file of a repository that has not written one. Probing the missing file itself would
+     * always have said no.
+     */
+    @Test
+    public void missingFileIsWritableWhenItsDirectoryIs() throws IOException {
+        Path file = freshDir("missingFile").resolve("settings.json");
+
+        assertThat(Files.exists(file)).isFalse();
+        assertThat(FileUtil.isWritableFile(file)).isTrue();
+    }
+
+    @Test
+    public void fileInMissingDirectoryIsNotWritable() throws IOException {
+        Path file = freshDir("fileInMissingDir").resolve("nope").resolve("settings.json");
+
+        assertThat(FileUtil.isWritableFile(file)).isFalse();
+    }
+
+    /**
+     * A directory that genuinely denies writing is still reported as read-only, so real permission
+     * problems keep being caught. Windows does not deny directory creation through the read-only
+     * attribute, so this only applies to POSIX systems.
+     */
+    @Test
+    public void genuinelyReadOnlyDirectoryIsNotWritable() throws IOException {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            return;
+        }
+
+        Path dir = freshDir("readOnlyDirectory");
+        Files.setPosixFilePermissions(dir, java.nio.file.attribute.PosixFilePermissions.fromString("r-xr-xr-x"));
+        try {
+            assertThat(FileUtil.isWritableDirectory(dir)).isFalse();
+        } finally {
+            Files.setPosixFilePermissions(dir, java.nio.file.attribute.PosixFilePermissions.fromString("rwxrwxrwx"));
+        }
+    }
+
+    private Path freshDir(String name) throws IOException {
+        Path dir = Paths.get(TestConstants.BUILD_TEST_OUTPUTS + "/FileUtilTest-" + name);
+        org.apache.commons.io.FileUtils.deleteDirectory(dir.toFile());
+        Files.createDirectories(dir);
+        return dir;
+    }
+
     @Test
     public void canConvertZeroByteCountToDisplaySize() {
         String displaySize = FileUtil.byteCountToDisplaySize(0);

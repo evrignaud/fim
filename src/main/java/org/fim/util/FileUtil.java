@@ -36,6 +36,79 @@ public class FileUtil {
 
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.#");
     private static final Object DELETE_LOCK = new Object();
+    private static final String WRITE_PROBE_PREFIX = ".fim-write-probe-";
+
+    /**
+     * Whether Fim can create files in the given directory.
+     * <p>
+     * {@link Files#isWritable(Path)} answers from the permissions the filesystem reports, and on a
+     * network share those do not necessarily describe the access the server grants. A CIFS/SMB mount, a
+     * NAS in practice, routinely presents ownership and mode bits that belong to the mount options
+     * rather than to the account being used, and the JVM then reports a perfectly writable directory as
+     * read-only. Fim refused to create its repository on such a share for that reason alone.
+     * <p>
+     * The reported permissions are still consulted first, since that settles the common case without
+     * touching the disk. Only when they say no does this actually try to create a file, which is the
+     * one answer that cannot be wrong. A genuinely read-only directory fails that attempt too, so real
+     * permission problems are still reported.
+     */
+    public static boolean isWritableDirectory(Path directory) {
+        if (Files.isWritable(directory)) {
+            return true;
+        }
+
+        if (!Files.isDirectory(directory)) {
+            return false;
+        }
+
+        Path probe = null;
+        try {
+            probe = Files.createTempFile(directory, WRITE_PROBE_PREFIX, ".tmp");
+            return true;
+        } catch (IOException | RuntimeException ex) {
+            return false;
+        } finally {
+            deleteProbe(probe);
+        }
+    }
+
+    /**
+     * Whether Fim can write the given file, applying the same reasoning as
+     * {@link #isWritableDirectory(Path)}.
+     * <p>
+     * An existing file is probed by opening it for writing and closing it again, which leaves the
+     * content alone: no truncation and nothing written. A file that does not exist yet cannot be probed,
+     * so what matters there is whether it can be created, which is a property of its directory. That
+     * case is reached with a repository whose settings file has not been written yet, where testing the
+     * missing file directly would always have reported failure.
+     */
+    public static boolean isWritableFile(Path file) {
+        if (Files.isWritable(file)) {
+            return true;
+        }
+
+        if (Files.exists(file)) {
+            try (var channel = Files.newByteChannel(file, java.nio.file.StandardOpenOption.WRITE)) {
+                return channel.isOpen();
+            } catch (IOException | RuntimeException ex) {
+                return false;
+            }
+        }
+
+        Path parent = file.getParent();
+        return parent != null && isWritableDirectory(parent);
+    }
+
+    private static void deleteProbe(Path probe) {
+        if (probe == null) {
+            return;
+        }
+        try {
+            Files.deleteIfExists(probe);
+        } catch (IOException ex) {
+            Logger.rawDebug(String.format("Not able to remove the write probe file '%s'", probe));
+        }
+    }
 
     public static String getNormalizedFileName(Path file) {
         String normalizedFileName = file.toAbsolutePath().normalize().toString();
