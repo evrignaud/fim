@@ -64,4 +64,21 @@ public class DuplicateSetTest {
     public void toStringIsWorking() {
         assertThat(a1.toString().contains("duplicatedFiles")).isTrue();
     }
+
+    @Test
+    public void wastedSpaceCalculation() {
+        // Req 3.1, 12.7: wastedSpace = (count - 1) * firstFile.fileLength
+        FileState fs1 = new FileState("f1", 100L, new FileTime(1_000L), new FileHash("h", "h", "h"), null);
+        FileState fs2 = new FileState("f2", 100L, new FileTime(2_000L), new FileHash("h", "h", "h"), null);
+        FileState fs3 = new FileState("f3", 100L, new FileTime(3_000L), new FileHash("h", "h", "h"), null);
+
+        DuplicateSet set2 = new DuplicateSet(Arrays.asList(fs1, fs2));
+        assertThat(set2.getWastedSpace()).isEqualTo(100L);
+        assertThat(set2.getDuplicatedFilesCount()).isEqualTo(2);
+        assertThat(set2.getDuplicatedFileSize()).isEqualTo(100L);
+
+        DuplicateSet set3 = new DuplicateSet(Arrays.asList(fs1, fs2, fs3));
+        assertThat(set3.getWastedSpace()).isEqualTo(200L);
+        assertThat(set3.getDuplicatedFilesCount()).isEqualTo(3);
+    }
 }

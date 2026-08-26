@@ -36,10 +36,12 @@ import org.fim.util.SELinux;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.fim.model.FileAttribute.DosFilePermissions;
@@ -58,6 +60,7 @@ public class StateComparator {
     private final State currentState;
 
     private ListMultimap<FileHash, FileState> previousFileStates;
+    private Set<String> consumedPreviousFileNames;
     private List<FileState> notFoundInCurrentFileState;
     private List<FileState> addedOrModified;
     private int notModifiedCount;
@@ -100,6 +103,7 @@ public class StateComparator {
         result = new CompareResult(context, lastState);
 
         previousFileStates = ArrayListMultimap.create();
+        consumedPreviousFileNames = new HashSet<>();
         notFoundInCurrentFileState = new ArrayList<>();
         addedOrModified = new ArrayList<>();
     }
@@ -125,8 +129,16 @@ public class StateComparator {
         resetFileStates(lastState.getFileStates());
 
         if (context.getIgnored().isAttributesIgnored()) {
-            currentState.getFileStates().forEach(fileState -> fileState.getFileAttributes().clear());
-            lastState.getFileStates().forEach(fileState -> fileState.getFileAttributes().clear());
+            currentState.getFileStates().forEach(fileState -> {
+                if (fileState.getFileAttributes() != null) {
+                    fileState.getFileAttributes().clear();
+                }
+            });
+            lastState.getFileStates().forEach(fileState -> {
+                if (fileState.getFileAttributes() != null) {
+                    fileState.getFileAttributes().clear();
+                }
+            });
         }
 
         if (context.getIgnored().isDatesIgnored()) {
@@ -208,40 +220,17 @@ public class StateComparator {
     private void searchForSameFileNames() {
         Map<String, FileState> notFoundInCurrentFileStateNamesMap = buildFileNamesMap(notFoundInCurrentFileState);
 
-        boolean managed;
-        FileState previousFileState;
         List<FileState> newAddedOrModified = new ArrayList<>();
         for (FileState fileState : addedOrModified) {
-            managed = false;
-            if ((previousFileState = findFileWithSameFileName(fileState, notFoundInCurrentFileStateNamesMap)) != null) {
+            boolean managed = false;
+            FileState previousFileState = findFileWithSameFileName(fileState, notFoundInCurrentFileStateNamesMap);
+            if (previousFileState != null) {
                 notFoundInCurrentFileStateNamesMap.remove(previousFileState.getFileName());
 
                 if (hardwareCorruptionDetection) {
-                    if (!previousFileState.getFileHash().equals(fileState.getFileHash()) &&
-                        previousFileState.getFileTime().equals(fileState.getFileTime())) {
-                        result.getCorrupted().add(new Difference(previousFileState, fileState));
-                        fileState.setModification(Modification.corrupted);
-                        managed = true;
-                    }
+                    managed = handleCorruptionForSameName(previousFileState, fileState);
                 } else {
-                    if (sameContent(previousFileState, fileState)) {
-                        if (!previousFileState.getFileTime().equals(fileState.getFileTime())) {
-                            result.getDateModified().add(new Difference(previousFileState, fileState));
-                            fileState.setModification(Modification.dateModified);
-                            managed = true;
-                        } else if (!Objects.equals(previousFileState.getFileAttributes(), fileState.getFileAttributes())) {
-                            result.getAttributesModified().add(new Difference(previousFileState, fileState));
-                            fileState.setModification(Modification.attributesModified);
-                            managed = true;
-                        }
-                    } else {
-                        result.getContentModified().add(new Difference(previousFileState, fileState));
-                        fileState.setModification(Modification.contentModified);
-                        managed = true;
-
-                        // File has been modified so set the new hash for accurate duplicate detection
-                        previousFileState.setNewFileHash(new FileHash(fileState.getFileHash()));
-                    }
+                    managed = handleModificationForSameName(previousFileState, fileState);
                 }
             }
 
@@ -255,6 +244,45 @@ public class StateComparator {
         logDebug("Search done for same FileNames", "notFoundInCurrentFileState", notFoundInCurrentFileState, "addedOrModified", addedOrModified);
     }
 
+    private boolean handleCorruptionForSameName(FileState previousFileState, FileState fileState) {
+        if (!previousFileState.getFileHash().equals(fileState.getFileHash()) &&
+            previousFileState.getFileTime().equals(fileState.getFileTime())) {
+            result.getCorrupted().add(new Difference(previousFileState, fileState));
+            fileState.setModification(Modification.corrupted);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleModificationForSameName(FileState previousFileState, FileState fileState) {
+        if (sameContent(previousFileState, fileState)) {
+            if (!previousFileState.getFileTime().equals(fileState.getFileTime())) {
+                result.getDateModified().add(new Difference(previousFileState, fileState));
+                fileState.setModification(Modification.dateModified);
+                return true;
+            } else if (!Objects.equals(previousFileState.getFileAttributes(), fileState.getFileAttributes())) {
+                result.getAttributesModified().add(new Difference(previousFileState, fileState));
+                fileState.setModification(Modification.attributesModified);
+                return true;
+            } else {
+                // Same name, same content, same time, same attributes — treat as not modified.
+                // This can happen when longHashCode() differs due to serialization edge cases.
+                notModifiedCount++;
+                return true;
+            }
+        } else {
+            result.getContentModified().add(new Difference(previousFileState, fileState));
+            fileState.setModification(Modification.contentModified);
+
+            // Track that this previous file was consumed so it doesn't participate in rename/copy/duplicate detection
+            consumedPreviousFileNames.add(previousFileState.getFileName());
+
+            // File has been modified so set the new hash for accurate duplicate detection
+            previousFileState.setNewFileHash(new FileHash(fileState.getFileHash()));
+            return true;
+        }
+    }
+
     // Compare the FileLength and the FileHash
     private boolean sameContent(FileState fileState1, FileState fileState2) {
         return fileState1.getFileLength() == fileState2.getFileLength() && fileState1.getFileHash().equals(fileState2.getFileHash());
@@ -264,19 +292,22 @@ public class StateComparator {
         ListMultimap<FileHash, FileState> notFoundInCurrentFileStateList = buildFileHashList(notFoundInCurrentFileState);
         Map<FileHash, FileState> foundInPreviousState = new HashMap<>();
 
-        List<FileState> samePreviousHashes;
         for (FileState fileState : addedOrModified) {
+            List<FileState> samePreviousHashes;
             if ((fileState.getFileLength() > 0) &&
                 (context.getHashMode() != dontHash) &&
                 (!(samePreviousHashes = findFilesWithSameHash(fileState, previousFileStates)).isEmpty())) {
-                FileState originalFileState = samePreviousHashes.getFirst();
+
+                FileState originalFileState = findBestOriginal(samePreviousHashes);
                 FileHash originalFileHash = originalFileState.getFileHash();
                 if (notFoundInCurrentFileStateList.containsKey(originalFileHash) ||
                     foundInPreviousState.containsKey(originalFileHash)) {
                     if (context.getIgnored().isRenamedIgnored()) {
                         notModifiedCount++;
                     } else {
-                        result.getRenamed().add(new Difference(originalFileState, fileState));
+                        // For renames, try to pick the best matching original from notFoundInCurrentFileState
+                        FileState renameOriginal = pickBestRenameOriginal(originalFileHash, notFoundInCurrentFileStateList, foundInPreviousState);
+                        result.getRenamed().add(new Difference(renameOriginal, fileState));
                         fileState.setModification(Modification.renamed);
                     }
                 } else {
@@ -288,10 +319,12 @@ public class StateComparator {
                         fileState.setModification(Modification.duplicated);
                     }
                 }
+                // ListMultimap.removeAll() returns an empty list, never null
                 List<FileState> removed = notFoundInCurrentFileStateList.removeAll(originalFileHash);
-                if (removed != null && !removed.isEmpty()) {
-                    // Used to check other duplicate files that have been renamed
-                    foundInPreviousState.put(originalFileHash, originalFileState);
+                if (!removed.isEmpty()) {
+                    // Used to check other duplicate files that have been renamed.
+                    // Store the first removed entry so subsequent renames reference a real deleted file.
+                    foundInPreviousState.put(originalFileHash, removed.get(0));
                 }
             } else {
                 result.getAdded().add(new Difference(null, fileState));
@@ -300,6 +333,48 @@ public class StateComparator {
         }
         addedOrModified.clear();
         notFoundInCurrentFileState = new ArrayList<>(notFoundInCurrentFileStateList.values());
+    }
+
+    /**
+     * Find the best original file from the list of previous files with the same hash.
+     * <p>
+     * Previous files already consumed by the same-name phase (classified as {@code contentModified}) are
+     * de-prioritized: when an unconsumed previous file shares the same hash, it is a more accurate origin
+     * because it still exists unchanged in the current state, which yields {@code duplicated} rather than
+     * {@code copied}.
+     * <p>
+     * When every candidate has been consumed, the first one is still returned. That is the legitimate
+     * {@code copied} case: the current file carries the former content of a file that has since been
+     * modified, and {@link #contentChanged(FileState)} can only ever be true for a consumed file.
+     * Returning nothing here would make {@code copied} unreachable.
+     *
+     * @param samePreviousHashes previous file states sharing the same hash, never empty
+     */
+    private FileState findBestOriginal(List<FileState> samePreviousHashes) {
+        for (FileState candidate : samePreviousHashes) {
+            if (!consumedPreviousFileNames.contains(candidate.getFileName())) {
+                return candidate;
+            }
+        }
+        return samePreviousHashes.get(0);
+    }
+
+    /**
+     * For rename detection, pick the origin among the previous files that are genuinely gone from the
+     * current state, so the Difference reports the path the file was actually renamed from. Falls back to
+     * {@code foundMap} for the second and later renames of the same duplicated content, where the
+     * not-found entries have already been drained.
+     * <p>
+     * Only called when the hash is present in one of the two collections, so this never returns null.
+     * {@code ListMultimap.get()} returns an empty list rather than null for an absent key.
+     */
+    private FileState pickBestRenameOriginal(FileHash originalFileHash,
+            ListMultimap<FileHash, FileState> notFoundList, Map<FileHash, FileState> foundMap) {
+        List<FileState> candidates = notFoundList.get(originalFileHash);
+        if (!candidates.isEmpty()) {
+            return candidates.get(0);
+        }
+        return foundMap.get(originalFileHash);
     }
 
     private void checkAllFilesManagedCorrectly() {

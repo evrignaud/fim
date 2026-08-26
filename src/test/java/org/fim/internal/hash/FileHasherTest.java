@@ -23,8 +23,10 @@ import com.blackducksoftware.tools.commonframework.core.encoding.Ascii85Encoder;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+import org.fim.command.exception.FimInternalError;
 import org.fim.model.Context;
 import org.fim.model.FileHash;
+import org.fim.model.FileState;
 import org.fim.model.HashMode;
 import org.fim.model.Range;
 import org.fim.tooling.RepositoryTool;
@@ -32,21 +34,28 @@ import org.fim.tooling.StateAssert;
 import org.fim.util.TestAllHashModes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Math.min;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.model.HashMode.hashSmallBlock;
 import static org.fim.tooling.TestConstants.NO_HASH;
@@ -66,7 +75,9 @@ import static org.fim.tooling.TestConstants.SIZE_512_KB;
 import static org.fim.tooling.TestConstants.SIZE_60_MB;
 import static org.fim.tooling.TestConstants.SIZE_6_KB;
 import static org.fim.tooling.TestConstants.SIZE_8_KB;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 public class FileHasherTest extends StateAssert {
     public static final Charset UTF8 = StandardCharsets.UTF_8;
@@ -451,5 +462,123 @@ public class FileHasherTest extends StateAssert {
 
     private static String ascii85Encode(byte[] bytesToBeEncoded) {
         return new String(Ascii85Encoder.encode(bytesToBeEncoded), UTF8);
+    }
+
+    /**
+     * Validates: Requirements 15.1, 15.2, 15.3, 15.4, 15.5
+     * Verifies that FileHasher.hashFile() throws FimInternalError when FrontHasher.hashComplete() returns false.
+     */
+    @Test
+    void hashFile_throwsFimInternalError_whenHashIsIncomplete() throws Exception {
+        setUp(HashMode.hashAll);
+
+        // Create a real file to hash
+        Path fileToHash = createFileWithSize(SIZE_4_KB);
+        long fileSize = Files.size(fileToHash);
+
+        // Spy on the FrontHasher so we can force hashComplete() to return false
+        FrontHasher originalFrontHasher = cut.getFrontHasher();
+        FrontHasher spiedFrontHasher = spy(originalFrontHasher);
+        doReturn(false).when(spiedFrontHasher).hashComplete();
+
+        // Replace the private final frontHasher field via reflection
+        Field frontHasherField = FileHasher.class.getDeclaredField("frontHasher");
+        frontHasherField.setAccessible(true);
+        frontHasherField.set(cut, spiedFrontHasher);
+
+        assertThatThrownBy(() -> cut.hashFile(fileToHash, fileSize))
+                .isInstanceOf(FimInternalError.class)
+                .hasMessageContaining("Fim is not working correctly")
+                .hasMessageContaining(fileToHash.toString())
+                .hasMessageContaining("size=" + fileSize);
+    }
+
+    /**
+     * Validates: Requirements 9.5
+     * Verifies that hashFile() throws IOException when the file does not exist,
+     * confirming that per-file errors are generated for missing files.
+     */
+    @Test
+    void hashFile_throwsIOException_whenFileNotFound() throws Exception {
+        setUp(HashMode.hashAll);
+
+        Path nonExistentFile = context.getRepositoryRootDir().resolve("does_not_exist.txt");
+        assertThat(Files.exists(nonExistentFile)).isFalse();
+
+        assertThatThrownBy(() -> cut.hashFile(nonExistentFile, 1024))
+                .isInstanceOf(IOException.class);
+    }
+
+    /**
+     * Validates: Requirements 9.1, 9.2, 9.3, 9.5
+     * Verifies that when a non-existent file is in the queue followed by a valid file,
+     * the FileHasher logs the error for the bad file and continues to successfully
+     * hash the valid file. This tests the per-file error resilience in hashFilesInQueue().
+     */
+    @Test
+    void run_continuesProcessing_afterFileNotFoundError() throws Exception {
+        setUp(HashMode.hashAll);
+
+        // Create a valid file
+        Path validFile = createFileWithSize(SIZE_1_KB);
+
+        // Create a non-existent file path
+        Path nonExistentFile = context.getRepositoryRootDir().resolve("missing_file.txt");
+        assertThat(Files.exists(nonExistentFile)).isFalse();
+
+        // Set up a real queue with both files
+        BlockingDeque<Path> queue = new LinkedBlockingDeque<>();
+        queue.add(nonExistentFile);
+        queue.add(validFile);
+
+        // scanInProgress = false so the FileHasher will terminate after draining the queue
+        AtomicBoolean scanInProgress = new AtomicBoolean(false);
+        HashProgress hashProgress = mock(HashProgress.class);
+
+        // Initialize dynamic scaling on the context
+        context.setUseDynamicScaling(false);
+        context.initializeDynamicScaling();
+
+        FileHasher fileHasher = new FileHasher(context, scanInProgress, hashProgress, queue,
+                context.getRepositoryRootDir().toString());
+
+        // Run the FileHasher (it will process both files and terminate)
+        fileHasher.run();
+
+        // The non-existent file should have been skipped, but the valid file should have been processed
+        List<FileState> fileStates = fileHasher.getFileStates();
+        assertThat(fileStates).hasSize(1);
+        assertThat(fileStates.get(0).getFileHash()).isNotNull();
+        assertThat(fileStates.get(0).getFileHash().getSmallBlockHash()).isNotEqualTo(NO_HASH);
+    }
+
+    /**
+     * Validates: Requirements 9.2, 9.3
+     * Verifies that when the queue is empty and scan is complete, the FileHasher
+     * terminates and signals HashProgress.noMoreFileToHash().
+     */
+    @Test
+    void run_terminatesAndSignals_whenQueueEmptyAndScanComplete() throws Exception {
+        setUp(HashMode.hashAll);
+
+        BlockingDeque<Path> queue = new LinkedBlockingDeque<>();
+        AtomicBoolean scanInProgress = new AtomicBoolean(false);
+        HashProgress hashProgress = new HashProgress(context);
+
+        context.setUseDynamicScaling(false);
+        context.initializeDynamicScaling();
+
+        FileHasher fileHasher = new FileHasher(context, scanInProgress, hashProgress, queue,
+                context.getRepositoryRootDir().toString());
+
+        // Run should terminate quickly since queue is empty and scan is not in progress
+        fileHasher.run();
+
+        // After run() completes, noMoreFileToHash() should have been called (latch counted down)
+        // We can verify by checking that waitAllFilesToBeHashed() returns immediately
+        // (if the latch wasn't counted down, this would block forever)
+        hashProgress.waitAllFilesToBeHashed();
+
+        assertThat(fileHasher.getFileStates()).isEmpty();
     }
 }

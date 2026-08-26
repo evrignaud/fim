@@ -58,7 +58,6 @@ public class PurgeStatesCommand extends AbstractCommand {
         List<Path> statesToPurge = new ArrayList<>();
 
         int index;
-        Path stateFile;
         Path nextStateFile;
         for (index = 1; ; index++) {
             nextStateFile = stateManager.getStateFile(index + 1);
@@ -66,7 +65,7 @@ public class PurgeStatesCommand extends AbstractCommand {
                 break;
             }
 
-            stateFile = stateManager.getStateFile(index);
+            Path stateFile = stateManager.getStateFile(index);
             statesToPurge.add(stateFile);
         }
 
@@ -80,6 +79,13 @@ public class PurgeStatesCommand extends AbstractCommand {
                 for (Path stateToDelete : statesToPurge) {
                     Files.delete(stateToDelete);
                 }
+                // Renumber: the last state (index) is the only one remaining, move it to state_1
+                Path lastState = stateManager.getStateFile(index);
+                Path newFirstState = stateManager.getStateFile(1);
+                if (Files.exists(lastState) && !lastState.equals(newFirstState)) {
+                    Files.move(lastState, newFirstState);
+                }
+                stateManager.saveLastStateNumber(1);
             }
         }
         return statesPurgedCount;

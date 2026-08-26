@@ -21,6 +21,7 @@ package org.fim.internal;
 
 import org.fim.model.Context;
 import org.fim.model.DuplicateResult;
+import org.fim.model.FilePattern;
 import org.fim.tooling.BuildableState;
 import org.fim.tooling.DuplicateAssert;
 import org.fim.tooling.RepositoryTool;
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.TestInfo;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,12 +40,13 @@ public class DuplicateFinderTest extends DuplicateAssert {
     private DuplicateFinder cut;
     private BuildableState s;
     private Path rootDir;
+    private Context context;
 
     @BeforeEach
     public void setUp(TestInfo testInfo) throws IOException {
         RepositoryTool tool = new RepositoryTool(testInfo);
         rootDir = tool.getRootDir();
-        Context context = tool.getContext();
+        context = tool.getContext();
 
         cut = new DuplicateFinder(context);
         s = new BuildableState(context).addFiles("file_01", "file_02_", "file_03", "file_04");
@@ -69,7 +72,7 @@ public class DuplicateFinderTest extends DuplicateAssert {
         DuplicateResult result = cut.findDuplicates(s);
         int totalWastedSpace = "file_10".length();
         assertThat(result.getDuplicateSets().size()).isEqualTo(1);
-        assertThat(result.getDuplicateSets().getFirst().getWastedSpace()).isEqualTo(totalWastedSpace);
+        assertThat(result.getDuplicateSets().get(0).getWastedSpace()).isEqualTo(totalWastedSpace);
         assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10"));
         assertThat(result.getTotalWastedSpace()).isEqualTo(totalWastedSpace);
 
@@ -79,7 +82,7 @@ public class DuplicateFinderTest extends DuplicateAssert {
         result = cut.findDuplicates(s);
         totalWastedSpace = ("file_10" + "file_11").length();
         assertThat(result.getDuplicateSets().size()).isEqualTo(1);
-        assertThat(result.getDuplicateSets().getFirst().getWastedSpace()).isEqualTo(totalWastedSpace);
+        assertThat(result.getDuplicateSets().get(0).getWastedSpace()).isEqualTo(totalWastedSpace);
         assertFilesDuplicated(result, duplicatedFiles("file_01", "file_10", "file_11"));
         assertThat(result.getTotalWastedSpace()).isEqualTo(totalWastedSpace);
 
@@ -118,5 +121,38 @@ public class DuplicateFinderTest extends DuplicateAssert {
         DuplicateResult result = cut.findDuplicates(s);
         assertFilesDuplicated(result);
         assertThat(result.getTotalWastedSpace()).isEqualTo(0);
+    }
+
+    @Test
+    public void nonExistentFilesAreExcludedFromDuplicates() throws IOException {
+        // Req 2.4: non-existent files excluded
+        s = s.copy("file_01", "file_10");
+        // Don't create file_10 on disk — it should be excluded
+        DuplicateResult result = cut.findDuplicates(s);
+        assertThat(result.getDuplicateSets()).isEmpty();
+        assertThat(result.getDuplicatedFilesCount()).isEqualTo(0);
+    }
+
+    @Test
+    public void excludePatternFiltersDuplicates() throws IOException {
+        // Req 2.6: exclude patterns filter files
+        s = s.copy("file_01", "file_10");
+        Files.copy(rootDir.resolve("file_01"), rootDir.resolve("file_10"));
+
+        context.setExcludePatterns(Collections.singletonList(new FilePattern("file_10")));
+        DuplicateResult result = cut.findDuplicates(s);
+        assertThat(result.getDuplicateSets()).isEmpty();
+    }
+
+    @Test
+    public void includePatternFiltersDuplicates() throws IOException {
+        // Req 2.5: include patterns filter files
+        s = s.copy("file_01", "file_10");
+        Files.copy(rootDir.resolve("file_01"), rootDir.resolve("file_10"));
+
+        // Only include file_03 — neither file_01 nor file_10 match
+        context.setIncludePatterns(Collections.singletonList(new FilePattern("file_03")));
+        DuplicateResult result = cut.findDuplicates(s);
+        assertThat(result.getDuplicateSets()).isEmpty();
     }
 }

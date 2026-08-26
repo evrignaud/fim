@@ -22,8 +22,9 @@ package org.fim.util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 public class Logger {
     public enum Level {
@@ -36,10 +37,11 @@ public class Logger {
     public static int level = Level.info.ordinal();
     public static PrintStream out = System.out;
     public static boolean debugEnabled = checkDebugEnabled();
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    public static final DateTimeFormatter DATE_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss").withZone(ZoneId.systemDefault());
 
     public static String getCurrentDate() {
-        return DATE_FORMAT.format(new Date());
+        return DATE_FORMAT.format(Instant.now());
     }
 
     public static void rawDebug(String message) {

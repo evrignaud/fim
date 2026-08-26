@@ -36,7 +36,7 @@ public class DynamicScaling {
     private final AtomicInteger currentThreads;
     private final AtomicLong volumeProcessed;
     private final AtomicLong lastMeasurementTime;
-    private volatile double lastThroughput; // files per second
+    private volatile double lastThroughput; // bytes per second
     private static final int MEASUREMENT_INTERVAL_MS = 100; // 100 milliseconds
     private static final double THROUGHPUT_THRESHOLD_UP = 0.02; // 2% improvement required to scale up
 
@@ -130,7 +130,7 @@ public class DynamicScaling {
     }
 
     /**
-     * Get the last measured throughput (files per second).
+     * Get the last measured throughput (bytes per second).
      */
     public double getLastThroughput() {
         return lastThroughput;

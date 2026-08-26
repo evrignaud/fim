@@ -21,11 +21,17 @@ package org.fim.util;
 
 import org.fim.model.FileState;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 public class FormatUtil {
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    private static final DateTimeFormatter DATE_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss").withZone(ZoneId.systemDefault());
+
+    private FormatUtil() {
+        // Utility class
+    }
 
     public static String formatCreationTime(FileState fileState) {
         return formatDate(fileState.getFileTime().getCreationTime());
@@ -36,6 +42,6 @@ public class FormatUtil {
     }
 
     public static String formatDate(long timestamp) {
-        return DATE_FORMAT.format(new Date(timestamp));
+        return DATE_FORMAT.format(Instant.ofEpochMilli(timestamp));
     }
 }

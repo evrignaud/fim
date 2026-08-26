@@ -5,10 +5,10 @@ plugins {
     application
     jacoco
     id("checkstyle")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.11"
     id("com.github.kt3k.coveralls") version "2.12.2"
-    id("org.sonarqube") version "5.1.0.4882"
-    id("org.asciidoctor.jvm.convert") version "4.0.2"
+    id("org.sonarqube") version "7.4.0.8496"
+    id("org.asciidoctor.jvm.convert") version "4.0.5"
 }
 
 repositories {
@@ -17,22 +17,27 @@ repositories {
 }
 
 dependencies {
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
-    implementation("com.google.code.gson:gson:2.11.0")
-    implementation("com.google.guava:guava:33.3.0-jre")
-    implementation("commons-cli:commons-cli:1.9.0")
-    implementation("commons-io:commons-io:2.16.1")
-    implementation("org.apache.commons:commons-csv:1.11.0")
-    implementation("org.apache.commons:commons-lang3:3.17.0")
-    implementation("org.atteo:evo-inflector:1.3")
-    implementation("org.slf4j:slf4j-api:2.0.16")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.22.2")
+    implementation("com.google.code.gson:gson:2.14.0")
+    implementation("com.google.guava:guava:33.7.1-jre")
+    implementation("commons-cli:commons-cli:1.11.0")
+    implementation("commons-io:commons-io:2.22.0")
+    implementation("org.apache.commons:commons-csv:1.14.1")
+    implementation("org.apache.commons:commons-lang3:3.20.0")
+    implementation("org.atteo:evo-inflector:2.0")
+    implementation("org.slf4j:slf4j-api:2.0.18")
 
     testImplementation("com.github.stefanbirkner:system-lambda:1.2.1")
-    testImplementation("org.assertj:assertj-core:3.26.3")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.11.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.11.0")
-    testImplementation("org.mockito:mockito-core:5.13.0")
+    testImplementation("org.assertj:assertj-core:3.27.7")
+    // The JUnit BOM keeps junit-jupiter and junit-platform (engine, commons, launcher) on aligned
+    // versions. Declaring the launcher explicitly avoids the older launcher Gradle would otherwise
+    // supply, which is missing APIs the 1.14.x engine expects (OutputDirectoryCreator).
+    testImplementation(platform("org.junit:junit-bom:5.14.4"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.mockito:mockito-core:5.23.0")
 }
 
 group = "org.fim"
@@ -41,7 +46,7 @@ description = "Fim"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 

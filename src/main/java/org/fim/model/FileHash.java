@@ -19,10 +19,10 @@
 
 package org.fim.model;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.Hasher;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public class FileHash implements Comparable<FileHash>, Hashable {
@@ -118,13 +118,13 @@ public class FileHash implements Comparable<FileHash>, Hashable {
     @Override
     public void hashObject(Hasher hasher) {
         hasher
-                .putString("FileHash", Charsets.UTF_8)
+                .putString("FileHash", StandardCharsets.UTF_8)
                 .putChar(HASH_FIELD_SEPARATOR)
-                .putString(smallBlockHash, Charsets.UTF_8)
+                .putString(smallBlockHash, StandardCharsets.UTF_8)
                 .putChar(HASH_FIELD_SEPARATOR)
-                .putString(mediumBlockHash, Charsets.UTF_8)
+                .putString(mediumBlockHash, StandardCharsets.UTF_8)
                 .putChar(HASH_FIELD_SEPARATOR)
-                .putString(fullHash, Charsets.UTF_8);
+                .putString(fullHash, StandardCharsets.UTF_8);
     }
 
     @Override

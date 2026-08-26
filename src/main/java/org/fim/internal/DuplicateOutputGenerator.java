@@ -41,17 +41,23 @@ public class DuplicateOutputGenerator {
         this.context = context;
     }
 
+    /**
+     * Render the duplicates in one of the machine-readable formats.
+     * <p>
+     * The human format is deliberately not handled here. It is produced by
+     * {@link DuplicateResult#displayAndRemoveDuplicates()}, which also drives the interactive removal
+     * prompts and the wasted-space summary, and which delegates to this generator only for the other
+     * formats. Rendering it here as well would mean maintaining two implementations of the same output
+     * that are free to drift apart.
+     */
     public void generate(DuplicateResult duplicateResult) {
         List<DuplicatedFiles> duplicates = generateDuplicatedFiles(duplicateResult);
         switch (context.getOutputType()) {
             case csv -> generateCSV(duplicates);
             case json -> generateJson(duplicates);
-            case human -> generateHuman(duplicates);
+            case human -> throw new IllegalStateException(
+                    "The human output format is rendered by DuplicateResult.displayAndRemoveDuplicates()");
         }
-    }
-
-    private void generateHuman(List<DuplicatedFiles> duplicates) {
-        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     private List<DuplicatedFiles> generateDuplicatedFiles(DuplicateResult duplicateResult) {

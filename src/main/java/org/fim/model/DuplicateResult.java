@@ -19,6 +19,7 @@
 
 package org.fim.model;
 
+import org.fim.command.exception.DontWantToContinueException;
 import org.fim.internal.DuplicateOutputGenerator;
 import org.fim.util.Logger;
 
@@ -38,6 +39,14 @@ public class DuplicateResult {
     private long totalWastedSpace;
     private long filesRemoved;
     private long spaceFreed;
+
+    /**
+     * Reads the answers to the removal prompts. Created once and never closed: closing a Scanner closes
+     * its source, which here is {@code System.in}, and a later prompt would then find it already closed.
+     * Reusing one instance also avoids losing input, since a Scanner may buffer past the line it hands
+     * back and a fresh instance per prompt would discard whatever was read ahead.
+     */
+    private Scanner inputScanner;
 
     public DuplicateResult(Context context) {
         this.context = context;
@@ -112,7 +121,7 @@ public class DuplicateResult {
     private void manageDuplicateSet(DuplicateSet duplicateSet) {
         int index = duplicateSets.indexOf(duplicateSet) + 1;
         List<FileState> duplicatedFiles = duplicateSet.getDuplicatedFiles();
-        long fileLength = duplicatedFiles.getFirst().getFileLength();
+        long fileLength = duplicatedFiles.get(0).getFileLength();
         int duplicateTime = duplicatedFiles.size() - 1;
         long wastedSpace = duplicateSet.getWastedSpace();
         Logger.out.printf("- Duplicate set #%d: duplicated %d %s, %s each, %s of wasted space%n",
@@ -180,7 +189,7 @@ public class DuplicateResult {
 
                     // Add the additional file that we will remove. It was not counted in the initial wasted space.
                     duplicatedFilesCount++;
-                    totalWastedSpace += duplicatedFiles.getFirst().getFileLength();
+                    totalWastedSpace += duplicatedFiles.get(0).getFileLength();
                     break;
                 }
 
@@ -196,9 +205,16 @@ public class DuplicateResult {
     }
 
     private String readInputLine() {
-        try (Scanner scanner = new Scanner(System.in)) {
-            return scanner.nextLine();
+        if (inputScanner == null) {
+            inputScanner = new Scanner(System.in);
         }
+        if (!inputScanner.hasNextLine()) {
+            // Standard input ended without an answer. Give up on the removal rather than let the prompt
+            // loop in selectFilesToRemove() spin forever on input that will never arrive.
+            Logger.newLine();
+            throw new DontWantToContinueException();
+        }
+        return inputScanner.nextLine();
     }
 
     private int safeParseInt(String answer) {

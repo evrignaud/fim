@@ -128,26 +128,20 @@ public class FrontHasher implements Hasher {
 
     @Override
     public long getBytesHashed() {
-        long bytesHashed =
-                max(smallBlockHasher.getBytesHashed(),
-                        max(mediumBlockHasher.getBytesHashed(), fullHasher.getBytesHashed()));
-        return bytesHashed;
+        return max(smallBlockHasher.getBytesHashed(),
+                max(mediumBlockHasher.getBytesHashed(), fullHasher.getBytesHashed()));
     }
 
     @Override
     public long getTotalBytesHashed() {
-        long totalBytesHashed =
-                max(smallBlockHasher.getTotalBytesHashed(),
-                        max(mediumBlockHasher.getTotalBytesHashed(), fullHasher.getTotalBytesHashed()));
-        return totalBytesHashed;
+        return max(smallBlockHasher.getTotalBytesHashed(),
+                max(mediumBlockHasher.getTotalBytesHashed(), fullHasher.getTotalBytesHashed()));
     }
 
     @Override
     public long getInstantThroughput() {
-        long instantThroughput =
-                max(smallBlockHasher.getInstantThroughput(),
-                        max(mediumBlockHasher.getInstantThroughput(), fullHasher.getInstantThroughput()));
-        return instantThroughput;
+        return max(smallBlockHasher.getInstantThroughput(),
+                max(mediumBlockHasher.getInstantThroughput(), fullHasher.getInstantThroughput()));
     }
 
     @Override

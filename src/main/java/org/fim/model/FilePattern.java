@@ -96,12 +96,14 @@ public class FilePattern {
         }
         FilePattern that = (FilePattern) other;
         return Objects.equals(fileName, that.fileName) &&
-               Objects.equals(compiled.toString(), that.compiled.toString());
+               Objects.equals(
+                       compiled != null ? compiled.toString() : null,
+                       that.compiled != null ? that.compiled.toString() : null);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fileName, compiled.toString());
+        return Objects.hash(fileName, compiled != null ? compiled.toString() : null);
     }
 
     @Override

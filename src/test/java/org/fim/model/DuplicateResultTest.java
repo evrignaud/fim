@@ -129,6 +129,49 @@ public class DuplicateResultTest {
     }
 
     @Test
+    public void csvOutputHasCorrectRowCount() throws IOException {
+        // Req 6.1, 6.2: header + one row per file across all sets
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+        Logger.out = new PrintStream(arrayOutputStream);
+        context.setOutputType(OutputType.csv);
+
+        cut.displayAndRemoveDuplicates();
+
+        arrayOutputStream.flush();
+        String result = arrayOutputStream.toString().replace("\r", "");
+        String[] lines = result.split("\n");
+        // Header + 20 little files + 10 files + 2 big files = 33 lines
+        assertThat(lines.length).isEqualTo(33);
+        assertThat(lines[0]).isEqualTo("SetIndex,FileIndex,WastedSpace,FilePath,FileName,FileLength,FileType");
+    }
+
+    @Test
+    public void csvOutputExtractsPathAndExtension() throws IOException {
+        // Req 6.3: path and extension extraction
+        Context ctx = new BuildableContext();
+        DuplicateResult dr = new DuplicateResult(ctx);
+        // Create file states with paths and extensions
+        List<FileState> files = new java.util.ArrayList<>();
+        files.add(new FileState("dir/subdir/photo.jpg", 100L, new org.fim.model.FileTime(1000, 1000),
+                new org.fim.model.FileHash("A", "A", "A"), new java.util.ArrayList<>()));
+        files.add(new FileState("dir/subdir/photo_copy.JPG", 100L, new org.fim.model.FileTime(1000, 1000),
+                new org.fim.model.FileHash("A", "A", "A"), new java.util.ArrayList<>()));
+        dr.addDuplicatedFiles(files);
+
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+        Logger.out = new PrintStream(arrayOutputStream);
+        ctx.setOutputType(OutputType.csv);
+
+        dr.displayAndRemoveDuplicates();
+
+        arrayOutputStream.flush();
+        String result = arrayOutputStream.toString().replace("\r", "");
+        // Verify path extraction and lowercase extension
+        assertThat(result).contains("dir/subdir");
+        assertThat(result).contains("jpg");
+    }
+
+    @Test
     public void canBeDisplayedInJSON() throws IOException {
         checkOutput(OutputType.json, """
                 "fileList": [
@@ -138,6 +181,91 @@ public class DuplicateResultTest {
                         "length": 32,
                         "type": ""
                       }""");
+    }
+
+    @Test
+    public void jsonOutputContainsWastedSpaceAndFileFields() throws IOException {
+        // Req 7.1, 7.2, 7.3: JSON array with wastedSpace and fileList fields
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+        Logger.out = new PrintStream(arrayOutputStream);
+        context.setOutputType(OutputType.json);
+
+        cut.displayAndRemoveDuplicates();
+
+        arrayOutputStream.flush();
+        String result = arrayOutputStream.toString().replace("\r", "");
+        assertThat(result).contains("\"wastedSpace\"");
+        assertThat(result).contains("\"fileList\"");
+        assertThat(result).contains("\"name\"");
+        assertThat(result).contains("\"length\"");
+        assertThat(result).contains("\"path\"");
+        assertThat(result).contains("\"type\"");
+    }
+
+    @Test
+    public void aggregateStatisticsAreCorrect() {
+        // Req 3.2, 3.3, 12.4, 12.5: verify duplicatedFilesCount and totalWastedSpace
+        // setUp adds: 20 little files (32 bytes), 10 files (256 bytes), 2 big files (512 bytes)
+        // duplicatedFilesCount = (20-1) + (10-1) + (2-1) = 19 + 9 + 1 = 29
+        assertThat(cut.getDuplicatedFilesCount()).isEqualTo(29);
+
+        // totalWastedSpace = 19*32 + 9*256 + 1*512 = 608 + 2304 + 512 = 3424
+        assertThat(cut.getTotalWastedSpace()).isEqualTo(3424);
+
+        // Verify per-set wasted space
+        assertThat(cut.getDuplicateSets()).hasSize(3);
+    }
+
+    @Test
+    public void noDuplicatesDisplaysMessage() throws IOException {
+        // Req 5.3: "No duplicate file found" when no duplicates
+        Context emptyContext = new BuildableContext();
+        DuplicateResult emptyResult = new DuplicateResult(emptyContext);
+
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+        Logger.out = new PrintStream(arrayOutputStream);
+
+        emptyResult.displayAndRemoveDuplicates();
+
+        arrayOutputStream.flush();
+        String output = arrayOutputStream.toString().replace("\r", "");
+        assertThat(output).contains("No duplicate file found");
+    }
+
+    @Test
+    public void summaryOnlyWhenNotVerbose() throws IOException {
+        // Req 5.4: summary-only when verbose is disabled and not removing
+        context.setVerbose(false);
+        context.setRemoveDuplicates(false);
+
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+        Logger.out = new PrintStream(arrayOutputStream);
+
+        cut.displayAndRemoveDuplicates();
+
+        arrayOutputStream.flush();
+        String output = arrayOutputStream.toString().replace("\r", "");
+        // Should show summary line but not individual set details
+        assertThat(output).contains("duplicate");
+        assertThat(output).contains("wasted space");
+        assertThat(output).doesNotContain("Duplicate set #");
+    }
+
+    @Test
+    public void humanOutputShowsSetDetails() throws IOException {
+        // Req 5.1, 5.2, 5.5: verbose human output shows numbered sets and file listings
+        context.setVerbose(true);
+        context.setOutputType(OutputType.human);
+
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+        Logger.out = new PrintStream(arrayOutputStream);
+
+        cut.displayAndRemoveDuplicates();
+
+        arrayOutputStream.flush();
+        String output = arrayOutputStream.toString().replace("\r", "");
+        assertThat(output).contains("Duplicate set #1");
+        assertThat(output).contains("wasted space");
     }
 
     private void checkSort(SortMethod sortMethod, boolean sortAscending, String firstFileName) {
@@ -161,7 +289,7 @@ public class DuplicateResultTest {
     }
 
     private FileState getFirstDuplicatedFileState() {
-        return cut.getDuplicateSets().getFirst().getDuplicatedFiles().getFirst();
+        return cut.getDuplicateSets().get(0).getDuplicatedFiles().get(0);
     }
 
     private void assertIsToRemove(int start, int end, boolean toRemove) {

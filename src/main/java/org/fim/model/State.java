@@ -19,7 +19,6 @@
 
 package org.fim.model;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
@@ -37,6 +36,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -78,6 +78,7 @@ public class State implements Hashable {
         filesContentLength = 0;
         hashMode = hashAll;
         modificationCounts = new ModificationCounts();
+        // Must stay a HashSet, see hashObject() and toCanonicalIgnoredFiles()
         ignoredFiles = new HashSet<>();
         fileStates = new ArrayList<>();
         commitDetails = new CommitDetails(hashMode, null);
@@ -86,7 +87,6 @@ public class State implements Hashable {
     public static State loadFromGZipFile(Path stateFile, boolean loadFullState) throws IOException, CorruptedStateException {
         try (Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(stateFile.toFile())), UTF8)) {
             State state = JSON_IO.getObjectMapper().readValue(reader, State.class);
-            System.gc(); // Force to clean up unused memory
 
             if (state == null) {
                 throw new CorruptedStateException();
@@ -121,7 +121,6 @@ public class State implements Hashable {
         try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(stateFile.toFile())), UTF8)) {
             JSON_IO.getObjectWriter().writeValue(writer, this);
         }
-        System.gc(); // Force to clean up unused memory
     }
 
     public State filterDirectory(Path repositoryRootDir, Path currentDirectory, boolean keepFilesInside) {
@@ -132,9 +131,10 @@ public class State implements Hashable {
         String curDir = FileUtil.getNormalizedFileName(currentDirectory);
         String subDirectory = FileUtil.getRelativeFileName(rootDir, curDir) + '/';
 
-        fileStates.stream()
+        List<FileState> filtered = fileStates.stream()
                 .filter(fileState -> fileState.getFileName().startsWith(subDirectory) == keepFilesInside)
-                .forEach(fileState -> filteredState.getFileStates().add(fileState));
+                .toList();
+        filteredState.getFileStates().addAll(filtered);
 
         return filteredState;
     }
@@ -144,10 +144,7 @@ public class State implements Hashable {
     }
 
     public void updateFilesContentLength() {
-        filesContentLength = 0;
-        for (FileState fileState : fileStates) {
-            filesContentLength += fileState.getFileLength();
-        }
+        filesContentLength = fileStates.stream().mapToLong(FileState::getFileLength).sum();
     }
 
     public String getModelVersion() {
@@ -194,7 +191,33 @@ public class State implements Hashable {
     }
 
     public void setIgnoredFiles(Set<String> ignoredFiles) {
-        this.ignoredFiles = ignoredFiles;
+        this.ignoredFiles = toCanonicalIgnoredFiles(ignoredFiles);
+    }
+
+    /**
+     * Copy the ignored files into the representation {@link #hashObject(Hasher)} depends on: a
+     * {@link HashSet} grown from the default capacity. See the comment in {@code hashObject()} for why the
+     * representation, rather than the ordering, is what has to be pinned.
+     * <p>
+     * Normalizing here means the State_Hash no longer depends on which {@code Set} implementation a caller
+     * happened to pass in. Handing over a {@link java.util.LinkedHashSet} or a {@link java.util.TreeSet}
+     * used to make the hash follow that set's ordering, which then failed to match after a save/load round
+     * trip because reading a State file always yields a {@code HashSet}.
+     * <p>
+     * The elements are inserted one at a time on purpose. {@code new HashSet<>(Collection)} pre-sizes its
+     * table from the source size, which at some sizes produces a larger table, and therefore a different
+     * iteration order, than the incrementally grown set produced when a State file is read back. Growing
+     * the table the same way both sides do keeps the two orders identical.
+     */
+    private static Set<String> toCanonicalIgnoredFiles(Set<String> source) {
+        if (source == null) {
+            return null;
+        }
+        Set<String> canonical = new HashSet<>();
+        for (String ignoredFile : source) {
+            canonical.add(ignoredFile);
+        }
+        return canonical;
     }
 
     public List<FileState> getFileStates() {
@@ -282,25 +305,45 @@ public class State implements Hashable {
     @Override
     public void hashObject(Hasher hasher) {
         hasher
-                .putString("State", Charsets.UTF_8)
+                .putString("State", StandardCharsets.UTF_8)
                 .putChar(HASH_FIELD_SEPARATOR)
-                .putString(modelVersion, Charsets.UTF_8)
+                .putString(modelVersion, StandardCharsets.UTF_8)
                 .putChar(HASH_FIELD_SEPARATOR)
                 .putLong(timestamp)
                 .putChar(HASH_FIELD_SEPARATOR)
-                .putString(comment, Charsets.UTF_8)
+                .putString(comment, StandardCharsets.UTF_8)
                 .putChar(HASH_FIELD_SEPARATOR)
                 .putInt(fileCount)
                 .putChar(HASH_FIELD_SEPARATOR)
                 .putLong(filesContentLength)
                 .putChar(HASH_FIELD_SEPARATOR)
-                .putString(hashMode.name(), Charsets.UTF_8);
+                .putString(hashMode.name(), StandardCharsets.UTF_8);
 
         hasher.putChar(HASH_OBJECT_SEPARATOR);
-        for (String ignoredFile : ignoredFiles) {
-            hasher
-                    .putString(ignoredFile, Charsets.UTF_8)
-                    .putChar(HASH_OBJECT_SEPARATOR);
+        // Do NOT sort or otherwise reorder ignoredFiles here.
+        //
+        // hashState() serves two purposes: producing the hash embedded on save, and recomputing it on load
+        // to verify integrity. Verification only succeeds if both computations hash the same sequence.
+        //
+        // Jackson deserializes this Set into a HashSet, discarding the order the array was written in, so
+        // the order seen on load is the HashSet iteration order for these elements. Writing and reading
+        // therefore agree only as long as the writer also iterated a HashSet. Sorting here would hash a
+        // different sequence than every previously written State file was hashed with, and each one holding
+        // two or more ignored files would be rejected as
+        // "The content of the State file #N have been modified and may be corrupted".
+        //
+        // What makes the hash reproducible is pinning the representation rather than the ordering:
+        // toCanonicalIgnoredFiles() keeps this field a HashSet grown from the default capacity wherever it
+        // is assigned, and HashSet ordering is derived from the elements rather than from insertion order.
+        // Changing that representation is a State file format change and requires bumping
+        // CURRENT_MODEL_VERSION, which routes older files to the model-version branch in
+        // loadFromGZipFile() instead of failing their integrity check.
+        if (ignoredFiles != null) {
+            for (String ignoredFile : ignoredFiles) {
+                hasher
+                        .putString(ignoredFile, StandardCharsets.UTF_8)
+                        .putChar(HASH_OBJECT_SEPARATOR);
+            }
         }
 
         hasher.putChar(HASH_OBJECT_SEPARATOR);
@@ -322,7 +365,7 @@ public class State implements Hashable {
         cloned.hashMode = this.hashMode;
         cloned.commitDetails = this.commitDetails.clone();
         cloned.modificationCounts = this.modificationCounts.clone();
-        cloned.ignoredFiles = new HashSet<>(this.ignoredFiles);
+        cloned.ignoredFiles = toCanonicalIgnoredFiles(this.ignoredFiles);
 
         cloned.fileStates = null;
         if (this.fileStates != null) {

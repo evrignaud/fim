@@ -20,13 +20,13 @@
 package org.fim.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -224,9 +224,9 @@ public class FileState implements Hashable {
 
     public void hashObject(Hasher hasher, boolean millisecondsRemoved) {
         hasher
-                .putString("FileState", Charsets.UTF_8)
+                .putString("FileState", StandardCharsets.UTF_8)
                 .putChar(HASH_FIELD_SEPARATOR)
-                .putString(fileName, Charsets.UTF_8)
+                .putString(fileName, StandardCharsets.UTF_8)
                 .putChar(HASH_FIELD_SEPARATOR)
                 .putLong(fileLength);
 
@@ -240,10 +240,10 @@ public class FileState implements Hashable {
         if (fileAttributes != null) {
             for (Map.Entry<String, String> entry : fileAttributes.entrySet()) {
                 hasher
-                        .putString(entry.getKey(), Charsets.UTF_8)
+                        .putString(entry.getKey(), StandardCharsets.UTF_8)
                         .putChar(':')
                         .putChar(':')
-                        .putString(entry.getValue(), Charsets.UTF_8);
+                        .putString(entry.getValue(), StandardCharsets.UTF_8);
                 hasher.putChar(HASH_OBJECT_SEPARATOR);
             }
         }

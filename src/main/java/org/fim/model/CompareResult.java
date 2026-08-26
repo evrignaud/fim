@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import static org.atteo.evo.inflector.English.plural;
 import static org.fim.util.FormatUtil.formatCreationTime;
@@ -74,10 +73,10 @@ public class CompareResult {
     private List<Difference> buildModifications(State state, Modification modification) {
         List<Difference> differences;
         if (state != null) {
-            differences = state.getFileStates().stream()
+            differences = new ArrayList<>(state.getFileStates().stream()
                     .filter(fileState -> fileState.getModification() == modification)
                     .map(Difference::new)
-                    .collect(Collectors.toList());
+                    .toList());
         } else {
             differences = new ArrayList<>();
         }
@@ -228,7 +227,7 @@ public class CompareResult {
         }
 
         if (displayTimeChange) {
-            modifCount = +formatTimeChange(diff, modification);
+            modifCount += formatTimeChange(diff, modification);
         }
 
         if (modifCount > 1) {

@@ -40,7 +40,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.fim.internal.StateComparator.resetFileStates;
 import static org.fim.model.HashMode.dontHash;
@@ -124,7 +123,7 @@ public class CommitCommand extends AbstractCommand {
             currentState.setModificationCounts(result.getModificationCounts());
 
             // Add all the deleted FileStates in order to be saved into the State
-            List<FileState> deletedFileStates = result.getDeleted().stream().map(Difference::getFileState).collect(Collectors.toList());
+            List<FileState> deletedFileStates = result.getDeleted().stream().map(Difference::getFileState).toList();
             currentState.getFileStates().addAll(deletedFileStates);
 
             HashMode globalHashMode = settingsManager.getGlobalHashMode();

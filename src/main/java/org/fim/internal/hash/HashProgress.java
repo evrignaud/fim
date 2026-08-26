@@ -27,6 +27,7 @@ import org.fim.util.Logger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.fim.model.HashMode.dontHash;
 import static org.fim.util.FileUtil.byteCountToDisplaySize;
@@ -47,31 +48,33 @@ public class HashProgress {
     private long summedFileLength;
     private int fileCount;
     private final int hashProgressWidth;
-    private final CountDownLatch hashIndicator;
+    private final AtomicBoolean hashStarted;
+    private final CountDownLatch noMoreFilesLatch;
 
     public HashProgress(Context context) {
         this.context = context;
         this.hashProgressWidth = getHashProgressWidth();
-        this.hashIndicator = new CountDownLatch(2);
+        this.hashStarted = new AtomicBoolean(false);
+        this.noMoreFilesLatch = new CountDownLatch(1);
     }
 
     public void hashStarted() {
-        hashIndicator.countDown();
+        hashStarted.set(true);
     }
 
     public boolean isHashStarted() {
-        return hashIndicator.getCount() == 1;
+        return hashStarted.get();
     }
 
     public void noMoreFileToHash() {
-        hashIndicator.countDown();
+        noMoreFilesLatch.countDown();
     }
 
     public void waitAllFilesToBeHashed() {
         try {
-            hashIndicator.await();
+            noMoreFilesLatch.await();
         } catch (InterruptedException e) {
-            // Ok. Just get out
+            Thread.currentThread().interrupt();
         }
     }
 

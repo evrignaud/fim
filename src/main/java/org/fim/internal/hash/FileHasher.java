@@ -34,6 +34,7 @@ import org.fim.util.Logger;
 import org.fim.util.SELinux;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -63,7 +64,8 @@ public class FileHasher implements Runnable {
     private final List<FileState> fileStates;
     private final FrontHasher frontHasher;
 
-    private Method clean = null;
+    private Method invokeCleaner = null;
+    private Object unsafeInstance = null;
     private boolean cleanInitialized = false;
 
     public FileHasher(Context context, AtomicBoolean scanInProgress, HashProgress hashProgress, BlockingDeque<Path> filesToHashQueue, String rootDir)
@@ -101,6 +103,7 @@ public class FileHasher implements Runnable {
                 }
             }
         } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
             Logger.error("Exception while hashing", ex, context.isDisplayStackTrace());
         } finally {
             // The queue is empty so all the other FileHasher will do the same
@@ -215,31 +218,32 @@ public class FileHasher implements Runnable {
     }
 
     /**
-     * Use reflection to avoid problems with non-SUN virtual machines.
-     * As mentioned in: https://stackoverflow.com/questions/2972986/how-to-unmap-a-file-from-memory-mapped-using-filechannel-in-java/19447758#19447758
-     * Original implementation comes from: https://stackoverflow.com/questions/8553158/prevent-outofmemory-when-using-java-nio-mappedbytebuffer
+     * Unmap a MappedByteBuffer using sun.misc.Unsafe.invokeCleaner() (Java 9+).
+     * Falls back gracefully if the method is unavailable — the buffer will be cleaned later by the GC.
      */
     private void unmap(MappedByteBuffer bb) {
         if (!cleanInitialized) {
+            cleanInitialized = true;
             try {
-                cleanInitialized = true;
-                clean = Class.forName("sun.misc.Cleaner").getMethod("clean");
-                clean.setAccessible(true);
-            } catch (Exception ex) {
-                // This method might not exist
+                Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+                java.lang.reflect.Field f = unsafeClass.getDeclaredField("theUnsafe");
+                f.setAccessible(true);
+                unsafeInstance = f.get(null);
+                invokeCleaner = unsafeClass.getMethod("invokeCleaner", java.nio.ByteBuffer.class);
+            } catch (ClassNotFoundException | NoSuchFieldException | NoSuchMethodException |
+                     IllegalAccessException ex) {
+                // Unsafe.invokeCleaner not available on this JVM
             }
         }
 
-        if (clean == null || bb == null || !bb.isDirect()) {
+        if (invokeCleaner == null || bb == null || !bb.isDirect()) {
             return;
         }
 
         try {
-            Method cleaner = bb.getClass().getMethod("cleaner");
-            cleaner.setAccessible(true);
-            clean.invoke(cleaner.invoke(bb));
-        } catch (Exception ex) {
-            // Never mind the buffer will be cleaner a bit later by the JVM
+            invokeCleaner.invoke(unsafeInstance, bb);
+        } catch (IllegalAccessException | InvocationTargetException ex) {
+            // Buffer will be cleaned later by the GC
         }
     }
 
