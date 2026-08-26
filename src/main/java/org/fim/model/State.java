@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -140,11 +141,32 @@ public class State implements Hashable {
     }
 
     public void updateFileCount() {
-        fileCount = fileStates.size();
+        fileCount = (int) presentFileStates().count();
     }
 
     public void updateFilesContentLength() {
-        filesContentLength = fileStates.stream().mapToLong(FileState::getFileLength).sum();
+        filesContentLength = presentFileStates().mapToLong(FileState::getFileLength).sum();
+    }
+
+    /**
+     * The FileStates describing the files this State actually contains.
+     * <p>
+     * A commit also stores the FileStates it deleted, so that {@code fim log} can list them afterwards
+     * (see {@code CommitCommand#commitModifications}). Those entries stand for files that are gone, so
+     * they are excluded from both the file count and the content length. Counting them reported the
+     * deleted files as still present and still taking up space, which made the freed space show up one
+     * State later than the commit that freed it.
+     * <p>
+     * Both values are recomputed from this sequence on every read rather than trusted from the file, so
+     * States written before this fix report corrected numbers too. The stored fields are only what
+     * {@link #hashObject(Hasher)} consumes, and those keep whatever value they were saved with, leaving
+     * the integrity check of existing State files untouched.
+     */
+    private Stream<FileState> presentFileStates() {
+        if (fileStates == null) {
+            return Stream.empty();
+        }
+        return fileStates.stream().filter(fileState -> fileState.getModification() != Modification.deleted);
     }
 
     public String getModelVersion() {

@@ -25,6 +25,8 @@ import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.LogEntry;
 import org.fim.model.LogResult;
+import org.fim.model.Modification;
+import org.fim.model.State;
 import org.fim.tooling.RepositoryTool;
 import org.fim.util.Logger;
 import org.junit.jupiter.api.AfterEach;
@@ -227,6 +229,71 @@ public class LogCommandTest {
         for (LogEntry entry : logResult.getLogEntries()) {
             assertThat(entry.getCompareResult()).isNull();
         }
+    }
+
+    /**
+     * Regression test for <a href="https://github.com/evrignaud/fim/issues/23">issue #23</a>:
+     * the space freed by a commit has to be reflected by that same commit.
+     * <p>
+     * A commit stores the FileStates it deleted alongside the surviving ones, so that {@code fim log} can
+     * report what it removed. Those entries used to be counted as ordinary files, so the State that
+     * deleted them still reported them as present and still charged their size against it. The drop then
+     * only became visible in the following State.
+     */
+    @Test
+    public void deletedFilesAreNotCountedInTheStateThatDeletesThem() throws Exception {
+        Context context = tool.createContext(hashAll, true);
+        context.setComment("Initial commit");
+        tool.createASetOfFiles(3);
+        initCommand.execute(context);
+
+        StateManager stateManager = new StateManager(context);
+        long initialLength = stateManager.loadLastState().getFilesContentLength();
+        long removedFileLength = java.nio.file.Files.size(tool.getRootDir().resolve("file03"));
+        assertThat(removedFileLength).isGreaterThan(0);
+
+        // Delete one file, then commit that deletion
+        java.nio.file.Files.delete(tool.getRootDir().resolve("file03"));
+        context.setComment("Removed file03");
+        CompareResult commitResult = (CompareResult) commitCommand.execute(context);
+        assertThat(commitResult.getDeleted()).hasSize(1);
+
+        capturedOutput.reset();
+        LogResult logResult = (LogResult) logCommand.execute(context);
+        assertThat(logResult.getLogEntries()).hasSize(2);
+
+        LogEntry deletingEntry = logResult.getLogEntries().get(1);
+
+        // The deleted file is neither present nor occupying space any more
+        assertThat(deletingEntry.getFileCount()).isEqualTo(2);
+        assertThat(deletingEntry.getFilesContentLength()).isEqualTo(initialLength - removedFileLength);
+
+        // The deleted entry is still recorded in the State, so the log can report the deletion
+        State deletingState = stateManager.loadState(2, false);
+        assertThat(deletingState.getFileStates()).hasSize(3);
+        assertThat(deletingState.getFileStates())
+                .filteredOn(fileState -> fileState.getModification() == Modification.deleted)
+                .hasSize(1);
+        assertThat(capturedOutput.toString()).contains("1 deleted");
+    }
+
+    /**
+     * Companion to the test above: with nothing deleted, the reported values stay the plain totals over
+     * every FileState, so the fix does not change ordinary commits.
+     */
+    @Test
+    public void fileCountAndContentLengthCoverEveryFileWhenNothingIsDeleted() throws Exception {
+        Context context = tool.createContext(hashAll, true);
+        context.setComment("Initial commit");
+        tool.createASetOfFiles(3);
+        initCommand.execute(context);
+
+        State state = new StateManager(context).loadLastState();
+        long expectedLength = state.getFileStates().stream().mapToLong(fs -> fs.getFileLength()).sum();
+
+        assertThat(state.getFileCount()).isEqualTo(3);
+        assertThat(state.getFileCount()).isEqualTo(state.getFileStates().size());
+        assertThat(state.getFilesContentLength()).isEqualTo(expectedLength);
     }
 
     /**
