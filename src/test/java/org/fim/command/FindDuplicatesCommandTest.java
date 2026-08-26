@@ -20,22 +20,33 @@
 package org.fim.command;
 
 import org.fim.command.exception.BadFimUsageException;
+import org.fim.command.exception.DontWantToContinueException;
 import org.fim.model.Context;
 import org.fim.model.DuplicateResult;
 import org.fim.model.HashMode;
 import org.fim.model.OutputType;
 import org.fim.tooling.RepositoryTool;
+import org.fim.util.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static com.github.stefanbirkner.systemlambda.SystemLambda.withTextFromSystemIn;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FindDuplicatesCommandTest {
     private Context context;
+    private Path rootDir;
+    private ByteArrayOutputStream capturedOutput;
 
     private FindDuplicatesCommand findDuplicatesCommand;
 
@@ -43,6 +54,8 @@ public class FindDuplicatesCommandTest {
     public void setUp(TestInfo testInfo) throws IOException {
         RepositoryTool tool = new RepositoryTool(testInfo);
         context = tool.getContext();
+        rootDir = tool.getRootDir();
+        capturedOutput = new ByteArrayOutputStream();
 
         findDuplicatesCommand = new FindDuplicatesCommand();
     }
@@ -109,5 +122,66 @@ public class FindDuplicatesCommandTest {
         assertThrows(java.util.NoSuchElementException.class, () -> {
             findDuplicatesCommand.execute(context);
         });
+    }
+
+    /**
+     * Regression test for <a href="https://github.com/evrignaud/fim/issues/24">issue #24</a>:
+     * answering the one automatic-removal question must not cancel {@code -y}.
+     * <p>
+     * The question is asked by temporarily clearing {@code alwaysYes}, and it is only restored when the
+     * answer is {@code A}. Answering {@code y} therefore left it cleared, and every duplicate set then
+     * asked which file to keep, exactly what {@code -y} is meant to avoid.
+     */
+    @Test
+    public void alwaysYesStillAppliesAfterConfirmingAutomaticRemoval() throws Exception {
+        createTwoIdenticalFiles();
+
+        context.setRemoveDuplicates(true);
+        context.setAlwaysYes(true);
+        context.setCalledFromTest(false);
+
+        DuplicateResult result = executeAnswering("y");
+
+        // -y is honoured for the duplicate sets themselves: the first file of the set is kept and the
+        // rest are removed, with no per-set question
+        assertThat(capturedOutput.toString()).doesNotContain("Preserve files");
+        assertThat(result.getFilesRemoved()).isEqualTo(1);
+        assertThat(context.isAlwaysYes()).isTrue();
+    }
+
+    /**
+     * The counterpart: declining the automatic-removal question stops the command and removes nothing.
+     */
+    @Test
+    public void decliningAutomaticRemovalRemovesNothing() throws Exception {
+        createTwoIdenticalFiles();
+
+        context.setRemoveDuplicates(true);
+        context.setAlwaysYes(true);
+        context.setCalledFromTest(false);
+
+        assertThrows(DontWantToContinueException.class, () -> executeAnswering("n"));
+
+        assertThat(Files.exists(rootDir.resolve("dup-a"))).isTrue();
+        assertThat(Files.exists(rootDir.resolve("dup-b"))).isTrue();
+    }
+
+    private DuplicateResult executeAnswering(String answer) throws Exception {
+        PrintStream originalOut = Logger.out;
+        capturedOutput = new ByteArrayOutputStream();
+        Logger.out = new PrintStream(capturedOutput, true, StandardCharsets.UTF_8);
+        try {
+            AtomicReference<DuplicateResult> holder = new AtomicReference<>();
+            withTextFromSystemIn(answer).execute(() -> holder.set((DuplicateResult) findDuplicatesCommand.execute(context)));
+            return holder.get();
+        } finally {
+            Logger.out = originalOut;
+        }
+    }
+
+    private void createTwoIdenticalFiles() throws IOException {
+        byte[] content = "the very same bytes in both files".getBytes(StandardCharsets.UTF_8);
+        Files.write(rootDir.resolve("dup-a"), content);
+        Files.write(rootDir.resolve("dup-b"), content);
     }
 }

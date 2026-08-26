@@ -76,10 +76,26 @@ public class FindDuplicatesCommand extends AbstractCommand {
         return result;
     }
 
+    /**
+     * Ask once before removing every duplicate automatically, even though {@code -y} was given, because
+     * that combination deletes files without showing them first.
+     * <p>
+     * {@code -y} has to be put back afterwards. It is cleared so that the question below is actually
+     * asked, and {@link #confirmAction} only re-arms it when the answer is {@code A} — answering
+     * {@code y} left it off, so {@link DuplicateResult#selectFilesToRemove} then prompted for every
+     * single duplicate set and {@code -y} behaved as if it had never been passed.
+     * <p>
+     * Restored whatever the answer was: on refusal the command stops right here, so the value only
+     * matters when the removal proceeds.
+     */
     private void explicitlyConfirmAutomaticRemoval(Context context) {
-        context.setAlwaysYes(false);
         Logger.out.println("You are going to remove automatically all duplicates, keeping the first of each duplicate set.");
-        if (!confirmAction(context, "continue")) {
+
+        context.setAlwaysYes(false);
+        boolean confirmed = confirmAction(context, "continue");
+        context.setAlwaysYes(true);
+
+        if (!confirmed) {
             throw new DontWantToContinueException();
         }
         Logger.newLine();
