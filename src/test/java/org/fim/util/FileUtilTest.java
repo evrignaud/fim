@@ -28,6 +28,7 @@ import org.fim.tooling.TestConstants;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -104,6 +105,104 @@ public class FileUtilTest {
 
         boolean result = FileUtil.removeFile(context, rootDir, fileState);
         assertThat(result).isFalse();
+    }
+
+    /**
+     * Tests around <a href="https://github.com/evrignaud/fim/issues/22">issue #22</a>, where duplicates
+     * were found but could not be removed and the only trace was "Error deleting file", naming neither
+     * the file nor a reason.
+     */
+    @Test
+    public void deletionFailureNamesTheFileAndTheReason() throws IOException {
+        Path rootDir = freshDir("deletionFailureReporting");
+        FileState missing = new FileState("not-there.txt", 0, new FileTime(), new FileHash(), null);
+
+        String output = captureLoggerOutput(() -> assertThat(FileUtil.removeFile(new Context(), rootDir, missing)).isFalse());
+
+        assertThat(output).contains("not-there.txt");
+        assertThat(output).contains("NoSuchFileException");
+    }
+
+    /**
+     * A missing file is reported once, not once per delete attempt. The retry loop exists for the file
+     * locking seen on Windows and macOS, and waiting cannot make an absent file appear.
+     */
+    @Test
+    public void missingFileIsReportedOnlyOnce() throws IOException {
+        Path rootDir = freshDir("deletionFailureReportedOnce");
+        FileState missing = new FileState("not-there.txt", 0, new FileTime(), new FileHash(), null);
+
+        String output = captureLoggerOutput(() -> FileUtil.removeFile(new Context(), rootDir, missing));
+
+        assertThat(output.split("Error deleting file", -1)).hasSize(2);
+    }
+
+    /**
+     * When the name carries characters the JVM cannot map to the filesystem, the message says so and
+     * points at the locale. That charset follows the locale of the process and cannot be set with a
+     * system property, so the advice has to be about the locale rather than about a JVM flag.
+     * <p>
+     * Only meaningful while the JVM is running under a charset that cannot represent the name; under a
+     * UTF-8 locale there is nothing to warn about, which is exactly the state being recommended.
+     */
+    @Test
+    public void unmappableFileNameIsCalledOutInTheError() throws IOException {
+        String nativeEncoding = System.getProperty("sun.jnu.encoding");
+        String nonLatinName = "\u65e5\u672c\u8a9e.mp3";
+        if (nativeEncoding == null || Charset.forName(nativeEncoding).newEncoder().canEncode(nonLatinName)) {
+            return;
+        }
+
+        Path rootDir = freshDir("unmappableFileName");
+        FileState fileState = new FileState(nonLatinName, 0, new FileTime(), new FileHash(), null);
+
+        String output = captureLoggerOutput(() -> FileUtil.removeFile(new Context(), rootDir, fileState));
+
+        assertThat(output).contains(nativeEncoding);
+        assertThat(output).contains("UTF-8 locale");
+    }
+
+    /**
+     * A name that the running JVM can represent must not attract the encoding advice.
+     */
+    @Test
+    public void representableFileNameGetsNoEncodingAdvice() throws IOException {
+        Path rootDir = freshDir("representableFileName");
+        FileState fileState = new FileState("Orat\u00f3ria-Import\u00e2ncia.mp3", 0, new FileTime(), new FileHash(), null);
+
+        String output = captureLoggerOutput(() -> FileUtil.removeFile(new Context(), rootDir, fileState));
+
+        assertThat(output).contains("Orat\u00f3ria-Import\u00e2ncia.mp3");
+        assertThat(output).doesNotContain("UTF-8 locale");
+    }
+
+    /**
+     * An accented name still round-trips: written to disk, read back and deleted through the same
+     * FileState name that Fim stores.
+     */
+    @Test
+    public void accentedFileNameCanBeRemoved() throws IOException {
+        Path rootDir = freshDir("accentedFileName");
+        String fileName = "Curso de Orat\u00f3ria - A Import\u00e2ncia da Palavra Di\u00e1ria.mp3";
+        Files.writeString(rootDir.resolve(fileName), "content");
+        assertThat(Files.exists(rootDir.resolve(fileName))).isTrue();
+
+        FileState fileState = new FileState(fileName, 0, new FileTime(), new FileHash(), null);
+
+        assertThat(FileUtil.removeFile(new Context(), rootDir, fileState)).isTrue();
+        assertThat(Files.exists(rootDir.resolve(fileName))).isFalse();
+    }
+
+    private String captureLoggerOutput(Runnable action) {
+        java.io.ByteArrayOutputStream captured = new java.io.ByteArrayOutputStream();
+        java.io.PrintStream originalOut = Logger.out;
+        Logger.out = new java.io.PrintStream(captured, true, java.nio.charset.StandardCharsets.UTF_8);
+        try {
+            action.run();
+        } finally {
+            Logger.out = originalOut;
+        }
+        return captured.toString(java.nio.charset.StandardCharsets.UTF_8);
     }
 
     /**

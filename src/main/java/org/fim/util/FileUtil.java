@@ -25,7 +25,9 @@ import org.fim.model.FileState;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 
@@ -37,6 +39,13 @@ public class FileUtil {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.#");
     private static final Object DELETE_LOCK = new Object();
     private static final String WRITE_PROBE_PREFIX = ".fim-write-probe-";
+    private static final int DELETE_ATTEMPTS = 10;
+
+    /**
+     * The encoding the JVM maps file names with. It is derived from the locale of the process and cannot
+     * be overridden with a system property, so it is read rather than set.
+     */
+    private static final String NATIVE_ENCODING_PROPERTY = "sun.jnu.encoding";
 
     /**
      * Whether Fim can create files in the given directory.
@@ -131,45 +140,110 @@ public class FileUtil {
     }
 
     public static boolean removeFile(Context context, Path rootDir, FileState fileState) {
+        Path file = rootDir.resolve(fileState.getFileName());
+
+        IOException failure;
         // Files.delete() not ThreadSafe on Windows and macOS.
         // Based on https://github.com/apache/flink/blob/master/flink-core/src/main/java/org/apache/flink/util/FileUtils.java#L395
         if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_MAC_OSX) {
             synchronized (DELETE_LOCK) {
-                for (int attempt = 1; attempt <= 10; attempt++) {
-                    if (removeFileInternal(context, rootDir, fileState)) {
-                        return true;
-                    }
-
-                    // Got sometimes java.nio.file.AccessDeniedException during file delete.
-                    // Windows has some unusual file locking behaviors.
-                    // Deleting files shortly after using them is rarely possible to do quickly or expediently using Java on Windows,
-                    // as the file locking will get in your way.
-
-                    // briefly wait and fall through the loop
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                        // restore the interruption flag and error out of the method
-                        Thread.currentThread().interrupt();
-                        throw new FileOperationInterruptedException("File deletion operation interrupted");
-                    }
-                }
-                return false;
+                failure = removeFileWithRetries(file);
             }
+        } else {
+            failure = tryToRemoveFile(file);
         }
 
-        return removeFileInternal(context, rootDir, fileState);
+        if (failure == null) {
+            return true;
+        }
+
+        // Reported once, after every attempt, rather than once per attempt.
+        reportDeletionFailure(context, file, failure);
+        return false;
     }
 
-    private static boolean removeFileInternal(Context context, Path rootDir, FileState fileState) {
-        try {
-            Path file = rootDir.resolve(fileState.getFileName());
-            Files.delete(file);
-            return true;
-        } catch (IOException ex) {
-            Logger.error("Error deleting file", ex, context.isDisplayStackTrace());
+    private static IOException removeFileWithRetries(Path file) {
+        IOException failure = null;
+        for (int attempt = 1; attempt <= DELETE_ATTEMPTS; attempt++) {
+            failure = tryToRemoveFile(file);
+            if (failure == null) {
+                return null;
+            }
+
+            // Waiting cannot make a file that is not there appear, so only contention is worth retrying.
+            if (failure instanceof NoSuchFileException) {
+                return failure;
+            }
+
+            // Got sometimes java.nio.file.AccessDeniedException during file delete.
+            // Windows has some unusual file locking behaviors.
+            // Deleting files shortly after using them is rarely possible to do quickly or expediently using Java on Windows,
+            // as the file locking will get in your way.
+
+            // briefly wait and fall through the loop
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                // restore the interruption flag and error out of the method
+                Thread.currentThread().interrupt();
+                throw new FileOperationInterruptedException("File deletion operation interrupted");
+            }
         }
-        return false;
+        return failure;
+    }
+
+    private static IOException tryToRemoveFile(Path file) {
+        try {
+            Files.delete(file);
+            return null;
+        } catch (IOException ex) {
+            return ex;
+        }
+    }
+
+    /**
+     * Name the file that could not be deleted, and say why.
+     * <p>
+     * This used to report only "Error deleting file", which left no way to tell which file failed or
+     * what stopped it.
+     * <p>
+     * A file name that the JVM cannot encode is called out explicitly, because nothing about it is
+     * visible in the usual output: the name is read from disk through {@code sun.jnu.encoding}, and when
+     * that charset cannot represent every character the name comes back altered, so it no longer refers
+     * to the file it came from. Deleting it then fails however many times it is retried. That charset
+     * follows the locale of the process and cannot be changed with a system property, which is why the
+     * advice is about the locale.
+     */
+    private static void reportDeletionFailure(Context context, Path file, IOException failure) {
+        String message = String.format("Error deleting file '%s'", file);
+        if (!isEncodableByTheJvm(file.toString())) {
+            message += String.format(", whose name cannot be represented using '%s', the encoding this JVM maps file names with." +
+                                     " Run Fim with a UTF-8 locale, for example LANG=C.UTF-8, so that this name can be resolved",
+                    System.getProperty(NATIVE_ENCODING_PROPERTY));
+        }
+        Logger.error(message, failure, context.isDisplayStackTrace());
+    }
+
+    /**
+     * Whether the JVM is able to hand this name to the operating system unaltered. A name carrying the
+     * Unicode replacement character has already lost information while being read.
+     */
+    private static boolean isEncodableByTheJvm(String fileName) {
+        if (fileName.indexOf('\uFFFD') >= 0) {
+            return false;
+        }
+
+        String encoding = System.getProperty(NATIVE_ENCODING_PROPERTY);
+        if (encoding == null) {
+            return true;
+        }
+
+        try {
+            return Charset.forName(encoding).newEncoder().canEncode(fileName);
+        } catch (IllegalArgumentException | UnsupportedOperationException ex) {
+            // Unknown or non-encoding charset: nothing can be concluded, so do not blame the encoding.
+            return true;
+        }
     }
 
     /**
