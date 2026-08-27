@@ -61,3 +61,42 @@ You can display the history of the modifications using the `log` command.
 ----
 $ fim log
 ----
+
+== Managing the State history
+
+Fim keeps every State that has been committed. Two commands remove some of them.
+
+The `rollback` command undoes the last commit by removing the last State.
+It shows you what that State recorded and asks for confirmation first.
+
+[source, bash]
+----
+$ fim rbk
+----
+
+You can roll back repeatedly to walk back through the history, but not past the first State: the State created
+by `init` is the baseline and cannot be rolled back.
+
+The `purge-states` command discards the whole history except the last State, which becomes the new first one.
+It also asks for confirmation.
+
+[source, bash]
+----
+$ fim pst
+----
+
+This is what to reach for when the accumulated States take up more room than the history is worth to you.
+
+[IMPORTANT]
+====
+Neither command can be undone, and neither gives you back file content.
+Removing a State discards what Fim recorded about your files at that point, not the files themselves.
+====
+
+If you want each commit to leave only the State it just created, `-p` purges the previous States as part of a
+successful commit.
+
+[source, bash]
+----
+$ fim ci -p -m "My commit comment"
+----

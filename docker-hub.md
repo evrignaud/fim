@@ -2,12 +2,11 @@
 
 # Supported tags and respective Dockerfile links
 
-* `latest`, `1.2.3` ([Dockerfile](https://github.com/evrignaud/fim/blob/1.2.3/Dockerfile))
+* `latest` ([Dockerfile](https://github.com/evrignaud/fim/blob/master/Dockerfile))
+* `1.2.3` ([Dockerfile](https://github.com/evrignaud/fim/blob/1.2.3/Dockerfile))
 * `1.2.2` ([Dockerfile](https://github.com/evrignaud/fim/blob/1.2.2/Dockerfile))
 * `1.2.1` ([Dockerfile](https://github.com/evrignaud/fim/blob/1.2.1/Dockerfile))
 * `1.2.0` ([Dockerfile](https://github.com/evrignaud/fim/blob/1.2.0/Dockerfile))
-
-[![Latest version](https://images.microbadger.com/badges/version/evrignaud/fim.svg)](https://microbadger.com/images/evrignaud/fim) &nbsp; [![Download size](https://images.microbadger.com/badges/image/evrignaud/fim.svg)](https://microbadger.com/images/evrignaud/fim)
 
 # What is Fim?
 
@@ -44,5 +43,8 @@ This script takes the same arguments as the `fim` one.
 
     $ ./fim-docker -h
 
+### Building the image yourself
 
-![Analytics](https://ga-beacon.appspot.com/UA-78135040-1/evrignaud/fim?pixel)
+The image builds the Fim distribution itself, so a freshly cloned repository is enough. You need neither a JDK nor a prior build on the host:
+
+    $ ./build-docker-image

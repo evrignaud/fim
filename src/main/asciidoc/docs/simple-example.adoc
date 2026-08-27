@@ -532,12 +532,15 @@ Here is an extract of the State's 2 content. To simplify reading, hashes are sho
 simple-example$ zmore .fim/states/state_2.json.gz
 {
   "stateHash": "WKE\\VP<9...`$SnPo",
-  "modelVersion": "4",
+  "modelVersion": "5",
   "timestamp": 1462827520971,
   "comment": "Commit modifications very quickly using super-fast commit",
   "fileCount": 14,
   "filesContentLength": 176,
   "hashMode": "hashAll",
+  "commitDetails": {
+    "hashModeUsedToGetTheStatus": "hashSmallBlock"
+  },
   "modificationCounts": {
     "added": 1,
     "copied": 1,
@@ -546,7 +549,8 @@ simple-example$ zmore .fim/states/state_2.json.gz
     "contentModified": 2,
     "attributesModified": 0,
     "renamed": 1,
-    "deleted": 1
+    "deleted": 1,
+    "corrupted": 0
   },
   "ignoredFiles": [
     ".fim/"
@@ -577,3 +581,25 @@ simple-example$ zmore .fim/states/state_2.json.gz
   ]
 }
 ----
+
+A few things worth pointing out in there:
+
+`stateHash`:: A hash of everything else in the file. It is recomputed every time the State is read, so a State
+that was altered after being written is reported as corrupted rather than used.
+
+`modelVersion`:: The version of this file format. Fim warns when it reads a State written against another one.
+
+`hashMode` and `commitDetails.hashModeUsedToGetTheStatus`:: The first is the depth the hashes were stored to,
+the second the mode that was used to find out what had changed. They differ here because this commit was made
+with `-s`: the modifications were found in super-fast mode, then the modified files were hashed in full.
+This is what <<super-fast-commit.adoc#_super_fast_commit,Super-fast commit>> describes.
+
+`fileCount` and `filesContentLength`:: Recomputed on every read rather than trusted from the file, and they
+count only the files the State says are present. A commit also stores the entries it deleted, so that
+`fim log` can report what that commit removed, and those are left out of both figures.
+
+`ignoredFiles`:: What the scan left out. Here it holds `.fim/`, the directory Fim keeps its own data in.
+
+`fileAttributes`:: `PosixFilePermissions` on Linux and Mac OS X, `DosFilePermissions` on Windows, plus
+`SELinuxLabel` where SELinux is enabled. See
+<<file-permissions-management.adoc#_file_permissions_management,File permissions management>>.

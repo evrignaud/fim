@@ -4,6 +4,53 @@
 
 * The '-M' option that is dedicated to specify the master Fim repository does not work when using the Fim Docker image
 
+== Not released yet
+
+https://github.com/evrignaud/fim/compare/1.2.3%2E%2E%2Emaster[image:icons/list.png[List] Full Changelog]
+
+=== General
+* Fim is now built with **Gradle** instead of Maven, through the wrapper committed in the repository, so no build tool has to be installed
+* Fim is now compiled with **Java 17** and requires Java 17 or later to run. The tests moved to JUnit 5
+* The Docker image builds the Fim distribution itself, so it can be built from a freshly cloned repository with no JDK and no prior build on the host
+
+=== New features
+* An interrupted `init` is now resumed instead of started again.
+  Fixes https://github.com/evrignaud/fim/issues/27[issue #27]
+** The hashes computed so far are kept, so stopping a long `init` with Ctrl-C no longer throws away its work
+** The progress is saved as the `init` runs, so a machine that loses power resumes as well
+** A file modified after being hashed is hashed again, so a resumed `init` never describes a file by a hash it no longer matches
+** Details in <<faq.adoc#_pausing_and_resuming_the_init_of_a_big_repository,Pausing and resuming the init of a big repository>>
+* Duplicate results can be ordered with the **`--sort`** option, on wasted space, number of files, file size, or file path.
+  The **`--order`** option reverses the direction.
+  Fixes https://github.com/evrignaud/fim/issues/12[issue #12]
+** Sorting on `path` groups together the duplicates that live in the same directory
+* Duplicate results can be restricted with the **`--include`** and **`--exclude`** options.
+  Fixes https://github.com/evrignaud/fim/issues/11[issue #11]
+* Duplicates can be reported in **CSV** or **JSON** with the **`--output-type`** option.
+  Fixes https://github.com/evrignaud/fim/issues/14[issue #14]
+* Details on all of these in <<dealing-with-duplicates.adoc#_dealing_with_duplicates,Dealing with duplicates>>
+
+=== Bug fix
+* Fix https://github.com/evrignaud/fim/issues/13[issue #13]:
+  `rdup -M` applied the `.fimignore` files of unrelated directories when run from inside a Fim repository
+* Fix https://github.com/evrignaud/fim/issues/16[issue #16]:
+  Files of different lengths were reported as duplicates of each other
+* Fix https://github.com/evrignaud/fim/issues/22[issue #22]:
+  A duplicate that could not be deleted was reported as "Error deleting file", naming neither the file nor a reason.
+  The failure now names both, and points at the locale when a file name cannot be represented by the encoding the JVM maps names with
+* Fix https://github.com/evrignaud/fim/issues/23[issue #23]:
+  The space a commit freed was reported one State later than the commit that freed it
+* Fix https://github.com/evrignaud/fim/issues/24[issue #24]:
+  Answering 'A' to a `rdup -y` prompt did not keep applying to the remaining questions
+* Fix https://github.com/evrignaud/fim/issues/25[issue #25]:
+  A repository could not be created on a CIFS/SMB share, because such a mount reports the permissions of the mount rather than those of the account in use.
+  Fim now decides by trying rather than by asking
+* Fix https://github.com/evrignaud/fim/issues/28[issue #28]:
+  `docker build` failed on a freshly cloned repository, because it expected a distribution the host had not built yet
+
+=== Documentation
+* Thanks to https://github.com/evrignaud/fim/issues/20[issue #20], document how to create a `.fimignore` on Windows
+
 == Version 1.2.3
 *(Released 2017-06-06)*
 

@@ -504,7 +504,7 @@ https://github.com/evrignaud/fim/releases/latest[image:download.png[Download] La
 
 .*Fim prerequisites*
 
-* Fim is written in Java. It requires Java 8
+* Fim is written in Java. It requires Java 17 or later
 
 * Works on Linux, Windows and Mac OS X
 
@@ -514,8 +514,6 @@ https://github.com/evrignaud/fim/releases/latest[image:download.png[Download] La
 
 For Linux, if you do not have Java or not the correct version, +
 a docker image is available on https://hub.docker.com/r/evrignaud/fim/[Docker Hub]
-https://microbadger.com/images/evrignaud/fim[image:https://images.microbadger.com/badges/version/evrignaud/fim.svg[Image version]]
-https://microbadger.com/images/evrignaud/fim[image:https://images.microbadger.com/badges/image/evrignaud/fim.svg[Image size]]
 
 &bull; *Retrieve the `fim-docker` script*{nbsp}{nbsp}{nbsp}{nbsp}image:docker-little.png[]
 

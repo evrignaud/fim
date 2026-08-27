@@ -4,11 +4,19 @@ Fim manages the integrity of a complete file tree
 
 # Docker image
 
-#### [Docker Hub](https://hub.docker.com/r/evrignaud/fim/) &nbsp; [![Latest version](https://images.microbadger.com/badges/version/evrignaud/fim.svg)](https://microbadger.com/images/evrignaud/fim) &nbsp; [![Download size](https://images.microbadger.com/badges/image/evrignaud/fim.svg)](https://microbadger.com/images/evrignaud/fim)
+#### [Docker Hub](https://hub.docker.com/r/evrignaud/fim/)
+
+The image builds Fim itself, so it needs neither a JDK nor a prior build on the host:
+
+    $ ./build-docker-image
 
 # Build
 
-#### Linux & Mac OS X: [![Build Status](https://travis-ci.org/evrignaud/fim.svg)](https://travis-ci.org/evrignaud/fim) &nbsp; Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/txadqci1hrr3lkko?svg=true)](https://ci.appveyor.com/project/evrignaud/fim) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Coverage Status](https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github)](https://coveralls.io/github/evrignaud/fim?branch=master) &nbsp;&nbsp; [![Coverity Scan Build Status](https://scan.coverity.com/projects/8749/badge.svg)](https://scan.coverity.com/projects/evrignaud-fim)
+Fim is built with Gradle, through the wrapper committed in the repository. You need a JDK 17 or later:
+
+    $ ./gradlew build
+
+[![Coverage Status](https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github)](https://coveralls.io/github/evrignaud/fim?branch=master) &nbsp;&nbsp; [![Coverity Scan Build Status](https://scan.coverity.com/projects/8749/badge.svg)](https://scan.coverity.com/projects/evrignaud-fim)
 [![Latest tag](https://img.shields.io/github/tag/evrignaud/fim.svg)](https://github.com/evrignaud/fim/releases/latest) [![License](https://img.shields.io/github/license/evrignaud/fim.svg)](https://evrignaud.github.io/fim/LICENSE.html)
 
 ## Slides
@@ -47,8 +55,10 @@ You can download Fim binary distributions from [here](https://github.com/evrigna
 
 This tool is written in Java.
 
-Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from [here](https://www.oracle.com/technetwork/java/javase/downloads/index.html).<br/>
-You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.
+Fim is compiled using Java 17 and requires Java 17 or later to run. You can download it from [Adoptium](https://adoptium.net), or use the JDK your package manager provides.<br/>
+If you would rather not install Java, the [Docker image](https://evrignaud.github.io/fim/#_run_fim_using_docker) carries everything Fim needs.
+
+Run Fim under a UTF-8 locale, for example `LANG=C.UTF-8`. Fim holds file names as text, so a name carrying characters the JVM's encoding cannot represent comes back altered and no longer refers to the file it came from.
 
 ## Supported OS
 
@@ -91,6 +101,3 @@ Fim can be used on Linux, Mac OS X and Windows
 ## About
 
 Created by Etienne Vrignaud &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [My blog](https://evrignaud.github.io/blog/) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Twitter icon](https://evrignaud.github.io/fim/images/icons/twitter.png) Follow @evrignaud](https://twitter.com/evrignaud)
-
-
-![Analytics](https://ga-beacon.appspot.com/UA-65759837-1/fim/README.md?pixel)

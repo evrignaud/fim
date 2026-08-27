@@ -19,12 +19,95 @@ See it in action in <<simple-example.adoc#_search_for_duplicate_files,Search for
 $ fim fdup
 ----
 
-If the current State is already commited, you can skip the workspace scanning phase with the `-l` option :
+If the current State is already committed, you can skip the workspace scanning phase with the `-l` option:
 
 [source, bash]
 ----
 $ fim fdup -l
 ----
+
+Files of zero length are never reported as duplicates of each other, and a file recorded in the State that is
+no longer on disk is skipped.
+
+=== Choosing the order of the results
+
+By default the duplicate sets are listed with the ones wasting the most space first.
+The `--sort` option changes what the order is based on:
+
+[cols="1,4"]
+|===
+| Value | Orders the sets by
+
+| `wasted`
+| The space the duplicates waste, which is the file size multiplied by the number of extra copies. This is the default
+
+| `number`
+| The number of files in the set
+
+| `size`
+| The size of the duplicated file
+
+| `path`
+| The file path, which brings the sets living in the same directory next to each other
+|===
+
+`--order` reverses the direction. It is `desc` by default and accepts `asc`.
+
+[source, bash]
+----
+$ fim fdup --sort path --order asc
+----
+
+Sorting on `path` is the one to reach for when you intend to clean up by hand, since it groups together the
+duplicates you would want to look at together. A set is placed by the lowest of the file names it holds.
+
+=== Restricting which files are considered
+
+`--include` and `--exclude` narrow the search. Both take a list of patterns separated by `:`.
+
+[source, bash]
+----
+$ fim fdup --include '*.jpg:*.png'
+
+$ fim fdup --exclude '*.tmp'
+----
+
+They use the same patterns as `.fimignore`: `*` is the only wildcard, and a pattern is matched against the
+name of the file alone.
+
+[IMPORTANT]
+====
+A pattern cannot select a directory, despite what the option help suggests.
+Matching is done on the file name, so `--include 'photos'` matches a *file* named `photos` rather than
+everything under a directory of that name.
+====
+
+=== Machine readable output
+
+`--output-type` reports the duplicates in a form another program can read.
+
+[cols="1,4"]
+|===
+| Value | Output
+
+| `human`
+| Readable messages. This is the default
+
+| `csv`
+| CSV
+
+| `json`
+| JSON
+|===
+
+[source, bash]
+----
+$ fim fdup --output-type json
+----
+
+Choosing `csv` or `json` silences the progress and information messages, so that the output holds only the
+result. For the same reason it cannot be combined with removing duplicates, and Fim refuses the combination
+rather than write a report of files it is deleting as it goes.
 
 === Remove duplicates
 

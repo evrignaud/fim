@@ -26,3 +26,26 @@ Fim keeps each version of the different State that has been committed. +
 But you cannot use them to retrieve the content of one file that you may have lost.
 
 NOTE: *Fim does not replace a backup software*
+
+== What is in the `.fim` directory
+
+[cols="1,3"]
+|===
+| Entry | Content
+
+| `states/state_1.json.gz`, `state_2.json.gz`, ...
+| One file per committed State, numbered in commit order. GZIP-compressed JSON
+
+| `settings.json`
+| The hash mode the repository was initialized with, and the number of the last State
+
+| `init-progress.json.gz`
+| Only present while a `fim init` is unfinished. It holds the hashes computed so far so that the init can be
+resumed. See <<faq.adoc#_pausing_and_resuming_the_init_of_a_big_repository,Pausing and resuming the init of a big repository>>
+|===
+
+Every State carries a hash of its own content, so a State that was altered after being written is reported as
+corrupted rather than used. More details in <<faq.adoc#_state_integrity,State integrity>>.
+
+The names recorded in a State are relative to the repository root and use `/` as separator, which is what
+allows the same repository to be read on Linux, Mac OS X and Windows alike.

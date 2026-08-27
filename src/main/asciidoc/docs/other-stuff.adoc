@@ -2,15 +2,32 @@
 
 = Fim requirements
 
-This tool is written in Java
+This tool is written in Java.
 
-Fim is compiled using Java 8 and require Java 8 to run. You can download Java 8 from the https://www.oracle.com/technetwork/java/javase/downloads/index.html[Java SE Downloads]. +
-You need at least Java 8 Standard Edition JRE. You can also use the OpenJDK 8.
+Fim is compiled using Java 17 and requires Java 17 or later to run.
+You can download it from https://adoptium.net[Adoptium], or use the JDK your package manager provides.
+
+If you would rather not install Java at all, the Docker image carries everything Fim needs.
+See <<how-can-you-use-fim.adoc#_run_fim_using_docker,Run Fim using Docker>>.
 
 :leveloffset: 1
 = Supported OS
 
-Fim can be used on Linux, Mac OS X and Windows
+Fim can be used on Linux, Mac OS X and Windows.
+
+On Linux and Mac OS X, Fim records POSIX permissions and the SELinux label when SELinux is enabled.
+On Windows it records the DOS attributes.
+The same repository can be used from any of the three: State content is normalized, so a State written on one
+system is read on the others.
+See <<file-permissions-management.adoc#_file_permissions_management,File permissions management>>.
+
+[IMPORTANT]
+====
+Fim holds file names as text, so the JVM has to be able to represent every name it reads from disk.
+Run Fim under a UTF-8 locale, for example `LANG=C.UTF-8`, otherwise a name carrying characters the JVM's
+encoding cannot represent comes back altered and no longer refers to the file it came from.
+Fim reports this when it happens.
+====
 
 
 :leveloffset: 1

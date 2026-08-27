@@ -3,8 +3,9 @@
 --------
 $ fim --help
 
-usage: fim <command> [-c <arg>] [-d <arg>] [-e] [-f] [-h] [-i <arg>] [-l] [-M <arg>] [-m <arg>] [-n] [-o <arg>] [-p]
-       [-q] [-s] [-t <arg>] [-v] [-y]
+usage: fim <command> [-c <arg>] [-d <arg>] [-e] [--exclude <arg>] [-f] [-h] [-i <arg>] [--include <arg>] [-l] [-M <arg>]
+       [-m <arg>] [-n] [-o <arg>] [--order <arg>] [--output-type <arg>] [-p] [-q] [-s] [--sort <arg>] [-t <arg>] [-v]
+       [-y]
 
 File Integrity Checker
 
@@ -31,6 +32,8 @@ Available options:
      -c,-- <arg>                        Deprecated option used to set the init or commit comment. Use '-m' instead
      -d,--directory <arg>               Run Fim into the specified directory
      -e,--errors                        Display execution error details
+        --exclude <arg>                 Exclude some directories/filetype while searching for duplicates. Separated by
+                                        ':'
      -f,--fast-mode                     Use fast mode. Hash only 3 medium blocks.
                                         One at the beginning, one in the middle and one at the end
      -h,--help                          Prints the Fim help
@@ -41,6 +44,8 @@ Available options:
                                         - all: All of the above
                                         You can specify multiple kind of difference to ignore separated by a comma.
                                         For example: -i attrs,dates,renamed
+        --include <arg>                 Include some directories/filetype while searching for duplicates. Separated by
+                                        ':'
      -l,--use-last-state                Use the last committed State.
                                         Both for the 'find-duplicates' and 'remove-duplicates' commands
      -M,--master-fim-repository <arg>   Fim repository directory that you want to use as remote master.
@@ -49,12 +54,113 @@ Available options:
      -n,--do-not-hash                   Do not hash file content. Uses only file names and modification dates
      -o,--output-max-lines <arg>        Change the maximum number lines displayed for the same kind of modification.
                                         Default value is 200 lines
+        --order <arg>                   Sort order of duplicate results. Default is 'desc'. Can be 'asc' or 'desc'
+        --output-type <arg>             Output type used by 'fdup' to display duplicates. Supported types are:
+                                        - human: display duplicates in human readable messages (default)
+                                        - csv: display duplicates in CSV format
+                                        - json: display duplicates in JSON format
      -p,--purge-states                  Purge previous States if the commit succeed
      -q,--quiet                         Do not display details
      -s,--super-fast-mode               Use super-fast mode. Hash only 3 small blocks.
                                         One at the beginning, one in the middle and one at the end
+        --sort <arg>                    How to sort duplicate results.
+                                        You can sort on:
+                                        - wasted: wasted size (default)
+                                        - number: number of files in the duplicated set
+                                        - size: size of duplicated file
+                                        - path: file path, to group together the duplicates that are in the same
+                                        directory
      -t,--thread-count <arg>            Number of thread used to hash file contents in parallel.
                                         By default, this number is dynamic and depends on the disk throughput
      -v,--version                       Prints the Fim version
      -y,--always-yes                    Always yes to every questions
 --------
+
+:leveloffset: 1
+= Options that apply to every command
+
+`-d <directory>`, `--directory`::
+Run Fim in that directory instead of the current one.
+
+`-q`, `--quiet`::
+Report only the summary. The hash progress and the per-file lines are not displayed.
+
+`-o <lines>`, `--output-max-lines`::
+How many lines to display for one kind of modification, 200 by default.
+`-o 0` lists none of them and keeps only the counts.
+
+`-y`, `--always-yes`::
+Answer yes to every confirmation. Without it, a confirmation accepts `y`, `n`, or `A` for yes to that
+question and every remaining one.
+
+`-e`, `--errors`::
+Display the full stack trace when something fails, instead of just the error.
+
+`-t <count>`, `--thread-count`::
+How many threads hash file contents in parallel. Dynamic by default, following the disk throughput.
+It is forced to 1 when nothing is being hashed, so it has no effect together with `-n`.
+See <<faq.adoc#_hash_files_in_multi_thread,Hash files in multi-thread>>.
+
+`-i <kinds>`, `--ignore`::
+Ignore a kind of difference when comparing: `attrs`, `dates`, `renamed`, or `all`. Several can be given
+separated by a comma. Committing refuses this option, since a State has to record what is actually there.
+See <<faq.adoc#_ignore_some_difference_during_state_comparison,Ignore some difference during State comparison>>.
+
+`-m <comment>`, `--comment`::
+The comment to record, for `init` and `commit`. Both ask for confirmation when it is missing.
+
+`-c <comment>`::
+Deprecated. Use `-m` instead. Fim warns when it is used and will remove it in the future.
+
+:leveloffset: 1
+= Hash modes
+
+Four hash modes decide how much of each file content is read. They apply to every command that scans the file tree.
+
+[cols="1,3,3"]
+|===
+| Option | Mode | What is hashed
+
+| _none_
+| `full`
+| The complete content of every file
+
+| `-f`, `--fast-mode`
+| `fast`
+| 3 medium blocks of 1 MB
+
+| `-s`, `--super-fast-mode`
+| `super-fast`
+| 3 small blocks of 4 KB
+
+| `-n`, `--do-not-hash`
+| `do not hash`
+| Nothing. Only file names, lengths, timestamps and permissions are compared
+|===
+
+The modes are ordered: `full` contains `fast`, which contains `super-fast`, which contains `do not hash`.
+A repository initialized in a given mode can be used with that mode or any lesser one, never a greater one.
+See <<faq.adoc#_changing_default_hash_mode,Changing default hash mode>>.
+
+When several of these options are given, the least thorough one wins: `-n` over `-s` over `-f`.
+
+NOTE: With any mode other than `full` you can miss a modified file.
+
+:leveloffset: 1
+= Exit status
+
+[cols="1,4"]
+|===
+| Status | Meaning
+
+| `0`
+| The command completed. Also returned when you answer no to a confirmation, since declining is not a failure
+
+| `-1`
+| The command was used incorrectly: an unknown command or option, an unusable value, or a repository in the wrong state for the command
+
+| `-2`
+| The repository could not be read or written
+|===
+
+NOTE: A shell reports these as `0`, `255` and `254`.
