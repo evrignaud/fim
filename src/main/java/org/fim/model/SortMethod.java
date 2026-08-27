@@ -22,5 +22,6 @@ package org.fim.model;
 public enum SortMethod {
     wasted,
     number,
-    size
+    size,
+    path
 }

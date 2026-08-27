@@ -114,22 +114,32 @@ public class DuplicateResultPropertyTest {
             DuplicateSet current = sets.get(i);
             DuplicateSet next = sets.get(i + 1);
 
-            long currentVal = extractSortValue(current, sortMethod);
-            long nextVal = extractSortValue(next, sortMethod);
+            int comparison = compareSortValues(current, next, sortMethod);
 
             if (ascending) {
-                assertThat(currentVal).isLessThanOrEqualTo(nextVal);
+                assertThat(comparison).isLessThanOrEqualTo(0);
             } else {
-                assertThat(currentVal).isGreaterThanOrEqualTo(nextVal);
+                assertThat(comparison).isGreaterThanOrEqualTo(0);
             }
         }
     }
 
-    private long extractSortValue(DuplicateSet ds, SortMethod method) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private int compareSortValues(DuplicateSet first, DuplicateSet second, SortMethod method) {
+        // Both sides come from the same sort method, so their keys are always of the same type
+        return ((Comparable) extractSortValue(first, method)).compareTo(extractSortValue(second, method));
+    }
+
+    /**
+     * The value the sets are expected to be ordered on. Numeric keys are all widened to {@code Long} so
+     * that keys of one sort method stay mutually comparable; the path key is the file path itself.
+     */
+    private Comparable<?> extractSortValue(DuplicateSet ds, SortMethod method) {
         return switch (method) {
             case wasted -> ds.getWastedSpace();
-            case number -> ds.getDuplicatedFilesCount();
+            case number -> (long) ds.getDuplicatedFilesCount();
             case size -> ds.getDuplicatedFileSize();
+            case path -> ds.getPathOrderingKey();
         };
     }
 

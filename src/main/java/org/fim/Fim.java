@@ -168,7 +168,8 @@ public class Fim {
                 You can sort on:
                 - wasted: wasted size (default)
                 - number: number of files in the duplicated set
-                - size: size of duplicated file""").hasArg().build());
+                - size: size of duplicated file
+                - path: file path, to group together the duplicates that are in the same directory""").hasArg().build());
         opts.addOption(buildOption(null, "order", "Sort order of duplicate results. Default is 'desc'. Can be 'asc' or 'desc'").hasArg().build());
         opts.addOption(
                 buildOption(null, "include", "Include some directories/filetype while searching for duplicates. Separated by ':'").hasArg().build());

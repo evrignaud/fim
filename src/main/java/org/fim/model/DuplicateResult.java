@@ -75,12 +75,18 @@ public class DuplicateResult {
         duplicateSets.sort(duplicateSetComparator);
     }
 
+    /**
+     * No default branch on purpose: the switch has to stay exhaustive over {@link SortMethod}, so that
+     * adding a sort method without a comparator is a compile error. It used to fall back to {@code null},
+     * which {@code List.sort} reads as natural ordering, and {@link DuplicateSet} is not
+     * {@link Comparable}, so an uncovered sort method meant a ClassCastException at run time.
+     */
     private Comparator<DuplicateSet> createDuplicateSetComparator() {
         return switch (context.getSortMethod()) {
             case wasted -> new WastedSpaceComparator();
             case number -> new NumberOfFileComparator();
             case size -> new FileSizeComparator();
-            default -> null;
+            case path -> new FilePathComparator();
         };
     }
 
@@ -278,6 +284,22 @@ public class DuplicateResult {
                 return Long.compare(ds1.getDuplicatedFileSize(), ds2.getDuplicatedFileSize());
             } else {
                 return Long.compare(ds2.getDuplicatedFileSize(), ds1.getDuplicatedFileSize());
+            }
+        }
+    }
+
+    /**
+     * Orders duplicate sets by where their files live, which brings sets from the same directory next to
+     * each other. The other sort methods order by size or by count, so sets sitting side by side on disk
+     * end up scattered through the output.
+     */
+    public class FilePathComparator implements Comparator<DuplicateSet> {
+        @Override
+        public int compare(DuplicateSet ds1, DuplicateSet ds2) {
+            if (context.isSortAscending()) {
+                return ds1.getPathOrderingKey().compareTo(ds2.getPathOrderingKey());
+            } else {
+                return ds2.getPathOrderingKey().compareTo(ds1.getPathOrderingKey());
             }
         }
     }

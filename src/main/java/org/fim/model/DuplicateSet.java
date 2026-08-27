@@ -23,6 +23,7 @@ import com.google.common.base.MoreObjects;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,6 +50,20 @@ public class DuplicateSet {
 
     public long getDuplicatedFileSize() {
         return duplicatedFiles.get(0).getFileLength();
+    }
+
+    /**
+     * The file name that stands for this set when ordering sets by path.
+     * <p>
+     * The lowest of the names, not the first one, so that the key does not depend on the order the
+     * duplicates happened to be discovered in. Duplicate sets are built while walking the files sorted by
+     * hash, which puts them in an order unrelated to where the files live.
+     */
+    public String getPathOrderingKey() {
+        return duplicatedFiles.stream()
+                .map(FileState::getFileName)
+                .min(Comparator.naturalOrder())
+                .orElse("");
     }
 
     @Override
