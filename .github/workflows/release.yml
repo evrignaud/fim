@@ -1,0 +1,279 @@
+# Release Fim, driven by a pushed tag.
+#
+# Tag a commit and push the tag, and this publishes the release from it:
+#
+#     $ git tag 2.1.0
+#     $ git push origin 2.1.0
+#
+# The tag is the single source of truth for the version being released. It is handed to Gradle as
+# -PfimVersion, so the archives are named after the tag whether or not build.gradle.kts was bumped
+# first. A tag pushed by hand therefore releases correctly, and release.py setting the version before
+# tagging also works.
+#
+# Nothing here creates or moves a tag. Deciding what is released stays a human act; this only carries
+# out what the tag says.
+#
+# The only thing needing setting up is the pair of Docker Hub secrets, DOCKERHUB_USERNAME and
+# DOCKERHUB_TOKEN. Without them the image step reports that it was skipped and the rest still runs, so
+# a release does not fail over a registry the project may not want to publish to.
+
+name: Release
+
+on:
+  push:
+    # Bare X.Y.Z, matching the tags this project already uses and the pattern release.py enforces.
+    # No 'v' prefix, so 1.2.3 rather than v1.2.3.
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: read
+
+# A release must never be cut in half by a newer run, so this one does not cancel in progress.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # The same checks the quality workflow runs, on the same three platforms, against the tagged tree.
+  # A release that has not been verified on every supported platform is not worth publishing.
+  verify:
+    name: Verify
+    uses: ./.github/workflows/quality.yml
+    permissions:
+      contents: read
+      security-events: write
+
+  publish:
+    name: Publish the release
+    needs: verify
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Creating the release and attaching files to it.
+      contents: write
+
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Check out the tag
+        uses: actions/checkout@v7
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Work out what is being released
+        id: release
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "Releasing ${version}"
+
+          # Worth saying out loud when the build file disagrees with the tag. It is not fatal, since the
+          # version used is the tag either way, but it means the tag was pushed without release.py and
+          # the file still carries the previous or snapshot version.
+          declared=$(sed -n 's/^version = "\(.*\)"$/\1/p' build.gradle.kts)
+          if [ "${declared}" != "${version}" ]; then
+            echo "::warning::build.gradle.kts says '${declared}' while the tag says '${version}'. The tag wins."
+          fi
+
+      - name: Build the distribution
+        run: ./gradlew clean assemble -PfimVersion=${{ steps.release.outputs.version }} --no-daemon
+
+      - name: Collect the files to publish, with their checksums
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          # The same set release.py collects. Keep the two in step if this ever changes.
+          mkdir -p build/release
+          cp "build/distributions/fim-shadow-${VERSION}.zip" build/release/
+          cp "build/distributions/fim-shadow-${VERSION}.tar" build/release/
+          cp "build/distributions/fim-${VERSION}.zip" build/release/
+          cp "build/distributions/fim-${VERSION}.tar" build/release/
+          cp build/libs/fim-fat.jar build/release/
+
+          # Named one by one rather than globbed. A glob here would either pick up the sums file the
+          # redirection has just created, or carry a ./ prefix into the names, and both leave a file
+          # that `sha256sum -c SHA256SUMS.txt` cannot check.
+          cd build/release
+          sha256sum "fim-shadow-${VERSION}.zip" \
+                    "fim-shadow-${VERSION}.tar" \
+                    "fim-${VERSION}.zip" \
+                    "fim-${VERSION}.tar" \
+                    "fim-fat.jar" > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Write the release notes
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          # Pointing at the maintained changelog rather than listing commits. This project keeps a
+          # written changelog, which says more than a dump of subject lines would.
+          {
+            echo "## Fim ${VERSION}"
+            echo
+            echo "See the [changelog](https://evrignaud.github.io/fim/changelog.html) for what changed,"
+            echo "and [how can you use Fim](https://evrignaud.github.io/fim/how-can-you-use-fim.html) to get started."
+            echo
+            echo "Docker image: \`docker pull evrignaud/fim:${VERSION}\`"
+            echo
+            echo "### Checksums"
+            echo
+            echo '```'
+            cat build/release/SHA256SUMS.txt
+            echo '```'
+          } > build/release-notes.md
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          # Re-running this workflow has to be safe, so an existing release has its files replaced
+          # rather than causing a failure.
+          if gh release view "${VERSION}" > /dev/null 2>&1; then
+            echo "Release ${VERSION} already exists, replacing its files."
+            gh release edit "${VERSION}" --title "Fim ${VERSION}" --notes-file build/release-notes.md
+            gh release upload "${VERSION}" build/release/* --clobber
+          else
+            gh release create "${VERSION}" \
+              --title "Fim ${VERSION}" \
+              --notes-file build/release-notes.md \
+              build/release/*
+          fi
+          echo "Published $(gh release view "${VERSION}" --json url --jq .url)"
+
+  docker:
+    name: Push the Docker image
+    needs: [ verify, publish ]
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Check out the tag
+        uses: actions/checkout@v7
+
+      # A job level `if` cannot read the secrets context, so whether to push is decided here and the
+      # steps below are gated on the answer.
+      - name: Check whether the registry credentials are configured
+        id: credentials
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -n "${DOCKERHUB_USERNAME}" ] && [ -n "${DOCKERHUB_TOKEN}" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::DOCKERHUB_USERNAME and DOCKERHUB_TOKEN are not set, so no image was pushed."
+          fi
+
+      - name: Sign in to Docker Hub
+        if: steps.credentials.outputs.configured == 'true'
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: echo "${DOCKERHUB_TOKEN}" | docker login --username "${DOCKERHUB_USERNAME}" --password-stdin
+
+      - name: Build and push the image
+        if: steps.credentials.outputs.configured == 'true'
+        env:
+          VERSION: ${{ needs.publish.outputs.version }}
+        run: |
+          set -euo pipefail
+          # The Dockerfile builds the distribution itself, so the context is just the tagged tree that
+          # was checked out. release.py pipes `git archive` into docker for the same reason: nothing
+          # uncommitted, and nothing left over from an earlier build, can reach a released image.
+          docker build \
+            --tag "evrignaud/fim:${VERSION}" \
+            --tag "evrignaud/fim:latest" \
+            .
+          docker push "evrignaud/fim:${VERSION}"
+          docker push "evrignaud/fim:latest"
+
+      - name: Say that the image was skipped
+        if: steps.credentials.outputs.configured != 'true'
+        run: |
+          echo "### Docker image skipped" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Set the DOCKERHUB_USERNAME and DOCKERHUB_TOKEN repository secrets to publish it." >> "$GITHUB_STEP_SUMMARY"
+
+  documentation:
+    name: Publish the documentation
+    needs: [ verify, publish ]
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Committing the rendered pages onto the gh-pages branch.
+      contents: write
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Check out the tag, with the other branches
+        uses: actions/checkout@v7
+        with:
+          # gh-pages has to be reachable, and a shallow checkout of the tag alone would not include it.
+          fetch-depth: 0
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Render the documentation
+        run: ./gradlew asciidoctor --no-daemon
+
+      - name: Publish it onto gh-pages
+        env:
+          VERSION: ${{ needs.publish.outputs.version }}
+        run: |
+          set -euo pipefail
+          test -f build/docs/asciidoc/docs/index.html
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git fetch --no-tags origin gh-pages
+          # A worktree rather than a checkout, so the tagged tree this job built from stays put.
+          git worktree add -B gh-pages ../gh-pages origin/gh-pages
+
+          # Overlaid, not replaced, so that what is published but not generated here survives: the
+          # vendored reveal.js and the README living on the branch.
+          #
+          # Only the docs subtree is copied. The slides are rendered as plain pages by this build,
+          # because the reveal.js backend is not configured, and publishing those would replace the
+          # working decks with flat ones. Until that backend is restored the slides stay untouched.
+          cp -r build/docs/asciidoc/docs/. ../gh-pages/
+
+          cd ../gh-pages
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "The published documentation is already up to date."
+            exit 0
+          fi
+
+          git add -A
+          git commit -m ":green_book: Update documentation for version ${VERSION}"
+          git push origin gh-pages
+          echo "Published https://evrignaud.github.io/fim/"

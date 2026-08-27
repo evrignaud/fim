@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
-"""Release Fim.
+"""Prepare a Fim release.
 
-Runs the whole release from one place: set the version, tag it, build it, package what goes on the
-GitHub release page, build the Docker image from the tag, render the documentation and prepare the
-gh-pages commit that publishes it.
+Sets the version, commits it, tags it, runs a clean build and packages what belongs on the release
+page. Pushing the tag is what publishes the release: .github/workflows/release.yml picks the tag up,
+verifies it on Linux, Windows and macOS, then creates the release page with these same archives,
+pushes the Docker image and publishes the documentation.
+
+So this script prepares and the workflow publishes. The image and the documentation can still be built
+here with --with-docker and --with-docs, for a release done without GitHub or just to check that they
+still build, but they are not needed for an ordinary release and the workflow does them either way.
 
 Nothing leaves this machine unless --push is given. Every step is reported as it runs, so a release
 that stops half way tells you where it stopped.
@@ -12,10 +17,10 @@ Usage:
     python release.py 2.0.0
     python release.py 2.0.0 --next 2.1.0-SNAPSHOT
     python release.py 2.0.0 --push
-    python release.py 2.0.0 --skip-docker --skip-docs
+    python release.py 2.0.0 --with-docker --with-docs
     python release.py --help
 
-Requires Python 3.8 or later, a JDK for the Gradle wrapper, and Docker unless --skip-docker.
+Requires Python 3.8 or later, a JDK for the Gradle wrapper, and Docker only with --with-docker.
 """
 
 import argparse
@@ -153,8 +158,8 @@ def check_preconditions(version, options):
     if not tool_available("git"):
         raise ReleaseError("git was not found on the PATH")
 
-    if not options.skip_docker and not tool_available("docker"):
-        raise ReleaseError("docker was not found on the PATH. Use --skip-docker to release without the image")
+    if options.with_docker and not tool_available("docker"):
+        raise ReleaseError("docker was not found on the PATH. Drop --with-docker to let the workflow build the image")
 
     _, status = git_quiet("status", "--porcelain")
     if status:
@@ -181,12 +186,12 @@ def check_preconditions(version, options):
     if not current.endswith("-SNAPSHOT"):
         warn(f"the current version '{current}' is not a SNAPSHOT, which is unusual before a release")
 
-    if not options.skip_docs:
+    if options.with_docs:
         code, _ = git_quiet("rev-parse", "--verify", "--quiet", f"refs/remotes/origin/{GH_PAGES_BRANCH}")
         if code != 0:
             raise ReleaseError(
                 f"origin/{GH_PAGES_BRANCH} was not found. Run `git fetch origin` first,"
-                " or use --skip-docs to release without publishing the documentation"
+                " or drop --with-docs to let the workflow publish the documentation"
             )
         code, local_gh_pages = git_quiet("rev-parse", "--verify", "--quiet", f"refs/heads/{GH_PAGES_BRANCH}")
         if code == 0:
@@ -194,7 +199,7 @@ def check_preconditions(version, options):
             if local_gh_pages != remote_gh_pages:
                 raise ReleaseError(
                     f"the local {GH_PAGES_BRANCH} branch is not the same as origin/{GH_PAGES_BRANCH}."
-                    " It would be reset, so deal with it first or use --skip-docs"
+                    " It would be reset, so deal with it first or drop --with-docs"
                 )
 
     info("ready")
@@ -405,25 +410,36 @@ def report_what_is_left(version, artifacts, options, published_documentation):
 
     Done locally:
       - commit ':package: Release version {version}' and tag {version}
-      - clean build, with tests, checkstyle and static analysis
+      - clean build, with both test tiers, checkstyle, static analysis and the coverage floor
       - artifacts in {artifacts.relative_to(REPOSITORY_ROOT)}
-      - {'Docker image ' + DOCKER_IMAGE + ':' + version if not options.skip_docker else 'Docker image skipped'}
-      - {'documentation commit on ' + GH_PAGES_BRANCH if published_documentation else 'documentation not committed'}
+      - {'Docker image ' + DOCKER_IMAGE + ':' + version if options.with_docker else 'Docker image left to the workflow'}
+      - {'documentation commit on ' + GH_PAGES_BRANCH if published_documentation else 'documentation left to the workflow'}
       - commit 'Prepare dev for {options.next_version}'
 """)
     if options.push:
-        print("    Pushed to origin.")
+        print("    Pushed to origin. The release workflow is now running:")
+        print(f"      https://github.com/evrignaud/fim/actions/workflows/release.yml")
     else:
-        print("    Nothing was pushed. To publish it:")
+        print("    Nothing was pushed. Pushing the tag is what starts the release:")
         print(f"      git push origin {options.branch}")
         print(f"      git push origin refs/tags/{version}")
         if published_documentation:
             print(f"      git push origin {GH_PAGES_BRANCH}")
-    if not options.skip_docker:
+
+    print(f"""
+    Once the tag is on origin, the release workflow verifies it on Linux, Windows and macOS, then:
+      - creates the release at https://github.com/evrignaud/fim/releases/tag/{version}
+        and attaches the same archives, with their SHA-256 sums
+      - pushes {DOCKER_IMAGE}:{version} and {DOCKER_IMAGE}:latest
+      - publishes the documentation to {GH_PAGES_BRANCH}
+
+    Nothing has to be uploaded by hand. What is in {artifacts.relative_to(REPOSITORY_ROOT)} is there to
+    be checked against what the workflow publishes, or to be used if the workflow cannot run.
+""")
+    if options.with_docker:
+        print(f"    The image built here was not pushed. The workflow pushes its own:")
         print(f"      docker push {DOCKER_IMAGE}:{version}")
-        print(f"      docker push {DOCKER_IMAGE}:latest")
-    print(f"\n    Then create the release at https://github.com/evrignaud/fim/releases/new?tag={version}")
-    print(f"    and upload every file from {artifacts.relative_to(REPOSITORY_ROOT)}\n")
+        print(f"      docker push {DOCKER_IMAGE}:latest\n")
 
 
 # ---------------------------------------------------------------------------------------------------
@@ -432,19 +448,24 @@ def report_what_is_left(version, artifacts, options, published_documentation):
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser(
-        description="Release Fim: tag, build, package, image, documentation.",
+        description="Release Fim: set the version, tag it, build it and package what goes on the release page.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="Nothing is pushed unless --push is given.",
+        epilog="Nothing is pushed unless --push is given. Pushing the tag starts the release workflow,"
+               " which publishes the release page, the Docker image and the documentation.",
     )
     parser.add_argument("version", help="the version being released, for example 2.0.0")
     parser.add_argument("--next", dest="next_version", default=None,
                         help="the version to continue development on. Defaults to the next patch SNAPSHOT")
     parser.add_argument("--branch", default="master", help="the branch being released from. Defaults to master")
     parser.add_argument("--push", action="store_true",
-                        help="push the branch, the tag and the documentation to origin")
-    parser.add_argument("--skip-docker", action="store_true", help="do not build the Docker image")
-    parser.add_argument("--skip-docs", action="store_true",
-                        help="do not render or publish the documentation")
+                        help="push the branch and the tag to origin, which starts the release workflow")
+    # Off by default because the workflow does both when the tag arrives. They are kept as options for
+    # a release done without GitHub, and for checking that the image or the site still build.
+    parser.add_argument("--with-docker", action="store_true",
+                        help="also build the Docker image here, which the workflow otherwise does")
+    parser.add_argument("--with-docs", action="store_true",
+                        help="also render the documentation and prepare the gh-pages commit here,"
+                             " which the workflow otherwise does")
     options = parser.parse_args(argv)
 
     # Validated here rather than in the preconditions, because deriving the next version below
@@ -468,17 +489,17 @@ def main(argv):
         refresh_coverage_badges()
         artifacts = collect_release_artifacts(version)
 
-        if options.skip_docker:
-            step("Docker image skipped")
-        else:
+        if options.with_docker:
             build_docker_image(version)
+        else:
+            step("Docker image left to the release workflow")
 
         published_documentation = None
-        if options.skip_docs:
-            step("Documentation skipped")
-        else:
+        if options.with_docs:
             build_documentation()
             published_documentation = publish_documentation(version)
+        else:
+            step("Documentation left to the release workflow")
 
         prepare_next_development_version(options.next_version)
 

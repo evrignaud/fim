@@ -229,6 +229,10 @@ are marked as not applicable to Windows, and only started actually running when 
 The coverage badges under `.github/badges` are redrawn by `release.py` rather than committed by the workflow,
 so every commit has a person behind it. Between releases the floor above is what keeps the figure honest.
 
+There is a second workflow, `.github/workflows/release.yml`, which runs when a version tag is pushed. It calls
+this one first, so a release is verified by exactly these checks rather than by a separate copy of them that
+could drift. See <<how-can-you-use-fim.adoc#_releasing_fim,Releasing Fim>>.
+
 === The two tiers of tests
 
 `./gradlew check` runs everything except the slow tier, which keeps an ordinary build to about three minutes.
@@ -284,29 +288,74 @@ workflow, or to a machine of that kind.
 
 == Releasing Fim
 
-A release is done by one script, which takes it from a tag through to the commit that publishes the
-documentation:
+**Pushing a tag is what releases Fim.** Everything else follows from that:
+
+[source, bash]
+----
+$ git tag 2.0.0
+$ git push origin 2.0.0
+----
+
+`.github/workflows/release.yml` picks the tag up and does the publishing. The tag is the only thing that says
+which version is being released; it is passed to the build as `-PfimVersion`, so the archives are named after
+the tag whether or not `build.gradle.kts` was bumped first. A tag pushed by hand releases correctly.
+
+The workflow, in order:
+
+. Runs the whole of `check` on **Linux, Windows and macOS**, plus the slow tier. A release that has not been
+  verified on every supported platform is not published
+. Builds the distribution at the tagged version
+. Creates the release at `+https://github.com/evrignaud/fim/releases/tag/2.0.0+`, with the four archives, the
+  self-contained jar and a `SHA256SUMS.txt` you can check with `sha256sum -c`
+. Pushes `evrignaud/fim:2.0.0` and `evrignaud/fim:latest` to Docker Hub
+. Renders the documentation and publishes it to `gh-pages`
+
+Re-running the workflow is safe. An existing release has its files replaced rather than causing a failure, so
+a step that failed for an unrelated reason can simply be run again.
+
+=== Only one thing needs setting up
+
+Pushing the image needs two repository secrets, under Settings, Secrets and variables, Actions:
+
+[cols="1,3"]
+|===
+| Secret | What it is
+
+| `DOCKERHUB_USERNAME`
+| Your Docker Hub account name
+
+| `DOCKERHUB_TOKEN`
+| An access token from Docker Hub, under Account Settings, Personal access tokens. Not your password
+|===
+
+Without them the image step says it was skipped and the rest of the release still happens, so nothing fails
+over a registry the project may not want to publish to. Everything else uses the token GitHub provides to the
+workflow, so there is nothing else to configure.
+
+=== Preparing a release before tagging
+
+`release.py` is what sets the version, commits it and creates the tag. It prepares, the workflow publishes:
 
 [source, bash]
 ----
 $ python release.py 2.0.0
 ----
 
-It performs the following, in order, stopping at the first problem:
-
 . Checks the repository is ready: clean working tree, on the release branch, the tag not already taken
 . Sets the version in `build.gradle.kts` and commits it as `:package: Release version 2.0.0`
 . Creates the `2.0.0` tag
 . Runs a clean build: both test tiers, the style check, the static analysis and the coverage floor
 . Redraws the coverage badges the README points at
-. Collects the archives for the release page into `build/release/2.0.0`, with their SHA-256 sums
-. Builds the Docker image from the tag
-. Renders the documentation
-. Prepares the commit on `gh-pages` that publishes it
+. Collects the archives into `build/release/2.0.0` with their SHA-256 sums, so you can compare them against
+  what the workflow publishes
 . Sets the version to the next SNAPSHOT and commits that
 
-Nothing is pushed unless you ask for it. Run it, look at what it produced, then either push by hand or run it
-again with `--push`. `--skip-docker` and `--skip-docs` leave those steps out.
+Nothing is pushed unless you ask for it. Run it, look at what it produced, then push with `--push`, which is
+the point at which the release starts.
+
+The image and the documentation are left to the workflow. `--with-docker` and `--with-docs` still build them
+here, for a release done without GitHub or just to check they still build, but they are not part of an
+ordinary release: doing them in both places would mean two commits racing to publish `gh-pages`.
 
 === How the Docker image is built for a release
 
@@ -320,16 +369,19 @@ $ git archive --format=tar 2.0.0 | docker build -t evrignaud/fim:2.0.0 -
 The build context is the tagged content, streamed straight out of the repository. Building from the working
 tree would let anything uncommitted, or left over from an earlier build, end up in a released image, and
 checking the tag out first would disturb whatever you were working on. This way the image can hold only what
-the tag holds. The `release.py` script does exactly this, tagging the result both with the version and as
+the tag holds. That is what `release.py --with-docker` does, tagging the result both with the version and as
 `latest`.
+
+The workflow reaches the same result differently: it has the tag checked out already, so the working tree
+*is* the tagged content and it builds from that directly.
 
 The image needs nothing prepared beforehand: it builds the Fim distribution itself, so a freshly cloned
 repository and Docker are enough.
 
 [NOTE]
 ====
-The slides are not published by the release script. They are meant to be reveal.js decks, and the published
+The slides are not published with the documentation. They are meant to be reveal.js decks, and the published
 ones are, but the build renders them as flat HTML because the reveal.js backend is not configured. Publishing
-what is generated would replace working decks with plain pages, so the script leaves `slides/` on `gh-pages`
-alone until that backend is restored.
+what is generated would replace working decks with plain pages, so `slides/` on `gh-pages` is left alone until
+that backend is restored. Both the workflow and `release.py` copy only the `docs` subtree for that reason.
 ====

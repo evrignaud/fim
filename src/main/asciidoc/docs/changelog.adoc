@@ -18,7 +18,8 @@ https://github.com/evrignaud/fim/compare/1.2.3%2E%2E%2Emaster[image:icons/list.p
 * The same checks run on **Linux, Windows and macOS** through a **GitHub Actions** workflow for every push and pull request, so the tests that only apply to one platform finally run on it.
   The SpotBugs findings are published under Security, Code scanning, and the coverage figure appears in the summary of each run.
   Details in <<how-can-you-use-fim.adoc#_what_runs_on_github,What runs on GitHub>>
-* A release is now done by a single script, `release.py`, which tags, builds, packages the release archives, builds the Docker image from the tag and prepares the commit that publishes the documentation.
+* A release is now started by pushing a version tag. A **GitHub Actions** workflow verifies the tag on Linux, Windows and macOS, then creates the release page with its archives and SHA-256 sums, pushes the Docker image and publishes the documentation.
+  `release.py` prepares a release locally, setting the version, tagging it and packaging the same archives so they can be compared against what is published.
   Details in <<how-can-you-use-fim.adoc#_releasing_fim,Releasing Fim>>
 
 === New features

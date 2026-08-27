@@ -19,6 +19,9 @@ on:
     branches: [ master ]
   pull_request:
   workflow_dispatch:
+  # Called by release.yml, so that a release is verified by these exact checks on these exact
+  # platforms rather than by a second copy of them that is free to drift.
+  workflow_call:
 
 # Read-only by default. The one job that needs more says so itself.
 permissions:

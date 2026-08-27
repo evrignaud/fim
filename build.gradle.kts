@@ -43,6 +43,14 @@ group = "org.fim"
 version = "2.0.0-SNAPSHOT"
 description = "Fim"
 
+// A release is driven by the tag that was pushed, so the release workflow passes the version it is
+// building rather than relying on this file agreeing with the tag. Without that, a tag pushed by hand
+// would produce archives named after whatever the line above happens to say.
+//
+// Kept as a separate statement so that the assignment above stays a plain `version = "..."` line, which
+// is what release.py reads and rewrites when preparing a release locally.
+(findProperty("fimVersion") as String?)?.takeIf { it.isNotBlank() }?.let { version = it }
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
