@@ -86,8 +86,11 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+      # Only when the build got far enough to produce it. SpotBugs runs after the tests, so a failed
+      # build has no analysis to hand over, and demanding one turns a single real failure into three
+      # confusing ones: an upload that found nothing, and a download of an artifact that was never made.
       - name: Hand the analysis to the next job
-        if: always() && matrix.os == 'ubuntu-latest'
+        if: success() && matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v7
         with:
           name: spotbugs-sarif
@@ -102,7 +105,10 @@ jobs:
 
     # Only on the default branch. A pull request from a fork gets a read-only token, so the upload would
     # fail there through no fault of the change being proposed.
-    if: always() && github.event_name != 'pull_request'
+    #
+    # And only when the checks passed. There is nothing to publish otherwise, since SpotBugs runs after
+    # the tests, and reporting a missing artifact on top of a failed build hides the failure that matters.
+    if: github.event_name != 'pull_request'
 
     permissions:
       contents: read

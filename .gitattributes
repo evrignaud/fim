@@ -3,6 +3,10 @@
 # the hooks out with CRLF endings on checkout, so pin them to LF regardless of the platform.
 hooks/* text eol=lf
 
+# The Gradle wrapper script is run by a shell too, including on Windows where the workflow drives it
+# through bash. Same reasoning as the hooks above.
+gradlew text eol=lf
+
 # The run: blocks in a workflow are handed to a shell, so the same reasoning as the hooks applies. Pinning
 # them to LF keeps a carriage return from ever reaching bash on a runner.
 .github/workflows/* text eol=lf

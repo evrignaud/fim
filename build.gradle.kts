@@ -75,6 +75,18 @@ tasks.withType<JavaCompile>() {
 //
 // The slow tier is where the large-file and full hash-mode-matrix scenarios live. It is deliberately not
 // wired into `check`: a suite everybody waits for on every build is a suite that ends up trimmed.
+// A failing test has to say what it was expecting, in the log, where whoever is looking will see it.
+// By default Gradle reports only that a test failed and leaves the detail in an HTML report, which on a
+// runner means downloading an artifact to find out what happened.
+tasks.withType<Test>().configureEach {
+    testLogging {
+        events("failed")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        showStackTraces = true
+        showCauses = true
+    }
+}
+
 tasks.named<Test>("test") {
     useJUnitPlatform {
         excludeTags("slow")
