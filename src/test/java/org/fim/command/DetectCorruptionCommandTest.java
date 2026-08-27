@@ -19,11 +19,27 @@
 
 package org.fim.command;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static java.nio.file.StandardOpenOption.WRITE;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.model.CompareResult;
 import org.fim.model.Context;
 import org.fim.model.Difference;
 import org.fim.model.FileState;
+import static org.fim.model.HashMode.dontHash;
+import static org.fim.model.HashMode.hashAll;
+import static org.fim.model.HashMode.hashMediumBlock;
+import static org.fim.model.HashMode.hashSmallBlock;
 import org.fim.model.State;
 import org.fim.tooling.RepositoryTool;
 import org.fim.util.Logger;
@@ -31,22 +47,6 @@ import org.fim.util.TimeUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributeView;
-import java.nio.file.attribute.BasicFileAttributes;
-
-import static java.nio.file.StandardOpenOption.CREATE;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.fim.model.HashMode.dontHash;
-import static org.fim.model.HashMode.hashAll;
-import static org.fim.model.HashMode.hashMediumBlock;
-import static org.fim.model.HashMode.hashSmallBlock;
 
 public class DetectCorruptionCommandTest {
     private static final String SUBDIR = "subdir";
@@ -256,19 +256,30 @@ public class DetectCorruptionCommandTest {
         // Do nothing on file04 and file05
     }
 
+    /**
+     * Hardware corruption is a byte changing under Fim's feet, with the timestamps untouched, which is what
+     * lets {@code dcor} tell it apart from an ordinary edit. The test has to reproduce exactly that: same
+     * name, same times, different content.
+     * <p>
+     * The bytes are overwritten in place rather than by deleting and recreating the file. A delete followed
+     * by a write makes a new file, and on Linux the creation time of a new file cannot be set back:
+     * {@code BasicFileAttributeView.setTimes} silently ignores the creation-time argument on ext4. The
+     * restored {@code FileTime} then differed from the committed one, the change was read as a content
+     * modification rather than corruption, and the whole thing was invisible on Linux while passing on
+     * Windows and macOS. Writing into the existing file keeps its inode, so its creation time never moves,
+     * and only the last-modified time has to be restored.
+     */
     private void simulateHardwareCorruption(String fileName) throws IOException {
         Path file = tool.getRootDir().resolve(fileName);
-        // Keep original timestamps
         BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
 
-        // A zero byte appears in the middle of the file
+        // A zero byte appears in the middle of the file, written into the file that is already there.
         byte[] bytes = Files.readAllBytes(file);
         bytes[bytes.length / 2] = 0;
+        Files.write(file, bytes, WRITE, TRUNCATE_EXISTING);
 
-        Files.delete(file);
-        Files.write(file, bytes, CREATE);
-
-        // Restore the original timestamps
+        // Writing moved the last-modified time. Put it back, so the only thing that changed is the content,
+        // which is the definition of the corruption being detected.
         Files.getFileAttributeView(file, BasicFileAttributeView.class)
                 .setTimes(attributes.lastModifiedTime(), attributes.lastAccessTime(), attributes.creationTime());
     }

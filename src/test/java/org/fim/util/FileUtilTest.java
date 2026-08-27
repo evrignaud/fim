@@ -36,17 +36,34 @@ import java.nio.file.Paths;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileUtilTest {
+    /**
+     * Backslashes become forward slashes. This only means anything on Windows: a backslash is an ordinary
+     * character in a POSIX file name, not a separator, so {@code C:\dir1\dir2} there is a single relative
+     * name that gets the working directory prepended and its backslashes left alone. The check is what a
+     * user on Windows would see; the anchor of the absolute path is read from the drive the test runs on
+     * rather than assumed to be {@code C:}, because a runner can be on {@code D:}.
+     */
     @Test
     public void canNormalizeFileNameWithBackslashes() {
-        String normalizedFileName = FileUtil.getNormalizedFileName(Paths.get("C:\\dir1\\dir2"));
-        assertThat(normalizedFileName).isEqualTo("C:/dir1/dir2");
+        if (!SystemUtils.IS_OS_WINDOWS) {
+            return;
+        }
+        String root = FileUtil.getNormalizedFileName(Paths.get("\\")).replaceAll("/$", "");
+        String normalizedFileName = FileUtil.getNormalizedFileName(Paths.get(root + "\\dir1\\dir2"));
+        assertThat(normalizedFileName).isEqualTo(root + "/dir1/dir2");
     }
 
+    /**
+     * A path already using forward slashes is returned with them. On Windows an absolute path carries the
+     * drive it resolves against, which is whatever drive the test is running from, so it is read rather
+     * than assumed.
+     */
     @Test
     public void canNormalizeFileNameWithForwardSlashes() {
         String normalizedFileName = FileUtil.getNormalizedFileName(Paths.get("/dir1/dir2"));
         if (SystemUtils.IS_OS_WINDOWS) {
-            assertThat(normalizedFileName).isEqualTo("C:/dir1/dir2");
+            String root = FileUtil.getNormalizedFileName(Paths.get("/")).replaceAll("/$", "");
+            assertThat(normalizedFileName).isEqualTo(root + "/dir1/dir2");
         } else {
             assertThat(normalizedFileName).isEqualTo("/dir1/dir2");
         }
