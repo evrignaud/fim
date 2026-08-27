@@ -142,4 +142,71 @@ public class RemoveDuplicatesCommandTest {
             removeDuplicatesCommand.execute(context);
         });
     }
+
+    /**
+     * <a href="https://github.com/evrignaud/fim/issues/13">Issue #13</a>: run {@code rdup -M} from a
+     * sub-directory of a Fim repository, to deduplicate that sub-directory against a master repository
+     * while leaving the legitimate duplicates elsewhere in the repository alone.
+     */
+    @Test
+    public void canRemoveDuplicatesFromASubDirectoryOfAFimRepository() throws Exception {
+        tool.createASetOfFiles(3);
+        State masterState = (State) initCommand.execute(context);
+        assertThat(masterState.getModificationCounts().getAdded()).isEqualTo(3);
+
+        // A separate Fim repository, with the working directory deep inside it
+        Path localRepository = rootDirCopy;
+        Files.createDirectories(localRepository.resolve(Context.DOT_FIM_DIR));
+        Path workingDir = localRepository.resolve("some").resolve("sub").resolve("dir");
+        Files.createDirectories(workingDir);
+
+        // One file duplicated from the master, one that only exists here
+        Files.copy(rootDir.resolve("file01"), workingDir.resolve("copy-of-file01"));
+        Files.copy(rootDir.resolve("file02"), workingDir.resolve("own-file"));
+        Files.write(workingDir.resolve("own-file"), "makes it different".getBytes(), APPEND);
+
+        context.setCurrentDirectory(workingDir);
+        context.setMasterFimRepositoryDir(rootDir.toString());
+
+        long totalFilesRemoved = (long) removeDuplicatesCommand.execute(context);
+
+        assertThat(totalFilesRemoved).isEqualTo(1);
+        assertThat(Files.exists(workingDir.resolve("copy-of-file01"))).isFalse();
+        assertThat(Files.exists(workingDir.resolve("own-file"))).isTrue();
+
+        // The master repository is left untouched
+        assertThat(Files.exists(rootDir.resolve("file01"))).isTrue();
+        assertThat(Files.exists(rootDir.resolve("file02"))).isTrue();
+    }
+
+    /**
+     * The local scan must resolve its ignore rules against the directory being scanned, not against the
+     * master repository.
+     * <p>
+     * The repository root used to be repointed at the master before scanning. FimIgnoreManager walks up
+     * from the current directory to that root gathering .fimignore files, and since the current directory
+     * is required to sit outside the master, the walk ran to the top of the filesystem and applied
+     * .fimignore files from unrelated directories on the way. Here an ancestor of the scanned directory
+     * excludes the very file that should be reported as a duplicate.
+     */
+    @Test
+    public void ignoreRulesOutsideTheScannedTreeAreNotApplied() throws Exception {
+        tool.createASetOfFiles(1);
+        initCommand.execute(context);
+
+        Path workingDir = rootDirCopy.resolve("scanned");
+        Files.createDirectories(workingDir);
+        Files.copy(rootDir.resolve("file01"), workingDir.resolve("file01"));
+
+        // Placed above the scanned directory, so it must not be consulted
+        tool.createFimIgnore(rootDirCopy, "**/file01");
+
+        context.setCurrentDirectory(workingDir);
+        context.setMasterFimRepositoryDir(rootDir.toString());
+
+        long totalFilesRemoved = (long) removeDuplicatesCommand.execute(context);
+
+        assertThat(totalFilesRemoved).isEqualTo(1);
+        assertThat(Files.exists(workingDir.resolve("file01"))).isFalse();
+    }
 }

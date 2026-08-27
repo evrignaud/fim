@@ -106,17 +106,32 @@ public class RemoveDuplicatesCommand extends AbstractCommand {
             Logger.error(String.format("Directory %s is not a Fim repository", context.getMasterFimRepositoryDir()));
             throw new BadFimUsageException();
         }
-        context.setRepositoryRootDir(masterFimRepository);
 
         Logger.info(String.format("Searching for duplicate files using the %s directory as master", context.getMasterFimRepositoryDir()));
         Logger.newLine();
 
-        State masterState = new StateManager(context).loadLastState();
+        // The two directory trees involved are read through their own Context, each with the repository
+        // root it actually describes: the master, whose State is loaded, and the current directory, which
+        // is scanned.
+        //
+        // The live Context used to be repointed at the master before scanning, which left the local scan
+        // describing one tree while its repository root named another. FimIgnoreManager derives from that
+        // root, and it walks up from the current directory to it gathering .fimignore files. The current
+        // directory is required to sit outside the master, so that walk never arrived and instead ran to
+        // the top of the filesystem, applying .fimignore files from unrelated directories on the way.
+        // That is exactly the case of running from inside a Fim repository, which is what -M is for.
+        Context masterContext = context.clone();
+        masterContext.setRepositoryRootDir(masterFimRepository);
+
+        State masterState = new StateManager(masterContext).loadLastState();
         Map<FileHash, FileState> masterFilesHash = buildFileHashMap(masterState);
+
+        Context localContext = context.clone();
+        localContext.setRepositoryRootDir(normalizedCurrentDir);
 
         long duplicatedFilesCount = 0;
         long totalFilesRemoved = 0;
-        State localState = new StateGenerator(context).generateState("", context.getCurrentDirectory(), context.getCurrentDirectory());
+        State localState = new StateGenerator(localContext).generateState("", normalizedCurrentDir, normalizedCurrentDir);
         for (FileState localFileState : localState.getFileStates()) {
             if (localFileState.getFileLength() == 0) {
                 continue;
