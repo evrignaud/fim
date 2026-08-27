@@ -737,10 +737,10 @@ _Do not hesitate to open issues with your ideas on GitHub_
 image::octocat.png[]
 
 * https://github.com/[GitHub] - Web hosted Git server - https://github.com/evrignaud/fim[Fim Projet]
-* https://travis-ci.org/[Travis CI] - CI for Linux and Mac OS X - https://travis-ci.org/evrignaud/fim[image:https://travis-ci.org/evrignaud/fim.svg[]]
-* https://www.appveyor.com/[AppVeyor] - CI for Windows - https://ci.appveyor.com/project/evrignaud/fim[image:https://ci.appveyor.com/api/projects/status/txadqci1hrr3lkko?svg=true[]]
-* https://coveralls.io/[Coveralls] - Code Coverage - https://coveralls.io/github/evrignaud/fim?branch=master[image:https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github[]]
-* https://scan.coverity.com/[Coverity] - Static code analysis - https://scan.coverity.com/projects/evrignaud-fim[image:https://scan.coverity.com/projects/8749/badge.svg[]]
+* https://docs.github.com/actions[GitHub Actions] - Build and tests on Linux, Windows and macOS - https://github.com/evrignaud/fim/actions/workflows/quality.yml[image:https://github.com/evrignaud/fim/actions/workflows/quality.yml/badge.svg[]]
+* https://www.jacoco.org/jacoco/[JaCoCo] - Code coverage, held to a floor by the build - image:https://raw.githubusercontent.com/evrignaud/fim/master/.github/badges/coverage.svg[]
+* https://spotbugs.github.io/[SpotBugs] - Static code analysis, published to GitHub code scanning
+* https://checkstyle.org/[Checkstyle] - Coding style
 
 https://asciidoctor.org/[Asciidoctor] - Ruby implementation of https://asciidoc.org/[AsciiDoc] to generate +
 the https://evrignaud.github.io/fim/[Fim documentation] and this presentation slides

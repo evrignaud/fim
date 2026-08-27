@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  What SpotBugs should not report on.
+
+  com.blackducksoftware.tools.commonframework.core.encoding.Ascii85Encoder is third-party code vendored into
+  the tree from an archived project, under its own Apache licence. Findings in it are not Fim's to fix, and
+  leaving them in the report means the ones that are get lost among them.
+-->
+<FindBugsFilter>
+    <Match>
+        <Class name="~com\.blackducksoftware\..*"/>
+    </Match>
+</FindBugsFilter>

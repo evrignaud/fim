@@ -12,6 +12,14 @@ https://github.com/evrignaud/fim/compare/1.2.3%2E%2E%2Emaster[image:icons/list.p
 * Fim is now built with **Gradle** instead of Maven, through the wrapper committed in the repository, so no build tool has to be installed
 * Fim is now compiled with **Java 17** and requires Java 17 or later to run. The tests moved to JUnit 5
 * The Docker image builds the Fim distribution itself, so it can be built from a freshly cloned repository with no JDK and no prior build on the host
+* Building and checking Fim no longer depends on a hosted service.
+  Travis CI, AppVeyor, Coverity Scan and Coveralls are replaced by `./gradlew check`, which compiles, tests, checks the style, runs **SpotBugs** static analysis and holds coverage to a floor, all on your own machine.
+  Details in <<how-can-you-use-fim.adoc#_verifying_fim,Verifying Fim>>
+* The same checks run on **Linux, Windows and macOS** through a **GitHub Actions** workflow for every push and pull request, so the tests that only apply to one platform finally run on it.
+  The SpotBugs findings are published under Security, Code scanning, and the coverage figure appears in the summary of each run.
+  Details in <<how-can-you-use-fim.adoc#_what_runs_on_github,What runs on GitHub>>
+* A release is now done by a single script, `release.py`, which tags, builds, packages the release archives, builds the Docker image from the tag and prepares the commit that publishes the documentation.
+  Details in <<how-can-you-use-fim.adoc#_releasing_fim,Releasing Fim>>
 
 === New features
 * An interrupted `init` is now resumed instead of started again.

@@ -1,0 +1,123 @@
+# Quality checks for Fim.
+#
+# This is what the retired hosted builds used to do, in one place: Travis covered Linux and Mac OS X,
+# AppVeyor covered Windows, Coverity ran the static analysis and Coveralls tracked the coverage.
+#
+# Running the tests on three operating systems is not box ticking for a tool like this one. Fim reads file
+# permissions, modification times and SELinux labels, and it has whole code paths that only one platform
+# ever reaches. Several tests are marked as not applicable to Windows and have never actually run anywhere
+# until now.
+#
+# Nothing here writes to the repository. The coverage badges under .github/badges are refreshed by
+# release.py, so that every commit has a person behind it. What this workflow does instead is refuse to let
+# coverage fall below the floor in build.gradle.kts, and print the figure into the run summary.
+
+name: Quality
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+  workflow_dispatch:
+
+# Read-only by default. The one job that needs more says so itself.
+permissions:
+  contents: read
+
+# A second push to the same branch makes the first run pointless, so let it go.
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      # One platform failing is a result worth having, not a reason to abandon the other two.
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    defaults:
+      run:
+        # Git Bash is present on the Windows runner, so ./gradlew works the same way everywhere and the
+        # steps below do not have to be written twice.
+        shell: bash
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v7
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+          # Caches ~/.gradle, which is the whole reason a build here takes minutes rather than tens of
+          # minutes. Using this rather than a separate Gradle action keeps the workflow to first-party
+          # actions only.
+          cache: gradle
+
+      - name: Build, check and run both test tiers
+        # build covers assemble and check, and check covers the tests, Checkstyle, SpotBugs and the
+        # coverage floor. slowTest adds the large-file tier, which costs seconds and is the part most worth
+        # having before a release. jacocoTestReport turns the collected data into the xml read below.
+        run: ./gradlew build slowTest jacocoTestReport --no-daemon
+
+      - name: Report the coverage
+        if: matrix.os == 'ubuntu-latest'
+        run: python3 coverage_badge.py --check
+
+      # Kept for every run, passed or failed. A red build is exactly when someone wants to read the test
+      # report, and by then the runner is gone.
+      - name: Keep the reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: reports-${{ matrix.os }}
+          path: |
+            build/reports/
+            build/test-results/
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Hand the analysis to the next job
+        if: always() && matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v7
+        with:
+          name: spotbugs-sarif
+          path: build/reports/spotbugs/main.sarif
+          retention-days: 1
+          if-no-files-found: error
+
+  code-scanning:
+    name: Publish the SpotBugs findings
+    needs: verify
+    runs-on: ubuntu-latest
+
+    # Only on the default branch. A pull request from a fork gets a read-only token, so the upload would
+    # fail there through no fault of the change being proposed.
+    if: always() && github.event_name != 'pull_request'
+
+    permissions:
+      contents: read
+      # What lets the findings appear under Security, Code scanning. This needs the repository to be
+      # public, or GitHub Advanced Security to be enabled on it.
+      security-events: write
+
+    steps:
+      - name: Fetch the analysis
+        uses: actions/download-artifact@v8
+        with:
+          name: spotbugs-sarif
+          path: analysis
+
+      - name: Upload it to code scanning
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: analysis/main.sarif
+          # Names this as its own source of findings, so SpotBugs results are tracked separately from
+          # anything else that might be added later.
+          category: spotbugs

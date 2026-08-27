@@ -163,3 +163,173 @@ To build without running the tests, use `./gradlew assemble`.
 ------
 $ ./fim
 ------
+
+== Verifying Fim
+
+Every check runs from one command, and the same command is what runs on GitHub for each push and pull
+request. Nothing has to be pushed to find out whether it passes.
+
+[source, bash]
+----
+$ ./gradlew check
+----
+
+Fim used to be verified by hosted services: Travis CI for Linux and Mac OS X, AppVeyor for Windows, Coverity
+Scan for static analysis, Coveralls for coverage. Those are gone, and what replaced each of them is part of
+the build itself rather than an account somewhere:
+
+[cols="1,3"]
+|===
+| Was | Is now
+
+| Travis CI and AppVeyor building and testing
+| `./gradlew check` compiles and runs the tests, on your machine and on GitHub
+
+| Coverity Scan static analysis
+| **SpotBugs**, which looks for the same class of defect and runs offline.
+  Report at `build/reports/spotbugs/main.html`
+
+| Coveralls coverage
+| **JaCoCo**, already part of the build.
+  Run `./gradlew jacocoTestReport` for `build/reports/jacoco/test/html/index.html`
+
+| Style checking
+| **Checkstyle**, unchanged, using `checkstyle.xml`
+|===
+
+SpotBugs reports rather than fails the build. The findings on a codebase this old are a backlog, and a check
+that blocks every build until the backlog is empty is a check that gets switched off. Set `ignoreFailures` to
+`false` in `build.gradle.kts` once the count reaches zero, to keep it there.
+
+=== Coverage has a floor
+
+`check` fails if coverage drops below what is set in `build.gradle.kts`: 90% of instructions, 82% of branches,
+90% of lines. It currently sits a few points above each, which is deliberate. A limit set at the exact
+current figure fails on the first commit that adds a line, and one set far below never fails at all.
+
+Raise the limits when the real numbers move up. They are there to stop coverage sliding, not to be a target.
+
+The one class under `com/blackducksoftware` is third-party code copied into the tree, with its own licence and
+its own history. It is left out of both the coverage figure and the static analysis, so that neither measures
+how well Fim tests somebody else's code.
+
+=== What runs on GitHub
+
+`.github/workflows/quality.yml` runs the same checks on **Linux, Windows and macOS** for every push and pull
+request, and publishes three things back to the project:
+
+* the **Quality badge** on the README, from the workflow itself
+* the **SpotBugs findings**, under Security, Code scanning, which is where Coverity used to put them
+* the **coverage figure**, in the summary of each run
+
+Running on three platforms is not box ticking for a tool like this one. Fim reads file permissions,
+modification times and SELinux labels, and it has code paths only one platform ever reaches. Several tests
+are marked as not applicable to Windows, and only started actually running when this workflow was added.
+
+The coverage badges under `.github/badges` are redrawn by `release.py` rather than committed by the workflow,
+so every commit has a person behind it. Between releases the floor above is what keeps the figure honest.
+
+=== The two tiers of tests
+
+`./gradlew check` runs everything except the slow tier, which keeps an ordinary build to about three minutes.
+
+[source, bash]
+----
+$ ./gradlew test            # everything except the slow tier
+$ ./gradlew slowTest        # only the slow tier
+$ ./gradlew test slowTest   # all of it
+----
+
+The scenarios that drive the command line live in `src/test/java/org/fim/integration`. They call the same
+entry point a user reaches, so a test covers the argument parsing, the command lookup, the repository checks
+and the exit status alongside the behaviour itself. Each one works in a directory of its own under
+`build/test-outputs`, using small files, and answers the confirmation prompts through standard input where a
+command asks a question.
+
+The slow tier holds the scenarios that need real file sizes. The quick hash modes read three blocks rather
+than the whole file, so on a small file those blocks *are* the whole file and every mode behaves alike: the
+difference being relied on only exists on files big enough for the blocks to leave gaps. Those tests write
+tens of megabytes and walk the whole lifecycle once per hash mode.
+
+Keeping them behind a tag is what allows them to be thorough. A suite everybody waits for on every build is
+one that ends up trimmed; one that is asked for explicitly can afford to be slow. Run it before a release,
+and after anything touching the hashers or the State comparison.
+
+=== Verifying before every push
+
+The hosted builds ran after a push. You can get the same safety net before one, by enabling the hook that
+comes with the repository:
+
+[source, bash]
+----
+$ git config core.hooksPath hooks
+----
+
+`./gradlew check` then runs on every `git push`, and a failure stops the push. Use `git push --no-verify` to
+skip it for one push, or `git config --unset core.hooksPath` to turn it off again.
+
+=== Checking on another operating system
+
+Fim runs on Linux, Mac OS X and Windows, and one machine cannot test all three. The workflow does it for you
+once the change is pushed, but if you want an answer before that, you can run the build on Linux in a
+container using the same JDK the build targets:
+
+[source, bash]
+----
+$ docker run --rm -v "$PWD":/fim -w /fim eclipse-temurin:17-jdk ./gradlew check
+----
+
+That covers the Linux side from a Windows or Mac host. The third platform is the one you have to leave to the
+workflow, or to a machine of that kind.
+
+== Releasing Fim
+
+A release is done by one script, which takes it from a tag through to the commit that publishes the
+documentation:
+
+[source, bash]
+----
+$ python release.py 2.0.0
+----
+
+It performs the following, in order, stopping at the first problem:
+
+. Checks the repository is ready: clean working tree, on the release branch, the tag not already taken
+. Sets the version in `build.gradle.kts` and commits it as `:package: Release version 2.0.0`
+. Creates the `2.0.0` tag
+. Runs a clean build: both test tiers, the style check, the static analysis and the coverage floor
+. Redraws the coverage badges the README points at
+. Collects the archives for the release page into `build/release/2.0.0`, with their SHA-256 sums
+. Builds the Docker image from the tag
+. Renders the documentation
+. Prepares the commit on `gh-pages` that publishes it
+. Sets the version to the next SNAPSHOT and commits that
+
+Nothing is pushed unless you ask for it. Run it, look at what it produced, then either push by hand or run it
+again with `--push`. `--skip-docker` and `--skip-docs` leave those steps out.
+
+=== How the Docker image is built for a release
+
+The image is built from the tag rather than from the working tree:
+
+[source, bash]
+----
+$ git archive --format=tar 2.0.0 | docker build -t evrignaud/fim:2.0.0 -
+----
+
+The build context is the tagged content, streamed straight out of the repository. Building from the working
+tree would let anything uncommitted, or left over from an earlier build, end up in a released image, and
+checking the tag out first would disturb whatever you were working on. This way the image can hold only what
+the tag holds. The `release.py` script does exactly this, tagging the result both with the version and as
+`latest`.
+
+The image needs nothing prepared beforehand: it builds the Fim distribution itself, so a freshly cloned
+repository and Docker are enough.
+
+[NOTE]
+====
+The slides are not published by the release script. They are meant to be reveal.js decks, and the published
+ones are, but the build renders them as flat HTML because the reveal.js backend is not configured. Publishing
+what is generated would replace working decks with plain pages, so the script leaves `slides/` on `gh-pages`
+alone until that backend is restored.
+====

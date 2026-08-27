@@ -1,23 +1,8 @@
 <h1 align="center"><img src="https://evrignaud.github.io/fim/images/icons/fim-96.png" alt="Fim"/> &nbsp; File Integrity Manager</h1>
 
+[![Quality](https://github.com/evrignaud/fim/actions/workflows/quality.yml/badge.svg)](https://github.com/evrignaud/fim/actions/workflows/quality.yml) [![Coverage](https://raw.githubusercontent.com/evrignaud/fim/master/.github/badges/coverage.svg)](https://evrignaud.github.io/fim/#_verifying_fim) [![Branches](https://raw.githubusercontent.com/evrignaud/fim/master/.github/badges/branches.svg)](https://evrignaud.github.io/fim/#_verifying_fim) [![Latest tag](https://img.shields.io/github/tag/evrignaud/fim.svg)](https://github.com/evrignaud/fim/releases/latest) [![License](https://img.shields.io/github/license/evrignaud/fim.svg)](https://evrignaud.github.io/fim/LICENSE.html)
+
 Fim manages the integrity of a complete file tree
-
-# Docker image
-
-#### [Docker Hub](https://hub.docker.com/r/evrignaud/fim/)
-
-The image builds Fim itself, so it needs neither a JDK nor a prior build on the host:
-
-    $ ./build-docker-image
-
-# Build
-
-Fim is built with Gradle, through the wrapper committed in the repository. You need a JDK 17 or later:
-
-    $ ./gradlew build
-
-[![Coverage Status](https://coveralls.io/repos/evrignaud/fim/badge.svg?branch=master&service=github)](https://coveralls.io/github/evrignaud/fim?branch=master) &nbsp;&nbsp; [![Coverity Scan Build Status](https://scan.coverity.com/projects/8749/badge.svg)](https://scan.coverity.com/projects/evrignaud-fim)
-[![Latest tag](https://img.shields.io/github/tag/evrignaud/fim.svg)](https://github.com/evrignaud/fim/releases/latest) [![License](https://img.shields.io/github/license/evrignaud/fim.svg)](https://evrignaud.github.io/fim/LICENSE.html)
 
 ## Slides
 
@@ -96,6 +81,25 @@ Fim can be used on Linux, Mac OS X and Windows
 
 > &mdash; [Sortie de Fim 1.0.2, qui vérifie l'intégrité de vos fichiers](https://linuxfr.org/news/sortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers)
 >> [![English version](https://evrignaud.github.io/fim/images/icons/english.png) &nbsp; Fim 1.0.2, which checks the integrity of your files](https://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Flinuxfr.org%2Fnews%2Fsortie-de-fim-1-0-2-qui-verifie-l-integrite-de-vos-fichiers)
+
+## Build
+
+Fim is built with Gradle, through the wrapper committed in the repository. You need a JDK 17 or later:
+
+    $ ./gradlew build
+
+`./gradlew check` compiles, runs the tests, checks the style with Checkstyle, analyses the code with SpotBugs
+and holds coverage to a floor. The same checks run on Linux, Windows and macOS for every push and pull
+request. See [Verifying Fim](https://evrignaud.github.io/fim/#_verifying_fim) for how to run them yourself,
+and how to enable the hook that runs them before every push.
+
+### Docker image
+
+[Docker Hub](https://hub.docker.com/r/evrignaud/fim/)
+
+The image builds Fim itself, so it needs neither a JDK nor a prior build on the host:
+
+    $ ./build-docker-image
 
 
 ## About

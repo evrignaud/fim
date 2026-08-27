@@ -1,0 +1,8 @@
+# Git hooks are executed by a shell, and a shell fed carriage returns fails with errors like
+# "\r: command not found". This repository is worked on with core.autocrlf enabled, which would hand
+# the hooks out with CRLF endings on checkout, so pin them to LF regardless of the platform.
+hooks/* text eol=lf
+
+# The run: blocks in a workflow are handed to a shell, so the same reasoning as the hooks applies. Pinning
+# them to LF keeps a carriage return from ever reaching bash on a runner.
+.github/workflows/* text eol=lf

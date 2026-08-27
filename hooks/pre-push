@@ -1,0 +1,48 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------------------------------------------------
+# This file is part of Fim - File Integrity Manager
+#
+# Copyright (C) 2026 Etienne Vrignaud
+#
+# Fim is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Fim is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Fim.  If not, see <https://www.gnu.org/licenses/>.
+#-----------------------------------------------------------------------------------------------------------------------
+#
+# Verify before pushing, which is what the hosted builds used to do after pushing.
+#
+# Enable it with:
+#     git config core.hooksPath hooks
+#
+# Disable it again with:
+#     git config --unset core.hooksPath
+#
+# Skip it for one push with `git push --no-verify` when you already know the build is good.
+#-----------------------------------------------------------------------------------------------------------------------
+
+echo "pre-push: running './gradlew check'. Use --no-verify to skip it."
+
+if [ "$OS" = "Windows_NT" ]; then
+    ./gradlew.bat check --console=plain
+else
+    ./gradlew check --console=plain
+fi
+
+status=$?
+if [ ${status} -ne 0 ]; then
+    echo ""
+    echo "pre-push: the build failed, so nothing was pushed."
+    echo "pre-push: fix it, or push with --no-verify if you know what you are doing."
+    exit ${status}
+fi
+
+#-----------------------------------------------------------------------------------------------------------------------
