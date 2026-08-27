@@ -1,0 +1,13 @@
+# Keep the build context small and make the image reproducible from sources only.
+# Host build output must not leak in: the image builds the distribution itself.
+build/
+.gradle/
+.git/
+.idea/
+.kiro/
+
+# Not used by the image build
+src/test/
+src/main/asciidoc/
+samples/
+*.iml

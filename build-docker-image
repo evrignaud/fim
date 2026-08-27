@@ -18,15 +18,16 @@
 # along with Fim.  If not, see <https://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------------------------------------------------
 
+## The image builds the Fim distribution itself, so this works on a fresh clone
+## with no prior Gradle build and no local JDK.
 docker build -t evrignaud/fim .
 
 #-----------------------------------------------------------------------------------------------------------------------
 # Then you need (as explained here https://docs.docker.com/linux/step_five) to:
 # - Tag the image with the current Fim version
-#    $ docker tag 8cad533f4601 evrignaud/fim:1.2.2
-# - Upload it in Docker Hub
+#    $ docker tag evrignaud/fim evrignaud/fim:1.2.2
+# - Upload it in Docker Hub, which also refreshes the 'latest' tag
 #    $ docker login
-#    $ docker push evrignaud/fim
-# - Send refresh to microbadger
-#    $ curl -X POST https://hooks.microbadger.com/images/evrignaud/fim/jY5c5byoJJ6XZSKajrIQ0Zz13Kk=
+#    $ docker push evrignaud/fim:1.2.2
+#    $ docker push evrignaud/fim:latest
 #-----------------------------------------------------------------------------------------------------------------------
