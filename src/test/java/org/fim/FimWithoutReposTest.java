@@ -21,13 +21,17 @@ package org.fim;
 
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.RepositoryException;
+import org.fim.internal.InitProgressManager;
+import org.fim.internal.StateGenerator;
 import org.fim.model.Context;
+import org.fim.model.State;
 import org.fim.tooling.RepositoryTool;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
@@ -77,6 +81,57 @@ public class FimWithoutReposTest {
         assertThrows(BadFimUsageException.class, () -> {
             cut.run(new String[] { "status" }, context);
         });
+    }
+
+    /**
+     * Running 'fim init' again is how an interrupted init is resumed, so the directory it left behind must not
+     * make the command refuse to run. See GitHub issue #27.
+     */
+    @Test
+    public void initIsAllowedWhenAnInterruptedInitLeftItsProgressBehind() throws Exception {
+        tool.createASetOfFiles(2);
+        leaveInterruptedInitProgress();
+
+        cut.run(new String[] { "init", "-y", "-m", "resumed" }, context);
+
+        assertThat(Files.exists(context.getRepositoryStatesDir())).isTrue();
+        assertThat(InitProgressManager.holdsInitProgress(context.getRepositoryDotFimDir())).isFalse();
+    }
+
+    /**
+     * The other commands cannot do anything with an unfinished init, and saying the repository does not exist
+     * leaves the user with a directory they are told is not there. Point at the way out instead.
+     */
+    @Test
+    public void otherCommandsReportAnInterruptedInit() throws Exception {
+        tool.createASetOfFiles(1);
+        leaveInterruptedInitProgress();
+
+        assertThrows(BadFimUsageException.class, () -> {
+            cut.run(new String[] { "status" }, context);
+        });
+    }
+
+    /**
+     * A directory holding neither a State nor any progress is of no use to any command, and the user has to
+     * be told that removing it is what unblocks 'fim init'.
+     */
+    @Test
+    public void initIsRefusedWhenTheDirectoryHoldsNeitherStateNorProgress() throws Exception {
+        Files.createDirectories(rootDir.resolve(Context.DOT_FIM_DIR));
+
+        assertThrows(BadFimUsageException.class, () -> {
+            cut.run(new String[] { "init", "-y" }, context);
+        });
+    }
+
+    private void leaveInterruptedInitProgress() throws Exception {
+        Files.createDirectories(context.getRepositoryDotFimDir());
+        InitProgressManager initProgressManager = new InitProgressManager(context);
+        State partialState = new StateGenerator(context).generateState("Interrupted", context.getCurrentDirectory(),
+                context.getCurrentDirectory());
+        initProgressManager.save(partialState.getFileStates());
+        assertThat(initProgressManager.exists()).isTrue();
     }
 
     @Test

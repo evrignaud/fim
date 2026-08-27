@@ -25,6 +25,7 @@ import org.fim.internal.hash.HashProgress;
 import org.fim.model.Context;
 import org.fim.model.FilePattern;
 import org.fim.model.FileState;
+import org.fim.model.FileTime;
 import org.fim.model.FimIgnore;
 import org.fim.model.State;
 import org.fim.util.FileUtil;
@@ -38,9 +39,11 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -65,9 +68,24 @@ public class StateGenerator {
     ExecutorService executorService;
 
     protected Path rootDir;
+    private String normalizedRootDir;
+    private String normalizedDotFimDir;
     private BlockingDeque<Path> filesToHashQueue;
     private AtomicBoolean scanInProgress;
     List<FileHasher> fileHashers;
+
+    /**
+     * Set when the generated State may reuse the hashes of an interrupted 'fim init'. Null otherwise, which
+     * is every other command: they compare against a committed State and have to hash the files again to be
+     * able to tell that the content did not change.
+     */
+    private InitProgressManager initProgressManager;
+
+    /**
+     * The FileStates taken from an interrupted 'fim init' instead of being hashed again.
+     * Filled by the thread doing the scan and read by the thread saving the progress.
+     */
+    private final List<FileState> reusedFileStates = Collections.synchronizedList(new ArrayList<>());
 
     public StateGenerator(Context context) {
         this.context = context;
@@ -75,8 +93,14 @@ public class StateGenerator {
         this.fimIgnoreManager = new FimIgnoreManager(context);
     }
 
+    public void setInitProgressManager(InitProgressManager initProgressManager) {
+        this.initProgressManager = initProgressManager;
+    }
+
     public State generateState(String comment, Path rootDir, Path dirToScan) throws NoSuchAlgorithmException {
         this.rootDir = rootDir;
+        this.normalizedRootDir = FileUtil.getNormalizedFileName(rootDir);
+        this.normalizedDotFimDir = FileUtil.getNormalizedFileName(context.getRepositoryDotFimDir());
 
         String usingThreads;
         if (context.isUseDynamicScaling()) {
@@ -104,38 +128,74 @@ public class StateGenerator {
         filesToHashQueue = new LinkedBlockingDeque<>(FILES_QUEUE_CAPACITY);
         initializeFileHashers();
 
-        FimIgnore initialFimIgnore = fimIgnoreManager.loadInitialFimIgnore();
+        long overallTotalBytesHashed = 0;
         try {
-            scanInProgress = new AtomicBoolean(true);
-            scanFileTree(filesToHashQueue, dirToScan, initialFimIgnore);
+            if (initProgressManager != null) {
+                initProgressManager.startAutoSave(this::collectHashedFileStates);
+            }
+
+            FimIgnore initialFimIgnore = fimIgnoreManager.loadInitialFimIgnore();
+            try {
+                scanInProgress = new AtomicBoolean(true);
+                scanFileTree(filesToHashQueue, dirToScan, initialFimIgnore);
+            } finally {
+                scanInProgress.set(false);
+            }
+
+            // In case the FileHashers have not already been started
+            startFileHashers();
+
+            waitAllFilesToBeHashed();
         } finally {
-            scanInProgress.set(false);
+            if (initProgressManager != null) {
+                initProgressManager.stopAutoSave();
+            }
         }
 
-        // In case the FileHashers have not already been started
-        startFileHashers();
-
-        waitAllFilesToBeHashed();
-
-        long overallTotalBytesHashed = 0;
         for (FileHasher fileHasher : fileHashers) {
             state.getFileStates().addAll(fileHasher.getFileStates());
             overallTotalBytesHashed += fileHasher.getTotalBytesHashed();
         }
+        state.getFileStates().addAll(reusedFileStates);
 
         state.getFileStates().sort(FILE_NAME_COMPARATOR);
 
         state.setIgnoredFiles(fimIgnoreManager.getIgnoredFiles());
 
         hashProgress.outputStop();
+        displayReusedFileCount();
         long duration = System.currentTimeMillis() - start;
         displayStatistics(duration, state.getFileCount(), state.getFilesContentLength(), overallTotalBytesHashed);
 
         return state;
     }
 
+    private void displayReusedFileCount() {
+        int reusedCount = reusedFileStates.size();
+        if (reusedCount > 0) {
+            Logger.info(String.format("Reused the hash of %d %s computed by the interrupted 'fim init'",
+                    reusedCount, plural("file", reusedCount)));
+        }
+    }
+
+    /**
+     * Everything hashed so far, gathered while the hashing may still be going on, so that the progress of an
+     * interrupted 'fim init' can be saved.
+     */
+    List<FileState> collectHashedFileStates() {
+        List<FileState> hashedFileStates = new ArrayList<>(reusedFileStates);
+        if (fileHashers != null) {
+            for (FileHasher fileHasher : fileHashers) {
+                hashedFileStates.addAll(fileHasher.copyFileStates());
+            }
+        }
+        return hashedFileStates;
+    }
+
     protected void initializeFileHashers() {
-        fileHashers = new ArrayList<>();
+        // Iterated by the thread saving the progress of a running 'fim init' while the scan may still be
+        // adding hashers to it.
+        fileHashers = new CopyOnWriteArrayList<>();
 
         int maxThreads = context.getThreadCount();
         if (context.isUseDynamicScaling()) {
@@ -227,11 +287,14 @@ public class StateGenerator {
                 BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
                 String fileName = file.getFileName().toString();
                 if (fimIgnoreManager.isIgnored(fileName, attributes, fimIgnore)) {
-                    fimIgnoreManager.ignoreThisFiles(file, attributes);
+                    if (!isDotFimDirOfRunningInit(file, attributes)) {
+                        fimIgnoreManager.ignoreThisFiles(file, attributes);
+                    }
                 } else {
                     if (attributes.isRegularFile()) {
                         if (FilePattern.matchPatterns(fileName, context.getIncludePatterns(), true) &&
-                            !FilePattern.matchPatterns(fileName, context.getExcludePatterns(), false)) {
+                            !FilePattern.matchPatterns(fileName, context.getExcludePatterns(), false) &&
+                            !reuseAlreadyHashedFile(file, attributes)) {
                             enqueueFile(filesToHashQueue, file);
                         }
                     } else if (attributes.isDirectory()) {
@@ -243,6 +306,42 @@ public class StateGenerator {
             Logger.newLine();
             Logger.error("Skipping - Error scanning directory '" + directory + "'", ex, context.isDisplayStackTrace());
         }
+    }
+
+    /**
+     * Tells the directory holding the Fim repository apart while an init is running.
+     * <p>
+     * An init now creates that directory before it scans, because that is where it saves its progress, so the
+     * scan comes across it where it previously found nothing. It is Fim's own bookkeeping rather than
+     * something the user chose to leave out, so it is passed over without being listed among the ignored
+     * files and the first State keeps describing only what the user put in the directory.
+     */
+    private boolean isDotFimDirOfRunningInit(Path file, BasicFileAttributes attributes) {
+        if (initProgressManager == null || !attributes.isDirectory()) {
+            return false;
+        }
+        return FileUtil.getNormalizedFileName(file).equals(normalizedDotFimDir);
+    }
+
+    /**
+     * Take the hash an interrupted 'fim init' already computed for this file, when there is one that still
+     * describes the file as it is now.
+     *
+     * @return true when the file does not need to be hashed
+     */
+    private boolean reuseAlreadyHashedFile(Path file, BasicFileAttributes attributes) {
+        if (initProgressManager == null) {
+            return false;
+        }
+
+        String relativeFileName = FileUtil.getRelativeFileName(normalizedRootDir, FileUtil.getNormalizedFileName(file));
+        FileState reusableFileState = initProgressManager.findReusableFileState(relativeFileName, attributes.size(), new FileTime(attributes));
+        if (reusableFileState == null) {
+            return false;
+        }
+
+        reusedFileStates.add(reusableFileState);
+        return true;
     }
 
     private void enqueueFile(BlockingDeque<Path> filesToHashQueue, Path file) {

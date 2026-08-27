@@ -46,6 +46,7 @@ import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.TimeUnit;
@@ -76,12 +77,23 @@ public class FileHasher implements Runnable {
         this.filesToHashQueue = filesToHashQueue;
         this.rootDir = rootDir;
 
-        this.fileStates = new ArrayList<>();
+        // Synchronized because the progress of a running 'fim init' is saved from another thread,
+        // which reads this list through copyFileStates() while this hasher is still filling it.
+        this.fileStates = Collections.synchronizedList(new ArrayList<>());
         this.frontHasher = new FrontHasher(context);
     }
 
     public List<FileState> getFileStates() {
         return fileStates;
+    }
+
+    /**
+     * A snapshot of the FileStates hashed so far, safe to read while the hashing goes on.
+     */
+    public List<FileState> copyFileStates() {
+        synchronized (fileStates) {
+            return new ArrayList<>(fileStates);
+        }
     }
 
     public long getTotalBytesHashed() {

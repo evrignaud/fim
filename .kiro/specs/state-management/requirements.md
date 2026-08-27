@@ -18,6 +18,8 @@ This document specifies the requirements for the State Management feature of FIM
 - **Hash_Mode**: The hashing strategy used during state generation (hashAll, hashSmallBlock, hashMediumBlock, or dontHash).
 - **Global_Hash_Mode**: The Hash_Mode configured at repository initialization time, stored in the settings file.
 - **Settings_File**: The `.fim/settings.json` file storing repository-wide configuration including Global_Hash_Mode and last State_Number.
+- **Init_Progress_File**: The `.fim/init-progress.json.gz` file holding the FileStates an unfinished `init` has hashed so far. It is an ordinary State file, so it is read back through the same integrity check as any other State. Its presence is what marks an initialization as unfinished, and it is deleted once the first State is committed.
+- **InitProgressManager**: The internal component that writes, reads back and discards the Init_Progress_File, and decides which recorded hashes still describe the files on disk.
 - **StateManager**: The internal component responsible for persisting, loading, and numbering State files.
 - **StateGenerator**: The internal component responsible for scanning the file tree and producing a new State object.
 - **StateComparator**: The internal component responsible for comparing two States and producing a CompareResult.
@@ -40,13 +42,22 @@ This document specifies the requirements for the State Management feature of FIM
 3. WHEN the `init` command is executed and a comment is provided via the `-m` option, THE InitCommand SHALL store the provided comment in the generated State.
 4. WHEN the `init` command is executed and no comment is provided, THE InitCommand SHALL use "Initial State" as the default comment.
 5. WHEN the `init` command is executed and no comment is provided, THE InitCommand SHALL display a Confirmation_Prompt before proceeding.
-6. IF the Dot_Fim_Directory or States_Directory already exists in the current directory, THEN THE FIM CLI SHALL report "Fim repository already exist" before the command runs and abort without modifying the existing repository.
+6. IF the States_Directory already exists in the current directory, THEN THE FIM CLI SHALL report "Fim repository already exist" before the command runs and abort without modifying the existing repository.
 7. IF the current directory cannot be written to, THEN THE FIM CLI SHALL report "Not allowed to create the '&lt;dir&gt;' directory that holds the Fim repository" and abort.
 8. WHEN deciding whether the current directory can be written to, THE FIM CLI SHALL consult the permissions the filesystem reports first, and SHALL fall back to creating and deleting a probe file when they say the directory is not writable. The reported permissions are not conclusive on a network share: a CIFS/SMB mount commonly presents ownership and mode bits belonging to the mount rather than to the account in use, and a directory that can in fact be written to is then reported as read-only. A directory that genuinely denies writing fails the probe as well, so real permission problems are still reported.
 9. WHEN the `init` command is executed with a Hash_Mode other than hashAll, THE InitCommand SHALL persist the Hash_Mode as the Global_Hash_Mode in the Settings_File.
 10. WHEN the `init` command completes successfully, THE StateManager SHALL save the generated State as `state_1.json.gz` in the States_Directory and set the State_Number to 1.
 11. THE State generated during initialization SHALL contain the current Model_Version, a timestamp, the file count, total files content length, the Hash_Mode, and a State_Hash computed via SHA-512.
-12. THE InitCommand SHALL create the Dot_Fim_Directory only after the file tree scan has completed. An interrupted scan therefore leaves no repository behind, and `init` can simply be run again.
+12. THE InitCommand SHALL create the Dot_Fim_Directory before the file tree scan starts, because that is where the Init_Progress_File is written, and SHALL create the States_Directory only once the scan has completed. An interrupted scan therefore leaves no States_Directory, so no other command mistakes it for a usable repository.
+13. IF the initialization fails without leaving an Init_Progress_File, THEN THE InitCommand SHALL remove the Dot_Fim_Directory it created, so that a failed init never leaves a directory that would refuse every later `init` while being of no use to any other command.
+14. WHILE the file tree scan is running, THE InitCommand SHALL persist the FileStates hashed so far into the Init_Progress_File, at most one minute apart, and SHALL persist them once more when the JVM is asked to shut down.
+15. WHEN the Init_Progress_File is written, THE InitProgressManager SHALL write a temporary file and then move it into place, so that the file on disk is always either the previous complete progress or the new complete progress.
+16. WHEN the `init` command is executed and an Init_Progress_File is present, THE InitCommand SHALL reuse the hash recorded for every scanned file whose repository relative name, file length and FileTime all match the recorded ones, and SHALL hash every other file.
+17. IF the Init_Progress_File cannot be read, does not carry the current Model_Version, fails its State_Hash integrity check, or was produced with a Hash_Mode other than the one in use, THEN THE InitProgressManager SHALL discard it and THE InitCommand SHALL hash the whole file tree again. A single State cannot describe some of its files more thoroughly than others, which is why a differing Hash_Mode is not reusable.
+18. WHEN the first State has been committed, THE InitCommand SHALL delete the Init_Progress_File, which is what marks the initialization as finished.
+19. IF a command other than `init` is run while the Dot_Fim_Directory holds an Init_Progress_File and no States_Directory, THEN THE FIM CLI SHALL report "The previous 'fim init' has been interrupted. Please run 'fim init' again to resume it." and abort.
+20. IF the Dot_Fim_Directory exists holding neither a States_Directory nor an Init_Progress_File, THEN THE FIM CLI SHALL report that the directory holds no State nor progress and that removing it allows `init` to run again, and abort.
+21. WHILE an initialization is running, THE StateGenerator SHALL NOT record the Dot_Fim_Directory among the ignored files of the generated State. The directory is Fim's own content rather than something the user chose to leave out, and it only comes within reach of the scan because requirement 12 creates it beforehand.
 
 ### Requirement 2: State Commit
 

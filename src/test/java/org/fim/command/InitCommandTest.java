@@ -19,17 +19,23 @@
 
 package org.fim.command;
 
+import org.fim.internal.InitProgressManager;
 import org.fim.internal.SettingsManager;
+import org.fim.internal.StateGenerator;
 import org.fim.internal.StateManager;
 import org.fim.model.Command;
 import org.fim.model.Context;
 import org.fim.model.State;
 import org.fim.tooling.RepositoryTool;
+import org.fim.util.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -265,5 +271,122 @@ public class InitCommandTest {
                 .mapToLong(fs -> fs.getFileLength())
                 .sum();
         assertThat(state.getFilesContentLength()).isEqualTo(expectedLength);
+    }
+
+    /**
+     * An init that finished has nothing left to resume, so it must not leave the progress file behind.
+     */
+    @Test
+    public void aFinishedInitLeavesNoProgressBehind() throws Exception {
+        Context context = tool.createContext(hashAll, true);
+
+        tool.createASetOfFiles(2);
+        initCommand.execute(context);
+
+        assertThat(new InitProgressManager(context).exists()).isFalse();
+        assertThat(InitProgressManager.holdsInitProgress(context.getRepositoryDotFimDir())).isFalse();
+    }
+
+    /**
+     * The point of GitHub issue #27: an init that was stopped must not start again from the first file.
+     * The hashes it had already computed are read back and only the files it never reached are hashed.
+     */
+    @Test
+    public void initResumesTheProgressOfAnInterruptedInit() throws Exception {
+        Context context = tool.createContext(hashAll, true);
+        tool.createASetOfFiles(2);
+
+        InitProgressManager interruptedInitProgress = hashCurrentFilesAsInterruptedProgress(context);
+
+        // The files the interrupted init never reached
+        tool.createASetOfFiles(2);
+
+        String output = captureOutput(() -> {
+            State state = (State) initCommand.execute(context);
+
+            assertThat(state.getFileStates()).hasSize(4);
+            assertThat(state.getModificationCounts().getAdded()).isEqualTo(4);
+        });
+
+        assertThat(output).contains("Resuming the interrupted 'fim init'. The hash of 2 files is already known");
+        assertThat(output).contains("Reused the hash of 2 files computed by the interrupted 'fim init'");
+
+        // The repository is complete and there is no longer anything to resume
+        StateManager stateManager = new StateManager(context);
+        assertThat(Files.exists(stateManager.getStateFile(1))).isTrue();
+        assertThat(stateManager.loadLastState().getFileStates()).hasSize(4);
+        assertThat(interruptedInitProgress.exists()).isFalse();
+    }
+
+    /**
+     * The first State has to describe every file to the same depth, so progress hashed using another hash
+     * mode is thrown away and everything is hashed again.
+     */
+    @Test
+    public void initHashesEverythingAgainWhenTheProgressUsedAnotherHashMode() throws Exception {
+        Context hashAllContext = tool.createContext(hashAll, true);
+        tool.createASetOfFiles(2);
+        hashCurrentFilesAsInterruptedProgress(hashAllContext);
+
+        Context smallBlockContext = tool.createContext(hashSmallBlock, true);
+        String output = captureOutput(() -> {
+            State state = (State) initCommand.execute(smallBlockContext);
+            assertThat(state.getFileStates()).hasSize(2);
+        });
+
+        assertThat(output).doesNotContain("Reused the hash of");
+        assertThat(new InitProgressManager(smallBlockContext).exists()).isFalse();
+    }
+
+    /**
+     * A file that changed after being hashed by the interrupted init is hashed again rather than described by
+     * the hash it no longer matches.
+     */
+    @Test
+    public void initHashesAgainTheFilesThatChangedSinceTheInterruption() throws Exception {
+        Context context = tool.createContext(hashAll, true);
+        tool.createASetOfFiles(2);
+        hashCurrentFilesAsInterruptedProgress(context);
+
+        tool.setFileContent("file01", "This content is not the one that was hashed");
+
+        String output = captureOutput(() -> {
+            State state = (State) initCommand.execute(context);
+            assertThat(state.getFileStates()).hasSize(2);
+        });
+
+        assertThat(output).contains("Reused the hash of 1 file computed by the interrupted 'fim init'");
+    }
+
+    /**
+     * Hash the files that are there now and keep the result as the progress of an init that was stopped
+     * before it could commit its first State.
+     */
+    private InitProgressManager hashCurrentFilesAsInterruptedProgress(Context context) throws Exception {
+        Files.createDirectories(context.getRepositoryDotFimDir());
+
+        InitProgressManager initProgressManager = new InitProgressManager(context);
+        State partialState = new StateGenerator(context).generateState("Interrupted", context.getCurrentDirectory(),
+                context.getCurrentDirectory());
+        initProgressManager.save(partialState.getFileStates());
+
+        assertThat(initProgressManager.exists()).isTrue();
+        return initProgressManager;
+    }
+
+    private String captureOutput(ThrowingRunnable runnable) throws Exception {
+        PrintStream originalOut = Logger.out;
+        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
+        Logger.out = new PrintStream(capturedOutput, true, StandardCharsets.UTF_8);
+        try {
+            runnable.run();
+        } finally {
+            Logger.out = originalOut;
+        }
+        return capturedOutput.toString(StandardCharsets.UTF_8);
+    }
+
+    private interface ThrowingRunnable {
+        void run() throws Exception;
     }
 }

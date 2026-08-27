@@ -82,7 +82,7 @@ graph TD
 
 8. **Writability decided by trying, not by asking**: The repository checks in `Fim` consult the permissions the filesystem reports first, then fall back to a real write attempt. `Files.isWritable()` is not conclusive on a network share, where the reported ownership and mode bits often describe the mount rather than the account in use, so a writable CIFS/SMB directory is reported read-only and Fim refused to create a repository on it. `FileUtil.isWritableDirectory()` probes by creating and deleting a file; `FileUtil.isWritableFile()` opens an existing file for writing without truncating it, and judges a file that does not exist yet by its directory, which is the case of a repository whose settings file has not been written.
 
-9. **`.fim` created only after the scan**: `InitCommand` generates the State, compares it, and only then calls `createRepository()`. An interrupted scan therefore leaves nothing behind, and `init` can be re-run. It does not resume: the scan restarts from the beginning.
+9. **An interrupted init resumes instead of starting over**: hashing a complete file tree can take hours, and everything an init computed used to live in memory until the last step, so stopping it threw all of it away. `InitCommand` now creates `.fim` before the scan and `InitProgressManager` keeps the FileStates hashed so far in `.fim/init-progress.json.gz`, saved at most a minute apart and once more from a JVM shutdown hook. Running `init` again reads that file back and `StateGenerator` skips hashing every file whose name, length and `FileTime` still match what was recorded. `.fim/states/` is still created only once the scan has completed, so an unfinished init is never mistaken for a usable repository, and the progress file is deleted the moment the first State is committed. See *Resuming an interrupted init* below.
 
 ## Components and Interfaces
 
@@ -106,12 +106,52 @@ Scans the file tree and produces a new `State` object.
 | Method | Description |
 |---|---|
 | `generateState(String, Path, Path)` | Recursively scans `dirToScan` relative to `rootDir`, hashes all regular files using a thread pool, and returns a populated `State` with the given comment. |
+| `setInitProgressManager(InitProgressManager)` | Opts this generation into reusing the hashes of an interrupted `init`. Only `InitCommand` sets it; every other command compares against a committed State and has to hash the files again to be able to tell that the content did not change. |
+| `collectHashedFileStates()` | Everything hashed so far, reused entries included, gathered while the hashing may still be going on so that the progress can be saved. |
 
 Key behaviors:
 - Uses a `BlockingDeque<Path>` with capacity 500 to feed files to `FileHasher` threads.
 - Supports dynamic scaling of thread count.
 - Respects `.fimignore` files and include/exclude patterns from `Context`.
 - Sorts resulting `FileState` entries by file name.
+- When an `InitProgressManager` is set, a scanned file whose recorded hash still matches it is never put on the queue, so its content is not read at all.
+
+### InitProgressManager (`org.fim.internal.InitProgressManager`)
+
+Keeps the hashes computed by a running `init` on disk, so that an interrupted `init` carries on from where it stopped.
+
+| Method | Description |
+|---|---|
+| `load()` | Reads the progress back and returns how many hashes are available for reuse. Returns 0 after discarding progress that cannot be reused. |
+| `findReusableFileState(String, long, FileTime)` | The recorded FileState when the name, length and FileTime all still match, `null` when the file has to be hashed. |
+| `startAutoSave(Supplier<List<FileState>>)` / `stopAutoSave()` | Saves the progress on a daemon thread, at most a minute apart. |
+| `saveOnInterruption()` | The body of the JVM shutdown hook: a last save plus the message telling the user how to resume. |
+| `save(List<FileState>)` | Writes a temporary file and moves it into place. |
+| `delete()` | Removes the progress file, which is what marks the init as finished, and makes any later save a no-op. |
+| `holdsInitProgress(Path)` | Static: tells whether a `.fim` directory holds the progress of an unfinished init. Used by the CLI repository checks. |
+
+#### Resuming an interrupted init
+
+The progress is stored as an ordinary State file. That is what makes the feature small: the hashes are read
+back through the same integrity check as any other State, so progress that was damaged is detected and
+discarded rather than trusted, and no second serialization format enters the codebase.
+
+Three decisions carry the correctness of the reuse:
+
+- **What counts as still valid.** A hash is reused only when the file has the length and the timestamps it
+  had when it was hashed. That is the same evidence `StateComparator` uses to call a file unmodified, so a
+  resumed init takes nothing on trust that Fim would not take on trust anywhere else. A file touched between
+  the two runs is hashed again.
+- **Why a differing Hash_Mode discards everything.** A State has one Hash_Mode, and reusing hashes computed
+  with another one would describe some of its files more thoroughly than others. Discarding is always a valid
+  outcome, since hashing again is exactly what happened before.
+- **Why periodic saving matters more than the shutdown hook.** The hook only shortens what an interruption
+  gives up, and it cannot run at all when the machine loses power. The progress is therefore saved as the
+  init runs, and the hook is the refinement rather than the mechanism.
+
+The saving happens on its own thread while the hashers are still filling their result lists, which is why
+`FileHasher` holds its FileStates in a synchronized list and hands out copies through `copyFileStates()`, and
+why `StateGenerator` keeps its hashers in a `CopyOnWriteArrayList`.
 
 ### StateComparator (`org.fim.internal.StateComparator`)
 
@@ -148,7 +188,7 @@ All commands extend `AbstractCommand` which provides:
 
 | Command | Constraint | Description |
 |---|---|---|
-| `InitCommand` | `MUST_NOT_EXIST` | Generates the first state, then creates `.fim/states/` and saves it as `state_1.json.gz`. The directory is created only after the scan, so an interrupted scan leaves no repository behind. |
+| `InitCommand` | `MUST_NOT_EXIST` | Creates `.fim/`, generates the first state reusing the hashes of any interrupted init, then creates `.fim/states/` and saves it as `state_1.json.gz` before deleting the progress file. `.fim/states/` is created only after the scan, so an interrupted scan leaves no usable repository behind. |
 | `CommitCommand` | `MUST_EXIST` | Generates new state, compares with last, persists if changes found. Handles subdirectory commits and hash mode mismatches. |
 | `RollbackCommand` | `MUST_EXIST` | Deletes the last state file and decrements the state number. Requires confirmation. |
 | `LogCommand` | `MUST_EXIST` | Iterates all states 1..N, loads each without full validation, displays header and modification summary. |
@@ -360,13 +400,34 @@ Provides `somethingModified()`, `modifiedCount()`, `getModificationCounts()`, an
 
 **Validates: Requirements 1.11, 3.12, 3.13**
 
+### Property 15: A resumed init produces the same State as an uninterrupted one
+
+*For any* repository and *for any* point at which an `init` is interrupted, running `init` again with the same Hash_Mode over an unchanged file tree should produce a State whose FileState entries are equal to those of an `init` that ran to completion without interruption. Reuse must therefore never be the reason a file ends up described differently.
+
+**Validates: Requirements 1.14, 1.16, 1.18**
+
+### Property 16: Progress is never reused for a file that changed
+
+*For any* Init_Progress_File and *for any* file recorded in it, if the file on disk differs from the record in length or in FileTime, then the resumed `init` should hash that file rather than reuse the recorded hash.
+
+**Validates: Requirements 1.16**
+
+### Property 17: Unusable progress never fails an init
+
+*For any* content of the Init_Progress_File — truncated, not a GZIP stream, of another Model_Version, failing its integrity check, or produced with another Hash_Mode — running `init` should complete successfully and produce a State describing every file in the tree.
+
+**Validates: Requirements 1.17**
+
 ## Error Handling
 
 ### Command-Level Errors
 
 | Error Condition | Handler | Behavior |
 |---|---|---|
-| Init on existing repository | `Fim.validateNewRepository()` (via `FimReposConstraint.MUST_NOT_EXIST`) | Aborts before execution, logging "Fim repository already exist" and throwing `BadFimUsageException`. |
+| Init on existing repository | `Fim.validateNewRepository()` (via `FimReposConstraint.MUST_NOT_EXIST`) | Aborts before execution, logging "Fim repository already exist" and throwing `BadFimUsageException`. Decided by the presence of `.fim/states/`, not of `.fim/`, so that an interrupted init can be resumed. |
+| Init on a `.fim` holding an interrupted init | `Fim.validateNewRepository()` | Allowed: this is how an interrupted init is resumed. |
+| Init on a `.fim` holding neither a State nor any progress | `Fim.validateNewRepository()` | Logs that the directory holds no State nor progress and that removing it allows `init` to run again, then throws `BadFimUsageException`. |
+| Any other command on a `.fim` holding an interrupted init | `Fim.validateExistingRepository()` | Logs "The previous 'fim init' has been interrupted. Please run 'fim init' again to resume it." and throws `BadFimUsageException`, rather than claiming a directory that is there does not exist. |
 | Repository root not writable | `Fim.validateNewRepository()` | Logs "Not allowed to create the '&lt;dir&gt;' directory that holds the Fim repository" and throws `RepositoryException`. Decided by `FileUtil.isWritableDirectory()`, which falls back to a real write probe rather than trusting the reported permissions. |
 | States directory or settings file not writable | `Fim.validateExistingRepository()` | Logs "Not allowed to modify States into the '&lt;dir&gt;' directory" or "Not allowed to save settings into the '&lt;dir&gt;' directory" and throws `RepositoryException`. The settings file is checked with `FileUtil.isWritableFile()`, which judges a not-yet-created file by its directory. |
 | Commit with `dontHash` when global mode requires hashing | `CommitCommand` | Throws `BadFimUsageException` with message "Computing hash is mandatory". |
@@ -379,7 +440,9 @@ Provides `somethingModified()`, `modifiedCount()`, `getModificationCounts()`, an
 
 | Error Condition | Handler | Behavior |
 |---|---|---|
-| Cannot create `.fim` directory | `InitCommand.createRepository()` | Logs error, throws `RepositoryException`. |
+| Cannot create `.fim` directory | `InitCommand.createDotFimDir()` and `InitCommand.createRepository()` | Logs error, throws `RepositoryException`. |
+| Cannot write the init progress file | `InitProgressManager.saveCurrentProgress()` | Logs at debug level and carries on. Failing to save progress must not fail an init that is otherwise succeeding; the cost is that an interruption would resume from an earlier point. |
+| Init progress unreadable, of another Model_Version, failing its integrity check, or of another Hash_Mode | `InitProgressManager.load()` | Logs a warning and discards the progress, so the whole file tree is hashed again. |
 | State file not found on load | `StateManager.loadState()` | Throws `IllegalStateException` with descriptive message. |
 | Corrupted state hash on load | `State.loadFromGZipFile()` | Throws `CorruptedStateException`, caught by `StateManager` and re-thrown as `IllegalStateException`. |
 | Settings file I/O error | `SettingsManager.load()`/`save()` | Throws `RepositoryException`. |

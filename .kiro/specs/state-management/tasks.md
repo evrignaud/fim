@@ -163,7 +163,40 @@ The State Management core components already exist in the codebase (`StateManage
     - Generate State objects, construct log entries, verify each contains state number, non-null timestamp, correct file count, files content length, comment, and non-null ModificationCounts
     - **Validates: Requirements 5.1, 5.2, 5.3, 5.4**
 
-- [x] 11. Final checkpoint - Ensure all tests pass
+- [x] 11. Resuming an interrupted init (GitHub issue #27)
+
+  - [x] 11.1 Keep the hashes of a running init on disk
+    - Add `InitProgressManager`, storing `.fim/init-progress.json.gz` as an ordinary State file so the hashes are read back through the existing integrity check
+    - Write a temporary file and move it into place, so the file on disk is never a truncated mix of two saves
+    - Save on a daemon thread at most a minute apart, and once more from a JVM shutdown hook
+    - Discard progress that cannot be read, carries another Model_Version, fails its integrity check, or used another Hash_Mode
+    - _Requirements: 1.14, 1.15, 1.17_
+
+  - [x] 11.2 Reuse the hashes an interrupted init computed
+    - `StateGenerator.setInitProgressManager()` opts a generation into reuse; a file whose recorded name, length and FileTime still match is never queued, so its content is not read
+    - `FileHasher` holds its results in a synchronized list and hands out copies, and `StateGenerator` keeps its hashers in a `CopyOnWriteArrayList`, because the saving happens while the hashing goes on
+    - Report how many hashes were reused, and keep the hashed byte count describing only what was actually read
+    - _Requirements: 1.16_
+
+  - [x] 11.3 Make `init` create the repository directory before it scans
+    - Create `.fim` up front, keep `.fim/states` creation at the end so an unfinished init is not mistaken for a usable repository
+    - Remove a `.fim` this run created when the init fails leaving nothing to resume
+    - Do not record `.fim` among the ignored files of the State an init produces
+    - _Requirements: 1.1, 1.12, 1.13, 1.21_
+
+  - [x] 11.4 Let the CLI checks tell the three cases apart
+    - `.fim/states` present means the repository already exists; `.fim` holding progress is a resume; `.fim` holding neither gets a message saying that removing it unblocks `init`
+    - The other commands report the interrupted init rather than claiming the repository does not exist
+    - _Requirements: 1.6, 1.19, 1.20_
+
+  - [x] 11.5 Test the interruption and the resume
+    - `InitProgressManagerTest`: round trip, reuse matching, discarding unusable progress, saving while the hashing goes on
+    - `InitCommandTest`: resuming reuses only what still matches and leaves no progress behind
+    - `FimWithoutReposTest`: the three CLI cases
+    - **Covers Properties 15, 16, 17**
+    - _Requirements: 1.14, 1.16, 1.17, 1.18, 1.19, 1.20_
+
+- [x] 12. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

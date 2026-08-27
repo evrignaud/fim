@@ -86,6 +86,46 @@ It allows using automatically more threads with an SSD and less with a classical
 You can specify, using the `-t` option, the number of thread to be used for file hashing. +
 The best value depends on the kind of hard disk you have. The more throughput you have, the more thread you may use.
 
+== Pausing and resuming the init of a big repository
+
+Hashing a complete file tree can take hours, and you may need your machine back before it is over.
+You can stop `fim init` with `Ctrl-C` and run it again later to carry on: +
+Fim keeps the hashes it has already computed and only hashes the files it did not get to.
+
+[source, bash]
+----
+$ fim init -m "First State"
+2026/03/14 09:12:04 - Info  - Scanning recursively local files, using 'full' mode and automatic scaling
+@@@@@@@@@@
+^C
+'fim init' interrupted. The hashes computed so far have been kept.
+Run 'fim init' again in the same directory to resume it.
+
+$ fim init -m "First State"
+2026/03/14 18:45:31 - Info  - Resuming the interrupted 'fim init'. The hash of 148,502 files is already known
+2026/03/14 18:45:31 - Info  - Scanning recursively local files, using 'full' mode and automatic scaling
+----
+
+A few things worth knowing:
+
+- The progress is kept in `.fim/init-progress.json.gz` and is removed as soon as the first State is committed
+- The progress is saved as the init runs, so a machine that loses power resumes as well.
+  It is saved every minute, which is at most what an interruption gives up
+- A file that was modified after being hashed is hashed again, so a resumed init never describes a file by
+  a hash it no longer matches
+- Resuming has to use the same hash mode. Running `fim init -s` after an interrupted `fim init` starts the
+  hashing again, because a State cannot describe some of its files more thoroughly than others
+- While the init is unfinished, the other Fim commands have nothing to work with and tell you to run
+  `fim init` again
+
+If what you want is to leave some of the computer resources free rather than to stop, use the `-t` option to
+limit the number of hashing threads instead of stopping the init:
+
+[source, bash]
+----
+$ fim init -m "First State" -t 1
+----
+
 == State integrity
 
 Every State file contains a hash of the State content. +

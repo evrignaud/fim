@@ -23,8 +23,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Option.Builder;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.fim.command.AbstractCommand;
 import org.fim.command.CommitCommand;
@@ -44,9 +44,10 @@ import org.fim.command.VersionCommand;
 import org.fim.command.exception.BadFimUsageException;
 import org.fim.command.exception.DontWantToContinueException;
 import org.fim.command.exception.RepositoryException;
+import org.fim.internal.InitProgressManager;
 import org.fim.internal.SettingsManager;
-import org.fim.model.Command;
 import org.fim.model.Command.FimReposConstraint;
+import org.fim.model.Command;
 import org.fim.model.Context;
 import org.fim.model.FilePattern;
 import org.fim.model.Ignored;
@@ -252,8 +253,19 @@ public class Fim {
     private void validateNewRepository(Context context) {
         setRepositoryRootDir(context, context.getAbsoluteCurrentDirectory(), false);
 
-        if (Files.exists(context.getRepositoryDotFimDir()) || Files.exists(context.getRepositoryStatesDir())) {
+        if (Files.exists(context.getRepositoryStatesDir())) {
             Logger.error("Fim repository already exist");
+            throw new BadFimUsageException();
+        }
+
+        // An init that was stopped before it could commit its first State leaves the directory holding the
+        // hashes it had already computed. Running 'fim init' again is how that init is resumed, so the
+        // directory being there is expected in that case and must not turn the command down.
+        Path dotFimDir = context.getRepositoryDotFimDir();
+        if (Files.exists(dotFimDir) && !InitProgressManager.holdsInitProgress(dotFimDir)) {
+            Logger.error(String.format("The '%s' directory already exists but does not hold any State"
+                                       + " nor the progress of an interrupted 'fim init'."
+                                       + " Remove it to be able to run 'fim init' again.", dotFimDir));
             throw new BadFimUsageException();
         }
 
@@ -267,7 +279,11 @@ public class Fim {
         findRepositoryRootDir(context);
 
         if (!Files.exists(context.getRepositoryStatesDir())) {
-            Logger.error("Fim repository does not exist. Please run 'fim init' before.");
+            if (InitProgressManager.holdsInitProgress(context.getRepositoryDotFimDir())) {
+                Logger.error("The previous 'fim init' has been interrupted. Please run 'fim init' again to resume it.");
+            } else {
+                Logger.error("Fim repository does not exist. Please run 'fim init' before.");
+            }
             throw new BadFimUsageException();
         }
 
